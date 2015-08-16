@@ -1,0 +1,41 @@
+<!-- Détails d'une motion -->
+<div id="details_task" class="encadre">
+    <table>
+        <tr>
+            <td align="center">
+                <table>
+                    <tr>
+                        <td colspan="2" align="center"><h2><?php echo $this->_view['details']['description']; ?></h2></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80px; padding-top: 25px;"><?php echo $this->_view['translate']->msg('date_task'); ?></td>
+                        <td style="padding-top: 25px;"><?php echo $this->_view['details']['date']; ?></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80px; padding-top: 25px;"><?php echo $this->_view['translate']->msg('author_task'); ?></td>
+                        <td style="padding-top: 25px;"><?php echo $this->_view['details']['identite']; ?></td>
+                    </tr>
+                    <tr>
+                        <td id="action_motion" colspan="2" style="padding-top: 25px;">
+                            <table>
+                                <tr>
+                                    <td align="center">
+                                        <div class="bouton" style="width:70px;"><a onclick="<?php echo $this->_view['cmd_delete']; ?>">
+                                            <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('btn_delete'); ?></span></a></div>
+                                    </td>
+                                    <td align="center">
+                                        <div class="bouton" style="width:70px;"><a onclick="<?php echo $this->_view['cmd_edit']; ?>">
+                                            <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('btn_modify'); ?></span></a></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td id="task_resultaction" colspan="2"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

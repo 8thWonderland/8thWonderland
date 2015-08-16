@@ -1,0 +1,20 @@
+body {margin: 0 auto; padding: 0; background-color: #000000; font-family: Arial, Helvetica, Sans-Serif; font-style: normal; font-weight: normal; font-size: 12px;
+	color: #D2D6D1;}
+
+/* gestion de la barre d'outils */
+.barre_outils {padding-bottom: 2px; padding-top: 2px; padding-left: 10px; padding-right: 10px; text-transform: capitalize; text-align: center;
+	-moz-border-radius-bottomleft: 50px; -moz-border-radius-bottomright: 50px; border-bottom: 5px solid #373737;}
+
+
+/* gestion des panneaux */
+.Panneau_Appli {border:1px solid black; position:absolute}
+.Panneau_TitreAppli {padding:0; spacing:0; background-image: url("../Ressources/Images/Fond_Noir.gif"); background-repeat: x-repeat; height:22px; top:0px;
+					color:white; width:100%; -moz-border-radius-topleft: 15px; -moz-border-radius-topright: 15px;} /* cursor:move} */
+.Panneau_ContenuAppli {padding:0; spacing:0; color:black; width:100%; overflow:auto; text-align:top; background-color:#F9DBAE}
+
+
+/* couleurs des textes */
+.Rouge {color:maroon}
+.Blanc {color:white}
+.Erreur {color:Maroon; font-weight:bold}
+.Succes {color:White; font-weight:bold}

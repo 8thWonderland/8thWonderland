@@ -1,0 +1,28 @@
+<!-- Module de recherche dans la liste des membres -->
+<!--<script>
+    $(document).ready(function(){
+        Autocomplete("ac_members", "member/search_members", "list_members");
+    }); 
+</script>-->
+<div id="search_members">
+    <form id="form_searchusers" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/groups/display_adressbook", "form_searchusers", "milieu_milieu"); return false;' method="post" action="">
+        <table>
+            <tr>
+                <td width="150px"><?php echo $this->_view['translate']->msg('title_groups'); ?></td>
+                <td width="200px"><select id="sel_groups" name="sel_groups"><?php echo $this->_view['select_groups']; ?></select></td>
+                <td></td>
+            </tr>
+            <!--<tr>
+                <td><?php echo $this->_view['translate']->msg('group_members'); ?></td>
+                <td><input type="text" id="ac_members" /><div id="list_members" style="display: none;"></div></td>
+                <td></td>
+            </tr>-->
+            <tr>
+                <td style="height:50px;" colspan="2" align="center">
+                    <input type="submit" name="btn_searchusers" id="btn_searchusers" value="<?php echo $this->_view['translate']->msg('btn_search'); ?>" />
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+</div>

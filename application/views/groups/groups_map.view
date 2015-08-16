@@ -1,0 +1,41 @@
+<div id="groups_map" class="encadre" style="height: 430px; color:black;">
+    <!-- <?php /* http://leaflet.cloudmade.com/index.html */ ?> -->
+	<link rel="stylesheet" href="<?php echo JS_PATH; ?>leaflet/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="<?php echo JS_PATH; ?>leaflet/leaflet.ie.css" /><![endif]-->
+	<br/><br/>
+	    <div id="map" style="width: 100%; height: 400px;"></div>
+
+	<script src="<?php echo JS_PATH; ?>leaflet/leaflet.js"></script>
+	<script>
+		var map = new L.Map('map');
+		
+		var cloudmadeUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+			cloudmadeAttribution = "Map data © les contributeurs d'<a href='http://www.openstreetmap.org/'>OpenStreetMap</a> <a href='http://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>",
+			cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 8, attribution: cloudmadeAttribution});
+		
+		map.setView(new L.LatLng(51.505, -0.09), 2).addLayer(cloudmade);
+	
+		<?php echo $this->_view['map_coord']; ?>
+
+		for(var i=0; i< regions.length; i++){	
+				markerLocation = new L.LatLng(regions[i][1], regions[i][2]),
+				marker = new L.Marker(markerLocation);
+				map.addLayer(marker);
+				marker.bindPopup("<b>"+regions[i][0]+'</b><br/>'+regions[i][3]+" <?php $translate = memory_registry::get("translate"); echo $translate->msg("group_members"); ?>");
+		}
+	
+	
+	
+		map.on('click', onMapClick);
+		
+		var popup = new L.Popup();
+				
+		function onMapClick(e) {
+			var latlngStr = '(' + e.latlng.lat.toFixed(3) + ', ' + e.latlng.lng.toFixed(3) + ')';
+			
+			popup.setLatLng(e.latlng);
+			popup.setContent("You clicked the map at " + latlngStr);
+			map.openPopup(popup);
+		}
+	</script>
+</div>

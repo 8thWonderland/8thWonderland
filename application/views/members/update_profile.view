@@ -1,0 +1,96 @@
+<!-- Module de modification du profil -->
+<script type="text/javascript">
+    $(function() {
+        var start=0;
+        $("#country").click(function ()     {
+            if (start ==0)  {start=1; $("#country").val("");}
+            else            {start=0;}
+        });
+        $("#country").change(function ()    {   Display_Regions();      });
+    });
+    
+    function Display_Regions() {
+        $.ajax({
+		type: "POST", // Requete POST
+		url: "index.php", 
+		dataType: "html", // Format du retour de l'url
+		success : function(data) {
+                    $("#region").empty();
+                    $(data).appendTo($("#region"));
+                }, // Si tout marche bien
+		data: "controller=intranet&action=list_regions&country=" + $("#country").val(), 
+		error: function(data, texte, erreur)
+                {
+                   var obj = '<div id="error" class="error" style="position: absolute; left:35%; bottom:150px; width:30%;"><table><tr>';
+                   obj += '<td><img alt="erreur" src="/public/icones/64x64/Error.png" style="width:48px; border:0"/></td>';
+                   obj += '<td>' + erreur + '</td>';
+                   obj += '</tr></table>';
+                   obj += '</div>';
+                   $(obj).appendTo(document.body);
+                }
+	});
+    }
+</script>
+<div id="upprofile" class="encadre">
+    <table width=100%>
+        <caption><?php echo $this->_view['translate']->msg('update_profile'); ?></caption>
+        <tr>
+            <td>
+                <form id="form_upprofile" name="form_upprofile" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/member/valid_profile", "form_upprofile", "reponse_up_profile", "json"); return false;' action="" method="post">
+                    <table>
+                        <tr>
+                            <td style="height:50px; width: 150px;"><?php echo $this->_view['translate']->msg("avatar"); ?></td>
+                            <td><input type='text' name='avatar' id='avatar' style="width:250px;" value="<?php echo $this->_view['avatar']; ?>"/></td>
+
+                            <td colspan="2" style="height:50px;"><img width="80" alt="Avatar" src="<?php echo $this->_view['avatar']; ?>"/></td>
+                        </tr>
+                        <tr>
+                            <td style="height:50px; width: 150px;"><?php echo $this->_view['translate']->msg("login"); ?></td>
+                            <td><input type='text' name='login' id='login' style="width:250px;" value="<?php echo $this->_view['login']; ?>"/></td>
+
+                            <td style="height:50px;"><?php echo $this->_view['translate']->msg("password"); ?></td>
+                            <td><input type='password' name='password' id='password' style="width:250px;"/></td>
+                        </tr>
+                        <tr>
+                            <td style="height:50px;"><?php echo $this->_view['translate']->msg("identity"); ?></td>
+                            <td><input type='text' name='identity' id='identity' style="width:250px;" value="<?php echo $this->_view['identity']; ?>"/></td>
+
+                            <td style="height:50px;"><?php echo $this->_view['translate']->msg("gender"); ?></td>
+                            <td>
+                                <select id="gender" name="gender" style="width:100px;">
+                                    <option></option>
+                                    <?php echo $this->_view['gender']; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="height:50px;"><?php echo $this->_view['translate']->msg("mail"); ?></td>
+                            <td><input type='text' name='mail' id='mail' style="width:250px;" value="<?php echo $this->_view['mail']; ?>"/></td>
+
+                            <td style="height:50px;"><?php echo $this->_view['translate']->msg("lang"); ?></td>
+                            <td>
+                                <select id="lang" name="lang" style="width:150px;">
+                                    <option></option>
+                                    <?php echo $this->_view['langs']; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <!--<tr>
+                            <td style="height:50px"><?php echo $this->_view['translate']->msg('country'); ?></td>
+                            <td><select id="country" name="country" style="width:300px"><?php echo $this->_view['select_country']; ?></select></td>
+                            
+                            <td style="height:50px"><?php echo $this->_view['translate']->msg('region'); ?></td>
+                            <td id="select_region"><select id="region" name="region" style="width: 300px"><?php echo $this->_view['select_region']; ?></select></td>
+                        </tr>-->
+                        <tr>
+                            <td colspan="4" align="center"><input type="submit" name="btn_updateprofile" id="btn_updateprofile" value="<?php echo $this->_view['translate']->msg('btn_updateprofile'); ?>"></td>
+                        </tr>
+                        <tr>
+                            <td id="reponse_up_profile" colspan="4" align="center"></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>

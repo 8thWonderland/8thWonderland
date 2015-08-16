@@ -1,0 +1,122 @@
+<!-- Création d'une tache CRON -->
+<script language="JavaScript">
+    function selectAllHours(){
+        myForm= document.getElementById('form_createcron');
+
+        var selectValueSet=true;
+
+        if (myForm.dayHour_all.checked)
+        {
+                selectValueSet=false;
+        }
+        myForm.dayHour_all.checked=selectValueSet;
+        myForm.dayHour_0.checked=selectValueSet;
+        myForm.dayHour_1.checked=selectValueSet;
+        myForm.dayHour_2.checked=selectValueSet;
+        myForm.dayHour_3.checked=selectValueSet;
+        myForm.dayHour_4.checked=selectValueSet;
+        myForm.dayHour_5.checked=selectValueSet;
+        myForm.dayHour_6.checked=selectValueSet;
+        myForm.dayHour_7.checked=selectValueSet;
+        myForm.dayHour_8.checked=selectValueSet;
+        myForm.dayHour_9.checked=selectValueSet;
+        myForm.dayHour_10.checked=selectValueSet;
+        myForm.dayHour_11.checked=selectValueSet;
+        myForm.dayHour_12.checked=selectValueSet;
+        myForm.dayHour_13.checked=selectValueSet;
+        myForm.dayHour_14.checked=selectValueSet;
+        myForm.dayHour_15.checked=selectValueSet;
+        myForm.dayHour_16.checked=selectValueSet;
+        myForm.dayHour_17.checked=selectValueSet;
+        myForm.dayHour_18.checked=selectValueSet;
+        myForm.dayHour_19.checked=selectValueSet;
+        myForm.dayHour_20.checked=selectValueSet;
+        myForm.dayHour_21.checked=selectValueSet;
+        myForm.dayHour_22.checked=selectValueSet;
+        myForm.dayHour_23.checked=selectValueSet;
+    }
+
+</script>
+<div id="create_cron" class="encadre">
+    <table style="width:70%">
+        <tr>
+            <td><form id="form_createcron" name="form_createcron" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/admin/add_cron", "form_createcron", "result_createcron"); return false;' action="" method="post">
+                    <table>
+                        <tr style="padding: 5px;">
+                            <td style="height:50px;"><?php echo $this->_view['translate']->msg("cron_file"); ?></td>
+                            <td><input type='text' name='cron_file' id='cron_file'/></td>
+                        </tr>
+                        <tr style="padding: 5px;">
+                            <td style="height:50px;"><?php echo $this->_view['translate']->msg("cron_description"); ?></td>
+                            <td><input type='text' name='cron_desc' id='cron_desc'/></td>
+                        </tr>
+                        <tr>
+                            <td style="height:50px;"><?php echo $this->_view['translate']->msg("periodicity_days"); ?></td>
+                            <td>
+                                <select name="cron_day" style="width:100px;">
+                                    <option value=""></option>
+                                    <option value="all_days"><?php echo $this->_view['translate']->msg("all_days"); ?></option>
+                                    <option value="monday"><?php echo $this->_view['translate']->msg("monday"); ?></option>
+                                    <option value="tuesday"><?php echo $this->_view['translate']->msg("tuesday"); ?></option>
+                                    <option value="wednesday"><?php echo $this->_view['translate']->msg("wednesday"); ?></option>
+                                    <option value="thursday"><?php echo $this->_view['translate']->msg("thursday"); ?></option>
+                                    <option value="friday"><?php echo $this->_view['translate']->msg("friday"); ?></option>
+                                    <option value="saturday"><?php echo $this->_view['translate']->msg("saturday"); ?></option>
+                                    <option value="sunday"><?php echo $this->_view['translate']->msg("sunday"); ?></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="height:50px;"><?php echo $this->_view['translate']->msg("periodicity_hours"); ?></td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><input type="checkbox" name="dayHour_0" checked> 0h</td>
+                                        <td><input type="checkbox" name="dayHour_1"> 1h</td>
+                                        <td><input type="checkbox" name="dayHour_2"> 2h</td>
+                                        <td><input type="checkbox" name="dayHour_3"> 3h</td>
+                                        <td><input type="checkbox" name="dayHour_4"> 4h</td>
+                                        <td><input type="checkbox" name="dayHour_5"> 5h</td>
+                                        <td><input type="checkbox" name="dayHour_6"> 6h</td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" name="dayHour_7"> 7h</td>
+                                        <td><input type="checkbox" name="dayHour_8"> 8h</td>
+                                        <td><input type="checkbox" name="dayHour_9"> 9h</td>
+                                        <td><input type="checkbox" name="dayHour_10"> 10h</td>
+                                        <td><input type="checkbox" name="dayHour_11"> 11h</td>
+                                        <td><input type="checkbox" name="dayHour_12"> 12h</td>
+                                        <td><input type="checkbox" name="dayHour_13"> 13h</td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" name="dayHour_14"> 14h</td>
+                                        <td><input type="checkbox" name="dayHour_15"> 15h</td>
+                                        <td><input type="checkbox" name="dayHour_16"> 16h</td>
+                                        <td><input type="checkbox" name="dayHour_17"> 17h</td>
+                                        <td><input type="checkbox" name="dayHour_18"> 18h</td>
+                                        <td><input type="checkbox" name="dayHour_19"> 19h</td>
+                                        <td><input type="checkbox" name="dayHour_20"> 20h</td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" name="dayHour_21"> 21h</td>
+                                        <td><input type="checkbox" name="dayHour_22"> 22h</td>
+                                        <td><input type="checkbox" name="dayHour_23"> 23h</td>
+                                        <td><input type="hidden" name="dayHour_all"/></td>
+                                        <td colspan="3"><input type="button" style="cursor:pointer;" onClick="selectAllHours();" value="<?php echo $this->_view['translate']->msg('all_hours'); ?>" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input type="submit" name="btn_createcron" id="btn_createcron" value="<?php echo $this->_view['translate']->msg('btn_add'); ?>"></td>
+                        </tr>
+                        <tr>
+                            <td id="result_createcron" align="center" colspan="2"></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>

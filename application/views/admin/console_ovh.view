@@ -1,0 +1,13 @@
+<!-- Module SOAP pour le serveur OVH -->
+<div id="console_ovh" class="encadre">
+    <table>
+        <caption><?php echo $this->_view['translate']->msg('admin_server') . " OVH"; ?></caption>
+        <tr>
+            <td style="width: 50%;"><?php echo $this->_view['crons']; ?></td>
+            <td style="width: 50%;"> </td>
+        </tr>
+        <tr>
+            <td id="server_infoaction" colspan="2"></td>
+        </tr>
+    </table>
+</div>

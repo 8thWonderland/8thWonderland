@@ -1,0 +1,27 @@
+<!-- Menu des membres -->
+<div id="menu-connected" class="encadre-top" style="width: 75%; max-width: 900px;">
+    <table>
+        <tr>
+            <td align="center">
+                <a onclick="Clic('/intranet/infos', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/World-Info.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('inform'); ?></a>
+            </td>
+            <td align="center">
+                <a onclick="Clic('/intranet/share', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Share.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('share'); ?></a>
+            </td>
+            <td align="center">
+                <a href='/Intranet/forums'><img border="0" width="32" src="<?php echo ICO_PATH; ?>Forum-32.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('forum'); ?></a>
+            </td>
+            <td align="center">
+                <a href='/external/chat/' target='_blank'><img width="32" src="<?php echo ICO_PATH; ?>64x64/Communication.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('communicate'); ?></a>
+            </td>
+            <td align="center">
+                <a onclick="Clic('/intranet/finance', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Money.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('finance'); ?></a>
+            </td>
+        </tr>
+    </table>
+</div>

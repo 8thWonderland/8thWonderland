@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+    <head>
+        <title>8th Wonderland</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta http-equiv="Pragma" content="no-cache"/>
+        <meta http-equiv="Expires" content="0"/>
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>accueil.css" type="text/css" media="screen" />
+        <link rel="shortcut icon" type="image/png" href="<?php echo IMG_PATH; ?>icone.png" />
+        
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-ui-1.8.17.custom.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>ajax.js"></script>
+        
+    </head>
+    
+    <body>
+        <table style="height:100%">
+            <tr style="height:150px">
+                <td><img height="150" alt="Logo 8th" src="<?php echo IMG_PATH;?>Mainscreen2-G.gif" title="8th Wonderland"/></td>
+                <td id="haut_milieu" valign="top" align="center">
+                        <?php include "members/connexion.view"; ?>
+                </td>
+            </tr>
+            <tr>
+                <td id="milieu_gauche" style="width:260px;">
+
+                </td>
+                <td id="milieu_milieu">
+                    <table>
+                        <tr>
+                            <td>
+                                <div style="width: 97%; max-width: 400px;">
+                                    <?php include "informations/menu_presentation.view"; ?>
+                                </div>
+                            </td>
+                            <td valign="top">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div id="info_chat" class="info" style="margin:20%">
+                                                <table>
+                                                    <tr>
+                                                        <td><img alt="info" src="<?php echo ICO_PATH;?>64x64/Info.png" style="width:48px;"/></td>
+                                                        <td><span style="font-size: 15px;"><?php echo $this->_view['translate']->msg('open_chat'); ?></span></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

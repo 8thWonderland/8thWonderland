@@ -1,0 +1,23 @@
+<!-- Module gestionnaire de taches -->
+<div id="tasks" class="encadre">
+    <table width=90%>
+        <caption><?php echo $this->_view['translate']->msg('tasks_inprogress'); ?></caption>
+        <?php echo $this->_view['list_tasks']; ?>
+    </table>
+    <div id="separator" style="height:20px; border-bottom: 2px dotted #dfdfdf; margin-bottom:10px;"></div>
+    <table>
+        <tr>
+            <td>
+                <div class="bouton"><a onclick="Clic('/tasks/display_createtask', 'id_group='+<?php echo $this->_view['id_group']; ?>, 'milieu_milieu'); return false;">
+                    <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('btn_createtask'); ?></span>
+                </a></div>
+            </td>
+            <td>
+                <div class="bouton"><a onclick="Clic('/tasks/display_tasks', '&page=1', 'milieu_milieu'); return false;">
+                    <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('display_archivestasks'); ?></span>
+                </a></div>
+            </td>
+        </tr>
+    </table>
+
+</div>

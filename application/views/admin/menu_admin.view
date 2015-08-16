@@ -1,0 +1,27 @@
+<!-- Menu d'administration du site -->
+<div id="menu-admin" class="encadre-top" style="width: 75%; max-width: 900px;">
+    <table>
+        <tr>
+            <td align="center">
+                <a onclick="Clic('/admin/display_logs', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Logs-viewer.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('admin_logs'); ?></a>
+            </td>
+            <td align="center">
+                <a onclick="Clic('/groups/display_adressbook', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Users.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('adressbook'); ?></a>
+            </td>
+            <td align="center">
+                <a onclick="Clic('/admin/display_groups', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('admin_groups'); ?></a>
+            </td>
+            <td align="center">
+                <a onclick="Clic('/admin/display_server', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Server.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('admin_server'); ?></a>
+            </td>
+            <td align="center">
+                <a onclick="Clic('/admin/quit_console', '', 'milieu_milieu', 'json'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Exit.png"/><br/>
+                    <?php echo $this->_view['translate']->msg('quit_console'); ?></a>
+            </td>
+        </tr>
+    </table>
+</div>

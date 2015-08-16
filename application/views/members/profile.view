@@ -1,0 +1,22 @@
+<!-- Module profil -->
+<div id="my_profile" class="encadre-top" style="width: 250px;">
+    <table>
+        <tr>
+            <td style="padding-left:15px; padding-bottom:15px;">
+                <table>
+                    <tr><td><?php echo $this->_view['identity']; ?>.</td></tr>
+                    <tr><td>
+                         <div class="button"><a onclick="Clic('/member/display_profile', '', 'milieu_milieu'); return false;"><?php echo $this->_view['translate']->msg('update_profile'); ?></a></div><br/>
+                     </td></tr>
+                    <tr><td>
+                         <div class="button"><a onclick="Clic('/messaging/display_reception', '', 'milieu_milieu'); return false;"><?php echo $this->_view['translate']->msg('read_mails'); ?></a></div></td></tr>
+                    <tr><td>
+                         <div class="button"><a onclick="Clic('/groups/display_groups', '', 'milieu_milieu'); return false;"><?php echo $this->_view['translate']->msg('discover_groups'); ?></a></div></td></tr>
+                </table>
+            </td>
+            <td>
+                <img width="80" alt="Avatar" src="<?php echo $this->_view['avatar']; ?>"/>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,55 @@
+<!-- Module d'inscription -->
+<table width=100%>
+    <caption><?php echo $this->_view['translate']->msg('subscribe'); ?></caption>
+    <tr>
+        <td>
+            <form id="form_subscribe" name="form_subscribe" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/authenticate/subscribe", "form_subscribe", "reponse_subscribe"); return false;' action="" method="post">
+                <table>
+                    <tr style="padding: 5px;">
+                        <td style="height:40px"><?php echo $this->_view['translate']->msg("login"); ?></td>
+                        <td><input type='text' name='login' id='login'/></td>
+                    </tr>
+                    <tr style="padding: 5px;">
+                        <td style="height:40px"><?php echo $this->_view['translate']->msg("password"); ?></td>
+                        <td><input type='password' name='password' id='password'/></td>
+                    </tr>
+                    <tr style="padding: 5px;">
+                        <td style="height:40px"><?php echo $this->_view['translate']->msg("identity"); ?></td>
+                        <td><input type='text' name='identity' id='identity'/></td>
+                    </tr>
+                    <tr style="padding: 5px;">
+                        <td style="height:40px"><?php echo $this->_view['translate']->msg("gender"); ?></td>
+                        <td>
+                            <select id="gender" name="gender">
+                                <option></option>
+                                <option value=1><?php echo $this->_view['translate']->msg("female"); ?></option>
+                                <option value=2><?php echo $this->_view['translate']->msg("male"); ?></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr style="padding: 5px;">
+                        <td style="height:40px"><?php echo $this->_view['translate']->msg("mail"); ?></td>
+                        <td><input type='text' name='mail' id='mail'/></td>
+                    </tr>
+                    <tr style="padding: 5px;">
+                        <td style="height:40px"><?php echo $this->_view['translate']->msg("lang"); ?></td>
+                        <td>
+                            <select id="lang" name="lang">
+                                <option></option>
+                                <?php echo $this->_view['langs']; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:40px" colspan="2" align="center">
+                            <input type="submit" name="btn_subscribe" id="btn_subscribe" value="<?php echo $this->_view['translate']->msg('btn_subscribe'); ?>">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="reponse_subscribe" colspan="2" align="center"></td>
+                    </tr>
+                </table>
+            </form>
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,2 @@
+<!-- Présentation de la communauté -->
+<?php echo $this->_view['translate']->msg('decouvrir_8th'); ?>

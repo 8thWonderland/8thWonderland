@@ -1,0 +1,32 @@
+<!-- Module de communication -->
+<table width="100%">
+    <caption><?php echo $this->_view['translate']->msg('contact-us'); ?></caption>
+    <tr>
+        <td>
+            <form id="form_contact" onSubmit='Envoi_form("/mail/envoi", "form_contact", "milieu_milieu"); return false;' action="" method="post">
+                <table  id="contact_form" style="width: 100%" align="center">
+                    <tr align="center">
+                        <td style="height:50px;">
+                            <?php echo $this->_view['translate']->msg('contact_mail'); ?><br/>
+                            <input type="text" name="mail_sender" id="titre_task" size="50" />
+                        </td>
+                    </tr>
+                    <tr align="center">
+                        <td style="height:50px;"><?php echo $this->_view['translate']->msg('contact_title'); ?><br/>
+                            <input type="text" name="mail_title" id="titre_task" size="50" />
+                        </td>
+                    </tr>
+                    <tr align="center">
+                        <td style="height:50px;"><?php echo $this->_view['translate']->msg('contact_message'); ?><br/>
+                            <textarea name="mail_message" rows=10 cols=30></textarea>
+                        </td>
+                    </tr>
+                    <tr align="center">
+                        <td><input type="submit" value="<?php echo $this->_view['translate']->msg('contact_send'); ?>"/></td>
+                    </tr>
+                    <tr align="center"><td><?php echo $this->contact_status; ?></td></tr>
+                </table>
+            </form>
+        </td>
+    </tr>
+</table>

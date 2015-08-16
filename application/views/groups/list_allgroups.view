@@ -1,0 +1,9 @@
+<!-- Module des groups -->
+<div id="groups" class="encadre">
+    <table width=90%>
+        <caption><?php echo $this->_view['translate']->msg('title_groups'); ?></caption>
+        <tr><td><?php echo $this->_view['list_Allgroups']; ?></td></tr>
+    </table>
+</div>
+<br/>
+<?php include "groups_map.view";?>

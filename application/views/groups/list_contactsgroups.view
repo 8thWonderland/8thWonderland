@@ -1,0 +1,8 @@
+<!-- Module des contacts des groupes -->
+<div id="list_contactsgroups" class="encadre">
+    <table>
+        <caption><?php echo $this->_view['translate']->msg('group_contact'); ?></caption>
+        <tr><td align="center" style="padding:5px;"><?php echo $this->_view['list_contactsgroups']; ?></td></tr>
+    </table>
+    <div id="separator" style="height:10px; border-bottom: 2px dotted #dfdfdf; margin-bottom:30px;"></div>
+</div>

@@ -1,0 +1,23 @@
+/* gestion de la barre d'outils */
+.barre_outils a{ color:#DDDDDD;
+		}
+
+.barre_outils {padding-bottom: 2px; padding-top: 2px; padding-left: 10px; padding-right: 10px; text-transform: capitalize;
+		text-align: center; border-bottom: 5px solid #373737; background-color: #373737; z-index:1000;
+		-moz-border-radius-topleft: 12px; -moz-border-radius-topright: 12px;				/* Compatibilité firefox */
+		-moz-border-radius-bottomleft: 12px; -moz-border-radius-bottomright: 12px;
+		border-top-left-radius: 12px; border-top-right-radius: 12px;						/* Compatibilité IE */
+		border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+		-khtml-border-radius-topleft: 12px; -khtml-border-radius-topright: 12px;			/* Compatibilité safari, Konqueror */
+		-khtml-border-radius-bottomleft: 12px; -khtml-border-radius-bottomright: 12px;
+		-webkit-border-radius-topleft: 12px; -webkit-border-radius-topright: 12px;			/* Compatibilité Opera */
+		-webkit-border-radius-bottomleft: 12px; -webkit-border-radius-bottomright: 12px;}
+
+.barre_outils_rouge {padding-bottom: 2px; padding-top: 2px; padding-left: 10px; padding-right: 10px; text-transform: capitalize;
+		text-align: center; border-bottom: 5px solid maroon; background-color: maroon;
+		-moz-border-radius-topleft: 12px; -moz-border-radius-topright: 12px;
+		-moz-border-radius-bottomleft: 12px; -moz-border-radius-bottomright: 12px;			/* Compatibilité firefox */
+		border-bottom-left-radius: 50px; border-bottom-right-radius: 50px;					/* Compatibilité IE */
+		-khtml-border-radius-bottomleft: 50px; -khtml-border-radius-bottomright: 50px;		/* Compatibilité safari, Konqueror */
+		-webkit-border-radius-bottomleft: 50px; -webkit-border-radius-bottomright: 50px;}	/* Compatibilité Opera */
+

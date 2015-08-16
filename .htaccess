@@ -1,0 +1,12 @@
+SetEnv PHP_VER 5_TEST
+
+# Règles de réécriture des URLs
+RewriteEngine on
+#RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php
+
+# Redirection https
+#RewriteCond %{SERVER_PORT} 80
+#RewriteRule ^(.*)$ https://www.8thwonderland.com/$1 [R,L]
+
+# Sécurité : Ne pas autoriser le parcours de répertoires
+Options -Indexes

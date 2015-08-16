@@ -1,0 +1,23 @@
+<table style="height:100%">
+    <tr style="height:150px">
+        <td id="logo" width="200px;"><img height="150" alt="Logo 8th" src="<?php echo IMG_PATH;?>Mainscreen2-G.gif" title="8th Wonderland"/></td>
+        <td id="haut_milieu" valign="top" align="center">
+                <?php include $this->_view['haut_milieu']; ?>
+        </td>
+        <td id="haut_droite" width="200px" valign="top" align="right" style="padding-right:10px;">
+            <?php include VIEWS_PATH . "/members/profile.view"; ?>
+        </td>
+    </tr>
+    <tr>
+        <td id="milieu_gauche" style="width:350px;" valign="top">
+            <?php echo $this->_view["milieu_gauche"]; ?>
+        </td>
+        <td id="milieu_milieu" valign="top">
+            <?php echo $this->_view["milieu_milieu"]; ?>
+        </td>
+        <td id="milieu_droite" valign="top">
+            <?php echo $this->_view["milieu_droite"]; ?>
+        </td>
+    </tr>
+</table>
+ 

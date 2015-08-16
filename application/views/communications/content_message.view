@@ -1,0 +1,28 @@
+<!-- Composition d'un nouveau message -->
+<div id="compose_message">
+    <table style="width: 90%" align="center">
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td align="center"><h2><?php echo $this->_view['title_message']; ?></h2></td>
+                        <td style="width:150px;" align="right"><h4><?php echo $this->_view['date_msg']; ?></h4></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="conteneur_message"><?php echo $this->_view['content_message']; ?></td>
+        </tr>
+        <tr>
+            <td><?php echo $this->_view['translate']->msg('recipient_message') . ": " . $this->_view['recipients_message']; ?></td>
+        </tr>
+        <tr align="center">
+            <td style="height:50px;">
+                <div class="bouton" style="width:150px;">
+                    <a onclick="Clic('/messaging/<?php echo $this->_view['back']; ?>', '', 'volet_visualisation'); return false;"><?php echo $this->_view['translate']->msg('back'); ?></a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

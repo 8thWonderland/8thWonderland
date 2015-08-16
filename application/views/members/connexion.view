@@ -1,0 +1,30 @@
+<!-- Module de connexion -->
+<div id="connexion" class="encadre-top" style="width:650px;">
+    <table>
+        <tr>
+            <td><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Auth.png"></td>
+            <td><form id="form_login" name="form_login" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/authenticate/connect", "form_login", "login_error", "json"); return false;' action="" method="post">
+                    <table>
+                        <tr>
+                            <td style="padding: 5px;"><?php echo $this->_view['translate']->msg("login"); ?></td>
+                            <td style="padding: 5px;"><input type="text" name="login" id="login" value=""></td>
+                            <td style="padding: 15px;"><?php echo $this->_view['translate']->msg('password'); ?></td>
+                            <td style="padding: 15px;"><input type="password" name="password" id="password" value=""></td>
+                            <?php if ($this->_view['appli_status'] == 1) { ?>
+                            <td><input type="submit" name="btn_connexion" id="btn_connexion" value="<?php echo $this->_view['translate']->msg('connexion'); ?>"></td>
+                            <?php } ?>
+                        </tr>
+                        <tr>
+                            <td colspan="5" align="center">
+                                <a onclick="Clic('/authenticate/display_forgetpassword', '', 'milieu_milieu'); return false;">
+                                    <?php echo $this->_view['translate']->msg('forget_pwd'); ?></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+    
+    <div id="login_error"></div>
+</div>

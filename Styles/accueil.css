@@ -1,0 +1,85 @@
+body,html {margin: 0 auto; font-size:12px; font-family: Arial, Helvetica, Sans-Serif; color:white; background-color: black; overflow: hidden;}
+.Fond {background:url(/Ressources/Images/fond1.jpg) repeat-x scroll center -3px; position:absolute; width:100%; height:100%;}
+.Fond_desktop {background:#00005B; position:absolute; width:100%; height:100%; overflow: hidden;}
+.Logo_Gris {position:relative; width: 720px; height:716px; margin: auto; background-image:url(/Ressources/Images/logo_gris.gif); background-repeat: no-repeat;}
+
+.Widget-conteneur {position: fixed; left: 20%; right: 20%; top: 150px; width:60%; height: 65%; background-color: gray; overflow: hidden; padding: 2px;}
+.Widget-titre {height: 30px; position: relative; background-color: #000000; color: white; font-size:14px; font-weight: bold;}
+.Widget-btnclose {position: absolute; right: 3px; top: 5px; padding: 1px; width: 13px; height: 12px; cursor: pointer;}
+.Widget-contenu {position: relative; margin: 2px; overflow: auto; width:100%; height: 100%;}
+.Widget-arrondi5 {-moz-border-radius: 5px; border-radius: 5px; -khtml-border-radius: 5px; -webkit-border-radius: 5px;}
+.Container {position: absolute; background-color: #000; border: 1px solid #346F97; text-align: center;
+			-moz-border-radius: 5px; border-radius: 5px; -khtml-border-radius: 5px; -webkit-border-radius: 5px;
+			-moz-box-shadow:#999 2px 0px 3px; -webkit-box-shadow:#999 2px 0px 3px; -box-shadow:#999 2px 0px 3px;}
+/*.Extension_Droite {position: absolute; top: 100px; width:300px; height: 75%; background-color: #000; display: none; border: 1px solid #346F97; 
+			-moz-border-radius: 5px; border-radius: 5px; -khtml-border-radius: 5px; -webkit-border-radius: 5px;
+			-moz-box-shadow:#999 2px 0px 3px; -webkit-box-shadow:#999 2px 0px 3px; -box-shadow:#999 2px 0px 3px;}*/
+
+.Encadre {-moz-border-radius: 5px; border-radius: 5px; -khtml-border-radius: 5px; -webkit-border-radius: 5px; border: 1px solid #346F97; width: 100%; overflow: auto; padding: 10px;}
+.Notifications {background-color: #FFFF99; color:blue; position: absolute; -moz-border-radius:10px; border-radius: 10px; -khtml-border-radius: 10px; -webkit-border-radius:10px; 
+		-moz-box-shadow:#999 2px 0px 3px; -webkit-box-shadow:#999 2px 0px 3px; -box-shadow:#999 2px 0px 3px;}
+
+.Connexion {position:relative; height:100px; width: 350px; margin:auto; top:50%;}
+#Connexion_form {position:relative; top:-50px; width:100%; }
+.Arrondi{-moz-border-radius: 20px;	border-radius: 20px; -khtml-border-radius: 20px; -webkit-border-radius: 20px;}	/* Compatibilité navigateurs */
+.ArrondiHaut{-moz-border-radius-topleft: 10px;	-moz-border-radius-topright: 10px;
+			border-top-left-radius: 10px; border-top-right-radius: 10px;
+			-khtml-border-radius-topleft: 10px; -khtml-border-radius-topright: 10px;
+			-webkit-border-radius-topleft: 10px; -webkit-border-radius-topright: 10px;}
+
+.Barre_User {position: absolute; background:url(/Ressources/Images/Fond_Noir.gif) repeat-x scroll center -3px; width:100%; z-index:2000;}
+.Menu {text-align: center; z-index:1001; position: fixed; left: 40%; right: 40%; bottom: 20px; width: 20%;}
+.Erreur {background-color: #FFFF99; color:red; font-weight:bold; position: absolute;}
+
+/* Formulaires */
+input[type="button"] {cursor: pointer;}
+form input:focus, form textarea:focus{background-color: #EAEBFF;}
+form input, form textarea{border: 1px solid #999; -moz-border-radius: 4px; -khtml-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;}
+
+/* Hyperliens */
+a {color:white; text-decoration: none;}
+a:hover {font-weight:bold; cursor:pointer;}
+.bouton {padding: 3px;}
+.bouton:hover {cursor:pointer; border: 1px solid #59b4d4; background: #0078a3 url(Ressources/Images/jquery/ui-bg_glass_40_0078a3_1x400.png) 50% 50% repeat-x;
+		-moz-border-radius: 4px; -khtml-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding: 2px;}
+/*.Btn_Extend_Droite {position: absolute; right: -45px; padding:10px; cursor:pointer; 
+		font:12px/14px Arial, Helvetica, sans-serif; color:#aaa; background-color:#000; 
+		-moz-border-radius-topleft: 10px;	-moz-border-radius-topright: 10px;
+		border-top-left-radius: 10px; border-top-right-radius: 10px;
+		-khtml-border-radius-topleft: 10px; -khtml-border-radius-topright: 10px;
+		-webkit-border-radius-topleft: 10px; -webkit-border-radius-topright: 10px;
+		-moz-box-shadow:#999 2px 0px 3px; -webkit-box-shadow:#999 2px 0px 3px; }*/
+
+/* Textes */
+.Succes {color:Green; font-weight:bold;}
+.Erreur {background-color: #FFFF99; color:red; font-weight:bold;}
+.Vertical {-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -o-transform: rotate(-90deg); filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);}
+/* Module Messagerie */#messagerie ul {padding: 0px; margin: 0px; list-style-type: none;}#messagerie ul li {margin: 2px; padding: 5px 10px; -moz-border-radius: 10px;}#messagerie ul li.unread {border-right: 3px solid #990000;}#messagerie ul li.read {border-right: 3px solid #009900;}#messagerie ul li.partialRead {border-right: 3px solid #000099;}#messagerie a {color: #7D0000;}#messageList li {background: #111;}#messageList p.message {padding: 30px; margin: 0px; background: #222; -moz-border-radius: 10px;}#messagerie p.success {color: green;}#messagerie p.failure {color: red;}#messagerie h4, #messagerie label {display: block; padding: 10px; margin: 0px; cursor: pointer;}#messagerie h4:hover {background: #000;}#messagerieSidebar {float: left; width: 150px; background: #333; list-style-type: none;}#messagerieSidebar li {margin: 2px; padding: 5px; cursor: pointer;}#messagerieSidebar li:hover {background: #000;}#messagerieContainer {width: 650px; margin-left: 175px;}#messagerie form input, #messagerie form textarea {padding: 10px; font: Arial 1.3em; border: 1px solid black;}#messagerie form input[type=text], #messagerie form textarea {width: 85%;}#messagerie textarea {height: 200px; }#listSelectedUsers {width: 100%; min-height: 50px; background: #666; }
+/* Menus tabulation */
+#tabMenu {margin:0; padding:0 0 0 15px; list-style:none;}
+#tabMenu li {float:left; height:32px; width:39px; cursor:pointer;}
+.box {position: absolute; width:227px; top: 10px;}
+.boxBody {background-color:#282828; position: absolute; top:32px; padding: 10px;}
+.boxBody div {display:none;}
+.boxBody div.show {display:block;}
+.boxBody div ul {margin:0 10px 0 25px; padding:0; width:190px; list-style-image:url(../images/arrow.gif);}
+.boxBody div li {border-bottom:1px dotted #8e8e8e; padding:4px 0; cursor:pointer;}
+.boxBody div ul li.last {border-bottom:none;}
+.boxBody div li span {font-size:8px;font-style:italic; color:#888;}
+
+/* Onglets */
+ul.tabs {margin: 0; padding: 0; float: left; list-style: none; height: 32px; border-bottom: 1px solid #999; border-left: 1px solid #999; width: 100%;}
+ul.tabs li {float: left; margin: 0; padding: 0 15px; width: 130px; height: 31px; line-height: 31px; border: 1px solid #999; border-left: none; margin-bottom: -1px; overflow: hidden; position: relative; 
+		background: #e0e0e0; color: blue; display: block; font-size: 1.2em; cursor: pointer;}
+ul.tabs li.active {color: white;}
+html ul.tabs li.active, html ul.tabs li.active a:hover  {background: #414141; border-bottom: 1px solid #414141; color:#white;}
+.tab_container {border: 1px solid #999; border-top: none; overflow: auto; clear: both; float: left; width: 100%; height: 90%; background: #414141;}
+.tab_content {padding: 20px; font-size: 1.2em;}
+
+/* Constitution */
+h6{font-family: "Century Gothic","Arial","Helvetica","Sans-Serif"; font-size: 14px; font-style: normal; font-weight: bold; text-align: left; text-decoration: none; padding-right: 40px; 
+	padding-left: 40px; color: blue;}
+ol { text-align: justify; margin: 1em 0 1em 2em; font-family: "Arial","Helvetica","Sans-Serif"; font-size: 12px; font-weight: normal; list-style-position: outside; list-style-type: upper-roman;
+	padding-right: 40px; padding-left: 40px;}
+ol ol {    list-style-type: lower-alpha;}
+ol ol ol{    list-style-type: decimal;}
