@@ -1,10 +1,11 @@
-﻿<?php
+<?php
 
 namespace Wonderland\Library;
 
 use Wonderland\Library\Memory\Registry;
 use Wonderland\Library\Database\Mysqli;
 use Wonderland\Library\Controller\Front;
+use Wonderland\Library\Config;
 
 /**
  * Description of application
@@ -44,7 +45,7 @@ class Application {
             if (isset($environment)) {
                 self::$_instance = new self($environment, $options);
             } else {
-                throw new Exception("Environment not defined !");
+                throw new \Exception("Environment not defined !");
             }
         }
         return self::$_instance;
@@ -58,7 +59,7 @@ class Application {
         if (ReflectionClass::hasProperty($property)) {
             return $this->$property;
         } else {
-            throw new Exception('Invalid Property !');
+            throw new \Exception('Invalid Property !');
         }
     }
     
@@ -80,7 +81,7 @@ class Application {
         } elseif (is_array($options)) {
             $opt = $options;
         } else {
-            throw new Exception('Invalid options provider : This must be a location of config file or an array !');
+            throw new \Exception('Invalid options provider : This must be a location of config file or an array !');
         }
         $cfg = array_change_key_case($opt[$this->_environment], CASE_LOWER);
         Registry::set('__options__', $cfg);

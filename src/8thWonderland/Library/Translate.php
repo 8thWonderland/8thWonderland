@@ -29,7 +29,7 @@ class Translate
                 if (!empty($options['langs']))                                  {   $this->AddLang($options['langs']);                  }
                 if (!empty($options['default']))                                {   $this->setDefault($options['default']);             }
             }
-            else    {   throw new Exception('Invalid options provider : This must be an array !');  }
+            else    {   throw new \Exception('Invalid options provider : This must be an array !');  }
         }
     }
 
@@ -93,10 +93,10 @@ class Translate
         // Controle la validité du fichier de langue
         // =========================================
         if (preg_match('/[^a-z0-9\\/\\\\_.:-]/i', $filename)) {
-            throw new Exception('filename incorrect !');
+            throw new \Exception('filename incorrect !');
         }
         if(!file_exists($_SERVER['DOCUMENT_ROOT'] . "/" . $this->_langPath . $filename)) {
-            throw new Exception('file "' . $_SERVER['DOCUMENT_ROOT'] . "/" . $this->_langPath . $filename . '" not exist !');
+            throw new \Exception('file "' . $_SERVER['DOCUMENT_ROOT'] . "/" . $this->_langPath . $filename . '" not exist !');
         }
 
         
@@ -110,7 +110,7 @@ class Translate
     public function setLangUser($Lang)
     {
         if ($this->isAvailable($Lang))      {   $this->_langUser = $Lang;  }
-        else                                {   throw new Exception('Lang "' . $Lang . '" not implemented !');    }
+        else                                {   throw new \Exception('Lang "' . $Lang . '" not implemented !');    }
     }
     
     
@@ -119,7 +119,7 @@ class Translate
     public function setDefault($Lang)
     {
         if ($this->isAvailable($Lang))      {   $this->_defaultLang = $Lang;  }
-        else                                {   throw new Exception('Lang "' . $Lang . '" not implemented !');    }
+        else                                {   throw new \Exception('Lang "' . $Lang . '" not implemented !');    }
     }
 
 

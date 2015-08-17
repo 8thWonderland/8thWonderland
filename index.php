@@ -9,9 +9,9 @@ defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 // Architecture Serveur
 defined('APPLICATION_PATH')
-    || define ('APPLICATION_PATH', realpath(dirname(__FILE__)) . "/application/");
+    || define ('APPLICATION_PATH', realpath(dirname(__FILE__)) . "/src/8thWonderland/Application/");
 defined('VIEWS_PATH')
-	|| define ( 'VIEWS_PATH', $_SERVER['DOCUMENT_ROOT'] . "/application/views/");
+	|| define ( 'VIEWS_PATH', $_SERVER['DOCUMENT_ROOT'] . "/src/8thWonderland/Application/views/");
 defined('APPLI_INI')
     || define('APPLI_INI', APPLICATION_PATH . 'config/application.ini');
 // Ressources

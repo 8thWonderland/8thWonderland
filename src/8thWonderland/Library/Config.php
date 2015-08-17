@@ -11,7 +11,7 @@ class Config {
     protected static $_instance;                                            // Instance unique de la classe
     protected $_keySeparator = ".";                                         // Séparateur à l'intérieur d'une clé
     protected $_sectionSeparator = ':';                                     // Séparateur à l'intérieur d'une section
-    protected $_filename = 'application/config/application.ini';            // chemin du fichier de configuration par défaut
+    protected $_filename = '/src/8thWonderland/Application/config/application.ini';            // chemin du fichier de configuration par défaut
     protected $_defaultSection;                                             // section par défaut définie dans l'application
     private $_iniArray = array();
     
@@ -52,7 +52,7 @@ class Config {
     public function Load_INIFile()
     {
         if (!file_exists($this->_filename)) {
-            throw new Exception('The file ' . $this->_filename . ' is not found !');
+            throw new \Exception('The file ' . $this->_filename . ' is not found !');
         }
         $loaded = parse_ini_file($this->_filename, true);
         
@@ -93,7 +93,7 @@ class Config {
                     break;
 
                 default:
-                    throw new Exception("The section '" . $thisSection . ":" . trim($pieces[1]) . "' may not extended in " . $this->_filename);
+                    throw new \Exception("The section '" . $thisSection . ":" . trim($pieces[1]) . "' may not extended in " . $this->_filename);
             }
         }
         
@@ -146,7 +146,7 @@ class Config {
         $array = array();
         $data = $this->_iniArray;
         foreach ($data as $key => $value) {
-            if ($value instanceof config) {
+            if ($value instanceof Config) {
                 $array[$key] = $value->toArray();
             } else {
                 $array[$key] = $value;

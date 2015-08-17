@@ -10,7 +10,7 @@ use Wonderland\Library\Memory\Registry;
  * Utilisation de l'abstraction pour piloter une base de données
  *
  */
-class Mysqli extends mysqli
+class Mysqli extends \mysqli
 {
     protected static $_instance;                // Instance unique de la classe
     public function __construct()
@@ -56,7 +56,7 @@ class Mysqli extends mysqli
     public function _query($query)
     {
         $result = $this->query($query);
-        if ($result === false)      {    throw new exception('Database query failure : ' . $this->error);   }
+        if ($result === false)      {    throw new \Exception('Database query failure : ' . $this->error);   }
         return $result;
     }
     // Récupère la liste des colonnes d'une table
@@ -64,7 +64,7 @@ class Mysqli extends mysqli
     public function getColumns($tablename)
     {
         $result = $this->_query("SHOW COLUMNS FROM " . $tablename);
-        if ($result === false)      {    throw new exception('Database query failure : ' . $this->error);   }
+        if ($result === false)      {    throw new \Exception('Database query failure : ' . $this->error);   }
         
         $columns = array(); $nCol = 0;
         while ($nCol < $result->num_rows) {
