@@ -2,6 +2,8 @@
 
 namespace Wonderland\Library\Database;
 
+use Wonderland\Library\Memory\Registry;
+
 /**
  * class db_mysqli
  *
@@ -13,7 +15,7 @@ class Mysqli extends mysqli
     protected static $_instance;                // Instance unique de la classe
     public function __construct()
     {
-        $cfg = memory_registry::get('__options__');
+        $cfg = Registry::get('__options__');
         parent::__construct($cfg['db']['host'], $cfg['db']['username'], $cfg['db']['password'], $cfg['db']['dbname']);
         if (mysqli_connect_error()) {
             throw new exception('Database connect failure : ' . mysqli_connect_error());

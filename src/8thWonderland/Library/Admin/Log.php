@@ -2,6 +2,8 @@
 
 namespace Wonderland\Library\Admin;
 
+use Wonderland\Library\Memory\Registry;
+
 /**
  * class admin_logs
  *
@@ -39,7 +41,7 @@ class Log
         switch ($this->writer)
         {
             case "DB":
-                $db = memory_registry::get('db');
+                $db = Registry::get('db');
                 $db->_query("INSERT INTO logs (level, msg) VALUES (" . $priority . ", '" . $db->real_escape_string($message) . "')");
                 break;
 
@@ -56,7 +58,7 @@ class Log
     // ===============================
     public static function display_dblogs()
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
 
         $req = "SELECT level, timelogs, msg " .
                "FROM logs " .

@@ -1,13 +1,21 @@
 <?php
-/**
- * Controleur des groupes
- *
- * @author: BrennanWaco - waco.brennan@gmail.com
- *
- **/
 
+namespace Wonderland\Application\Controller;
 
-class groups extends controllers_action {
+use Wonderland\Library\Controller\ActionController;
+
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Application\Model\ManageGroups;
+use Wonderland\Application\Model\Member;
+
+use Wonderland\Library\Plugin\Paginator;
+
+use Wonderland\Library\Admin\Log;
+
+use Wonderland\Library\Translate;
+
+class GroupController extends ActionController {
     
     // Affichage de la liste des groupes
     // =================================
@@ -15,7 +23,7 @@ class groups extends controllers_action {
     {
         $this->_view['list_Allgroups'] = $this->_renderGroups();
         $this->_view['map_coord'] = $this->_renderMapCoord();
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('groups/list_allgroups');
     }
     
@@ -24,8 +32,8 @@ class groups extends controllers_action {
     // ==================================================================
     public function display_groupsmembersAction()
     {
-        $translate = memory_registry::get('translate');
-        $list_groups = managegroups::display_groupsMember();
+        $translate = Registry::get('translate');
+        $list_groups = ManageGroups::display_groupsMember();
         $reponse ='';
 
         if ($list_groups->num_rows > 0) {
@@ -50,14 +58,14 @@ class groups extends controllers_action {
     // ===========================================
     public function display_membersAction()
     {
-        $paginator = new plugins_paginator(managegroups::display_listMembers());
+        $paginator = new Paginator(ManageGroups::display_listMembers());
         $paginator->_setItemsPage(15);
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get('translate');
+        $translate = Registry::get('translate');
         $tabmini_usersgroup =   '<table class="pagination"><tr class="entete">' .
                                 '<td>' . $translate->msg("identity") . '</td>' .
                                 '<td width="140px">' . $translate->msg("last_connexion") . '</td>' .
@@ -102,9 +110,9 @@ class groups extends controllers_action {
     // =========================================
     public function display_managegroupsAction()
     {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
 
-        $list_members = managegroups::display_listMembersContact();
+        $list_members = ManageGroups::display_listMembersContact();
         $select = "<option></option>";
         for ($i=0; $i<count($list_members); $i++) {
             $select .= "<option value='" . $list_members[$i]['IDUser'] . "'>" . $list_members[$i]['Identite'] . "</option>";
@@ -118,7 +126,7 @@ class groups extends controllers_action {
     // =======================
     public function display_calendarAction()
     {
-        $this->_view['translate'] = memory_registry::get('translate');
+        $this->_view['translate'] = Registry::get('translate');
         $this->render('admin/dev_inprogress');
     }
         
@@ -128,7 +136,7 @@ class groups extends controllers_action {
     public function display_adressbookAction()
     {
         $this->_view['list_users'] = $this->_renderUsers();
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('members/list_users');
     }
             
@@ -137,15 +145,15 @@ class groups extends controllers_action {
     // =====================
     public function display_bookmarkAction()
     {
-        $this->_view['translate'] = memory_registry::get('translate');
+        $this->_view['translate'] = Registry::get('translate');
         $this->render('admin/dev_inprogress');
     }
     
     
     public function quit_desktopAction()
     {
-        memory_registry::delete("desktop");
-        memory_registry::delete("search_users");
+        Registry::delete("desktop");
+        Registry::delete("search_users");
         $this->redirect("intranet/index");
     }
     
@@ -154,8 +162,8 @@ class groups extends controllers_action {
     // ===============================
     public function change_contactgroupsAction()
     {
-        $translate = memory_registry::get('translate');
-        $member = members::getInstance();
+        $translate = Registry::get('translate');
+        $member = Member::getInstance();
         
         if (!isset($_POST['sel_contactgroups']) || intval($_POST['sel_contactgroups']) == 0) {
             $this->display('<div class="error" style="height:25px;"><table><tr>' .
@@ -167,7 +175,7 @@ class groups extends controllers_action {
             $db_log = new Log("db");
             $db_log->log("Echec du changement de CG par " . $member->identite . " (id_user inconnu : " . $_POST['sel_contactgroups'] . ")", Log::ERR);
         } else {
-            $res = managegroups::change_contact($_POST['sel_contactgroups']);
+            $res = ManageGroups::change_contact($_POST['sel_contactgroups']);
             if ($res ==0) {
                 $this->display('<div class="error" style="height:25px;"><table><tr>' .
                           '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
@@ -178,7 +186,7 @@ class groups extends controllers_action {
                 $db_log = new Log("db");
                 $db_log->log("Echec du changement de CG par " . $member->identite . " (id_user=" . $_POST['sel_contactgroups'] . ")", Log::ERR);
             } else {
-                $desktop = memory_registry::get("desktop");
+                $desktop = Registry::get("desktop");
                 $this->display("<script type='text/javascript'>window.onload=Clic('/intranet/index', '" . $desktop . "', 'body');</script>");
                 
                 // log de mise à jour
@@ -195,13 +203,13 @@ class groups extends controllers_action {
     // =========================================================
     protected function _renderGroups()
     {
-        $paginator = new plugins_paginator(managegroups::display_groups());
+        $paginator = new Paginator(managegroups::display_groups());
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         
         $tab_groups = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
                       '<td>' . $translate->msg("group_name") . '</td>' .
@@ -219,7 +227,7 @@ class groups extends controllers_action {
                     $tab_groups .= "<td>" . $this->_filterGroups($key, $value) . "</td>";
                 }
             }
-            $tab_groups .= "<td align='center'>" . managegroups::NbMembers($row['Group_id']) . "</td>";
+            $tab_groups .= "<td align='center'>" . ManageGroups::NbMembers($row['Group_id']) . "</td>";
             $tab_groups .= "</tr>";
         }
         
@@ -270,18 +278,18 @@ class groups extends controllers_action {
     protected function _renderUsers()
     {
         $search = $_POST;
-        if (isset($_POST['page']))      {   $search = memory_registry::get("search_users");     }
-        else                            {   memory_registry::set("search_users", $_POST);       }
+        if (isset($_POST['page']))      {   $search = Registry::get("search_users");     }
+        else                            {   Registry::set("search_users", $_POST);       }
         
-        $paginator = new plugins_paginator(members::ListMembers($search));
+        $paginator = new Paginator(Member::ListMembers($search));
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         
-        $list_groups = managegroups::display_groups();
+        $list_groups = ManageGroups::display_groups();
         $this->_view['select_groups'] = "<option></options>";
         $i=0;
         for ($i=0; $i<count($list_groups); $i++) {
@@ -400,27 +408,27 @@ class groups extends controllers_action {
                 break;
             
             case "pays":
-                $db = memory_registry::get('db');
-                $member = members::getInstance();
+                $db = Registry::get('db');
+                $member = Member::getInstance();
                 $lang = $member->langue;
                 $res = $db->select("SELECT " . $lang . " FROM country WHERE code = '" . $value . "' LIMIT 1");
                 if (count($res) >0)    {   $value = $res[0][$lang];                }
                 else                
                 {
-                    $translate = translate::getInstance();
+                    $translate = Translate::getInstance();
                     $value = $translate->msg("unknown");
                 }
                 break;
             
             case "region":
-                $db = memory_registry::get('db');
-                $member = members::getInstance();
+                $db = Registry::get('db');
+                $member = Member::getInstance();
                 $lang = $member->langue;
                 $res = $db->select("SELECT Name FROM regions WHERE Region_id = " . $value . " LIMIT 1");
                 if (count($res) >0 && $value >0)    {   $value = utf8_encode($res[0]['Name']);        }
                 else                
                 {
-                    $translate = translate::getInstance();
+                    $translate = Translate::getInstance();
                     $value = $translate->msg("unknown");
                 }
                 break;
@@ -473,14 +481,13 @@ class groups extends controllers_action {
                 ];
         */
         $render = "";
-        foreach(managegroups::display_groups_regions() as $key => $row)
+        foreach(ManageGroups::display_groups_regions() as $key => $row)
         {
             if($row['Longitude'] !="" && $row['Latitude'] !="")
             {
-                $render .= '["'.htmlentities($row['Group_name'], ENT_QUOTES).'", '.$row['Longitude'].", ".$row['Latitude'].", ".managegroups::NbMembers($row['Group_id'])."],\n";
+                $render .= '["'.htmlentities($row['Group_name'], ENT_QUOTES).'", '.$row['Longitude'].", ".$row['Latitude'].", ". ManageGroups::NbMembers($row['Group_id'])."],\n";
             }
         }
         return "var regions = [".substr($render, 0, -2)."];";
      }
 }
-?>

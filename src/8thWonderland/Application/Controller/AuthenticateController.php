@@ -1,13 +1,22 @@
 <?php
 
+namespace Wonderland\Application\Controller;
+
+use Wonderland\Library\Controller\ActionController;
+
+use Wonderland\Library\Auth;
+
+use Wonderland\Library\Database\Mysqli;
+
+use Wonderland\Application\Model\Member;
+use Wonderland\Application\Model\Mailer;
+
 /**
  * Gestion des connexions/deconnexions des utilisateurs
  *
  * @author Brennan
  */
-
-
-class authenticate extends controllers_action {
+class AuthenticateController extends ActionController {
 
     public function connectAction()
     {
@@ -16,9 +25,9 @@ class authenticate extends controllers_action {
 
         if ($valid)
         {
-            $auth = auth::getInstance();
-            $db = memory_registry::get('db');
-            $member = members::getInstance();
+            $auth = Auth::getInstance();
+            $db = Registry::get('db');
+            $member = Member::getInstance();
             
             
             // Enregistrement de la date et heure de la connexion
@@ -33,14 +42,14 @@ class authenticate extends controllers_action {
             
             // Mémorisation de l'ID du membre
             // ==============================
-            memory_registry::set("__login__", $member->identite); // indipensable pour l'identification au forum
-            $translate = memory_registry::get('translate');
+            Registry::set("__login__", $member->identite); // indipensable pour l'identification au forum
+            $translate = Registry::get('translate');
             $translate->setLangUser($member->langue);
             $this->redirect("intranet/index");
         }
         else
         {
-            $translate = memory_registry::get("translate");
+            $translate = Registry::get("translate");
             $this->_view['translate'] = $translate;
             $this->display(json_encode(array("status" => 0, "reponse" => '<span style="color: red;">' . $translate->msg('connexion_nok') . '</span>')));
         }
@@ -58,7 +67,7 @@ class authenticate extends controllers_action {
     
     public function subscribeAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $err_msg = '';
         
         // Controle si tous les champs sont saisis
@@ -68,10 +77,10 @@ class authenticate extends controllers_action {
             !isset($_POST['mail']) || empty($_POST['mail']) || !isset($_POST['lang']) || empty($_POST['lang'])) {
                 $err_msg = $translate->msg('fields_empty');
         } else {
-            $db = memory_registry::get('db');
+            $db = Registry::get('db');
             
             // Controle de l'identite
-            if (members::ctrlIdentity($_POST["identity"])) {
+            if (Member::ctrlIdentity($_POST["identity"])) {
                 if ($db->count("Utilisateurs", " WHERE Identite='" . $_POST['identity'] . "'") > 0) {
                     $err_msg .= $translate->msg('identity_exist') . "<br/>";
                 }
@@ -80,7 +89,7 @@ class authenticate extends controllers_action {
             }
             
             // Controle de l'existence du mail
-            if (!members::ctrlMail($_POST["mail"])) {
+            if (!Member::ctrlMail($_POST["mail"])) {
                 $err_msg .= $translate->msg('mail_invalid') . "<br/>";
             }
         }
@@ -110,24 +119,24 @@ class authenticate extends controllers_action {
     
     public function display_forgetpasswordAction()
     {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render("members/forget_password");
     }
     
     
     public function forget_passwordAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $err_msg = '';
         if (!isset($_POST['login']) || empty($_POST['login']))    {   $err_msg = $translate->msg('fields_empty');     }
         else {
-            $db = db_mysqli::getInstance();
+            $db = Mysqli::getInstance();
             $email = $db->select("SELECT email FROM Utilisateurs WHERE login='" . $_POST['login'] . "'");
             if (count($email) ==0)             {   $err_msg = $translate->msg('no_result');     }
             else {
                 $code_generated = $this->generate_code($_POST['login']);
                 
-                $mail = mailer::getInstance();
+                $mail = Mailer::getInstance();
                 $mail -> addrecipient($email[0]['email'],'');
                 $mail -> addfrom('developpeurs@8thwonderland.com','');
                 $mail -> addsubject('8thwonderland - ' . $translate->msg('forget_pwd'),'');
@@ -156,18 +165,18 @@ class authenticate extends controllers_action {
     
     public function valid_codeforgetpwdAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $err_msg = '';
         if (!isset($_POST['code']) || empty($_POST['code']))    {   $err_msg = $translate->msg('fields_empty');     }
         else {
-            $db = db_mysqli::getInstance();
+            $db = Mysqli::getInstance();
             if ($db->count("recovery", " WHERE code=" . $_POST['code'] . " AND login='" . $_POST['memo_login'] . "'") == 0) {   $err_msg = $translate->msg('no_result');     }
             else {
                 $email = $db->select("SELECT email FROM Utilisateurs WHERE login='" . $_POST['memo_login'] . "'");
                 if (count($email) ==0)             {   $err_msg = $translate->msg('no_result');     }
                 else {
                     $new_pwd = $this->createPassword();
-                    $mail = mailer::getInstance();
+                    $mail = Mailer::getInstance();
                     $mail -> addrecipient($email[0]['email'],'');
                     $mail -> addfrom('developpeurs@8thwonderland.com','');
                     $mail -> addsubject('8thwonderland - ' . $translate->msg('forget_pwd'),'');
@@ -202,7 +211,7 @@ class authenticate extends controllers_action {
     
     protected function generate_code($login)
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $code = rand(10000, 99999);
         while ($db->count("recovery", " WHERE code=" . $code) > 0)
         {
@@ -248,7 +257,7 @@ class authenticate extends controllers_action {
 
     private function _getAuthAdapter()
     {
-        $auth = auth::getInstance(memory_registry::get("db"));
+        $auth = Auth::getInstance(Registry::get("db"));
         $auth->setTableName('Utilisateurs');
         $auth->setIdentityColumn('Login');
         $auth->setCredentialColumn('Password');

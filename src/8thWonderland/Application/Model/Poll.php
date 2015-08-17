@@ -1,4 +1,10 @@
 <?php
+
+namespace Wonderland\Application\Model;
+
+use Wonderland\Library\Memory\Registry;
+use Wonderland\Library\Auth;
+
 /**
  * class polls
  *
@@ -7,17 +13,15 @@
  * @author: BrennanWaco - waco.brennan@gmail.com
  *
  */
-
-
-class polls
+class Poll
 {
     // Affichage des motions en cours
     // ==============================
     public function display_motionsinprogress()
     {
-        $db = memory_registry::get('db');
-        $translate = memory_registry::get("translate");
-        $auth = auth::getInstance();
+        $db = Registry::get('db');
+        $translate = Registry::get("translate");
+        $auth = Auth::getInstance();
         $id_member = $auth->_getIdentity();
         $reponse = '';
         
@@ -50,7 +54,7 @@ class polls
     // ===============================
     public function display_motions()
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
 
         $req = "SELECT Motion_id, Title_key, Label_key, Submission_date, Date_fin_vote, Citizen_id " .
                "FROM Motions, Motions_Themes " .
@@ -65,7 +69,7 @@ class polls
     // =====================================
     public function display_detailsmotion($id)
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         $req = "SELECT motion_id, title_key, label_key, description, moyens, submission_date, date_fin_vote " .
            "FROM Motions, Motions_Themes " .
            "WHERE motion_id = " . $id . " AND Motions.theme_id=Motions_Themes.Theme_id";
@@ -79,7 +83,7 @@ class polls
     // ==================================
     public static function _getThemes()
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         $req = "SELECT label_key " .
                "FROM Motions_Themes " .
                "ORDER BY label_key ASC";
@@ -91,7 +95,7 @@ class polls
     // ====================================================
     public static function _getVotes($id_motion)
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         $approved = $db->count("Motions_Votes", " WHERE Motion_id=" . $id_motion . " AND Choix=1");
         $refused = $db->count("Motions_Votes", " WHERE Motion_id=" . $id_motion . " AND Choix=2");
         return array($approved, $refused);
@@ -102,8 +106,8 @@ class polls
     // ============================
     public function valid_motion($p_title, $p_theme, $p_description, $p_means)
     {
-        $db     = memory_registry::get('db');
-        $auth   = auth::getInstance();
+        $db     = Registry::get('db');
+        $auth   = Auth::getInstance();
         
         $theme = htmlentities(utf8_decode($p_theme), ENT_QUOTES);
         $title = htmlentities(utf8_decode($p_title), ENT_QUOTES);
@@ -124,8 +128,8 @@ class polls
     // ==============================
     public function vote_motion($id, $vote)
     {
-        $db     = memory_registry::get('db');
-        $auth   = auth::getInstance();
+        $db     = Registry::get('db');
+        $auth   = Auth::getInstance();
         $member = $auth->_getIdentity();
         $date   = date('Y-m-d h-i-s');
         (isset($_SERVER['REMOTE_ADDR']))?$ip = $_SERVER['REMOTE_ADDR']:$ip='inconnue';
@@ -153,7 +157,7 @@ class polls
     // =======================================
     protected function poll_active($id_motion, $id_member)
     {
-        $db     = memory_registry::get('db');
+        $db     = Registry::get('db');
         return $db->count("Motions_Votes_Jetons", " WHERE Motion_id=" . $id_motion . " AND Citizen_id=" . $id_member);
     }
     
@@ -194,5 +198,3 @@ class polls
         */
     }   
 }
-
-?>

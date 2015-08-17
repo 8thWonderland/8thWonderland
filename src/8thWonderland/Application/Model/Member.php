@@ -1,13 +1,14 @@
 <?php
 
-/**
- * Gestion des informations des utilisateurs
- *
- * @author Brennan
- */
+namespace Wonderland\Application\Model;
 
+use Wonderland\Library\Auth;
 
-class members {
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Library\Database\Mysqli;
+
+class Member {
     protected static $_instance;                // Instance unique de la classe
     protected $_id;                             // Identifiant de l'utilisateur
     protected $_properties = array();           // Liste des champs dans la table
@@ -17,10 +18,10 @@ class members {
     {
         if (isset($id) && !empty($id))      {   $this->_id = $id; return $this;   }
 
-        $auth = auth::getInstance();
+        $auth = Auth::getInstance();
         $this->_id = $auth->_getIdentity();
 
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         
         $this->_properties = $db->getColumns("Utilisateurs");
     }
@@ -54,7 +55,7 @@ class members {
     // =========================
     protected function getLogin()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $req = "SELECT Login " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -66,7 +67,7 @@ class members {
     {
         $value = htmlentities(trim($value));
         if ($this->getLogin() != $value) {
-            $db = db_mysqli::getInstance();
+            $db = Mysqli::getInstance();
             $req = "UPDATE Utilisateurs SET Login='" . $value . "' WHERE IDUser=" . $this->_id;
             $res = $db->_query($req);
             if ($db->affected_rows == 0) {
@@ -81,7 +82,7 @@ class members {
     
     protected function getPassword()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $req = "SELECT Password " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -93,7 +94,7 @@ class members {
     {
         $value = hash("sha512", $value);
         if ($this->getPassword() != $value) {
-            $db = db_mysqli::getInstance();
+            $db = Mysqli::getInstance();
             $req = "UPDATE Utilisateurs SET Password='" . $value . "' WHERE IDUser=" . $this->_id;
             $res = $db->_query($req);
             if ($db->affected_rows == 0) {
@@ -110,7 +111,7 @@ class members {
     // ==============================
     protected function getIdentite()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $req = "SELECT Identite " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -123,8 +124,8 @@ class members {
         $value = htmlentities(trim($value));
         $old_identite = $this->getIdentite();
         if ($old_identite != $value) {
-            $db = db_mysqli::getInstance();
-            if (!members::ctrlIdentity($value)) {   return -1;  }
+            $db = Mysqli::getInstance();
+            if (!self::ctrlIdentity($value)) {   return -1;  }
             if ($db->count("Utilisateurs", " WHERE Identite='" . $value . "'") > 0) {   return -2;  }
 
             $req = "UPDATE Utilisateurs SET Identite='" . $value . "' WHERE IDUser=" . $this->_id;
@@ -152,7 +153,7 @@ class members {
     // ==============================
     protected function getAvatar()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $req = "SELECT Avatar " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -164,7 +165,7 @@ class members {
     {
         if ($this->getAvatar() != $value) {
             if(!filter_var($value, FILTER_VALIDATE_URL))    {   return -1;  }
-            $db = db_mysqli::getInstance();
+            $db = Mysqli::getInstance();
             $req = "UPDATE Utilisateurs SET Avatar='" . $value . "' WHERE IDUser=" . $this->_id;
             $db->_query($req);
             if ($db->affected_rows == 0) {
@@ -181,7 +182,7 @@ class members {
     // ========================
     protected function getEmail()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $req = "SELECT Email " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -192,8 +193,8 @@ class members {
     public function setEmail($value)
     {
         if ($this->getEmail() != $value) {
-            if (!members::ctrlMail($value)) {   return -1;  }
-            $db = db_mysqli::getInstance();
+            if (!self::ctrlMail($value)) {   return -1;  }
+            $db = Mysqli::getInstance();
             if ($db->count("Utilisateurs", " WHERE Email='" . $value . "'") > 0) {   return -2;  }
 
             $req = "UPDATE Utilisateurs SET Email='" . $value . "' WHERE IDUser=" . $this->_id;
@@ -212,7 +213,7 @@ class members {
     // =========================
     protected function getSexe()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $req = "SELECT Sexe " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -225,7 +226,7 @@ class members {
         if (intval($value) != 1 && intval($value) != 2)     {   return -1;   }
         $value = intval($value)-1;
         if ($this->getSexe() != $value) {
-            $db = db_mysqli::getInstance();
+            $db = Mysqli::getInstance();
             $req = "UPDATE Utilisateurs SET Sexe=" . $value . " WHERE IDUser=" . $this->_id;
             $res = $db->_query($req);
             if ($db->affected_rows == 0) {
@@ -242,7 +243,7 @@ class members {
     // ===============================
     public function getLangue()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $req = "SELECT Langue " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -252,12 +253,12 @@ class members {
     }
     public function setLangue($value)
     {
-        $opt = memory_registry::get("__options__");
+        $opt = Registry::get("__options__");
         $langs = $opt['language']['langs'];
         $value = htmlentities($value);
         if ($this->getLangue() != $value) {
             if (array_key_exists($value, $langs)) {
-                $db = db_mysqli::getInstance();
+                $db = Registry::getInstance();
                 $req = "UPDATE Utilisateurs SET Langue='" . $value . "' WHERE IDUser=" . $this->_id;
                 $db->_query($req);
                 if ($db->affected_rows == 0) {
@@ -266,7 +267,7 @@ class members {
                     $db_log->log("Echec de l'update de la langue (" . $this->identite . ")", Log::ERR);
                 } else
                 {
-                    $translate = memory_registry::get("translate");
+                    $translate = Registry::get("translate");
                     $translate->setLangUser($value);
                 }
                 return $db->affected_rows;
@@ -279,7 +280,7 @@ class members {
     // =============================
     public function getPays()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $req = "SELECT Pays " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -293,7 +294,7 @@ class members {
     // ===============================
     public function getRegion()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $req = "SELECT Region " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -339,10 +340,10 @@ class members {
     // =====================================================
     public static function EstMembre($Group_id, $User_id=0)
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $id_user = $User_id;
         if ($id_user == 0) {
-            $auth = auth::getInstance();
+            $auth = Auth::getInstance();
             $id_user = $auth->_getIdentity();
         }
 
@@ -354,8 +355,8 @@ class members {
     // ====================================================
     public static function isContact($id_group = null)
     {
-        $db = db_mysqli::getInstance();
-        $auth = auth::getInstance();
+        $db = Mysqli::getInstance();
+        $auth = Auth::getInstance();
         $id_user = $auth->_getIdentity();
         
         if (!isset($id_group)) {
@@ -372,7 +373,7 @@ class members {
     // =================================
     public static function Nb_Members()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         return $db->count("Utilisateurs");
     }
     
@@ -381,7 +382,7 @@ class members {
     // ===========================================================
     public static function Nb_ActivesMembers()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         return $db->count("Utilisateurs", " WHERE DATEDIFF(CURDATE(), DerConnexion) <21");
     }
     
@@ -390,7 +391,7 @@ class members {
     // ===========================
     public function listCountries()
     {
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         $code_lang = $this->langue;
         if ($db->ExistColumn($code_lang, "country") == 0)       {   $code_lang = "en";  }
 
@@ -405,7 +406,7 @@ class members {
     // ==============================
     public static function ListMembers($params)
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         $search = "";
         $table = "Utilisateurs";
         if (isset($params['sel_groups']) && !empty($params['sel_groups'])) {
@@ -425,7 +426,7 @@ class members {
     // ======================================
     public static function ListContactsGroups()
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         $req = "SELECT IDUser, Group_name, Identite " .
                "FROM Utilisateurs, Groups WHERE IDUser=ID_Contact " .
                "ORDER BY Group_name ASC";
@@ -433,4 +434,3 @@ class members {
         return $db->select($req);
     }
 }
-?>

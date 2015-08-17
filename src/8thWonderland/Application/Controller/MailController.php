@@ -1,17 +1,18 @@
 <?php
 
-/**
- * Gestion des actions liées à la messagerie
- *
- * @author Brennan
- */
+namespace Wonderland\Application\Controller;
 
+use Wonderland\Library\Controller\ActionController;
 
-class mail extends controllers_action {
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Application\Model\Mailer;
+
+class MailController extends ActionController {
     
     public function envoiAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $this->contact_status = $translate->msg('mail_ok');
         $this->_process();
 
@@ -28,13 +29,13 @@ class mail extends controllers_action {
         $Modele = "/\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/";
         preg_match($Modele, $email, $res);
         
-        if (!$res || $res[0] != $email || empty($email))	{   $this->contact_status = memory_registry::get("translate")->msg('mail_invalide');     }
+        if (!$res || $res[0] != $email || empty($email))	{   $this->contact_status = Registry::get("translate")->msg('mail_invalide');     }
         else
         {
             list($user, $domain) = explode("@",$email);
-            if(!getmxrr($domain, $MXHost))		{   $this->contact_status = memory_registry::get("translate")->msg('mail_invalide');	}
+            if(!getmxrr($domain, $MXHost))		{   $this->contact_status = Registry::get("translate")->msg('mail_invalide');	}
             else {
-                $mail = mailer::getInstance();
+                $mail = Mailer::getInstance();
                 $mail -> addrecipient('developpeurs@8thwonderland.com','');
                 $mail -> addfrom($email,'');
                 $mail -> addsubject($_POST['mail_title'],'');
@@ -50,4 +51,3 @@ class mail extends controllers_action {
         }
     }
 }
-?>

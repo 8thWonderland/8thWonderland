@@ -7,7 +7,7 @@ namespace Wonderland\Library\Controller;
  *
  * @author Brennan
  */
-class Front {
+class FrontController {
     protected static $_instance;                                            // Instance unique de la classe
     protected $_directory = 'application/controllers';                      // Chemin par défaut des controleurs action
     protected $_defaultController = 'index';                                // Nom du controleur par défaut

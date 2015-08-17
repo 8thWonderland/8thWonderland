@@ -7,7 +7,7 @@ namespace Wonderland\Library\Controller;
  *
  * @author Brennan
  */
-abstract class Action {
+abstract class ActionController {
     protected $_directoryViews = 'application/views';                   // Chemin par défaut des vues
     protected $_directoryControllers = 'application/controllers';       // Chemin par défaut des controleurs
     protected $_view = array();                                         // Liste des valeurs transmises à la vue

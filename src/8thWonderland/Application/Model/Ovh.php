@@ -1,4 +1,11 @@
 <?php
+
+namespace Wonderland\Application\Model;
+
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Library\Admin\Log;
+
 /**
  * class myovh
  *
@@ -7,9 +14,7 @@
  * @author: BrennanWaco - waco.brennan@gmail.com
  *
  */
-
-
-class myovh
+class Ovh
 {
     private $_login;                                            // nichandle fourni par ovh
     private $_pwd;                                              // mot de passe fourni par ovh
@@ -22,7 +27,7 @@ class myovh
     
     
     public function __construct() {
-        $opt = memory_registry::get("__options__");
+        $opt = Registry::get("__options__");
         $cfg_ovh = $opt['server'];
         $this->_login = strtolower($cfg_ovh['login']);
         if (substr($this->_login, -4) != "-ovh")    {   $this->_login = $this->_login . "-ovh"; }
@@ -36,7 +41,7 @@ class myovh
     // ========================
     protected function connect()
     {
-        $member = members::getInstance();
+        $member = Member::getInstance();
         $lang_member = $member->Langue;
         $lang = "en";
         if (in_array($lang_member, $this->_langs))      {   $lang = $lang_member;   }
@@ -78,7 +83,7 @@ class myovh
         
         } catch (SoapFault $fault) {
             // Journal de log
-            $member = members::getInstance();
+            $member = Member::getInstance();
             $db_log = new Log("db");
             $db_log->log("Echec de la deconnexion SOAP par " . $member->identite . "<br/>" . $fault, Log::WARN);
             return false;
@@ -106,7 +111,7 @@ class myovh
     {
         if ($this->connect()) {
             $res = false;
-            $member = members::getInstance();
+            $member = Member::getInstance();
             $db_log = new Log("db");
             
             $desc = htmlentities($params['cron_desc']);
@@ -155,7 +160,7 @@ class myovh
     {
         if ($this->connect()) {
             $res = false;
-            $member = members::getInstance();
+            $member = Member::getInstance();
             $db_log = new Log("db");
             
             try {

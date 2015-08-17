@@ -2,6 +2,8 @@
 
 namespace Wonderland\Library;
 
+use Wonderland\Library\Memory\Registry;
+
 /**
  * Description of front
  *
@@ -16,7 +18,7 @@ class Front {
 
     public function __construct()
     {
-        $options = memory_registry::get('__options__');
+        $options = Registry::get('__options__');
         $options = $options['frontcontroller'];
         
         if (isset($options['defaultController']))               {   $this->_defaultController = $options['defaultController'];   }

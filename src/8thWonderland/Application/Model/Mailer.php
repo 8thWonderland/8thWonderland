@@ -1,53 +1,48 @@
 <?php
 
+namespace Wonderland\Application\Model;
+
 /**
  * class mailer
  *
  * Classe gérant les envois de mails de l'application
  *
  */
-
-class mailer {
+class Mailer {
 
 	protected static $_instance;		// Singleton de la classe
-	var $recipientlist;
-	var $subject;
-	var $hfrom;
-	var $hbcc;
-	var $hcc;
-	var $deliveryreceipt;
+	protected $recipientlist;
+	protected $subject;
+	protected $hfrom;
+	protected $hbcc;
+	protected $hcc;
+	protected $deliveryreceipt;
 
-	var $Xsender;
-	var $ErrorsTo;
-	var $returnpath;
-	var $XMailer = 'PHP';
-	var $XPriority = 3;
+	protected $Xsender;
+	protected $ErrorsTo;
+	protected $returnpath;
+	protected $XMailer = 'PHP';
+	protected $XPriority = 3;
 
-	var $set_mode='php';
+	protected $set_mode='php';
 
-	var $text;
-	var $html;
-	var $attachement = array();
-	var $htmlattachement = array();
+	protected $text;
+	protected $html;
+	protected $attachement = array();
+	protected $htmlattachement = array();
 
-	var $recipient;
+	protected $recipient;
 
-	var $body;
-	var $headers;
-	var $error_log;
-	var $connect;
+	protected $body;
+	protected $headers;
+	protected $error_log;
+	protected $connect;
 
-	var $default_charset = 'iso-8859-1';
+	protected $default_charset = 'iso-8859-1';
 
-	var $B1B = "----=_001";
-	var $B2B = "----=_002";
-	var $B3B = "----=_003";
-
-	
-	protected function __construct()
-	{
-		
-	}
+	protected $B1B = "----=_001";
+	protected $B2B = "----=_002";
+	protected $B3B = "----=_003";
 	
 
 	public static function getInstance()
@@ -59,12 +54,12 @@ class mailer {
 	}
 	
 	
-	function simplemail() {
+	public function simplemail() {
 		$this -> attachement = array();
 		$this -> htmlattachement = array();
 	}
 
-	function checkaddress($address) {
+	public function checkaddress($address) {
 		if ( preg_match('`([[:alnum:]]([-_.]?[[:alnum:]])*@[[:alnum:]]([-_.]?[[:alnum:]])*\.([a-z]{2,4}))`', $address) ) {
 			return TRUE;
 		} else {
@@ -72,7 +67,7 @@ class mailer {
 		}
 	}
 
-	function checkname($name) {
+	public function checkname($name) {
 		if ( preg_match("`[0-9a-zA-Z\.\-_ ]*`" , $name ) ) {
 			return TRUE;
 		} else {
@@ -80,21 +75,21 @@ class mailer {
 		}
 	}
 
-	function makenameplusaddress($address,$name) {
+	public function makenameplusaddress($address,$name) {
 		if ( !$this->checkaddress($address) ) return FALSE;
 		if ( !$this->checkname($name) ) return FALSE;
 		if ( empty($name) ) { return $address; }
 		else { $tmp=$name." <".$address.">"; return $tmp; }
 	}
 
-	function addrecipient($newrecipient,$name='') {
+	public function addrecipient($newrecipient,$name='') {
 		$tmp=$this->makenameplusaddress($newrecipient,$name);
 		if ( !$tmp ) { $this->error_log(" To: error"); return FALSE; }
 		$this->recipientlist[] = array( 'mail'=>$newrecipient, 'nameplusmail' => $tmp );
 		return TRUE;
 	}
 
-	function addbcc($bcc,$name='') {
+	public function addbcc($bcc,$name='') {
 		$tmp=$this->makenameplusaddress($bcc,$name);
 		if ( !$tmp ) { $this->error_log(" Bcc: error"); return FALSE; }
 		if ( !empty($this->hbcc)) $this->hbcc.= ",";
@@ -102,7 +97,7 @@ class mailer {
 		return TRUE;
 	}
 
-	function addcc($cc,$name='') {
+	public function addcc($cc,$name='') {
 		$tmp=$this->makenameplusaddress($cc,$name);
 		if ( !$tmp ) { $this->error_log(" Cc: error\n"); return FALSE; }
 		if (!empty($this->hcc)) $this->hcc.= ",";
@@ -110,32 +105,32 @@ class mailer {
 		return TRUE;
 	}
 
-	function addsubject($subject) {
+	public function addsubject($subject) {
 		if (!empty($subject)) $this->subject = $subject;
 	}
 
-	function addfrom($from,$name='') {
+	public function addfrom($from,$name='') {
 		$tmp=$this->makenameplusaddress($from,$name);
 		if ( !$tmp ) { $this->error_log(" From: error"); return FALSE; }
 		$this->hfrom = $tmp;
 		return TRUE;
 	}
 
-	function addreturnpath($return) {
+	public function addreturnpath($return) {
 		$tmp=$this->makenameplusaddress($return,'');
 		if ( !$tmp ) { $this->error_log("Return-Path: error"); return FALSE; }
 		$this->returnpath = $return;
 		return TRUE;
 	}
 
-	function addreplyto($replyto) {
+	public function addreplyto($replyto) {
 		$tmp=$this->makenameplusaddress($replyto,'');
 		if ( !$tmp ) { $this->error_log(" Reply-To: error"); return FALSE; }
 		$this->returnpath = $tmp;
 		return TRUE;
 	}
 
-	function adddeliveryreceipt($deliveryreceipt) {
+	public function adddeliveryreceipt($deliveryreceipt) {
 		$tmp=$this->makenameplusaddress($deliveryreceipt,'');
 		if ( !$tmp ) { $this->error_log(" Disposition-Notification-To: error"); return FALSE; }
 		$this->deliveryreceipt = $tmp;
@@ -144,12 +139,12 @@ class mailer {
 
 
 	// les attachements
-	function addattachement($filename) {
+	public function addattachement($filename) {
 		array_push($this->attachement, array('filename' => $filename));
 	}
 
 	// les attachements html
-	function addhtmlattachement($filename,$cid='',$contenttype='') {
+	public function addhtmlattachement($filename,$cid='',$contenttype='') {
 		array_push ( $this -> htmlattachement ,
 		array ( 'filename'=>$filename ,
                     'cid'=>$cid ,
@@ -157,7 +152,7 @@ class mailer {
 		);
 	}
 
-	function writeattachement(&$attachement,$B) {
+	public function writeattachement(&$attachement,$B) {
 		$message = '';
 		$inline = array();
 		if ( !empty($attachement) ) {
@@ -196,11 +191,11 @@ class mailer {
 		return $message;
 	}
 
-	function BodyLineWrap($Value) {
+	public function BodyLineWrap($Value) {
 		return wordwrap($Value, 78, "\n ");
 	}
 
-	function makebody() {
+	public function makebody() {
 		$message='';
 		if ( !$this->html && $this->text && !empty($this->attachement) ) {
 
@@ -274,15 +269,15 @@ class mailer {
 
 	// Mail Headers Methods
 
-	function MakeHeaderField($Field,$Value) {
+	public function MakeHeaderField($Field,$Value) {
 		return wordwrap($Field.": ".$Value, 78, "\n ")."\r\n";
 	}
 
-	function AddField2Header($Field,$Value) {
+	public function AddField2Header($Field,$Value) {
 		$this->headers .= $this->MakeHeaderField($Field,$Value);
 	}
 
-	function makeheader() {
+	public function makeheader() {
 
 		$this->headers = '';
 
@@ -341,7 +336,7 @@ class mailer {
 		return $this->headers;
 	}
 
-	function Envoi() {
+	public function Envoi() {
 		$this->makebody();
 		$this->makeheader();
 		switch($this->set_mode)	{
@@ -354,7 +349,7 @@ class mailer {
 
 	// Mail send by PHPmail
 
-	function phpmail() {
+	public function phpmail() {
 		global $conf;
 		// DOLCHANGE LDR Fix the To in header was not filled
 		foreach ($this->recipientlist as $key => $to)
@@ -384,19 +379,19 @@ class mailer {
 
 	// Socket Function
 
-	function SocketStart() {
+	public function SocketStart() {
 		if (!$this->connect = fsockopen (ini_get("SMTP"), ini_get("smtp_port"), $errno, $errstr, 30))  {
 			$this->error_log("Could not talk to the sendmail server!"); return FALSE;
 		};
 		return fgets($this->connect, 1024);
 	}
 
-	function SocketStop() {
+	public function SocketStop() {
 		fclose($this->connect);
 		return TRUE;
 	}
 
-	function SocketSend($in,$wait='') {
+	public function SocketSend($in,$wait='') {
 		fputs($this->connect, $in, strlen($in));
 		//echo $in;
 		$this->error_log($in);	// DOLCHANGE LDR Add debug
@@ -411,7 +406,7 @@ class mailer {
 
 	// Mail Socket
 
-	function socketmailstart() {
+	public function socketmailstart() {
 
 		$this->SocketStart();
 		if (!isset($_SERVER['SERVER_NAME'])  || empty($_SERVER['SERVER_NAME'])) { $serv = 'unknown'; }
@@ -421,7 +416,7 @@ class mailer {
 		$this->SocketSend("HELO $serv\r\n",'250');
 	}
 
-	function socketmailsend($to) {
+	public function socketmailsend($to) {
 
 		// $this->recipient = $to;	// DOLCHANGE LDR Must not reset this property
 		$this->error_log("Socket vers $to");
@@ -441,13 +436,13 @@ class mailer {
 		return TRUE;
 	}
 
-	function socketmailstop() {
+	public function socketmailstop() {
 		$this->SocketSend("QUIT\r\n");
 		$this->SocketStop();
 		return TRUE;
 	}
 
-	function socketmailloop() {
+	public function socketmailloop() {
 		$this->socketmailstart();
 		// DOLCHANGE LDR Fix the To in header was not filled
 		foreach ($this->recipientlist as $key => $to)
@@ -464,7 +459,7 @@ class mailer {
 
 	// Misc.
 
-	function error_log($msg='') {
+	public function error_log($msg='') {
 		if(!empty($msg)) {
 			$this->error_log .= $msg;
 			return TRUE;
@@ -472,11 +467,10 @@ class mailer {
 		return $this->error_log;
 	}
 
-	function CleanMailDataString($data) {
+	public function CleanMailDataString($data) {
 		$data = preg_replace("/([^\r]{1})\n/", "\\1\r\n", $data);
 		$data = preg_replace("/\n\n/", "\n\r\n", $data);
 		$data = preg_replace("/\n\./", "\n..", $data);
 		return $data;
 	}
 }
-?>

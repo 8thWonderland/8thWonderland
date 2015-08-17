@@ -1,21 +1,21 @@
 <?php
 
-/**
- * Gestion des connexions au site web
- *
- * @author: BrennanWaco - waco.brennan@gmail.com
- *
- **/
+namespace Wonderland\Application\Controller;
 
+use Wonderland\Library\Controller\ActionController;
 
-class index extends controllers_action {   
+use Wonderland\Library\Auth;
+
+use Wonderland\Library\Memory\Registry;
+
+class IndexController extends ActionController {   
     public function indexAction()
     {
         // controle si l'utilisateur est déjà connecté
-        if (auth::hasIdentity())    {   $this->redirect("intranet/index");      }
+        if (Auth::hasIdentity())    {   $this->redirect("intranet/index");      }
 
         $this->_view['appli_status'] = 1;
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
 	$this->_view['msg'] = '';
         $this->default_file = APPLICATION_PATH . "views/informations/presentation.view";
 
@@ -25,13 +25,13 @@ class index extends controllers_action {
 
 
     function presentationAction() {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('informations/presentation');
     }
 
 
     function subscribeAction() {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $langs = $translate->getList();
         $sel_lang = '';
         for ($i=0; $i<count($langs); $i++) {
@@ -45,19 +45,19 @@ class index extends controllers_action {
 
 
     function partnersAction() {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('informations/partners');
     }
 
 
     function newsAction() {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('informations/public_news');
     }
 
 
     function contactAction() {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->contact_status = "";
         $this->render('communications/contactus');
     }

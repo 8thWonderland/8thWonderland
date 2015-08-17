@@ -1,19 +1,26 @@
 <?php
 
-/**
- * Gestion des actions liées à la messagerie interne
- *
- * @author Brennan
- */
+namespace Wonderland\Application\Controller;
 
+use Wonderland\Library\Controller\ActionController;
 
-class messaging extends controllers_action {
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Library\Plugin\Paginator;
+
+use Wonderland\Application\Model\Message;
+
+use Wonderland\Library\Database\Mysqli;
+
+use Wonderland\Library\Admin\Log;
+
+class MessagingController extends ActionController {
     
     // Afficher la section de réception de messages
     // ============================================
     public function display_receptionAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $this->_view['translate'] = $translate;
         $this->render("communications/messaging");
     }
@@ -23,14 +30,14 @@ class messaging extends controllers_action {
     // ===========================
     public function display_receivedmessagesAction()
     {
-        $paginator = new plugins_paginator(message::display_receivedmessages());
+        $paginator = new Paginator(Message::display_receivedmessages());
         $paginator->_setItemsPage(15);
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get('translate');
+        $translate = Registry::get('translate');
         $tab_receivedmsg =   '<table class="pagination"><tr class="entete">' .
                              '<td>' . $translate->msg("title_message") . '</td>' .
                              '<td width="140px">' . $translate->msg("sender_message") . '</td>' .
@@ -105,14 +112,14 @@ class messaging extends controllers_action {
     // =============================
     public function display_sentmessagesAction()
     {
-        $paginator = new plugins_paginator(message::display_sentmessages());
+        $paginator = new Paginator(Message::display_sentmessages());
         $paginator->_setItemsPage(15);
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get('translate');
+        $translate = Registry::get('translate');
         $tab_receivedmsg =   '<table class="pagination"><tr class="entete">' .
                              '<td>' . $translate->msg("title_message") . '</td>' .
                              '<td width="140px">' . $translate->msg("recipient_message") . '</td>' .
@@ -187,8 +194,8 @@ class messaging extends controllers_action {
     // ================================
     public function display_contentmessageAction()
     {
-        $db = db_mysqli::getInstance();
-        $msg = message::display_contentmessage($_POST['id_msg'], $_POST['box']);
+        $db = Mysqli::getInstance();
+        $msg = Message::display_contentmessage($_POST['id_msg'], $_POST['box']);
         $this->_view['recipients_message'] = "";
         
         if ($_POST['box'] == 0)     {   $dest[0] = $msg[0]['recipient'];                   }
@@ -236,7 +243,7 @@ class messaging extends controllers_action {
         $key = strtolower($key);
         switch($key) {           
             case "recipients":
-                $db = memory_registry::get("db");
+                $db = Registry::get("db");
                 $req = "SELECT Identite FROM Utilisateurs WHERE IDUser=" . $value;
                 $identity = $db->select($req);
                 $value = utf8_encode($identity[0]['Identite']);
@@ -255,7 +262,7 @@ class messaging extends controllers_action {
     // ==================================================
     public function r_compose_messageAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $this->_view['translate'] = $translate;
         $this->render("communications/r_compose_message");
     }
@@ -265,7 +272,7 @@ class messaging extends controllers_action {
     // ================================================
     public function compose_messageAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $this->_view['translate'] = $translate;
         $this->_view['recipient_message'] = $_POST['recipient_message'];
         $this->render("communications/compose_message");
@@ -276,19 +283,19 @@ class messaging extends controllers_action {
     // ==================
     public function valid_messageAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $err_msg = '';
         if (!isset($_POST['title_message']) || empty($_POST['title_message']) || !isset($_POST['content_message']) || empty($_POST['content_message']))
         {
             $err_msg = $translate->msg("fields_empty");
         } else {
-            if (message::create_message($_POST) == 1) {
+            if (Message::create_message($_POST) == 1) {
                 
             } else {
                 $err_msg = $translate->msg("error");
                 
                 // Journal de log
-                $member = members::getInstance();
+                $member = Member::getInstance();
                 $db_log = new Log("db");
                 $db_log->log("Echec de l'envoi d'un message par l'utilisateur " . $member->identite, Log::ERR);
             }
@@ -312,8 +319,8 @@ class messaging extends controllers_action {
     // ========================
     public function delete_msgAction()
     {
-        $translate = memory_registry::get("translate");
-        if (message::delete_message($_POST['id_msg'], $_POST['box']) > 0) {
+        $translate = Registry::get("translate");
+        if (Message::delete_message($_POST['id_msg'], $_POST['box']) > 0) {
             $this->display('<div class="info" style="height:50px;"><table><tr>' .
                            '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
                            '<td><span style="font-size: 15px;">' . $translate->msg('delete_msg_ok') . '</span></td>' .
@@ -327,7 +334,7 @@ class messaging extends controllers_action {
                            '</tr></table></div>');
 
             // Journal de log
-            $member = members::getInstance();
+            $member = Member::getInstance();
             $db_log = new Log("db");
             $db_log->log("Echec de la suppression du message " . $_POST['id_msg'] . " (box=" . $_POST['box'] . ") par l'utilisateur " . $member->identite, Log::ERR);
         }
@@ -338,9 +345,8 @@ class messaging extends controllers_action {
     // ==================================
     public function create_groupAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $this->_view['translate'] = $translate;
         $this->render("admin/dev_inprogress");
     }
 }
-?>

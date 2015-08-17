@@ -1,5 +1,11 @@
 <?php
 
+namespace Wonderland\Application\Model;
+
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Library\Auth;
+
 /**
  * class managegroups
  *
@@ -7,15 +13,13 @@
  *
  * @author Brennan
  */
-
-
-class managetasks {
+class ManageTasks {
     
     // Affichage des taches en cours
     // =============================
     public static function display_tasksinprogress($id_group)
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         
         $req = "SELECT idtask, description, date, identite " .
                "FROM tasks, Utilisateurs " .
@@ -30,7 +34,7 @@ class managetasks {
     // ====================================
     public function display_detailstask($id)
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         $req = "SELECT idtask, description, date, identite FROM tasks, Utilisateurs WHERE author=iduser AND idtask = " . $id;
         return $db->select($req);
     }
@@ -41,9 +45,9 @@ class managetasks {
         if (!isset($description) || empty($description))    {   return -1;      }
         if (!isset($date) || empty($date))                  {   $date = "0000-00-00 00:00:00";     }
         $description = htmlentities($description);
-        $auth = auth::getInstance();
+        $auth = Auth::getInstance();
         $author = $auth->_getIdentity();
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         $req = "INSERT INTO tasks (Description, date, id_group, status, author) " .
                "VALUES ('" . $description . "', '" . $date . "', " . $id_group . ", 0, " . $author . ")";
         $db->_query($req);
@@ -53,11 +57,9 @@ class managetasks {
     
     public function delete_task($id)
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         $req = "DELETE FROM tasks WHERE IDTask=" . $id;
         $db->_query($req);
         return $db->affected_rows;
     }
-    
 }
-?>

@@ -2,6 +2,9 @@
 
 namespace Wonderland\Library;
 
+use Wonderland\Library\Database\Mysqli;
+
+use Wonderland\Library\Memory\Registry;
 /**
  * Gestion des connexions/deconnexions des utilisateurs
  *
@@ -57,7 +60,7 @@ class Auth {
         $req = "SELECT " . $this->_primarykey . " FROM " . $this->_tablename . " " .
                "WHERE " . $this->_logincolumn . " = '" . $login . "' AND " . $this->_pwdcolumn . " = '" . $pwd . "'";
         
-        $db = db_mysqli::getInstance();
+        $db = Mysqli::getInstance();
         if ($res = $db->query($req))
         {
             if ($res->num_rows == 1)
@@ -80,7 +83,7 @@ class Auth {
     // ============================
     public function logout()
     {
-        memory_registry::delete("__identity__");
+        Registry::delete("__identity__");
     }
     
     
@@ -88,11 +91,11 @@ class Auth {
     // =========================
     protected function _setIdentity($id)
     {
-        memory_registry::set("__identity__", $id);
+        Registry::set("__identity__", $id);
     }
     public function _getIdentity()
     {
-        return memory_registry::get("__identity__");
+        return Registry::get("__identity__");
     }
     
     
@@ -100,7 +103,7 @@ class Auth {
     // ==============================
     public static function hasIdentity()
     {
-        return (memory_registry::get("__identity__") != null);
+        return (Registry::get("__identity__") != null);
     }
 }
 

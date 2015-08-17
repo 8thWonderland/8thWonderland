@@ -1,19 +1,24 @@
 <?php
 
-/**
- * Controleur des motions
- *
- * @author: BrennanWaco - waco.brennan@gmail.com
- *
- **/
+namespace Wonderland\Application\Controller;
 
+use Wonderland\Library\Controller\ActionController;
 
-class motions extends controllers_action {
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Application\Model\Poll;
+use Wonderland\Application\Model\Member;
+
+use Wonderland\Library\Plugin\Paginator;
+
+use Wonderland\Library\Admin\Log;
+
+class MotionController extends ActionController {
 
     public function display_createmotionAction()
     {
-        $translate = memory_registry::get("translate");
-        $list_themes = polls::_getThemes();
+        $translate = Registry::get("translate");
+        $list_themes = Poll::_getThemes();
         
         $this->_view['translate'] = $translate;
         $this->_view['msg'] = '';
@@ -31,9 +36,9 @@ class motions extends controllers_action {
     
     public function display_motionsinprogressAction()
     {
-        $polls = new polls;
+        $polls = new Poll;
         $this->_view['list_motions'] = $polls->display_motionsinprogress();
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render("actions/motions_inprogress");
     }
     
@@ -41,17 +46,17 @@ class motions extends controllers_action {
     public function display_motionsAction()
     {
         $this->_view['list_motions'] = $this->_renderMotions();
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('actions/motions');
     }
     
     
     public function display_voteAction()
     {
-        $polls = new polls;
+        $polls = new Poll;
         $details = $polls->display_detailsmotion($_POST['motion_id']);
         
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->_view['details'] = $details[0];
         $this->_view['description'] = str_replace("&gt;", ">", str_replace("&lt;", "<", $details[0]['description']));
         $this->_view['means'] = html_entity_decode($details[0]['moyens']);
@@ -61,10 +66,10 @@ class motions extends controllers_action {
     
      public function display_motionAction()
     {
-        $polls = new polls;
+        $polls = new Poll;
         $details = $polls->display_detailsmotion($_POST['motion_id']);
         
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->_view['details'] = $details[0];
         $this->_view['description'] = str_replace("&gt;", ">", str_replace("&lt;", "<", $details[0]['description']));
         $this->_view['means'] = html_entity_decode($details[0]['moyens']);
@@ -75,14 +80,14 @@ class motions extends controllers_action {
     // =========================================================
     protected function _renderMotions()
     {
-        $polls = new polls;
-        $paginator = new plugins_paginator($polls->display_motions());
+        $polls = new Poll;
+        $paginator = new Paginator($polls->display_motions());
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         
         $tab_motions = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
                        '<td>' . $translate->msg("title_motion") . '</td>' .
@@ -100,7 +105,7 @@ class motions extends controllers_action {
                     $tab_motions .= "<td><a style='background-color:#000000' onclick=\"Clic('/motions/display_motion', 'motion_id=" . $row['Motion_id'] . "', 'milieu_milieu'); return false;\">" . $this->_filterMotions($key, $value) . "</a></td>";
                 }
             }
-            $votes = polls::_getVotes($row['Motion_id']);
+            $votes = Poll::_getVotes($row['Motion_id']);
             $resultat_vote = '';
             if ($votes[0] > $votes[1])
             {
@@ -165,14 +170,14 @@ class motions extends controllers_action {
         $key = strtolower($key);
         switch($key) {
             case "citizen_id":
-                $translate = memory_registry::get("translate");
-                $db = memory_registry::get('db');
+                $translate = Registry::get("translate");
+                $db = Registry::get('db');
                 $identite = $db->select("SELECT Identite FROM Utilisateurs WHERE IDUser=" . $value);
                 $value = (isset($identite[0]['Identite'])?$identite[0]['Identite']:$translate->msg("unknown"));
                 break;
             
             case "label_key":
-                $translate = memory_registry::get("translate");
+                $translate = Registry::get("translate");
                 $value = $translate->msg($value);
                 break;
             
@@ -193,8 +198,8 @@ class motions extends controllers_action {
     // =======================================
     public function create_motionAction()
     {
-        $translate = memory_registry::get("translate");
-        $list_themes = polls::_getThemes();
+        $translate = Registry::get("translate");
+        $list_themes = Poll::_getThemes();
         $this->_view['translate'] = $translate;
         $this->_view['select_theme'] = "<option></options>";
         $i=0;
@@ -204,7 +209,7 @@ class motions extends controllers_action {
         }
         
         if(!empty($_POST['theme']) && !empty($_POST['title_motion'])&& !empty($_POST['description_motion'])&& !empty($_POST['means_motion'])) {
-            $polls = new polls;
+            $polls = new Poll;
             if ($polls->valid_motion($_POST['title_motion'], $_POST['theme'], $_POST['description_motion'], $_POST['means_motion']))
             {
                 $this->_view['msg'] = '<div class="info" style="height:50px;"><table><tr>' .
@@ -220,7 +225,7 @@ class motions extends controllers_action {
                                       '</tr></table></div>';
                 
                 // Journal de log
-                $member = members::getInstance();
+                $member = Member::getInstance();
                 $db_log = new Log("db");
                 $db_log->log("Echec du dépot de motion par l'utilisateur " . $member->identite, Log::WARN);
             }
@@ -233,7 +238,7 @@ class motions extends controllers_action {
                                   '</tr></table></div>';
             
             // Journal de log
-            $member = members::getInstance();
+            $member = Member::getInstance();
             $db_log = new Log("db");
             $db_log->log("Echec du dépot de motion par l'utilisateur " . $member->identite . " (champs vides)", Log::WARN);
         }
@@ -244,11 +249,11 @@ class motions extends controllers_action {
     
     public function vote_motionAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $this->_view['translate'] = $translate;
         if (!empty($_POST['motion_id']) && !empty($_POST['vote']))
         {
-            $polls = new polls();
+            $polls = new Poll();
             if ($polls->vote_motion($_POST['motion_id'], $_POST['vote']) == 1)
             {
                 $this->display('<div class="info" style="height:50px;"><table><tr>' .
@@ -265,7 +270,7 @@ class motions extends controllers_action {
                                '</tr></table></div>');
                 
                 // Journal de log
-                $member = members::getInstance();
+                $member = Member::getInstance();
                 $db_log = new Log("db");
                 $db_log->log("Echec du vote de motion par l'utilisateur " . $member->identite, Log::WARN);
             }
@@ -276,8 +281,7 @@ class motions extends controllers_action {
     
      public function check_motionAction()
     {
-        $polls = new polls();
+        $polls = new Poll();
         $polls->check_motion();
     }
 }
-?>

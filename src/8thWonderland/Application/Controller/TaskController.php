@@ -1,18 +1,21 @@
 <?php
 
-/**
- * Controleur des taches de groupes
- *
- * @author: BrennanWaco - waco.brennan@gmail.com
- *
- **/
+namespace Wonderland\Application\Controller;
 
+use Wonderland\Library\Controller\ActionController;
 
-class tasks extends controllers_action {
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Application\Model\ManageTasks;
+use Wonderland\Application\Model\Member;
+
+use Wonderland\Library\Admin\Log;
+
+class TaskController extends ActionController {
 
     public function display_createtaskAction()
     {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->_view['id_group'] = $_POST['id_group'];
         $this->render('tasks/create_task');
     }
@@ -20,8 +23,8 @@ class tasks extends controllers_action {
     
     public function valid_taskAction()
     {
-        $translate = memory_registry::get("translate");
-        $res = managetasks::valid_task($_POST['description_task'], $_POST['datepicker_task'], $_POST['id_group']);
+        $translate = Registry::get("translate");
+        $res = ManageTasks::valid_task($_POST['description_task'], $_POST['datepicker_task'], $_POST['id_group']);
         switch ($res)
         {
             case 1:
@@ -52,8 +55,8 @@ class tasks extends controllers_action {
     
     public function delete_taskAction()
     {
-        $translate = memory_registry::get("translate");
-        if (managetasks::delete_task($_POST['task_id']) > 0) {
+        $translate = Registry::get("translate");
+        if (ManageTasks::delete_task($_POST['task_id']) > 0) {
             $this->display('<div class="info" style="height:50px;"><table><tr>' .
                            '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
                            '<td><span style="font-size: 15px;">' . $translate->msg('delete_task_ok') . '</span></td>' .
@@ -68,7 +71,7 @@ class tasks extends controllers_action {
                            '</tr></table></div>');
 
             // Journal de log
-            $member = members::getInstance();
+            $member = Member::getInstance();
             $db_log = new Log("db");
             $db_log->log("Echec de la suppression de la tache " . $_POST['task_id'] . " par l'utilisateur " . $member->identite, Log::ERR);
         }
@@ -77,7 +80,7 @@ class tasks extends controllers_action {
     
     public function edit_taskAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $this->_view['translate'] = $translate;
         $this->render('admin/dev_inprogress');
     }
@@ -85,7 +88,7 @@ class tasks extends controllers_action {
     
     public function display_tasksAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         
         $this->_view['translate'] = $translate;
         $this->render('admin/dev_inprogress');
@@ -95,7 +98,7 @@ class tasks extends controllers_action {
     public function display_tasksinprogressAction()
     {
         $this->_view['list_tasks'] = $this->_renderTasks_inprogress();
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->_view['id_group'] = $_POST['id_group'];
         $this->render("tasks/tasks_inprogress");
     }
@@ -103,9 +106,9 @@ class tasks extends controllers_action {
     
     public function display_detailstaskAction()
     {
-        $details = managetasks::display_detailstask($_POST['task_id']);
+        $details = ManageTasks::display_detailstask($_POST['task_id']);
         
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->_view['details'] = $details[0];
         $this->_view['cmd_delete'] = "Clic('/tasks/delete_task', 'task_id=" . $_POST['task_id'] . "&id_group=" . $_POST['id_group'] . "', 'task_resultaction'); return false;";
         $this->_view['cmd_edit'] = "Clic('/tasks/edit_task', 'task_id=" . $_POST['task_id'] . "', 'milieu_milieu'); return false;";
@@ -115,8 +118,8 @@ class tasks extends controllers_action {
     
     protected function _renderTasks_inprogress()
     {
-        $list_tasks = managetasks::display_tasksinprogress($_POST['id_group']);
-        $translate = memory_registry::get("translate");
+        $list_tasks = ManageTasks::display_tasksinprogress($_POST['id_group']);
+        $translate = Registry::get("translate");
         $reponse ='';
         
         if ($list_tasks->num_rows > 0) {
@@ -138,4 +141,3 @@ class tasks extends controllers_action {
         return $reponse;
     }
 }
-?>

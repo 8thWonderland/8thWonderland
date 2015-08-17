@@ -1,31 +1,43 @@
 <?php
+
+namespace Wonderland\Application\Controller;
+
+use Wonderland\Library\Controller\ActionController;
+
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Library\Plugin\Paginator;
+
+use Wonderland\Library\Translate;
+
+use Wonderland\Application\Model\Member;
+use Wonderland\Application\Model\Ovh;
+
 /**
  * Controleur des administreteurs (développeurs)
  *
  * @author: BrennanWaco - waco.brennan@gmail.com
  *
  **/
-
-
-class admin extends controllers_action {   
+class AdminController extends ActionController {   
     
     public function display_consoleAction()
     {
         // affichage du profil
-        $member = members::getInstance();
+        $member = Member::getInstance();
         $this->_view['identity'] = $member->identite;
         $this->_view['avatar'] = $member->avatar;
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/console');
     }
     
     
     public function quit_consoleAction()
     {
-        memory_registry::delete("desktop");
+        Registry::delete("desktop");
         
         // Journal de log
-        $member = members::getInstance();
+        $member = Member::getInstance();
         $db_log = new Log("db");
         $db_log->log($member->identite . " quitte la console d'administration.", Log::INFO);
         
@@ -36,7 +48,7 @@ class admin extends controllers_action {
     public function display_logsAction()
     {
         $this->_view['list_logs'] = $this->_renderLogs();
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/logs');
     }
         
@@ -44,22 +56,22 @@ class admin extends controllers_action {
     public function display_usersAction()
     {
         $this->_view['list_users'] = $this->_renderUsers();
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/users');
     }
             
     
     public function display_groupsAction()
     {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
     }
                 
     
     public function display_serverAction()
     {
-        $translate = memory_registry::get("translate");
-        $ovh = new myovh();
+        $translate = Registry::get("translate");
+        $ovh = new Ovh();
         $list_cron = $ovh->list_cron();
         if (isset($list_cron)) {
             $this->_view['crons'] = $this->_renderCrons($list_cron);
@@ -77,18 +89,18 @@ class admin extends controllers_action {
     
     public function display_createcronAction()
     {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/create_cron');
     }
     
     
     public function display_statsCountryAction()
     {
-        $db = memory_registry::get('db');
-        $translate = memory_registry::get("translate");
-        $desktop = memory_registry::get("desktop");
+        $db = Registry::get('db');
+        $translate = Registry::get("translate");
+        $desktop = Registry::get("desktop");
         if (isset($desktop) && $desktop == 1)   {
-            $member = members::getInstance();
+            $member = Member::getInstance();
             $lang = $member->langue;
             $regionUnknown = $db->select("SELECT " . $lang . ", Pays FROM Utilisateurs, country WHERE Region = -1 AND Pays=code");
             $this->_view['stats_regions_other'] = "<table><tr><td>" . $translate->msg('stats_region_unknown') . "</td></tr>";
@@ -101,8 +113,8 @@ class admin extends controllers_action {
         $regions_ok = $db->count("Utilisateurs", " WHERE Region > 0");
         
         
-        $this->_view['stats_members'] = members::Nb_Members();
-        $this->_view['stats_members_actives'] = members::Nb_ActivesMembers();
+        $this->_view['stats_members'] = Member::Nb_Members();
+        $this->_view['stats_members_actives'] = Member::Nb_ActivesMembers();
         $this->_view['translate'] = $translate;
         $this->_view['stats_regions_ok'] = $regions_ok;
         
@@ -114,7 +126,7 @@ class admin extends controllers_action {
     // ======================
     public function add_cronAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $err_msg = "";
         
         if (!isset($_POST['cron_file']) || empty($_POST['cron_file']) || !isset($_POST['cron_desc']) || empty($_POST['cron_desc']) || 
@@ -153,7 +165,7 @@ class admin extends controllers_action {
     // ============================
     public function delete_cronAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $ovh = new myovh();
         $res = $ovh->delete_cron($_POST['cronid'], $_POST['crondesc']);
         if (isset($res)) {
@@ -180,7 +192,7 @@ class admin extends controllers_action {
     // =============================
     public function edit_cronAction()
     {
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
     }
     
@@ -189,13 +201,13 @@ class admin extends controllers_action {
     // ===========================================
     protected function _renderCrons($cron)
     {
-        $paginator = new plugins_paginator($cron);
+        $paginator = new Paginator($cron);
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
                 
         $tab_crons = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
                     '<td width="20px">' . $translate->msg("cron_id") . '</td>' .
@@ -268,13 +280,13 @@ class admin extends controllers_action {
     // ===========================================
     protected function _renderLogs()
     {
-        $paginator = new plugins_paginator(Log::display_dblogs());
+        $paginator = new Paginator(Log::display_dblogs());
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         
         $tab_logs = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
                     '<td width="20px">' . $translate->msg("logs_level") . '</td>' .
@@ -338,13 +350,13 @@ class admin extends controllers_action {
     // ===========================================
     protected function _renderUsers()
     {
-        $paginator = new plugins_paginator(members::ListMembers());
+        $paginator = new Paginator(members::ListMembers());
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         
         $tab_users = '<table id="pagination_users" class="pagination"><tr class="entete">' .
                     '<td width="50px">' . $translate->msg("avatar") . '</td>' .
@@ -417,7 +429,7 @@ class admin extends controllers_action {
         $key = strtolower($key);
         switch($key) {
             case "label_key":
-                $translate = memory_registry::get("translate");
+                $translate = Registry::get("translate");
                 $value = $translate->msg($value);
                 break;
         }
@@ -445,27 +457,27 @@ class admin extends controllers_action {
                 break;
             
             case "pays":
-                $db = memory_registry::get('db');
-                $member = members::getInstance();
+                $db = Registry::get('db');
+                $member = Member::getInstance();
                 $lang = $member->langue;
                 $res = $db->select("SELECT " . $lang . " FROM country WHERE code = '" . $value . "' LIMIT 1");
                 if (count($res) >0)    {   $value = $res[0][$lang];                }
                 else                
                 {
-                    $translate = translate::getInstance();
+                    $translate = Translate::getInstance();
                     $value = $translate->msg("unknown");
                 }
                 break;
             
             case "region":
-                $db = memory_registry::get('db');
-                $member = members::getInstance();
+                $db = Registry::get('db');
+                $member = Member::getInstance();
                 $lang = $member->langue;
                 $res = $db->select("SELECT Name FROM regions WHERE Region_id = " . $value . " LIMIT 1");
                 if (count($res) >0 && $value >0)    {   $value = utf8_encode($res[0]['Name']);        }
                 else                
                 {
-                    $translate = translate::getInstance();
+                    $translate = Translate::getInstance();
                     $value = $translate->msg("unknown");
                 }
                 break;
@@ -494,4 +506,3 @@ class admin extends controllers_action {
         return $value;
     }
 }
-?>

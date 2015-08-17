@@ -2,16 +2,22 @@
 
 namespace Wonderland\Library;
 
+use Wonderland\Library\Memory\Registry;
+use Wonderland\Library\Database\Mysqli;
+use Wonderland\Library\Controller\Front;
+
 /**
  * Description of application
  *
  * @author Brennan
  */
 class Application {
-    protected static $_instance;                // Instance unique de la classe
-    protected $_environment;                    // Environnement de l'application
-    public $_options = array();                 // Options de l'environnement
-    
+    /** @var Application **/
+    protected static $_instance;
+    /** @var string **/
+    protected $_environment;
+    /** @var array **/
+    protected $_options = array();
     
     // Initialisation de l'application
     // ===============================
@@ -21,12 +27,12 @@ class Application {
         $this->_environment = (string) $environment;
         
         // Gestion des sessions - memory_registry
-        memory_registry::start();
+        Registry::start();
 
-        
         // Initialisation des options
-        if (isset($options))                        {   $this->setOptions($options);                        }
-
+        if (isset($options)) {
+            $this->setOptions($options);
+        }
     }
     
     
@@ -59,7 +65,7 @@ class Application {
     
     public static function getOptions()
     {
-        return memory_registry::get('__options__');
+        return Registry::get('__options__');
     }
     
     
@@ -69,7 +75,7 @@ class Application {
     {
         $opt = null;
         if (is_string($options)) {
-            $o = config::getInstance($options, $this->_environment);
+            $o = Config::getInstance($options, $this->_environment);
             $opt = $o->toArray();
         } elseif (is_array($options)) {
             $opt = $options;
@@ -77,10 +83,8 @@ class Application {
             throw new Exception('Invalid options provider : This must be a location of config file or an array !');
         }
         $cfg = array_change_key_case($opt[$this->_environment], CASE_LOWER);
-        memory_registry::set('__options__', $cfg);
+        Registry::set('__options__', $cfg);
 
-        
-        
         $this->setIncludePaths();                               // paramétrage des chemin de type "includepath"
         
         if (!empty($cfg['phpsettings']))                        // paramétrage des variables PHP
@@ -97,7 +101,7 @@ class Application {
     // =========================================================
     private function setIncludePaths()
     {
-        $cfg = memory_registry::get('__options__');
+        $cfg = Registry::get('__options__');
         if (!isset($cfg['includepaths']) || empty($cfg['includepaths']))        {   return;     }
         
         $path = implode(PATH_SEPARATOR, $cfg['includepaths']);
@@ -126,16 +130,16 @@ class Application {
     // =================================================================
     private function setPlugins()
     {
-        $cfg = memory_registry::get('__options__');
+        $cfg = Registry::get('__options__');
         
         // plugin de gestion de la base de données
         if (isset($cfg['db'])) {
-            memory_registry::set('db', db_mysqli::getInstance());
+            Registry::set('db', Mysqli::getInstance());
         }
         
         // plugin d'internationalisation - translate
         if (!empty($cfg['language'])) {
-            memory_registry::set('translate', translate::getInstance($cfg['language']));
+            Registry::set('translate', Translate::getInstance($cfg['language']));
         }
     }
     
@@ -144,11 +148,9 @@ class Application {
     // ==========================
     public function run()
     {
-	$cfg = memory_registry::get('__options__');
+	$cfg = Registry::get('__options__');
         
-        $front = controllers_front::getInstance($cfg);
+        $front = Front::getInstance($cfg);
         $front->dispatch();
     }
 }
-
-?>

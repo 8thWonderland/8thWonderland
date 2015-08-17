@@ -1,5 +1,11 @@
 <?php
 
+namespace Wonderland\Application\Model;
+
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Library\Auth;
+
 /**
  * class managegroups
  *
@@ -7,15 +13,13 @@
  *
  * @author Brennan
  */
-
-
-class managegroups {
+class ManageGroups {
     
     // Affichage des groupes
     // =====================
     public static function display_groups()
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
 
         $req = "SELECT Group_id, Group_name, Description, Identite, Creation, Group_Type_Description " .
                "FROM Groups, Group_Types, Utilisateurs " .
@@ -30,7 +34,7 @@ class managegroups {
     // =====================
     public static function display_groups_regions()
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
 
         $req = "SELECT Group_id, Group_name, Description, Identite, Groups.Creation as 'Creation', Group_Type_Description, Longitude, Latitude " .
                "FROM Groups, Group_Types, Utilisateurs, regions " .
@@ -45,8 +49,8 @@ class managegroups {
     // ===================================================
     public static function display_groupsMember()
     {
-        $auth = auth::getInstance();
-        $db = memory_registry::get('db');
+        $auth = Auth::getInstance();
+        $db = Registry::get('db');
 
         $req = "SELECT DISTINCT Groups.Group_id, Group_name " .
                "FROM Groups, Citizen_Groups " .
@@ -62,7 +66,7 @@ class managegroups {
     public static function NbMembers($id_group)
     {
         if (!isset($id_group))  {   return 0;   }
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
         return $db->count("Citizen_Groups", " WHERE Group_id=" . $id_group);
     }
     
@@ -71,11 +75,11 @@ class managegroups {
     // ==================================================================
     public static function display_listMembers()
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
 
         $req = "SELECT IDUser, Identite, DerConnexion " .
                "FROM Citizen_Groups, Utilisateurs " .
-               "WHERE Citizen_id=IDUser AND Group_id=" . memory_registry::get("desktop") . " " .
+               "WHERE Citizen_id=IDUser AND Group_id=" . Registry::get("desktop") . " " .
                "ORDER BY Identite ASC";
 
         return $db->select($req);
@@ -86,11 +90,11 @@ class managegroups {
     // =======================================================================
     public static function display_listMembersContact()
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
 
         $req = "SELECT DISTINCT IDUser, Identite " .
                "FROM Citizen_Groups, Utilisateurs " .
-               "WHERE Citizen_id=IDUser AND Group_id=" . memory_registry::get("desktop") . " " .
+               "WHERE Citizen_id=IDUser AND Group_id=" . Registry::get("desktop") . " " .
                "ORDER BY Identite ASC";
 
         return $db->select($req);
@@ -101,13 +105,12 @@ class managegroups {
     // ===============================
     public static function change_contact($idcontact)
     {
-        $db = memory_registry::get('db');
+        $db = Registry::get('db');
 
         $req = "UPDATE Groups SET ID_Contact=" . $idcontact . " " .
-               "WHERE Group_id=" . memory_registry::get("desktop") . " ";
+               "WHERE Group_id=" . Registry::get("desktop") . " ";
         $db->_query($req);
         
         return $db->affected_rows;
     }
 }
-?>

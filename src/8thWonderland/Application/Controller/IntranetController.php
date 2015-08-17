@@ -1,25 +1,32 @@
 <?php
 
-/**
- * Gestion des connexions au site web
- *
- * @author: BrennanWaco - waco.brennan@gmail.com
- *
- **/
+namespace Wonderland\Application\Controller;
 
+use Wonderland\Library\Controller\ActionController;
 
-class intranet extends controllers_action {
+use Wonderland\Library\Auth;
+
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Application\Model\ManageGroups;
+use Wonderland\Application\Model\Member;
+use Wonderland\Application\Model\Poll;
+use Wonderland\Application\Model\Mailer;
+
+use Wonderland\Library\Admin\Log;
+
+class IntranetController extends ActionController {
 
     public function indexAction()
     {
         // controle si l'utilisateur est connecté
-        if (!auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
 
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         
         $select_geo = false;
-        $member = members::getInstance();
-        $db = memory_registry::get('db');
+        $member = Member::getInstance();
+        $db = Registry::get('db');
 
         // Teste si le code country du membre est valide
         // =============================================
@@ -37,7 +44,7 @@ class intranet extends controllers_action {
     
     protected function display_selectCountry()
     {
-        $member = members::getInstance();
+        $member = Member::getInstance();
         $list_country = $member->listCountries();
         $this->_view['select_country'] = "<option></option>";
         $i=0;
@@ -53,18 +60,18 @@ class intranet extends controllers_action {
     
     protected function display_intranet()
     {
-        if (isset($_POST['group_id']) && !empty($_POST['group_id']))     {   memory_registry::set("desktop", $_POST['group_id']);    }
+        if (isset($_POST['group_id']) && !empty($_POST['group_id']))     {   Registry::set("desktop", $_POST['group_id']);    }
         
         // affichage du profil
-        $member = members::getInstance();
+        $member = Member::getInstance();
         $this->_view['identity'] = $member->identite;
         $this->_view['avatar'] = $member->avatar;
         $this->_view['admin'] = members::EstMembre(1);
 
         
-        $desktop = memory_registry::get("desktop");
+        $desktop = Registry::get("desktop");
         if (isset($desktop)) {
-            $this->_view['Contact_Group'] = members::isContact($desktop);
+            $this->_view['Contact_Group'] = Member::isContact($desktop);
             if ($desktop == 1)  {   $this->_view['haut_milieu'] = VIEWS_PATH . "admin/menu_admin.view";     }
             else                {   $this->_view['haut_milieu'] = VIEWS_PATH . "groups/menu_groups.view";   }
 
@@ -86,15 +93,15 @@ class intranet extends controllers_action {
             }
         } else {
             // affichage des motions en cours
-            $polls = new polls;
+            $poll = new Poll;
             $this->_view['haut_milieu'] = VIEWS_PATH . "members/menu.view";
             $this->_view['milieu_droite'] = "";
             $this->_view['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('/intranet/communicate', '', 'milieu_milieu');</script>";
             $this->_view['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/motions/display_motionsinprogress', '', 'milieu_gauche');</script>";
-            $this->_view['list_motions'] = $polls->display_motionsinprogress();
+            $this->_view['list_motions'] = $poll->display_motionsinprogress();
 
             // affichage des groupes du membre
-            $this->_view['list_groups'] = managegroups::display_groupsMember();
+            $this->_view['list_groups'] = ManageGroups::display_groupsMember();
             $this->_view['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('/groups/display_groupsmembers', '', 'milieu_droite');</script>";
 
 
@@ -114,14 +121,14 @@ class intranet extends controllers_action {
     {
         // controle si l'utilisateur est connecté
         // ======================================
-        if (!auth::hasIdentity())       {   $this->redirect("index/index");     }
+        if (!Auth::hasIdentity())       {   $this->redirect("index/index");     }
         
         
         if (isset($_POST['country']) && !empty($_POST['country']) && isset($_POST['region']) && $_POST['region'] != 0)
         {
-            $auth = auth::getInstance();
-            $db = memory_registry::get('db');
-            $member = members::getInstance();
+            $auth = Auth::getInstance();
+            $db = Registry::get('db');
+            $member = Member::getInstance();
             
             // Enregistrement du pays et de la region de l'utilisateur
             // =======================================================
@@ -164,7 +171,7 @@ class intranet extends controllers_action {
             } else {
                 // Si la region choisie est 'other' alors Brennan Waco reçoit un mail
                 // ==================================================================
-                $mail = mailer::getInstance();
+                $mail = Mailer::getInstance();
                 $mail -> addrecipient('waco.brennan@gmail.com','');
                 $mail -> addfrom('developpeurs@8thwonderland.com','');
                 $mail -> addsubject('regions inconnues','');
@@ -179,7 +186,7 @@ class intranet extends controllers_action {
             
             $this->redirect("intranet/index");
         } else {
-            $translate = memory_registry::get("translate");
+            $translate = Registry::get("translate");
             $this->_view['translate'] = $translate;
             $this->_view['msg'] = $translate->msg('fields_empty');
             $this->display(json_encode(array("status" => 2, "reponse" => $translate->msg('fields_empty'))));
@@ -194,7 +201,7 @@ class intranet extends controllers_action {
         $res = "<option></option>";
         if (isset($_POST['country']) && !empty($_POST['country']))
         {
-            $db = memory_registry::get('db');
+            $db = Registry::get('db');
             $regions = $db->select("SELECT Region_id, Name FROM regions WHERE Country='" . $_POST['country'] . "' ORDER BY Name ASC");
             
             if (count($regions) > 0) {
@@ -212,9 +219,9 @@ class intranet extends controllers_action {
     public function infosAction()
     {
         // controle si l'utilisateur est connecté
-        if (!auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
 
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('informations/public_news');
     }
 
@@ -222,9 +229,9 @@ class intranet extends controllers_action {
     public function shareAction()
     {
         // controle si l'utilisateur est connecté
-        if (!auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
 
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
     }
 
@@ -232,9 +239,9 @@ class intranet extends controllers_action {
     public function communicateAction()
     {
         // controle si l'utilisateur est connecté
-        if (!auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
 
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('informations/public_news');
     }
 
@@ -242,9 +249,9 @@ class intranet extends controllers_action {
     public function financeAction()
     {
         // controle si l'utilisateur est connecté
-        if (!auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
 
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
     }
     
@@ -252,18 +259,16 @@ class intranet extends controllers_action {
     public function consoleAction()
     {
         // controle d'accès à la console
-        if (!auth::hasIdentity())       {   $this->redirect("index/index");     }
-        if (!members::EstMembre(1))     {   $this->redirect("intranet/index");  }
+        if (!Auth::hasIdentity())       {   $this->redirect("index/index");     }
+        if (!Member::EstMembre(1))     {   $this->redirect("intranet/index");  }
         
         // Journal de log
-        $member = members::getInstance();
+        $member = Member::getInstance();
         $db_log = new Log("db");
         $db_log->log($member->identite . " entre dans la console d'administration.", Log::INFO);
         
-        $this->_view['translate'] = memory_registry::get("translate");
+        $this->_view['translate'] = Registry::get("translate");
         $this->redirect('admin/display_console');
     }
 
 }
-
-?>

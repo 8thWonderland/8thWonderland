@@ -1,20 +1,23 @@
 <?php
-/**
- * Controleur des membres
- *
- * @author: BrennanWaco - waco.brennan@gmail.com
- *
- **/
 
+namespace Wonderland\Application\Controller;
 
-class member extends controllers_action {
+use Wonderland\Library\Controller\ActionController;
+
+use Wonderland\Library\Memory\Registry;
+
+use Wonderland\Application\Model\Member;
+
+use Wonderland\Library\Plugin\Paginator;
+
+class MemberController extends ActionController {
 
     public function display_profileAction()
     {
-        $translate = memory_registry::get("translate");
+        $translate = Registry::get("translate");
         $this->_view['translate'] = $translate;
 
-        $member = members::getInstance();
+        $member = Member::getInstance();
         // Affichage du genre
         if ($member->sexe == 0) {
             $this->_view['gender'] = '<option value=1 selected="selected">' . $translate->msg("female") . '</option><option value=2>' . $translate->msg("male") . '</option>';
@@ -63,8 +66,8 @@ class member extends controllers_action {
     
     public function valid_profileAction()
     {
-        $translate = memory_registry::get("translate");
-        $member = members::getInstance();
+        $translate = Registry::get("translate");
+        $member = Member::getInstance();
         $err_msg = '';
         
         // Controle si tous les champs sont saisis
@@ -118,14 +121,14 @@ class member extends controllers_action {
     
     public function display_contactsgroupsAction()
     {
-        $paginator = new plugins_paginator(members::ListContactsGroups());
+        $paginator = new Paginator(Member::ListContactsGroups());
         $paginator->_setItemsPage(15);
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();
         $CurPage = $paginator->_getCurrentPage();
         $MaxPage = $paginator->_getNumPage();
-        $translate = memory_registry::get('translate');
+        $translate = Registry::get('translate');
         $tabmini_contactsgroups = '<table class="pagination"><tr class="entete">' .
                                 '<td width="150px">' . $translate->msg("group_name") . '</td>' .
                                 '<td width="150px">' . $translate->msg("identity") . '</td>' .
@@ -165,4 +168,3 @@ class member extends controllers_action {
         $this->render("groups/list_contactsgroups");
     }
 }
-?>

@@ -34,5 +34,5 @@ defined('MOTIONS_PATH')
 	|| define ('MOTIONS_PATH', $_SERVER['DOCUMENT_ROOT'] . "/Intranet/motions/");*/
 
 
-$appli = new application(APPLICATION_ENV, APPLI_INI);
+$appli = new \Wonderland\Library\Application(APPLICATION_ENV, APPLI_INI);
 $appli->run();

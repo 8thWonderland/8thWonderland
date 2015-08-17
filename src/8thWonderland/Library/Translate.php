@@ -2,6 +2,8 @@
 
 namespace Wonderland\Library;
 
+use Wonderland\Library\Memory\Registry;
+
 /**
  * class translate
  *
@@ -36,12 +38,12 @@ class Translate
     // ==========================
     public static function getInstance($options = null)
     {
-        $res = memory_registry::get("__translate__");
+        $res = Registry::get("__translate__");
         if (!isset($res)) {
-            memory_registry::set("__translate__",  new self($options));
+            Registry::set("__translate__",  new self($options));
         }
         
-        return memory_registry::get("__translate__");
+        return Registry::get("__translate__");
     }
 
 
