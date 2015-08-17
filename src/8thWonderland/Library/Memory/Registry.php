@@ -1,14 +1,14 @@
 <?php
 
+namespace Wonderland\Library\Memory;
+
 /**
  * Class memory_registry
  *
  *  Utilisation de l'abstraction pour piloter les sessions PHP
  *
  */
-
-
-class memory_registry {
+class Registry {
     
     public static function start($options = null)
     {

@@ -221,8 +221,8 @@ class motions extends controllers_action {
                 
                 // Journal de log
                 $member = members::getInstance();
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec du dépot de motion par l'utilisateur " . $member->identite, admin_logs::WARN);
+                $db_log = new Log("db");
+                $db_log->log("Echec du dépot de motion par l'utilisateur " . $member->identite, Log::WARN);
             }
         }
         else
@@ -234,8 +234,8 @@ class motions extends controllers_action {
             
             // Journal de log
             $member = members::getInstance();
-            $db_log = new admin_logs("db");
-            $db_log->log("Echec du dépot de motion par l'utilisateur " . $member->identite . " (champs vides)", admin_logs::WARN);
+            $db_log = new Log("db");
+            $db_log->log("Echec du dépot de motion par l'utilisateur " . $member->identite . " (champs vides)", Log::WARN);
         }
         
         $this->render('actions/create_motion');
@@ -266,8 +266,8 @@ class motions extends controllers_action {
                 
                 // Journal de log
                 $member = members::getInstance();
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec du vote de motion par l'utilisateur " . $member->identite, admin_logs::WARN);
+                $db_log = new Log("db");
+                $db_log->log("Echec du vote de motion par l'utilisateur " . $member->identite, Log::WARN);
             }
         }
         

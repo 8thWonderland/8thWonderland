@@ -289,8 +289,8 @@ class messaging extends controllers_action {
                 
                 // Journal de log
                 $member = members::getInstance();
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec de l'envoi d'un message par l'utilisateur " . $member->identite, admin_logs::ERR);
+                $db_log = new Log("db");
+                $db_log->log("Echec de l'envoi d'un message par l'utilisateur " . $member->identite, Log::ERR);
             }
         }
         
@@ -328,8 +328,8 @@ class messaging extends controllers_action {
 
             // Journal de log
             $member = members::getInstance();
-            $db_log = new admin_logs("db");
-            $db_log->log("Echec de la suppression du message " . $_POST['id_msg'] . " (box=" . $_POST['box'] . ") par l'utilisateur " . $member->identite, admin_logs::ERR);
+            $db_log = new Log("db");
+            $db_log->log("Echec de la suppression du message " . $_POST['id_msg'] . " (box=" . $_POST['box'] . ") par l'utilisateur " . $member->identite, Log::ERR);
         }
     }
     

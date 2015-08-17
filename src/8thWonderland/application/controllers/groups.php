@@ -164,8 +164,8 @@ class groups extends controllers_action {
                           '</tr></table></div>');
             
             // log d'échec de mise à jour
-            $db_log = new admin_logs("db");
-            $db_log->log("Echec du changement de CG par " . $member->identite . " (id_user inconnu : " . $_POST['sel_contactgroups'] . ")", admin_logs::ERR);
+            $db_log = new Log("db");
+            $db_log->log("Echec du changement de CG par " . $member->identite . " (id_user inconnu : " . $_POST['sel_contactgroups'] . ")", Log::ERR);
         } else {
             $res = managegroups::change_contact($_POST['sel_contactgroups']);
             if ($res ==0) {
@@ -175,15 +175,15 @@ class groups extends controllers_action {
                           '</tr></table></div>');
                 
                 // log d'échec de mise à jour
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec du changement de CG par " . $member->identite . " (id_user=" . $_POST['sel_contactgroups'] . ")", admin_logs::ERR);
+                $db_log = new Log("db");
+                $db_log->log("Echec du changement de CG par " . $member->identite . " (id_user=" . $_POST['sel_contactgroups'] . ")", Log::ERR);
             } else {
                 $desktop = memory_registry::get("desktop");
                 $this->display("<script type='text/javascript'>window.onload=Clic('/intranet/index', '" . $desktop . "', 'body');</script>");
                 
                 // log de mise à jour
-                $db_log = new admin_logs("db");
-                $db_log->log("Changement de CG par " . $member->identite . " (id_user=" . $_POST['sel_contactgroups'] . ")", admin_logs::INFO);
+                $db_log = new Log("db");
+                $db_log->log("Changement de CG par " . $member->identite . " (id_user=" . $_POST['sel_contactgroups'] . ")", Log::INFO);
             }
         }
         

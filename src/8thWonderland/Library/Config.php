@@ -1,13 +1,13 @@
 <?php
 
+namespace Wonderland\Library;
+
 /**
  * Description of config
  *
  * @author Brennan
  */
-
-
-class config {
+class Config {
     protected static $_instance;                                            // Instance unique de la classe
     protected $_keySeparator = ".";                                         // Séparateur à l'intérieur d'une clé
     protected $_sectionSeparator = ':';                                     // Séparateur à l'intérieur d'une section

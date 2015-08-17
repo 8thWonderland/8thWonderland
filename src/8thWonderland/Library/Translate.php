@@ -1,13 +1,14 @@
 <?php
 
+namespace Wonderland\Library;
+
 /**
  * class translate
  *
  * Gestion de l'internationalisation du site
  *
  */
-
-class translate
+class Translate
 {
     protected static $_instance;		// Singleton de la classe
     private $_langs = array();                  // Tableau des langues implémentées

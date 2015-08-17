@@ -71,8 +71,8 @@ class members {
             $res = $db->_query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec de l'update du login (" . $this->identite . ")", admin_logs::ERR);
+                $db_log = new Log("db");
+                $db_log->log("Echec de l'update du login (" . $this->identite . ")", Log::ERR);
             }
             return $db->affected_rows;
         } else {    return 1;   }
@@ -98,8 +98,8 @@ class members {
             $res = $db->_query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec de l'update du password (" . $this->identite . ")", admin_logs::ERR);
+                $db_log = new Log("db");
+                $db_log->log("Echec de l'update du password (" . $this->identite . ")", Log::ERR);
             }
             return $db->affected_rows;
         } else {    return 1;   }
@@ -131,15 +131,15 @@ class members {
             $db->_query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec de l'update de l'identite (" . $this->getIdentite() . ")", admin_logs::ERR);
+                $db_log = new Log("db");
+                $db_log->log("Echec de l'update de l'identite (" . $this->getIdentite() . ")", Log::ERR);
             } else {
                 $req = "UPDATE phpbb_users SET username='" . $value . "' WHERE username='" . $old_identite . "'";
                 $db->_query($req);
                 if ($db->affected_rows == 0) {
                     // log d'échec de mise à jour
-                    $db_log = new admin_logs("db");
-                    $db_log->log("Echec de l'update de l'identite du forum (" . $value . ")", admin_logs::ERR);
+                    $db_log = new Log("db");
+                    $db_log->log("Echec de l'update de l'identite du forum (" . $value . ")", Log::ERR);
                 }
             }
 
@@ -169,8 +169,8 @@ class members {
             $db->_query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec de l'update de l'avatar (" . $this->getIdentite() . ")", admin_logs::ERR);
+                $db_log = new Log("db");
+                $db_log->log("Echec de l'update de l'avatar (" . $this->getIdentite() . ")", Log::ERR);
             }
             return $db->affected_rows;
         } else {    return 1;   }
@@ -200,8 +200,8 @@ class members {
             $db->_query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec de l'update de l'email (" . $this->getIdentite() . ")", admin_logs::ERR);
+                $db_log = new Log("db");
+                $db_log->log("Echec de l'update de l'email (" . $this->getIdentite() . ")", Log::ERR);
             }
             return $db->affected_rows;
         } else {    return 1;   }
@@ -230,8 +230,8 @@ class members {
             $res = $db->_query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec de l'update du sexe (" . $this->identite . ")", admin_logs::ERR);
+                $db_log = new Log("db");
+                $db_log->log("Echec de l'update du sexe (" . $this->identite . ")", Log::ERR);
             }
             return $db->affected_rows;
         } else {    return 1;   }
@@ -262,8 +262,8 @@ class members {
                 $db->_query($req);
                 if ($db->affected_rows == 0) {
                     // log d'échec de mise à jour
-                    $db_log = new admin_logs("db");
-                    $db_log->log("Echec de l'update de la langue (" . $this->identite . ")", admin_logs::ERR);
+                    $db_log = new Log("db");
+                    $db_log->log("Echec de l'update de la langue (" . $this->identite . ")", Log::ERR);
                 } else
                 {
                     $translate = memory_registry::get("translate");

@@ -69,8 +69,8 @@ class tasks extends controllers_action {
 
             // Journal de log
             $member = members::getInstance();
-            $db_log = new admin_logs("db");
-            $db_log->log("Echec de la suppression de la tache " . $_POST['task_id'] . " par l'utilisateur " . $member->identite, admin_logs::ERR);
+            $db_log = new Log("db");
+            $db_log->log("Echec de la suppression de la tache " . $_POST['task_id'] . " par l'utilisateur " . $member->identite, Log::ERR);
         }
     }
     

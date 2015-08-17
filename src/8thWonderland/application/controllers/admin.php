@@ -26,8 +26,8 @@ class admin extends controllers_action {
         
         // Journal de log
         $member = members::getInstance();
-        $db_log = new admin_logs("db");
-        $db_log->log($member->identite . " quitte la console d'administration.", admin_logs::INFO);
+        $db_log = new Log("db");
+        $db_log->log($member->identite . " quitte la console d'administration.", Log::INFO);
         
         $this->redirect("intranet/index");
     }
@@ -268,7 +268,7 @@ class admin extends controllers_action {
     // ===========================================
     protected function _renderLogs()
     {
-        $paginator = new plugins_paginator(admin_logs::display_dblogs());
+        $paginator = new plugins_paginator(Log::display_dblogs());
         $paginator->_setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
         $datas = $paginator->_getCurrentItems();

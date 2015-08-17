@@ -1,12 +1,13 @@
 <?php
 
+namespace Wonderland\Library\Memory;
+
 /**
  * Mise en cache de certaines valeurs ; sérialisation dans un fichier
  *
  * @author Brennan
  */
-
-class cache {
+class Cache {
     private static $_cachePath = 'application/';                // Emplacement par défaut des fichiers de cache
     private static $_defaultLifetime = 3600;                    // Durée de vie par défaut de la valeur mise en cache
     private static $_suffix = ".cache.txt";                     // Suffixe de fichier : 'mon_cache' => 'mon_cache.cache.txt'

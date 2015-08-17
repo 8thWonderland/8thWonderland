@@ -47,8 +47,8 @@ class myovh
         
         } catch (SoapFault $fault) {
             // Journal de log
-            $db_log = new admin_logs("db");
-            $db_log->log("Echec de la connexion SOAP par " . $member->identite . "<br/>" . $fault, admin_logs::WARN);
+            $db_log = new Log("db");
+            $db_log->log("Echec de la connexion SOAP par " . $member->identite . "<br/>" . $fault, Log::WARN);
             return false;
         }
     }
@@ -79,8 +79,8 @@ class myovh
         } catch (SoapFault $fault) {
             // Journal de log
             $member = members::getInstance();
-            $db_log = new admin_logs("db");
-            $db_log->log("Echec de la deconnexion SOAP par " . $member->identite . "<br/>" . $fault, admin_logs::WARN);
+            $db_log = new Log("db");
+            $db_log->log("Echec de la deconnexion SOAP par " . $member->identite . "<br/>" . $fault, Log::WARN);
             return false;
         }
     }
@@ -107,7 +107,7 @@ class myovh
         if ($this->connect()) {
             $res = false;
             $member = members::getInstance();
-            $db_log = new admin_logs("db");
+            $db_log = new Log("db");
             
             $desc = htmlentities($params['cron_desc']);
             // controle du script
@@ -135,11 +135,11 @@ class myovh
                 $res = $this->_soap->crontabAdd($this->_ovh, $this->_domain, $path, "php5_3", $weekday, $days, $hours, $desc, "no");
                 
                 // Journal de log
-                $db_log->log("Ajout de la tache cron '" . $desc . "' (" . $res . ") par " . $member->identite, admin_logs::INFO);
+                $db_log->log("Ajout de la tache cron '" . $desc . "' (" . $res . ") par " . $member->identite, Log::INFO);
                 
             } catch (SoapFault $fault) {
                 // Journal de log
-                $db_log->log("Echec de l'ajout de la tache cron '" . $desc . "' par " . $member->identite . "<br/>" . $fault, admin_logs::ERR);
+                $db_log->log("Echec de l'ajout de la tache cron '" . $desc . "' par " . $member->identite . "<br/>" . $fault, Log::ERR);
             }
             $this->disconnect();
             return $res;
@@ -156,18 +156,18 @@ class myovh
         if ($this->connect()) {
             $res = false;
             $member = members::getInstance();
-            $db_log = new admin_logs("db");
+            $db_log = new Log("db");
             
             try {
                 $this->_soap->crontabDel($this->_ovh, $this->_domain, $id);
                 $res = true;
                 
                 // Journal de log
-                $db_log->log("Suppression de la tache cron '" . $desc . "' (" . $id . ") par " . $member->identite, admin_logs::INFO);
+                $db_log->log("Suppression de la tache cron '" . $desc . "' (" . $id . ") par " . $member->identite, Log::INFO);
                 
             } catch (SoapFault $fault) {
                 // Journal de log
-                $db_log->log("Echec de la suppression de la tache cron '" . $desc . "' (" . $id . ") par " . $member->identite . "<br/>" . $fault, admin_logs::ERR);
+                $db_log->log("Echec de la suppression de la tache cron '" . $desc . "' (" . $id . ") par " . $member->identite . "<br/>" . $fault, Log::ERR);
             }
             $this->disconnect();
             return $res;

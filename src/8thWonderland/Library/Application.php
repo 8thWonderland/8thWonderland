@@ -1,15 +1,15 @@
 ﻿<?php
 
+namespace Wonderland\Library;
+
 /**
  * Description of application
  *
  * @author Brennan
  */
-
-class application {
+class Application {
     protected static $_instance;                // Instance unique de la classe
     protected $_environment;                    // Environnement de l'application
-    protected $_autoloader;                     // Chargeur de classes
     public $_options = array();                 // Options de l'environnement
     
     
@@ -19,12 +19,6 @@ class application {
     {
         // Définition des variables d'environnement
         $this->_environment = (string) $environment;
-
-        
-        // Chargement de l'autoloader
-        require_once 'autoloader.php';
-        $this->_autoloader = Autoloader::getInstance();
-        
         
         // Gestion des sessions - memory_registry
         memory_registry::start();

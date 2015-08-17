@@ -1,13 +1,13 @@
 <?php
 
+namespace Wonderland\Library;
+
 /**
  * Gestion des connexions/deconnexions des utilisateurs
  *
  * @author Brennan
  */
-
-
-class auth {
+class Auth {
     protected static $_instance;                // Instance unique de la classe
     protected $_tablename;                      // Nom de la table servant pour la liaison
     protected $_logincolumn;                    // Nom de la colonne dans la table servant pour le login

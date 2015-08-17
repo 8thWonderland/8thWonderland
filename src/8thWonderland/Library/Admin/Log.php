@@ -1,14 +1,14 @@
 <?php
 
+namespace Wonderland\Library\Admin;
+
 /**
  * class admin_logs
  *
  * Mise en place d'un système de log
  *
  */
-
-
-class admin_logs
+class Log
 {
     const EMERG   = 0;  // Emergency: system is unusable
     const ALERT   = 1;  // Alert: action must be taken immediately
@@ -26,7 +26,7 @@ class admin_logs
     
     public function __construct($writer)
     {
-        $r = new ReflectionClass($this);
+        $r = new \ReflectionClass($this);
         $this->_priorities = array_flip($r->getConstants());
         if (in_array(strtoupper($writer), $this->_writers))     {   $this->writer = strtoupper($writer);    }
     }

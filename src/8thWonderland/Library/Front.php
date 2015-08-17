@@ -1,21 +1,24 @@
 <?php
 
+namespace Wonderland\Library;
+
 /**
  * Description of front
  *
  * @author Brennan
  */
-
-
-class controllers_front {
+class Front {
     protected static $_instance;                                            // Instance unique de la classe
     protected $_directory = 'application/controllers';                      // Chemin par défaut des controleurs action
     protected $_defaultController = 'index';                                // Nom du controleur par défaut
     protected $_defaultAction = 'index';                                    // Action par défaut
 
 
-    public function __construct($options = null)
+    public function __construct()
     {
+        $options = memory_registry::get('__options__');
+        $options = $options['frontcontroller'];
+        
         if (isset($options['defaultController']))               {   $this->_defaultController = $options['defaultController'];   }
         if (isset($options['defaultAction']))                   {   $this->_defaultAction = $options['defaultAction'];   }
         if (isset($options['controllerDirectory']))             {   $this->_directory = $options['controllerDirectory'];   }
@@ -26,10 +29,10 @@ class controllers_front {
 
     // Mise en place du singleton
     // ==========================
-    public static function getInstance($options = null)
+    public static function getInstance()
     {
         if (null === self::$_instance) {
-            self::$_instance = new self($options);
+            self::$_instance = new self();
         }
         return self::$_instance;
     }
@@ -56,7 +59,7 @@ class controllers_front {
         // route vers le controleur et l'action demandée
         $ctrl = new $controller();
         $action = $action . "Action";
-        
+
         $ctrl->$action();
     }
 }

@@ -1,13 +1,14 @@
 <?php
+
+namespace Wonderland\Library\Plugin;
+
 /**
  * plugin permettant la pagination de résultats
  *
  * @author: BrennanWaco - waco.brennan@gmail.com
  *
  **/
-
-
-class plugins_paginator {
+class Paginator {
     protected $_ItemsperPage = 10;                                              // Nb d'éléments par page (par défaut)
     protected $_PageRange = 5;                                                  // Nb pages par saut
     protected $_datas;                                                          // Jeu de résultat de données

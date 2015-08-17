@@ -1,13 +1,13 @@
 <?php
 
+namespace Wonderland\Library\Controller;
+
 /**
  * Classe abstraite fournissant les fonction de base d'un controleur Action
  *
  * @author Brennan
  */
-
-
-abstract class controllers_action {
+abstract class Action {
     protected $_directoryViews = 'application/views';                   // Chemin par défaut des vues
     protected $_directoryControllers = 'application/controllers';       // Chemin par défaut des controleurs
     protected $_view = array();                                         // Liste des valeurs transmises à la vue

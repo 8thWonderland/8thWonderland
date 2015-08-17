@@ -22,16 +22,16 @@ defined('DELAY_PURGE')                                                          
 	|| define ('DELAY_PURGE', 7);
 
 $db = memory_registry::get("db");
-$db_log = new admin_logs("db");
+$db_log = new Log("db");
 
 $db->_query("DELETE FROM logs WHERE DATEDIFF(NOW(), timelogs) > " . DELAY_PURGE);
 
 if (!empty($db->error)) {
     // Journal de log
-    $db_log->log("ERR: " . $db->error . " (" . $_SERVER['PHP_SELF'] . ")", admin_logs::ERR);
+    $db_log->log("ERR: " . $db->error . " (" . $_SERVER['PHP_SELF'] . ")", Log::ERR);
 } else {
     // Journal de log
-    $db_log->log("Exécution de " . $_SERVER['PHP_SELF'] . ".", admin_logs::INFO);
+    $db_log->log("Exécution de " . $_SERVER['PHP_SELF'] . ".", Log::INFO);
 }
 
 ?>

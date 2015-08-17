@@ -26,8 +26,8 @@ class authenticate extends controllers_action {
             $db->_query("UPDATE Utilisateurs SET DerConnexion=NOW() WHERE IDUser = " . $auth->_getIdentity());
             if ($db->affected_rows == 0)    {
                 // log d'échec de mise à jour
-                $db_log = new admin_logs("db");
-                $db_log->log("Echec de l'update de la connexion (" . $member->identite . ")", admin_logs::ERR);
+                $db_log = new Log("db");
+                $db_log->log("Echec de l'update de la connexion (" . $member->identite . ")", Log::ERR);
             }
             
             
@@ -178,8 +178,8 @@ class authenticate extends controllers_action {
                         $db->_query($req);
                         if ($db->affected_rows == 0) {
                             // log d'échec de mise à jour
-                            $db_log = new admin_logs("db");
-                            $db_log->log("Echec de changement du mot de passe (" . $_POST['memo_login'] . ")", admin_logs::ERR);
+                            $db_log = new Log("db");
+                            $db_log->log("Echec de changement du mot de passe (" . $_POST['memo_login'] . ")", Log::ERR);
                         }
                     }
                 }
@@ -238,8 +238,8 @@ class authenticate extends controllers_action {
         {
             // log d'échec de connexion
             (isset($_SERVER['REMOTE_ADDR']))?$ip = $_SERVER['REMOTE_ADDR']:$ip='inconnu';
-            $db_log = new admin_logs("db");
-            $db_log->log("Echec de la connexion (" . $ip . ")", admin_logs::WARN);
+            $db_log = new Log("db");
+            $db_log->log("Echec de la connexion (" . $ip . ")", Log::WARN);
         }
 
         return $connected;

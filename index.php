@@ -1,10 +1,6 @@
 <?php
-/**
- * Page principale
- *
- * @author: BrennanWaco - waco.brennan@gmail.com
- *
- */
+
+require_once 'vendor/autoload.php';
 
 // D�finition des chemins de l'application
 // =======================================
@@ -28,8 +24,6 @@ defined('ICO_PATH')
 defined('JS_PATH')
     || define ( 'JS_PATH', '/public/js/' );
 	
-$_SERVER['DOCUMENT_ROOT'] = 'C:\Developpement\PHP\8thWonderland\site_23-04-2012';
-	
 /*
 // Ressources
 defined('MAGASIN_PATH')
@@ -40,11 +34,5 @@ defined('MOTIONS_PATH')
 	|| define ('MOTIONS_PATH', $_SERVER['DOCUMENT_ROOT'] . "/Intranet/motions/");*/
 
 
-
-require_once 'library/application.php';
 $appli = new application(APPLICATION_ENV, APPLI_INI);
 $appli->run();
-
-exit(0);
-
-?>

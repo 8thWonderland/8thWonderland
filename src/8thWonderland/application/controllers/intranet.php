@@ -142,8 +142,8 @@ class intranet extends controllers_action {
                     if ($db->affected_rows == 0) {
                         $echec_createGroup = true;
                         // Journal de log
-                        $db_log = new admin_logs("db");
-                        $db_log->log("Création du groupe régional " . $group_name[0]['Name'] . " par l'utilisateur " . $member->identite, admin_logs::ERR);
+                        $db_log = new Log("db");
+                        $db_log->log("Création du groupe régional " . $group_name[0]['Name'] . " par l'utilisateur " . $member->identite, Log::ERR);
                     } else {
                         $id_group = $db->insert_id;
                     }
@@ -156,8 +156,8 @@ class intranet extends controllers_action {
                     $db->_query("INSERT INTO Citizen_Groups (Citizen_id, Group_id) VALUES (" . $auth->_getIdentity() . ", " . $id_group . ")");
                     if ($db->affected_rows == 0) {
                         // Journal de log
-                        $db_log = new admin_logs("db");
-                        $db_log->log("Ajout de l'utilisateur " . $member->identite . " dans le groupe " . $group_name[0]['Name'], admin_logs::ERR);
+                        $db_log = new Log("db");
+                        $db_log->log("Ajout de l'utilisateur " . $member->identite . " dans le groupe " . $group_name[0]['Name'], Log::ERR);
                     }
                 }
             
@@ -257,8 +257,8 @@ class intranet extends controllers_action {
         
         // Journal de log
         $member = members::getInstance();
-        $db_log = new admin_logs("db");
-        $db_log->log($member->identite . " entre dans la console d'administration.", admin_logs::INFO);
+        $db_log = new Log("db");
+        $db_log->log($member->identite . " entre dans la console d'administration.", Log::INFO);
         
         $this->_view['translate'] = memory_registry::get("translate");
         $this->redirect('admin/display_console');
