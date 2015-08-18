@@ -95,12 +95,12 @@ class Translate
         if (preg_match('/[^a-z0-9\\/\\\\_.:-]/i', $filename)) {
             throw new \Exception('filename incorrect !');
         }
-        if(!file_exists($_SERVER['DOCUMENT_ROOT'] . "/" . $this->_langPath . $filename)) {
-            throw new \Exception('file "' . $_SERVER['DOCUMENT_ROOT'] . "/" . $this->_langPath . $filename . '" not exist !');
+        if(!file_exists(ROOT_PATH . $this->_langPath . $filename)) {
+            throw new \Exception('file "' . ROOT_PATH . $this->_langPath . $filename . '" not exist !');
         }
 
         
-        require_once $this->_langPath . $filename;
+        require_once ROOT_PATH . $this->_langPath . $filename;
         return $array;
     }
 
@@ -157,5 +157,3 @@ class Translate
         return $this->_langs[$lang][$key];
     }
 }
-
-?>

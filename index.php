@@ -8,10 +8,12 @@ require_once 'vendor/autoload.php';
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 // Architecture Serveur
+defined('ROOT_PATH')
+    || define ('ROOT_PATH', realpath(dirname(__FILE__)) . "/src/8thWonderland/");
 defined('APPLICATION_PATH')
-    || define ('APPLICATION_PATH', realpath(dirname(__FILE__)) . "/src/8thWonderland/Application/");
+    || define ('APPLICATION_PATH', ROOT_PATH . 'Application/');
 defined('VIEWS_PATH')
-	|| define ( 'VIEWS_PATH', $_SERVER['DOCUMENT_ROOT'] . "/src/8thWonderland/Application/views/");
+	|| define ( 'VIEWS_PATH', APPLICATION_PATH . "views/");
 defined('APPLI_INI')
     || define('APPLI_INI', APPLICATION_PATH . 'config/application.ini');
 // Ressources

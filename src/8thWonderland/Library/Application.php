@@ -4,7 +4,7 @@ namespace Wonderland\Library;
 
 use Wonderland\Library\Memory\Registry;
 use Wonderland\Library\Database\Mysqli;
-use Wonderland\Library\Controller\Front;
+use Wonderland\Library\Controller\FrontController;
 use Wonderland\Library\Config;
 
 /**
@@ -151,7 +151,7 @@ class Application {
     {
 	$cfg = Registry::get('__options__');
         
-        $front = Front::getInstance($cfg);
+        $front = FrontController::getInstance($cfg);
         $front->dispatch();
     }
 }
