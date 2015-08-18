@@ -1,0 +1,17 @@
+{
+    "name": "kern046/8thwonderland",
+    "description": "Community application of 8thWonderland",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Axel Venet",
+            "email": "kern046@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Wonderland\\": "src/8thWonderland/"
+        }
+    }
+}

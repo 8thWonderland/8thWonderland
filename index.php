@@ -1,10 +1,6 @@
 <?php
-/**
- * Page principale
- *
- * @author: BrennanWaco - waco.brennan@gmail.com
- *
- */
+
+require_once 'vendor/autoload.php';
 
 // D�finition des chemins de l'application
 // =======================================
@@ -12,10 +8,12 @@
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 // Architecture Serveur
+defined('ROOT_PATH')
+    || define ('ROOT_PATH', realpath(dirname(__FILE__)) . "/src/8thWonderland/");
 defined('APPLICATION_PATH')
-    || define ('APPLICATION_PATH', realpath(dirname(__FILE__)) . "/application/");
+    || define ('APPLICATION_PATH', ROOT_PATH . 'Application/');
 defined('VIEWS_PATH')
-	|| define ( 'VIEWS_PATH', $_SERVER['DOCUMENT_ROOT'] . "/application/views/");
+	|| define ( 'VIEWS_PATH', APPLICATION_PATH . "views/");
 defined('APPLI_INI')
     || define('APPLI_INI', APPLICATION_PATH . 'config/application.ini');
 // Ressources
@@ -28,8 +26,6 @@ defined('ICO_PATH')
 defined('JS_PATH')
     || define ( 'JS_PATH', '/public/js/' );
 	
-$_SERVER['DOCUMENT_ROOT'] = 'C:\Developpement\PHP\8thWonderland\site_23-04-2012';
-	
 /*
 // Ressources
 defined('MAGASIN_PATH')
@@ -40,11 +36,5 @@ defined('MOTIONS_PATH')
 	|| define ('MOTIONS_PATH', $_SERVER['DOCUMENT_ROOT'] . "/Intranet/motions/");*/
 
 
-
-require_once 'library/application.php';
-$appli = new application(APPLICATION_ENV, APPLI_INI);
+$appli = new \Wonderland\Library\Application(APPLICATION_ENV, APPLI_INI);
 $appli->run();
-
-exit(0);
-
-?>
