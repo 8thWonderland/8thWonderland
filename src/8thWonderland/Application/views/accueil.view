@@ -6,7 +6,7 @@
         <meta http-equiv="Cache-Control" content="no-cache"/>
         <meta http-equiv="Pragma" content="no-cache"/>
         <meta http-equiv="Expires" content="0"/>
-        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>accueil.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>accueil.css" type="text/css" media="all" />
         <link rel="shortcut icon" type="image/png" href="<?php echo IMG_PATH; ?>icone.png" />
         
         <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-1.7.1.min.js"></script>
