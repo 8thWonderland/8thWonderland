@@ -20,7 +20,7 @@ class Poll
     public function display_motionsinprogress()
     {
         $db = Registry::get('db');
-        $translate = Registry::get("translate");
+        $translate = Registry::get('translate');
         $auth = Auth::getInstance();
         $id_member = $auth->_getIdentity();
         $reponse = '';
@@ -33,10 +33,10 @@ class Poll
         $list_motions = $db->_query($req);
         if ($list_motions->num_rows > 0) {
             while ($motion = $list_motions->fetch_assoc()) {
-                $reponse .= "<tr><td><a onclick=\"Clic('/motions/display_motion', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" . $motion['title_key'] . "</a></td>" .
-                            "<td><a onclick=\"Clic('/motions/display_motion', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" . $motion['date_fin_vote'] . "</a></td>";
+                $reponse .= "<tr><td><a onclick=\"Clic('/Motion/display_motion', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" . $motion['title_key'] . "</a></td>" .
+                            "<td><a onclick=\"Clic('/Motion/display_motion', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" . $motion['date_fin_vote'] . "</a></td>";
                 if ($this->poll_active($motion['motion_id'], $id_member) == 0) {
-                    $reponse .= "<td><div class='bouton'><a onclick=\"Clic('/motions/display_vote', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" .
+                    $reponse .= "<td><div class='bouton'><a onclick=\"Clic('/Motion/display_vote', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" .
                                 "<span style='color: #dfdfdf;'>" . $translate->msg('btn_votemotion') . "</span></a></div></td>";
                 }
                 $reponse .= "</tr>";

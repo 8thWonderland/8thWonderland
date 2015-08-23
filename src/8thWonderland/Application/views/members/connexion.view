@@ -3,7 +3,7 @@
     <table>
         <tr>
             <td><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Auth.png"></td>
-            <td><form id="form_login" name="form_login" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/authenticate/connect", "form_login", "login_error", "json"); return false;' action="" method="post">
+            <td><form id="form_login" name="form_login" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/Authenticate/connect", "form_login", "login_error", "json"); return false;' action="" method="post">
                     <table>
                         <tr>
                             <td style="padding: 5px;"><?php echo $this->_view['translate']->msg("login"); ?></td>

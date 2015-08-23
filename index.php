@@ -2,39 +2,15 @@
 
 require_once 'vendor/autoload.php';
 
-// D�finition des chemins de l'application
-// =======================================
-// Environnement de l'application
-defined('APPLICATION_ENV')
-    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
-// Architecture Serveur
-defined('ROOT_PATH')
-    || define ('ROOT_PATH', realpath(dirname(__FILE__)) . "/src/8thWonderland/");
-defined('APPLICATION_PATH')
-    || define ('APPLICATION_PATH', ROOT_PATH . 'Application/');
-defined('VIEWS_PATH')
-	|| define ( 'VIEWS_PATH', APPLICATION_PATH . "views/");
-defined('APPLI_INI')
-    || define('APPLI_INI', APPLICATION_PATH . 'config/application.ini');
-// Ressources
-defined('CSS_PATH')
-    || define ( 'CSS_PATH', '/public/css/' );
-defined('IMG_PATH')
-    || define ( 'IMG_PATH', '/public/images/' );
-defined('ICO_PATH')
-    || define ( 'ICO_PATH', '/public/icones/' );
-defined('JS_PATH')
-    || define ( 'JS_PATH', '/public/js/' );
-	
-/*
-// Ressources
-defined('MAGASIN_PATH')
-	|| define ( 'MAGASIN_PATH', '/public/images/magasin/' );
+use Wonderland\Library\Application;
 
-// Motion
-defined('MOTIONS_PATH')
-	|| define ('MOTIONS_PATH', $_SERVER['DOCUMENT_ROOT'] . "/Intranet/motions/");*/
+define('PUBLIC_ROOT', 'http://127.0.0.1/Developpement/PHP/8thWonderland/site_23-04-2012/src/8thWonderland/');
+define ( 'VIEWS_PATH', PUBLIC_ROOT . 'Application/views/' );
+define ( 'CSS_PATH', PUBLIC_ROOT . 'public/css/' );
+define ( 'IMG_PATH', PUBLIC_ROOT . 'public/images/' );
+define ( 'ICO_PATH', PUBLIC_ROOT . 'public/icones/' );
+define ( 'JS_PATH', PUBLIC_ROOT . 'public/js/' );
 
-
-$appli = new \Wonderland\Library\Application(APPLICATION_ENV, APPLI_INI);
-$appli->run();
+$application = new Application();
+$application->init();
+$application->run();

@@ -13,7 +13,6 @@ class Member {
     protected $_id;                             // Identifiant de l'utilisateur
     protected $_properties = array();           // Liste des champs dans la table
 
-
     public function __construct($id)
     {
         if (isset($id) && !empty($id))      {   $this->_id = $id; return $this;   }
@@ -21,7 +20,7 @@ class Member {
         $auth = Auth::getInstance();
         $this->_id = $auth->_getIdentity();
 
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         
         $this->_properties = $db->getColumns("Utilisateurs");
     }
@@ -55,7 +54,7 @@ class Member {
     // =========================
     protected function getLogin()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $req = "SELECT Login " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -67,7 +66,7 @@ class Member {
     {
         $value = htmlentities(trim($value));
         if ($this->getLogin() != $value) {
-            $db = Mysqli::getInstance();
+            $db = Registry::get('db');
             $req = "UPDATE Utilisateurs SET Login='" . $value . "' WHERE IDUser=" . $this->_id;
             $res = $db->_query($req);
             if ($db->affected_rows == 0) {
@@ -82,7 +81,7 @@ class Member {
     
     protected function getPassword()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $req = "SELECT Password " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -94,7 +93,7 @@ class Member {
     {
         $value = hash("sha512", $value);
         if ($this->getPassword() != $value) {
-            $db = Mysqli::getInstance();
+            $db = Registry::get('db');
             $req = "UPDATE Utilisateurs SET Password='" . $value . "' WHERE IDUser=" . $this->_id;
             $res = $db->_query($req);
             if ($db->affected_rows == 0) {
@@ -111,7 +110,7 @@ class Member {
     // ==============================
     protected function getIdentite()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $req = "SELECT Identite " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -124,7 +123,7 @@ class Member {
         $value = htmlentities(trim($value));
         $old_identite = $this->getIdentite();
         if ($old_identite != $value) {
-            $db = Mysqli::getInstance();
+            $db = Registry::get('db');
             if (!self::ctrlIdentity($value)) {   return -1;  }
             if ($db->count("Utilisateurs", " WHERE Identite='" . $value . "'") > 0) {   return -2;  }
 
@@ -153,7 +152,7 @@ class Member {
     // ==============================
     protected function getAvatar()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $req = "SELECT Avatar " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -165,7 +164,7 @@ class Member {
     {
         if ($this->getAvatar() != $value) {
             if(!filter_var($value, FILTER_VALIDATE_URL))    {   return -1;  }
-            $db = Mysqli::getInstance();
+            $db = Registry::get('db');
             $req = "UPDATE Utilisateurs SET Avatar='" . $value . "' WHERE IDUser=" . $this->_id;
             $db->_query($req);
             if ($db->affected_rows == 0) {
@@ -182,7 +181,7 @@ class Member {
     // ========================
     protected function getEmail()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $req = "SELECT Email " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -194,7 +193,7 @@ class Member {
     {
         if ($this->getEmail() != $value) {
             if (!self::ctrlMail($value)) {   return -1;  }
-            $db = Mysqli::getInstance();
+            $db = Registry::get('db');
             if ($db->count("Utilisateurs", " WHERE Email='" . $value . "'") > 0) {   return -2;  }
 
             $req = "UPDATE Utilisateurs SET Email='" . $value . "' WHERE IDUser=" . $this->_id;
@@ -213,7 +212,7 @@ class Member {
     // =========================
     protected function getSexe()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $req = "SELECT Sexe " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -226,7 +225,7 @@ class Member {
         if (intval($value) != 1 && intval($value) != 2)     {   return -1;   }
         $value = intval($value)-1;
         if ($this->getSexe() != $value) {
-            $db = Mysqli::getInstance();
+            $db = Registry::get('db');
             $req = "UPDATE Utilisateurs SET Sexe=" . $value . " WHERE IDUser=" . $this->_id;
             $res = $db->_query($req);
             if ($db->affected_rows == 0) {
@@ -243,7 +242,7 @@ class Member {
     // ===============================
     public function getLangue()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $req = "SELECT Langue " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -280,7 +279,7 @@ class Member {
     // =============================
     public function getPays()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $req = "SELECT Pays " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -294,7 +293,7 @@ class Member {
     // ===============================
     public function getRegion()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $req = "SELECT Region " .
                "FROM Utilisateurs " .
                "WHERE IDUser = " . $this->_id . " " .
@@ -340,7 +339,7 @@ class Member {
     // =====================================================
     public static function EstMembre($Group_id, $User_id=0)
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $id_user = $User_id;
         if ($id_user == 0) {
             $auth = Auth::getInstance();
@@ -355,7 +354,7 @@ class Member {
     // ====================================================
     public static function isContact($id_group = null)
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $auth = Auth::getInstance();
         $id_user = $auth->_getIdentity();
         
@@ -373,7 +372,7 @@ class Member {
     // =================================
     public static function Nb_Members()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         return $db->count("Utilisateurs");
     }
     
@@ -382,7 +381,7 @@ class Member {
     // ===========================================================
     public static function Nb_ActivesMembers()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         return $db->count("Utilisateurs", " WHERE DATEDIFF(CURDATE(), DerConnexion) <21");
     }
     
@@ -391,7 +390,7 @@ class Member {
     // ===========================
     public function listCountries()
     {
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         $code_lang = $this->langue;
         if ($db->ExistColumn($code_lang, "country") == 0)       {   $code_lang = "en";  }
 

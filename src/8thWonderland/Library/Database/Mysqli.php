@@ -12,23 +12,14 @@ use Wonderland\Library\Memory\Registry;
  */
 class Mysqli extends \mysqli
 {
-    protected static $_instance;                // Instance unique de la classe
     public function __construct()
     {
-        $cfg = Registry::get('__options__');
+        global $application;
+        $cfg = $application->getConfig()->getOptions();
         parent::__construct($cfg['db']['host'], $cfg['db']['username'], $cfg['db']['password'], $cfg['db']['dbname']);
         if (mysqli_connect_error()) {
             throw new \Exception('Database connect failure : ' . mysqli_connect_error());
         }
-    }
-    // Mise en place du singleton
-    // ==========================
-    public static function getInstance()
-    {
-        if (null === self::$_instance) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
     }
     // Récupère le résultat de la requête et le transforme en array
     // ============================================================
