@@ -20,7 +20,7 @@ class IntranetController extends ActionController {
     public function indexAction()
     {
         // controle si l'utilisateur est connecté
-        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity())    {   $this->redirect("Index/index");      }
 
         $this->_view['translate'] = Registry::get("translate");
         
@@ -66,7 +66,7 @@ class IntranetController extends ActionController {
         $member = Member::getInstance();
         $this->_view['identity'] = $member->identite;
         $this->_view['avatar'] = $member->avatar;
-        $this->_view['admin'] = members::EstMembre(1);
+        $this->_view['admin'] = Member::EstMembre(1);
 
         
         $desktop = Registry::get("desktop");
@@ -121,7 +121,7 @@ class IntranetController extends ActionController {
     {
         // controle si l'utilisateur est connecté
         // ======================================
-        if (!Auth::hasIdentity())       {   $this->redirect("index/index");     }
+        if (!Auth::hasIdentity())       {   $this->redirect("Index/index");     }
         
         
         if (isset($_POST['country']) && !empty($_POST['country']) && isset($_POST['region']) && $_POST['region'] != 0)
@@ -184,7 +184,7 @@ class IntranetController extends ActionController {
                 $mail->envoi();
             }
             
-            $this->redirect("intranet/index");
+            $this->redirect("Intranet/index");
         } else {
             $translate = Registry::get("translate");
             $this->_view['translate'] = $translate;
@@ -219,7 +219,7 @@ class IntranetController extends ActionController {
     public function infosAction()
     {
         // controle si l'utilisateur est connecté
-        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity())    {   $this->redirect("Index/index");      }
 
         $this->_view['translate'] = Registry::get("translate");
         $this->render('informations/public_news');
@@ -229,7 +229,9 @@ class IntranetController extends ActionController {
     public function shareAction()
     {
         // controle si l'utilisateur est connecté
-        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity()) {
+            $this->redirect("Index/index");
+        }
 
         $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
@@ -239,7 +241,7 @@ class IntranetController extends ActionController {
     public function communicateAction()
     {
         // controle si l'utilisateur est connecté
-        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity())    {   $this->redirect("Index/index");      }
 
         $this->_view['translate'] = Registry::get("translate");
         $this->render('informations/public_news');
@@ -249,7 +251,7 @@ class IntranetController extends ActionController {
     public function financeAction()
     {
         // controle si l'utilisateur est connecté
-        if (!Auth::hasIdentity())    {   $this->redirect("index/index");      }
+        if (!Auth::hasIdentity())    {   $this->redirect("Index/index");      }
 
         $this->_view['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
@@ -259,8 +261,8 @@ class IntranetController extends ActionController {
     public function consoleAction()
     {
         // controle d'accès à la console
-        if (!Auth::hasIdentity())       {   $this->redirect("index/index");     }
-        if (!Member::EstMembre(1))     {   $this->redirect("intranet/index");  }
+        if (!Auth::hasIdentity())       {   $this->redirect("Index/index");     }
+        if (!Member::EstMembre(1))     {   $this->redirect("Intranet/index");  }
         
         // Journal de log
         $member = Member::getInstance();
@@ -268,7 +270,7 @@ class IntranetController extends ActionController {
         $db_log->log($member->identite . " entre dans la console d'administration.", Log::INFO);
         
         $this->_view['translate'] = Registry::get("translate");
-        $this->redirect('admin/display_console');
+        $this->redirect('Admin/display_console');
     }
 
 }

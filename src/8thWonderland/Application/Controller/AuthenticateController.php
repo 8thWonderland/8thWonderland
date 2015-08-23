@@ -11,6 +11,8 @@ use Wonderland\Library\Database\Mysqli;
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Mailer;
 
+use Wonderland\Library\Memory\Registry;
+
 /**
  * Gestion des connexions/deconnexions des utilisateurs
  *
@@ -45,7 +47,7 @@ class AuthenticateController extends ActionController {
             Registry::set("__login__", $member->identite); // indipensable pour l'identification au forum
             $translate = Registry::get('translate');
             $translate->setLangUser($member->langue);
-            $this->redirect("intranet/index");
+            $this->redirect("Intranet/index");
         }
         else
         {

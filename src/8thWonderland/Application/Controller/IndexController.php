@@ -11,13 +11,16 @@ use Wonderland\Library\Memory\Registry;
 class IndexController extends ActionController {   
     public function indexAction()
     {
+        global $application;
         // controle si l'utilisateur est déjà connecté
-        if (Auth::hasIdentity())    {   $this->redirect("intranet/index");      }
+        if (Auth::hasIdentity()) {
+            $this->redirect("Intranet/index");
+        }
 
         $this->_view['appli_status'] = 1;
         $this->_view['translate'] = Registry::get("translate");
 	$this->_view['msg'] = '';
-        $this->default_file = APPLICATION_PATH . "views/informations/presentation.view";
+        $this->default_file = "{$application->getRootPath()}Application/views/informations/presentation.view";
 
         $this->render("accueil");
         
