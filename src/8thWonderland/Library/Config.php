@@ -8,53 +8,45 @@ namespace Wonderland\Library;
  * @author Brennan
  */
 class Config {
-    protected static $_instance;                                            // Instance unique de la classe
+    /** @var array **/
+    protected $options = [];
+    /** @var string **/
+    protected $environment;
     protected $_keySeparator = ".";                                         // Séparateur à l'intérieur d'une clé
     protected $_sectionSeparator = ':';                                     // Séparateur à l'intérieur d'une section
-    protected $_filename = '/src/8thWonderland/Application/config/application.ini';            // chemin du fichier de configuration par défaut
     protected $_defaultSection;                                             // section par défaut définie dans l'application
-    private $_iniArray = array();
+    private $_iniArray;
     
-    
-    public function __construct($filename, $defaultSection)
+    public function __construct()
     {
-        $this->_defaultSection = $defaultSection;
-        if (isset($filename))   {   $this->_filename = $filename;   }
-        $this->_iniArray = (array)$this->Load_INIFile();
+        $this->LoadIniFile();
     }
+
+    /**
+     * @param string $environment
+     * @return \Wonderland\Library\Config
+     */
+    public function setEnvironment($environment) {
+        $this->environment = $environment;
         
-    
-    // Mise en place du singleton
-    // ==========================
-    public static function getInstance($filename = null, $defaultSection = null)
-    {
-        if (null === self::$_instance) {
-            self::$_instance = new self($filename, $defaultSection);
-        }
-        return self::$_instance;
+        return $this;
     }
     
-    
-    // Renvoi de la valeur correspondant à une clé du tableau
-    // ======================================================
-    public function __get($key)
-    {
-        $result = null;
-        if (array_key_exists($key, $this->_iniArray[$this->_defaultSection])) {
-            $result = $this->_iniArray[$this->_defaultSection][$key];
-        }
-        return $result;
+    /**
+     * @return string
+     */
+    public function getEnvironment() {
+        return $this->environment;
     }
 
-
-    // Charge le fichier ini dans un array()
-    // =====================================
-    public function Load_INIFile()
+    public function LoadIniFile()
     {
-        if (!file_exists($this->_filename)) {
-            throw new \Exception('The file ' . $this->_filename . ' is not found !');
+        global $application;
+        $filename = $application->getRootPath() . 'Application/config/application.ini';
+        if (!file_exists($filename)) {
+            throw new \Exception('The file ' . $filename . ' is not found !');
         }
-        $loaded = parse_ini_file($this->_filename, true);
+        $loaded = parse_ini_file($filename, true);
         
         // Gestion des clés multiples
         foreach ($loaded as $sectionName => $sectionData) {
@@ -66,11 +58,48 @@ class Config {
                 $loaded[$sectionName] = $datas;
             }
         }
-        
         // Gestion des sections multiples (2 maxi)
-        $loaded = $this->setSection($loaded);
+        $this->options = $this->setSection($loaded);
+    }
+    
+    /**
+     * @param array $options
+     * @return \Wonderland\Library\Config
+     */
+    public function setOptions($options) {
+        $this->options[$this->environment] = array_merge($options, $this->options[$this->environment]);
         
-        return $loaded;
+        return $this;
+    }
+    
+    /**
+     * @param string $option
+     * @param mixed $value
+     * @return \Wonderland\Library\Config
+     */
+    public function setOption($option, $value) {
+        $this->options[$this->environment][$option] = $value;
+        
+        return $this;
+    }
+    
+    /**
+     * @param string $option
+     * @return mixed
+     * @throws \InvalidArgumentException
+     */
+    public function getOption($option) {
+        if(!isset($this->options[$this->environment][$option])) {
+            throw new \InvalidArgumentException("The requested option $option is not configured");
+        }
+        return $this->options[$this->environment][$option];
+    }
+    
+    /**
+     * @return array
+     */
+    public function getOptions() {
+        return $this->options[$this->environment];
     }
     
     
@@ -96,7 +125,6 @@ class Config {
                     throw new \Exception("The section '" . $thisSection . ":" . trim($pieces[1]) . "' may not extended in " . $this->_filename);
             }
         }
-        
         return $iniArray;
     }
     
@@ -122,13 +150,13 @@ class Config {
                     }
                     
                 } elseif (!is_array($config[$pieces[0]])) {
-                    throw new Exception("Cannot create sub-key for '" . $pieces[0] . "' as key already exists");
+                    throw new \Exception("Cannot create sub-key for '" . $pieces[0] . "' as key already exists");
                 }
                 unset($config[$key]);
                 $config[$pieces[0]] = $this->setKey($config[$pieces[0]], $pieces[1], $value);
                 
             } else {
-                throw new Exception("Invalid key '" . $key . "'");
+                throw new \Exception("Invalid key '" . $key . "'");
             }
             
         } else {
