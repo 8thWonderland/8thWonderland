@@ -2,8 +2,6 @@
 
 namespace Wonderland\Library;
 
-use Wonderland\Library\Database\Mysqli;
-
 use Wonderland\Library\Memory\Registry;
 /**
  * Gestion des connexions/deconnexions des utilisateurs
@@ -60,7 +58,7 @@ class Auth {
         $req = "SELECT " . $this->_primarykey . " FROM " . $this->_tablename . " " .
                "WHERE " . $this->_logincolumn . " = '" . $login . "' AND " . $this->_pwdcolumn . " = '" . $pwd . "'";
         
-        $db = Mysqli::getInstance();
+        $db = Registry::get('db');
         if ($res = $db->query($req))
         {
             if ($res->num_rows == 1)

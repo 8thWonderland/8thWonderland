@@ -8,7 +8,6 @@ namespace Wonderland\Library\Controller;
  * @author Brennan
  */
 class FrontController {
-    protected static $_instance;                                            // Instance unique de la classe
     protected $_directory;                      // Chemin par défaut des controleurs action
     protected $_defaultController = 'Index';                                // Nom du controleur par défaut
     protected $_defaultAction = 'index';                                    // Action par défaut
@@ -16,7 +15,8 @@ class FrontController {
 
     public function __construct($options = null)
     {
-        $this->_directory = $_directory = APPLICATION_PATH . 'Controller';
+        global $application;
+        $this->_directory = $application->getRootPath() . 'Application/Controller';
         if (isset($options['defaultController']))               {   $this->_defaultController = $options['defaultController'];   }
         if (isset($options['defaultAction']))                   {   $this->_defaultAction = $options['defaultAction'];   }
         if (isset($options['controllerDirectory']))             {   $this->_directory = $options['controllerDirectory'];   }
@@ -24,28 +24,17 @@ class FrontController {
 
     }
 
-
-    // Mise en place du singleton
-    // ==========================
-    public static function getInstance($options = null)
-    {
-        if (null === self::$_instance) {
-            self::$_instance = new self($options);
-        }
-        return self::$_instance;
-    }
-
-
     // Transfert de la requête au controleur d'action approprié
     // ========================================================
     public function dispatch()
     {
         // Détermination du controleur et de l'action pour cette requête
-        $controller = 'Wonderland\\Application\\Controller\\' . $this->_defaultController . 'Controller';
-        $action = $this->_defaultAction . 'Action';
 
-        if (isset($_REQUEST['controller']))    {   $controller=$_REQUEST['controller'];   }
-        if (isset($_REQUEST['action']))        {   $action=$_REQUEST['action'];           }
+        $requestedController = (isset($_REQUEST['controller'])) ? $_REQUEST['controller'] : $this->_defaultController;
+        $controller = 'Wonderland\\Application\\Controller\\' . $requestedController . 'Controller';
+        
+        $requestedAction = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : $this->_defaultAction;
+        $action = $requestedAction . 'Action';
 
         // Vérification si le controleur existe
         if (!class_exists($controller)) {
