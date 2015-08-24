@@ -26,8 +26,11 @@ class Mysqli extends \mysqli {
             throw new \Exception('Database connect failure : ' . mysqli_connect_error());
         }
     }
-    // Récupère le résultat de la requête et le transforme en array
-    // ============================================================
+    
+    /**
+     * @param string
+     * @return array
+     */
     public function select($query) {
         $res = $this->query($query);
         $result = [];
@@ -42,8 +45,7 @@ class Mysqli extends \mysqli {
      * @param string $whereClause
      * @return int
      */
-    public function count($tablename, $whereClause = '')
-    {
+    public function count($tablename, $whereClause = '') {
         return $this
             ->query("SELECT COUNT(*) FROM $tablename $whereClause")
             ->fetch_row()[0]
@@ -67,8 +69,7 @@ class Mysqli extends \mysqli {
      * @return array
      * @throws \Exception
      */
-    public function getColumns($tablename)
-    {
+    public function getColumns($tablename) {
         if (($result = $this->query("SHOW COLUMNS FROM $tablename")) === false) {
             throw new \Exception("Database query failure : {$this->error}");
         }
@@ -84,8 +85,7 @@ class Mysqli extends \mysqli {
      * @param string $table
      * @return int
      */
-    public function columnExists($colname, $table)
-    {
+    public function columnExists($colname, $table) {
         return $this->query("SHOW COLUMNS FROM $table LIKE '$colname'")->num_rows;
     }
 }
