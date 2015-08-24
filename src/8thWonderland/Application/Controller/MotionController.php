@@ -16,10 +16,10 @@ class MotionController extends ActionController {
         
         $this->viewParameters['translate'] = $translate;
         $this->viewParameters['msg'] = '';
-        $this->viewParameters['select_theme'] = "<option></options>";
+        $this->viewParameters['select_theme'] = '<option></options>';
         
         for ($i = 0; ($theme = $list_themes->fetch_assoc()); ++$i) {
-            $this->viewParameters['select_theme'] .= "<option value='" . $i . "'>{$translate->translate($theme['label_key'])}</option>";
+            $this->viewParameters['select_theme'] .= "<option value='$i'>{$translate->translate($theme['label_key'])}</option>";
         }
         $this->render('actions/create_motion');
     }
@@ -31,7 +31,6 @@ class MotionController extends ActionController {
         $this->render('actions/motions_inprogress');
     }
     
-    
     public function displayMotionsAction() {
         $this->viewParameters['list_motions'] = $this->renderMotions();
         $this->viewParameters['translate'] = $this->application->get('translate');
@@ -40,7 +39,7 @@ class MotionController extends ActionController {
     
     public function displayVoteAction() {
         $polls = new Poll;
-        $details = $polls->display_detailsmotion($_POST['motion_id']);
+        $details = $polls->displayMotionDetails($_POST['motion_id']);
         
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->viewParameters['details'] = $details[0];
@@ -51,7 +50,7 @@ class MotionController extends ActionController {
     
     public function displayMotionAction() {
         $polls = new Poll;
-        $details = $polls->display_detailsmotion($_POST['motion_id']);
+        $details = $polls->displayMotionDetails($_POST['motion_id']);
         
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->viewParameters['details'] = $details[0];
@@ -66,7 +65,7 @@ class MotionController extends ActionController {
     protected function renderMotions() {
         $polls = new Poll;
         $paginator = $this->application->get('paginator');
-        $paginator->setData($polls->display_motions());
+        $paginator->setData($polls->displayMotions());
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -87,7 +86,7 @@ class MotionController extends ActionController {
         ;
         
         foreach($datas as $key => $row) {
-            $tab_motions .= "<tr style='height:25px'>";
+            $tab_motions .= '<tr style="height:25px">';
             foreach($row as $key => $value) {
                 if ($key !== 'Motion_id') {
                     $tab_motions .=
@@ -253,6 +252,6 @@ class MotionController extends ActionController {
     }
     
     public function checkMotionAction() {
-        (new Poll())->check_motion();
+        (new Poll())->checkMotion();
     }
 }
