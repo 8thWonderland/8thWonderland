@@ -43,6 +43,33 @@ class Application {
      */
     public function setContainer() {
         $this->container = new Container();
+        
+        $containerData = json_decode(file_get_contents(PUBLIC_ROOT.'Application/config/config.json'), true);
+        
+        $this->setServices($containerData['services']);
+        $this->setParameters($containerData['parameters']);
+    }
+    
+    public function setServices($services) {
+        reset($services);
+        
+        while($key = key($services)) {
+            $service = $services[$key];
+            $this->container[$key] = function($c) use ($service) {
+                return new $service['class']();
+            };
+            next($services);
+        }
+    }
+    
+    public function setParameters($parameters) {
+        reset($parameters);
+        
+        while($key = key($parameters)) {
+            $this->container[$key] = $parameters[$key];
+            
+            next($parameters);
+        }
     }
     
     /**
