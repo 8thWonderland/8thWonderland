@@ -107,7 +107,7 @@ class Ovh
     
     // Ajout d'une tache CRON
     // ======================
-    public function add_cron($params)
+    public function addCron($params)
     {
         if ($this->connect()) {
             $res = false;
@@ -156,7 +156,7 @@ class Ovh
     
     // Suppression d'une tache CRON
     // ============================
-    public function delete_cron($id, $desc)
+    public function deleteCron($id, $desc)
     {
         if ($this->connect()) {
             $res = false;

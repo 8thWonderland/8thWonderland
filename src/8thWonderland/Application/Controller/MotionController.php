@@ -82,11 +82,11 @@ class MotionController extends ActionController {
     {
         $polls = new Poll;
         $paginator = new Paginator($polls->display_motions());
-        $paginator->_setCurrentPage(1);
-        if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
-        $datas = $paginator->_getCurrentItems();
-        $CurPage = $paginator->_getCurrentPage();
-        $MaxPage = $paginator->_getNumPage();
+        $paginator->setCurrentPage(1);
+        if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->setCurrentPage($_POST['page']);  }
+        $datas = $paginator->getCurrentItems();
+        $CurPage = $paginator->getCurrentPage();
+        $MaxPage = $paginator->getNumPage();
         $translate = Registry::get("translate");
         
         $tab_motions = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
@@ -122,10 +122,10 @@ class MotionController extends ActionController {
         }
         
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->_getItemsPage());
-        if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_motions .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
+        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPage())+1;
+        $nLastItem = ($CurPage * $paginator->getItemsPage());
+        if ($nLastItem>$paginator->getItems())     {   $nLastItem = $paginator->getItems();   }
+        $tab_motions .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
@@ -134,8 +134,8 @@ class MotionController extends ActionController {
             $previous = '<a onclick="Clic(\'/motions/display_motions\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_motions .= '<td colspan="5" style="padding-right:15px;" align="right">' . $previous . ' | ';
-        $start = $CurPage - $paginator->_getPageRange();
-        $end = $CurPage + $paginator->_getPageRange();
+        $start = $CurPage - $paginator->getPageRange();
+        $end = $CurPage + $paginator->getPageRange();
         if ($start<1)   {   $start =1;  }
         if ($end > $MaxPage) {   $end = $MaxPage;     }
         

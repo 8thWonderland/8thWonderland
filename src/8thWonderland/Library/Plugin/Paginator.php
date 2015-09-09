@@ -29,7 +29,7 @@ class Paginator {
     
     // Nombre total de pages
     // =====================
-    public function _getNumPage()
+    public function getNumPage()
     {
         if ($this->_ItemsperPage == 0)       {   return -1;  }
         if (count($this->_datas) == 0)      {   return 0;   }
@@ -39,7 +39,7 @@ class Paginator {
     
     // Nombre total d'items
     // ====================
-    public function _getItems()
+    public function getItems()
     {
         return count($this->_datas);
     }
@@ -51,7 +51,7 @@ class Paginator {
     {
         if (intval($value))     {   $this->_ItemsperPage = $value;  }
     }
-    public function _getItemsPage()
+    public function getItemsPage()
     {
         return $this->_ItemsperPage;
     }
@@ -59,11 +59,11 @@ class Paginator {
     
     // Page courante
     // =============
-    public function _setCurrentPage($value)
+    public function setCurrentPage($value)
     {
-        if ($value >1 && $value < $this->_getNumPage()+1)     {   $this->_CurrentPage = $value;   }
+        if ($value >1 && $value < $this->getNumPage()+1)     {   $this->_CurrentPage = $value;   }
     }
-    public function _getCurrentPage()
+    public function getCurrentPage()
     {
         return $this->_CurrentPage;
     }
@@ -71,7 +71,7 @@ class Paginator {
     
     // Page range
     // ==========
-    public function _getPageRange()
+    public function getPageRange()
     {
         return $this->_PageRange;
     }
@@ -79,11 +79,11 @@ class Paginator {
     
     // Renvoi des items de la page courante
     // ====================================
-    public function _getCurrentItems()
+    public function getCurrentItems()
     {
         $nFirstItem = (($this->_CurrentPage - 1) * $this->_ItemsperPage);
         $nLastItem = ($this->_CurrentPage * $this->_ItemsperPage) -1;
-        if ($nLastItem >= $this->_getItems())    {   $nLastItem = $this->_getItems()-1;    }
+        if ($nLastItem >= $this->getItems())    {   $nLastItem = $this->getItems()-1;    }
         
         $result = array();
         for ($i=$nFirstItem; $i<=$nLastItem; $i++) {
@@ -98,8 +98,8 @@ class Paginator {
     // =============================
     public function NextPage() 
     {
-        if ($this->_CurrentPage < $this->_getNumPage())     {   $this->_CurrentPage = $this->_CurrentPage +1;   }
-        return ($this->_getCurrentItems());
+        if ($this->_CurrentPage < $this->getNumPage())     {   $this->_CurrentPage = $this->_CurrentPage +1;   }
+        return ($this->getCurrentItems());
     }
         
     
@@ -108,7 +108,7 @@ class Paginator {
     public function PreciousPage() 
     {
         if ($this->_CurrentPage > 1)    {   $this->_CurrentPage = $this->_CurrentPage -1;   }
-        return ($this->_getCurrentItems());
+        return ($this->getCurrentItems());
     }
 } 
 ?>

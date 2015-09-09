@@ -123,11 +123,11 @@ class MemberController extends ActionController {
     {
         $paginator = new Paginator(Member::ListContactsGroups());
         $paginator->_setItemsPage(15);
-        $paginator->_setCurrentPage(1);
-        if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
-        $datas = $paginator->_getCurrentItems();
-        $CurPage = $paginator->_getCurrentPage();
-        $MaxPage = $paginator->_getNumPage();
+        $paginator->setCurrentPage(1);
+        if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->setCurrentPage($_POST['page']);  }
+        $datas = $paginator->getCurrentItems();
+        $CurPage = $paginator->getCurrentPage();
+        $MaxPage = $paginator->getNumPage();
         $translate = Registry::get('translate');
         $tabmini_contactsgroups = '<table class="pagination"><tr class="entete">' .
                                 '<td width="150px">' . $translate->translate("group_name") . '</td>' .
@@ -142,10 +142,10 @@ class MemberController extends ActionController {
         }
 
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->_getItemsPage());
-        if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tabmini_contactsgroups .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
+        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPage())+1;
+        $nLastItem = ($CurPage * $paginator->getItemsPage());
+        if ($nLastItem>$paginator->getItems())     {   $nLastItem = $paginator->getItems();   }
+        $tabmini_contactsgroups .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
         
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';

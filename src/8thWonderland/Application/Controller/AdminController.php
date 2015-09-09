@@ -21,19 +21,18 @@ use Wonderland\Application\Model\Ovh;
  **/
 class AdminController extends ActionController {   
     
-    public function display_consoleAction()
+    public function displayConsoleAction()
     {
         // affichage du profil
         $member = Member::getInstance();
         $this->viewParameters['identity'] = $member->identite;
         $this->viewParameters['avatar'] = $member->avatar;
-        $this->viewParameters['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('admin/console');
     }
     
     
-    public function quit_consoleAction()
-    {
+    public function quitConsoleAction() {
         Registry::delete("desktop");
         
         // Journal de log
@@ -41,68 +40,60 @@ class AdminController extends ActionController {
         $db_log = new Log("db");
         $db_log->log($member->identite . " quitte la console d'administration.", Log::INFO);
         
-        $this->redirect("intranet/index");
+        $this->redirect('intranet/index');
     }
     
     
-    public function display_logsAction()
-    {
-        $this->viewParameters['list_logs'] = $this->_renderLogs();
-        $this->viewParameters['translate'] = Registry::get("translate");
+    public function displayLogsAction() {
+        $this->viewParameters['list_logs'] = $this->renderLogs();
+        $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('admin/logs');
     }
         
     
-    public function display_usersAction()
-    {
-        $this->viewParameters['list_users'] = $this->_renderUsers();
-        $this->viewParameters['translate'] = Registry::get("translate");
+    public function displayUsersAction() {
+        $this->viewParameters['list_users'] = $this->renderUsers();
+        $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('admin/users');
     }
             
     
-    public function display_groupsAction()
-    {
-        $this->viewParameters['translate'] = Registry::get("translate");
+    public function displayGroupsAction() {
+        $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('admin/dev_inprogress');
     }
                 
     
-    public function display_serverAction()
-    {
-        $translate = Registry::get("translate");
-        $ovh = new Ovh();
-        $list_cron = $ovh->list_cron();
-        if (isset($list_cron)) {
-            $this->viewParameters['crons'] = $this->_renderCrons($list_cron);
-        } else {
-            $this->viewParameters['crons'] = '<div class="error" style="height:50px;"><table><tr>' .
-                                      '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
-                                      '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
-                                      '</tr></table></div>';
-        }
-        
+    public function displayServerAction() {
+        $translate = $this->application->get('translate');
+        $cronsList = (new Ovh())->list_cron();
+        $this->viewParameters['crons'] = 
+            (isset($cronsList))
+            ? $this->renderCrons($cronsList)
+            : 
+                '<div class="error" style="height:50px;"><table><tr>' .
+                '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
+                '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
+                '</tr></table></div>'
+        ;
         $this->viewParameters['translate'] = $translate;
         $this->render('admin/console_ovh');
     }
     
     
-    public function display_createcronAction()
-    {
-        $this->viewParameters['translate'] = Registry::get("translate");
+    public function displayCreateCronAction() {
+        $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('admin/create_cron');
     }
     
-    
-    public function display_statsCountryAction()
-    {
-        $db = Registry::get('db');
-        $translate = Registry::get("translate");
-        $desktop = Registry::get("desktop");
+    public function displayStatsCountryAction() {
+        $db = $this->application->get('mysqli');
+        $translate = $this->application->get('translate');
+        $desktop = Registry::get('desktop');
         if (isset($desktop) && $desktop == 1)   {
             $member = Member::getInstance();
             $lang = $member->langue;
-            $regionUnknown = $db->select("SELECT " . $lang . ", Pays FROM Utilisateurs, country WHERE Region = -1 AND Pays=code");
+            $regionUnknown = $db->select("SELECT $lang, Pays FROM Utilisateurs, country WHERE Region = -1 AND Pays=code");
             $this->viewParameters['stats_regions_other'] = "<table><tr><td>" . $translate->translate('stats_region_unknown') . "</td></tr>";
             for ($i=0; $i<count($regionUnknown); $i++) {
                 $this->viewParameters['stats_regions_other'] .= "<tr><td>- " . $regionUnknown[$i][$lang] . " (" . $regionUnknown[$i]['Pays'] . ")</td></tr>";
@@ -110,8 +101,7 @@ class AdminController extends ActionController {
             $this->viewParameters['stats_regions_other'] .= "</table>";
             $this->viewParameters['desktop'] = 1;
         }
-        $regions_ok = $db->count("Utilisateurs", " WHERE Region > 0");
-        
+        $regions_ok = $db->count('Utilisateurs', ' WHERE Region > 0');
         
         $this->viewParameters['stats_members'] = Member::Nb_Members();
         $this->viewParameters['stats_members_actives'] = Member::Nb_ActivesMembers();
@@ -121,21 +111,15 @@ class AdminController extends ActionController {
         $this->render("informations/stats_country");
     }
     
-    
-    // Ajout d'une tache CRON
-    // ======================
-    public function add_cronAction()
-    {
-        $translate = Registry::get("translate");
-        $err_msg = "";
+    public function addCronAction() {
+        $translate = $this->application->get('translate');
+        $err_msg = '';
         
-        if (!isset($_POST['cron_file']) || empty($_POST['cron_file']) || !isset($_POST['cron_desc']) || empty($_POST['cron_desc']) || 
-            !isset($_POST['cron_day']) || empty($_POST['cron_day']) || count($_POST) <7)
+        if (empty($_POST['cron_file']) || empty($_POST['cron_desc']) || empty($_POST['cron_day']) || count($_POST) < 7)
         {
             $err_msg = $translate->translate('fields_empty');
         } else {
-            $ovh = new myovh();
-            $id_cron = $ovh->add_cron($_POST);
+            $id_cron = (new myovh())->addCron($_POST);
             switch ($id_cron) {
                 case -1:
                     $err_msg = $translate->translate('file_notfound');
@@ -160,14 +144,9 @@ class AdminController extends ActionController {
         }
     }
     
-    
-    // Suppression d'une tache cron
-    // ============================
-    public function delete_cronAction()
-    {
-        $translate = Registry::get("translate");
-        $ovh = new myovh();
-        $res = $ovh->delete_cron($_POST['cronid'], $_POST['crondesc']);
+    public function deleteCronAction() {
+        $translate = $this->application->get('translate');
+        $res = (new myovh())->deleteCron($_POST['cronid'], $_POST['crondesc']);
         if (isset($res)) {
             if ($res == false) {
                 $this->display('<div class="error" style="height:25px;"><table><tr>' .
@@ -187,128 +166,141 @@ class AdminController extends ActionController {
         $this->viewParameters['translate'] = $translate;
     }
     
-    
-    // Modification d'une tache cron
-    // =============================
-    public function edit_cronAction()
-    {
+    public function editCronAction() {
         $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
     }
     
-    
-    // Mise en page tabulaire de la liste des logs
-    // ===========================================
-    protected function _renderCrons($cron)
-    {
+    /**
+     * @param string $cron
+     * @return string
+     */
+    protected function renderCrons($cron) {
         $paginator = new Paginator($cron);
-        $paginator->_setCurrentPage(1);
-        if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
-        $datas = $paginator->_getCurrentItems();
-        $CurPage = $paginator->_getCurrentPage();
-        $MaxPage = $paginator->_getNumPage();
-        $translate = Registry::get("translate");
+        $paginator->setCurrentPage(1);
+        if (!empty($_POST['page'])) {
+            $paginator->setCurrentPage($_POST['page']);
+        }
+        $datas = $paginator->getCurrentItems();
+        $CurPage = $paginator->getCurrentPage();
+        $MaxPage = $paginator->getNumPage();
+        $translate = $this->application->get('translate');
                 
-        $tab_crons = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
-                    '<td width="20px">' . $translate->translate("cron_id") . '</td>' .
-                    '<td>' . $translate->translate("cron_file") . '</td>' .
-                    '<td>' . $translate->translate("cron_description") . '</td>' .
-                    '<td width="40px">' . $translate->translate("cron_active") . '</td>' .
-                    '<td></td>' .
-                    '</tr>';
+        $tab_crons =
+            '<table id="pagination_motions" class="pagination"><tr class="entete">' .
+            '<td width="20px">' . $translate->translate('cron_id') . '</td>' .
+            '<td>' . $translate->translate('cron_file') . '</td>' .
+            '<td>' . $translate->translate('cron_description') . '</td>' .
+            '<td width="40px">' . $translate->translate('cron_active') . '</td>' .
+            '<td></td></tr>'
+        ;
         
         foreach($datas as $key => $row) {
             $tab_crons .= "<tr style='height:25px'>";
             foreach($row as $key => $value) {
-                if ($key != "email") {
-                    $tab_crons .= "<td>" . $this->_filterCrons($key, $value) . "</td>";
+                if ($key != 'email') {
+                    $tab_crons .= "<td>{$this->filterCrons($key, $value)}</td>";
                 }
             }
             $array = get_object_vars($row);
-            $tab_crons .= "<td><a onclick=\"Clic('/admin/edit_cron', 'idcron=" . $array['id'] . "', 'server_infoaction'); return false;\">" .
-                          "<img width='24' src='" . ICO_PATH . "32x32/edit.png'/></a>" .
-                          "<a onclick=\"Clic('/admin/delete_cron', 'cronid=" . $array['id'] . "&crondesc=" . $array['desc'] . "', 'server_infoaction'); return false;\">" .
-                          "<img width='24' src='" . ICO_PATH . "32x32/delete.png'/></a></td>";
-            $tab_crons .= "</tr>";
+            $tab_crons .=
+                "<td><a onclick=\"Clic('/admin/edit_cron', 'idcron=" . $array['id'] . "', 'server_infoaction'); return false;\">" .
+                "<img width='24' src='" . ICO_PATH . "32x32/edit.png'/></a>" .
+                "<a onclick=\"Clic('/admin/delete_cron', 'cronid=" . $array['id'] . "&crondesc=" . $array['desc'] . "', 'server_infoaction'); return false;\">" .
+                "<img width='24' src='" . ICO_PATH . "32x32/delete.png'/></a></td></tr>"
+            ;
         }
-        
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->_getItemsPage());
-        if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_crons .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
+        $itemsPage = $paginator->getItemsPage();
+        $nFirstItem = (($CurPage - 1) * $itemsPage) + 1;
+        $nLastItem = ($CurPage * $itemsPage);
+        
+        $items = $paginator->getItems();
+        if ($nLastItem > $items) {
+            $nLastItem = $items;
+        }
+        $tab_crons .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
-        if ($CurPage > 1)
-        {
+        if ($CurPage > 1) {
             $previous = '<a onclick="Clic(\'/admin/display_server\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_crons .= '<td colspan="4" style="padding-right:15px;" align="right">' . $previous . ' | ';
-        $start = $CurPage - $paginator->_getPageRange();
-        $end = $CurPage + $paginator->_getPageRange();
-        if ($start<1)   {   $start =1;  }
-        if ($end > $MaxPage) {   $end = $MaxPage;     }
+        $pageRange = $paginator->getPageRange();
+        $start = $CurPage - $pageRange;
+        $end = $CurPage + $pageRange;
+        if ($start < 1) {
+            $start = 1;
+        }
+        if ($end > $MaxPage) {
+            $end = $MaxPage;
+        }
         
-        for ($page=$start; $page<$end+1; $page++) {
-            if ($page != $CurPage)
-            {
-                $tab_crons .= '<a onclick="Clic(\'/admin/display_server\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | ';
-            }
-            else
-            {
-                $tab_crons .= '<b>' . $page . '</b> | ';
-            }
+        for ($page = $start; $page < $end + 1; ++$page) {
+            $tab_crons .=
+                ($page != $CurPage)
+                ? '<a onclick="Clic(\'/admin/display_server\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                : $tab_crons .= '<b>' . $page . '</b> | '
+            ;
         }
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         
         // Bouton suivant
-        if ($CurPage < $MaxPage)
-        {
+        if ($CurPage < $MaxPage) {
             $next = '<a onclick="Clic(\'/admin/display_server\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
-        $tab_crons .= $next . '</td></tr></table>' .
-                      "<div class='bouton' style='width:120px;'><a onclick=\"Clic('/admin/display_createcron', '', 'milieu_milieu'); return false;\">" .
-                      "<span style='color: #dfdfdf;'>" . $translate->translate('btn_addcron') . "</span></a></div>";
-        
-        return $tab_crons;
+        return 
+            $tab_crons . $next . '</td></tr></table>' .
+            "<div class='bouton' style='width:120px;'><a onclick=\"Clic('/admin/display_createcron', '', 'milieu_milieu'); return false;\">" .
+            "<span style='color: #dfdfdf;'>" . $translate->translate('btn_addcron') . "</span></a></div>"
+        ;
     }
     
-    
-    // Mise en page tabulaire de la liste des logs
-    // ===========================================
-    protected function _renderLogs()
+    /**
+     * @return string
+     */
+    protected function renderLogs()
     {
         $paginator = new Paginator(Log::display_dblogs());
-        $paginator->_setCurrentPage(1);
-        if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
-        $datas = $paginator->_getCurrentItems();
-        $CurPage = $paginator->_getCurrentPage();
-        $MaxPage = $paginator->_getNumPage();
-        $translate = Registry::get("translate");
+        $paginator->setCurrentPage(1);
+        if (!empty($_POST['page'])) {
+            $paginator->setCurrentPage($_POST['page']);
+        }
+        $datas = $paginator->getCurrentItems();
+        $CurPage = $paginator->getCurrentPage();
+        $MaxPage = $paginator->getNumPage();
         
-        $tab_logs = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
-                    '<td width="20px">' . $translate->translate("logs_level") . '</td>' .
-                    '<td width="150px">' . $translate->translate("logs_date") . '</td>' .
-                    '<td>' . $translate->translate("logs_description") . '</td>' .
-                    '</tr>';
+        $translate = $this->application->get('translate');
+        
+        $tab_logs =
+            '<table id="pagination_motions" class="pagination"><tr class="entete">' .
+            '<td width="20px">' . $translate->translate("logs_level") . '</td>' .
+            '<td width="150px">' . $translate->translate("logs_date") . '</td>' .
+            '<td>' . $translate->translate("logs_description") . '</td></tr>'
+        ;
         
         foreach($datas as $key => $row) {
             $tab_logs .= "<tr style='height:25px'>";
             foreach($row as $key => $value) {
-                if ($key != "Motion_id") {
-                    $tab_logs .= "<td>" . $this->_filterLogs($key, $value) . "</td>";
+                if ($key !== 'Motion_id') {
+                    $tab_logs .= "<td>{$this->filterLogs($key, $value)}</td>";
                 }
             }
             $tab_logs .= "</tr>";
         }
         
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->_getItemsPage());
-        if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_logs .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
+        $itemsPage = $paginator->getItemsPage();
+        $nFirstItem = (($CurPage - 1) * $itemsPage) + 1;
+        $nLastItem = ($CurPage * $itemsPage);
+        
+        $items = $paginator->getItems();
+        if ($nLastItem > $items) {
+            $nLastItem = $items;
+        }
+        $tab_logs .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
@@ -317,192 +309,191 @@ class AdminController extends ActionController {
             $previous = '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_logs .= '<td style="padding-right:15px;" align="right">' . $previous . ' | ';
-        $start = $CurPage - $paginator->_getPageRange();
-        $end = $CurPage + $paginator->_getPageRange();
-        if ($start<1)   {   $start =1;  }
-        if ($end > $MaxPage) {   $end = $MaxPage;     }
         
-        for ($page=$start; $page<$end+1; $page++) {
-            if ($page != $CurPage)
-            {
-                $tab_logs .= '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | ';
-            }
-            else
-            {
-                $tab_logs .= '<b>' . $page . '</b> | ';
-            }
+        $pageRange = $paginator->getPageRange();
+        $start = $CurPage - $pageRange;
+        $end = $CurPage + $pageRange;
+        
+        if ($start<1) {
+            $start = 1;
+        }
+        if ($end > $MaxPage) {
+            $end = $MaxPage;
+        }
+        
+        for ($page = $start; $page<$end + 1; ++$page) {
+            $tab_logs .=
+                ($page !== $CurPage)
+                ? '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                : '<b>' . $page . '</b> | '
+            ;
         }
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         
         // Bouton suivant
-        if ($CurPage < $MaxPage)
-        {
+        if ($CurPage < $MaxPage) {
             $next = '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
-        
-        $tab_logs .= $next . '</td></tr></table>';
-        
-        return $tab_logs;
+        return $tab_logs . $next . '</td></tr></table>';
     }
         
-    
-    // Mise en page tabulaire de la liste des logs
-    // ===========================================
-    protected function _renderUsers()
-    {
+    /**
+     * @return string
+     */
+    protected function renderUsers() {
         $paginator = new Paginator(members::ListMembers());
-        $paginator->_setCurrentPage(1);
-        if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->_setCurrentPage($_POST['page']);  }
-        $datas = $paginator->_getCurrentItems();
-        $CurPage = $paginator->_getCurrentPage();
-        $MaxPage = $paginator->_getNumPage();
-        $translate = Registry::get("translate");
+        $paginator->setCurrentPage(1);
+        if (!empty($_POST['page'])) {
+            $paginator->setCurrentPage($_POST['page']);
+        }
         
-        $tab_users = '<table id="pagination_users" class="pagination"><tr class="entete">' .
-                    '<td width="50px">' . $translate->translate("avatar") . '</td>' .
-                    '<td width="200px">' . $translate->translate("identity") . '</td>' .
-                    '<td width="50px">' . $translate->translate("gender") . '</td>' .
-                    '<td width="200px">' . $translate->translate("mail") . '</td>' .
-                    '<td width="50px">' . $translate->translate("lang") . '</td>' .
-                    '<td width="150px">' . $translate->translate("country") . '</td>' .
-                    '<td width="150px">' . $translate->translate("region") . '</td>' .
-                    '<td width="150px">' . $translate->translate("last_connexion") . '</td>' .
-                    '<td width="150px">' . $translate->translate("subscription") . '</td>' .
-                    '</tr>';
+        $datas = $paginator->getCurrentItems();
+        $CurPage = $paginator->getCurrentPage();
+        $MaxPage = $paginator->getNumPage();
+        
+        $translate = $this->application->get('translate');
+        
+        $tab_users =
+            '<table id="pagination_users" class="pagination"><tr class="entete">' .
+            '<td width="50px">' . $translate->translate("avatar") . '</td>' .
+            '<td width="200px">' . $translate->translate("identity") . '</td>' .
+            '<td width="50px">' . $translate->translate("gender") . '</td>' .
+            '<td width="200px">' . $translate->translate("mail") . '</td>' .
+            '<td width="50px">' . $translate->translate("lang") . '</td>' .
+            '<td width="150px">' . $translate->translate("country") . '</td>' .
+            '<td width="150px">' . $translate->translate("region") . '</td>' .
+            '<td width="150px">' . $translate->translate("last_connexion") . '</td>' .
+            '<td width="150px">' . $translate->translate("subscription") . '</td></tr>'
+        ;
         
         foreach($datas as $key => $row) {
             $tab_users .= "<tr style='height:25px'>";
             foreach($row as $key => $value) {
                 if ($key != "iduser") {
-                    $tab_users .= "<td>" . $this->_filterUsers($key, $value) . "</td>";
+                    $tab_users .= "<td>" . $this->filterUsers($key, $value) . "</td>";
                 }
             }
             $tab_users .= "</tr>";
         }
         
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->_getItemsPage());
-        if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
+        $itemsPage = $paginator->getItemsPage();
+        $nFirstItem = (($CurPage - 1) * $itemsPage) + 1;
+        $nLastItem = ($CurPage * $itemsPage);
+        
+        $items = $paginator->getItems();
+        if ($nLastItem > $items) {
+            $nLastItem = $items;
+        }
+        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
-        if ($CurPage > 1)
-        {
+        if ($CurPage > 1) {
             $previous = '<a onclick="Clic(\'/admin/display_users\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_users .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
-        $start = $CurPage - $paginator->_getPageRange();
-        $end = $CurPage + $paginator->_getPageRange();
-        if ($start<1)   {   $start =1;  }
-        if ($end > $MaxPage) {   $end = $MaxPage;     }
         
-        for ($page=$start; $page<$end+1; $page++) {
-            if ($page != $CurPage)
-            {
-                $tab_users .= '<a onclick="Clic(\'/admin/display_users\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | ';
-            }
-            else
-            {
-                $tab_users .= '<b>' . $page . '</b> | ';
-            }
+        $pageRange = $paginator->getPageRange();
+        $start = $CurPage - $pageRange;
+        $end = $CurPage + $pageRange;
+        
+        if ($start < 1) {
+            $start = 1;
+        }
+        if ($end > $MaxPage) {
+            $end = $MaxPage;
+        }
+        
+        for ($page = $start; $page < $end + 1; ++$page) {
+            $tab_users .=
+                ($page !== $CurPage)
+                ? '<a onclick="Clic(\'/admin/display_users\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                : $tab_users .= '<b>' . $page . '</b> | '
+            ;
         }
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         
         // Bouton suivant
-        if ($CurPage < $MaxPage)
-        {
+        if ($CurPage < $MaxPage) {
             $next = '<a onclick="Clic(\'/admin/display_users\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
-        
-        $tab_users .= $next . '</td></tr></table>';
-        
-        return $tab_users;
+        return $tab_users . $next . '</td></tr></table>';
     }
         
     
     // Affichage du filtre de données si il existe
     // ===========================================
-    protected function _filterLogs($key, $value)
+    protected function filterLogs($key, $value)
     {
-        $key = strtolower($key);
-        switch($key) {
-            case "label_key":
-                $translate = Registry::get("translate");
-                $value = $translate->translate($value);
-                break;
+        if(strtolower($key) === 'label_key') {
+            $value = $this->application->get('translate')->translate($value);
         }
-        
         return $value;
     }
             
     
     // Affichage du filtre de données si il existe
     // ===========================================
-    protected function _filterUsers($key, $value)
+    protected function filterUsers($key, $value)
     {
         $key = strtolower($key);
         switch($key) {
-            case "avatar":
+            case 'avatar':
                 $value = '<img width="50" alt="Avatar" src="' . $value . '">';
                 break;
             
-            case "identite":
+            case 'identite':
                 $value = utf8_encode($value);
                 break;
             
-            case "sexe":
+            case 'sexe':
                 $value = ($value==1?'M':'F');
                 break;
             
-            case "pays":
-                $db = Registry::get('db');
+            case 'pays':
+                $db = $this->application->get('mysqli');
                 $member = Member::getInstance();
                 $lang = $member->langue;
-                $res = $db->select("SELECT " . $lang . " FROM country WHERE code = '" . $value . "' LIMIT 1");
-                if (count($res) >0)    {   $value = $res[0][$lang];                }
-                else                
-                {
-                    $translate = Translate::getInstance();
-                    $value = $translate->translate("unknown");
-                }
+                $res = $db->select("SELECT $lang FROM country WHERE code = '$value' LIMIT 1");
+                $value =
+                    (count($res) > 0)
+                    ? $res[0][$lang]
+                    : $this->application->get('translate')->translate('unknown')
+                ;
                 break;
             
-            case "region":
-                $db = Registry::get('db');
+            case 'region':
+                $db = $this->application->get('db');
                 $member = Member::getInstance();
                 $lang = $member->langue;
-                $res = $db->select("SELECT Name FROM regions WHERE Region_id = " . $value . " LIMIT 1");
-                if (count($res) >0 && $value >0)    {   $value = utf8_encode($res[0]['Name']);        }
-                else                
-                {
-                    $translate = Translate::getInstance();
-                    $value = $translate->translate("unknown");
-                }
+                $res = $db->select("SELECT Name FROM regions WHERE Region_id = $value LIMIT 1");
+                $value =
+                    (count($res) >0 && $value >0)
+                    ? utf8_encode($res[0]['Name'])
+                    : $this->application->get('translate')->translate('unknown')
+                ;
                 break;
         }
         
         return $value;
     }
-                
     
-    // Affichage du filtre de données si il existe
-    // ===========================================
-    protected function _filterCrons($key, $value)
-    {
-        $key = strtolower($key);
-        switch($key) {
-            case "desc":
-                $value = utf8_encode($value);
-                break;
-                
-            case "enabled":
-                if ($value == 1)        {   $value = '<img width="16" alt="active" src="' . ICO_PATH . '32x32/valid.png">';        }
-                else                    {   $value = '<img width="16" alt="inactive" src="' . ICO_PATH . '32x32/echec.png">';      }
-                break;
+    /**
+     * @param string $key
+     * @param string $value
+     * @return string
+     */
+    protected function filterCrons($key, $value) {
+        switch(strtolower($key)) {
+            case 'desc':
+                return utf8_encode($value);
+            case 'enabled':
+                return
+                    ($value === 1)
+                    ? '<img width="16" alt="active" src="' . ICO_PATH . '32x32/valid.png">'
+                    : '<img width="16" alt="inactive" src="' . ICO_PATH . '32x32/echec.png">'
+                ;
         }
-        
-        return $value;
     }
 }
