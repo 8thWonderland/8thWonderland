@@ -63,6 +63,16 @@ class Application {
     }
     
     /**
+     * Shortcut to get a container item
+     * 
+     * @param string $item
+     * @return mixed
+     */
+    public function get($item) {
+        return $this->container[$item];
+    }
+    
+    /**
      * @return \Pimple\Container
      */
     public function getContainer() {
