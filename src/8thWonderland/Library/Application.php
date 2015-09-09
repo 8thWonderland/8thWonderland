@@ -22,20 +22,10 @@ class Application {
     /** @var Pimple\Container **/
     protected $container;
     
-    /**
-     * @param string $environment
-     */
-    public function __construct()
-    {
-        // Gestion des sessions - memory_registry
-        Registry::start();
-    }
-    
     public function init($environment = 'production', $options = []) {
         $this->setRootPath();
         $this->setContainer();
         $this->setConfig($environment, $options);
-        $this->setPlugins();
     }
     
     /**
@@ -55,8 +45,8 @@ class Application {
         
         while($key = key($services)) {
             $service = $services[$key];
-            $this->container[$key] = function($c) use ($service) {
-                return new $service['class']();
+            $this->container[$key] = function($c) use ($service, $this) {
+                return new $service['class']($this);
             };
             next($services);
         }
@@ -112,15 +102,6 @@ class Application {
      */
     public function getConfig() {
         return $this->config;
-    }
-    
-
-    // Initialisation des plugins (translate, db, logs, mail, etc .....)
-    // =================================================================
-    private function setPlugins()
-    {
-        Registry::set('db', new Mysqli());
-        Registry::set('translate', new Translate($this->config->getOption('language')));
     }
     
     
