@@ -8,8 +8,6 @@ use Wonderland\Library\Memory\Registry;
 
 use Wonderland\Library\Plugin\Paginator;
 
-use Wonderland\Library\Translate;
-
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Ovh;
 
