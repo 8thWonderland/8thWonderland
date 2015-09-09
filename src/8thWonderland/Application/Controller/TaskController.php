@@ -30,7 +30,7 @@ class TaskController extends ActionController {
             case 1:
                 $this->display('<div class="info" style="height:50px;"><table><tr>' .
                                '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
-                               '<td><span style="font-size: 15px;">' . $translate->msg('create_task_ok') . '</span></td>' .
+                               '<td><span style="font-size: 15px;">' . $translate->translate('create_task_ok') . '</span></td>' .
                                '</tr></table></div>' .
                                '<script type="text/javascript">Clic("/tasks/display_tasksinprogress", "id_group=' . $_POST['id_group'] . '", "milieu_gauche");</script>');
                 break;
@@ -38,14 +38,14 @@ class TaskController extends ActionController {
             case 0:
                 $this->display('<div class="info" style="height:50px;"><table><tr>' .
                                '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
-                               '<td><span style="font-size: 15px;">' . $translate->msg('create_task_nok') . '</span></td>' .
+                               '<td><span style="font-size: 15px;">' . $translate->translate('create_task_nok') . '</span></td>' .
                                '</tr></table></div>');
                 break;
             
             case -1:
                 $this->display('<div class="error" style="height:50px;"><table><tr>' .
                                '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
-                               '<td><span style="font-size: 15px;">' . $translate->msg('fields_empty') . '</span></td>' .
+                               '<td><span style="font-size: 15px;">' . $translate->translate('fields_empty') . '</span></td>' .
                                '</tr></table></div>');
                 break;
         }
@@ -59,7 +59,7 @@ class TaskController extends ActionController {
         if (ManageTasks::delete_task($_POST['task_id']) > 0) {
             $this->display('<div class="info" style="height:50px;"><table><tr>' .
                            '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
-                           '<td><span style="font-size: 15px;">' . $translate->msg('delete_task_ok') . '</span></td>' .
+                           '<td><span style="font-size: 15px;">' . $translate->translate('delete_task_ok') . '</span></td>' .
                            '</tr></table></div>' .
                            '<script type="text/javascript">Clic("/tasks/display_tasksinprogress", "id_group=' . $_POST['id_group'] . '", "milieu_gauche");</script>');
         }
@@ -67,7 +67,7 @@ class TaskController extends ActionController {
         {
             $this->display('<div class="error" style="height:50px;"><table><tr>' .
                            '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
-                           '<td><span style="font-size: 15px;">' . $translate->msg('delete_task_nok') . '</span></td>' .
+                           '<td><span style="font-size: 15px;">' . $translate->translate('delete_task_nok') . '</span></td>' .
                            '</tr></table></div>');
 
             // Journal de log
@@ -130,12 +130,12 @@ class TaskController extends ActionController {
                             "<td>" . $date_fin . "</td>" .
                             "<td>" . utf8_encode($task['identite']) . "</td>" .
                             "<td><div class='bouton'><a onclick=\"Clic('/tasks/display_detailstask', 'task_id=" . $task['idtask'] . "&id_group=" . $_POST['id_group'] . "', 'milieu_milieu'); return false;\">" .
-                            "<span style='color: #dfdfdf;'>" . $translate->msg('btn_detailstask') . "</span></a></div></td>" .
+                            "<span style='color: #dfdfdf;'>" . $translate->translate('btn_detailstask') . "</span></a></div></td>" .
                             "</tr>";
             }
         }
         else {
-            $reponse .= "<tr><td>" . $translate->msg('no_result') . "</td></tr>";
+            $reponse .= "<tr><td>" . $translate->translate('no_result') . "</td></tr>";
         }
         
         return $reponse;

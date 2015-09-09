@@ -267,7 +267,7 @@ class Member {
                 } else
                 {
                     $translate = Registry::get("translate");
-                    $translate->setLangUser($value);
+                    $translate->setUserLang($value);
                 }
                 return $db->affected_rows;
             } else {    return 0;   }

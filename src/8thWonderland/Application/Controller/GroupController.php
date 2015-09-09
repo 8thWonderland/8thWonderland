@@ -40,12 +40,12 @@ class GroupController extends ActionController {
             while ($group = $list_groups->fetch_assoc()) {
                 $reponse .= "<tr><td>" . utf8_encode($group['Group_name']) . "</td>" .
                             "<td><div class='bouton' style='margin:3px;'><a onclick=\"Clic('/intranet/index', 'group_id=" . $group['Group_id'] . "', 'body'); return false;\">" .
-                                "<span style='color: #dfdfdf;'>" . $translate->msg('btn_enterdesktop') . "</span></a></div></td>";
+                                "<span style='color: #dfdfdf;'>" . $translate->translate('btn_enterdesktop') . "</span></a></div></td>";
                 $reponse .= "</tr>";
             }
         }
         else {
-            $reponse = "<tr><td>" . $translate->msg('no_result') . "</td></tr>";
+            $reponse = "<tr><td>" . $translate->translate('no_result') . "</td></tr>";
         }
 
         $this->_view['list_groups'] = $reponse;
@@ -67,8 +67,8 @@ class GroupController extends ActionController {
         $MaxPage = $paginator->_getNumPage();
         $translate = Registry::get('translate');
         $tabmini_usersgroup =   '<table class="pagination"><tr class="entete">' .
-                                '<td>' . $translate->msg("identity") . '</td>' .
-                                '<td width="140px">' . $translate->msg("last_connexion") . '</td>' .
+                                '<td>' . $translate->translate("identity") . '</td>' .
+                                '<td width="140px">' . $translate->translate("last_connexion") . '</td>' .
                                 '</tr>';
 
         foreach($datas as $key => $row) {
@@ -82,20 +82,20 @@ class GroupController extends ActionController {
         $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
         $nLastItem = ($CurPage * $paginator->_getItemsPage());
         if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tabmini_usersgroup .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->msg('item_of') . $paginator->_getItems() . '</td>';
+        $tabmini_usersgroup .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
         
         // boutons precedent
-        $previous = '<span class="disabled">' . $translate->msg('page_previous') . '</span>';
+        $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/groups/display_members\', \'&page=' . ($CurPage-1) . '\', \'md_section2\'); return false;">' . $translate->msg('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/groups/display_members\', \'&page=' . ($CurPage-1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tabmini_usersgroup .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         // Bouton suivant
-        $next = '<span class="disabled">' . $translate->msg('page_next') . '</span>';
+        $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage)
         {
-            $next = '<a onclick="Clic(\'/groups/display_members\', \'&page=' . ($CurPage+1) . '\', \'md_section2\'); return false;">' . $translate->msg('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/groups/display_members\', \'&page=' . ($CurPage+1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tabmini_usersgroup .= $next . '</td></tr></table>';
@@ -168,7 +168,7 @@ class GroupController extends ActionController {
         if (!isset($_POST['sel_contactgroups']) || intval($_POST['sel_contactgroups']) == 0) {
             $this->display('<div class="error" style="height:25px;"><table><tr>' .
                           '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
-                          '<td><span style="font-size: 15px;">' . $translate->msg('error') . '</span></td>' .
+                          '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
                           '</tr></table></div>');
             
             // log d'échec de mise à jour
@@ -179,7 +179,7 @@ class GroupController extends ActionController {
             if ($res ==0) {
                 $this->display('<div class="error" style="height:25px;"><table><tr>' .
                           '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
-                          '<td><span style="font-size: 15px;">' . $translate->msg('error') . '</span></td>' .
+                          '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
                           '</tr></table></div>');
                 
                 // log d'échec de mise à jour
@@ -212,12 +212,12 @@ class GroupController extends ActionController {
         $translate = Registry::get("translate");
         
         $tab_groups = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
-                      '<td>' . $translate->msg("group_name") . '</td>' .
-                      '<td>' . $translate->msg("group_description") . '</td>' .
-                      '<td>' . $translate->msg("group_contact") . '</td>' .
-                      '<td>' . $translate->msg("group_datecreation") . '</td>' .
-                      '<td>' . $translate->msg("group_type") . '</td>' .
-                      '<td>' . $translate->msg("group_nbmembers") . '</td>' .
+                      '<td>' . $translate->translate("group_name") . '</td>' .
+                      '<td>' . $translate->translate("group_description") . '</td>' .
+                      '<td>' . $translate->translate("group_contact") . '</td>' .
+                      '<td>' . $translate->translate("group_datecreation") . '</td>' .
+                      '<td>' . $translate->translate("group_type") . '</td>' .
+                      '<td>' . $translate->translate("group_nbmembers") . '</td>' .
                       '</tr>';
         
         foreach($datas as $key => $row) {
@@ -235,13 +235,13 @@ class GroupController extends ActionController {
         $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
         $nLastItem = ($CurPage * $paginator->_getItemsPage());
         if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_groups .= '<tr class="pied"><td align="left" colspan="3">' . $nFirstItem . '-' . $nLastItem . $translate->msg('item_of') . $paginator->_getItems() . '</td>';
+        $tab_groups .= '<tr class="pied"><td align="left" colspan="3">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
-        $previous = '<span class="disabled">' . $translate->msg('page_previous') . '</span>';
+        $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/groups/display_groups\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/groups/display_groups\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_groups .= '<td colspan="3" style="padding-right:15px;" align="right">' . $previous . ' | ';
         $start = $CurPage - $paginator->_getPageRange();
@@ -259,12 +259,12 @@ class GroupController extends ActionController {
                 $tab_groups .= '<b>' . $page . '</b> | ';
             }
         }
-        $next = '<span class="disabled">' . $translate->msg('page_next') . '</span>';
+        $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         
         // Bouton suivant
         if ($CurPage < $MaxPage)
         {
-            $next = '<a onclick="Clic(\'/groups/display_groups\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/groups/display_groups\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tab_groups .= $next . '</td></tr></table>';
@@ -297,15 +297,15 @@ class GroupController extends ActionController {
         }
         
         $tab_users = '<table id="pagination_users" class="pagination"><tr class="entete">' .
-                    '<td width="50px">' . $translate->msg("avatar") . '</td>' .
-                    '<td width="200px">' . $translate->msg("identity") . '</td>' .
-                    '<td width="50px">' . $translate->msg("gender") . '</td>' .
-                    '<td width="200px">' . $translate->msg("mail") . '</td>' .
-                    '<td width="50px">' . $translate->msg("lang") . '</td>' .
-                    '<td width="150px">' . $translate->msg("country") . '</td>' .
-                    '<td width="150px">' . $translate->msg("region") . '</td>' .
-                    '<td width="150px">' . $translate->msg("last_connexion") . '</td>' .
-                    '<td width="150px">' . $translate->msg("subscription") . '</td>' .
+                    '<td width="50px">' . $translate->translate("avatar") . '</td>' .
+                    '<td width="200px">' . $translate->translate("identity") . '</td>' .
+                    '<td width="50px">' . $translate->translate("gender") . '</td>' .
+                    '<td width="200px">' . $translate->translate("mail") . '</td>' .
+                    '<td width="50px">' . $translate->translate("lang") . '</td>' .
+                    '<td width="150px">' . $translate->translate("country") . '</td>' .
+                    '<td width="150px">' . $translate->translate("region") . '</td>' .
+                    '<td width="150px">' . $translate->translate("last_connexion") . '</td>' .
+                    '<td width="150px">' . $translate->translate("subscription") . '</td>' .
                     '</tr>';
         
         foreach($datas as $key => $row) {
@@ -325,13 +325,13 @@ class GroupController extends ActionController {
         $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
         $nLastItem = ($CurPage * $paginator->_getItemsPage());
         if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->msg('item_of') . $paginator->_getItems() . '</td>';
+        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
-        $previous = '<span class="disabled">' . $translate->msg('page_previous') . '</span>';
+        $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/groups/display_adressbook\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/groups/display_adressbook\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_users .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         $start = $CurPage - $paginator->_getPageRange();
@@ -349,12 +349,12 @@ class GroupController extends ActionController {
                 $tab_users .= '<b>' . $page . '</b> | ';
             }
         }
-        $next = '<span class="disabled">' . $translate->msg('page_next') . '</span>';
+        $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         
         // Bouton suivant
         if ($CurPage < $MaxPage)
         {
-            $next = '<a onclick="Clic(\'/groups/display_adressbook\', \'page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/groups/display_adressbook\', \'page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tab_users .= $next . '</td></tr></table>';
@@ -416,7 +416,7 @@ class GroupController extends ActionController {
                 else                
                 {
                     $translate = Translate::getInstance();
-                    $value = $translate->msg("unknown");
+                    $value = $translate->translate("unknown");
                 }
                 break;
             
@@ -429,7 +429,7 @@ class GroupController extends ActionController {
                 else                
                 {
                     $translate = Translate::getInstance();
-                    $value = $translate->msg("unknown");
+                    $value = $translate->translate("unknown");
                 }
                 break;
             

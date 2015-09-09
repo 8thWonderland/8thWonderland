@@ -13,7 +13,7 @@ class MailController extends ActionController {
     public function envoiAction()
     {
         $translate = Registry::get("translate");
-        $this->contact_status = $translate->msg('mail_ok');
+        $this->contact_status = $translate->translate('mail_ok');
         $this->_process();
 
         $this->_view['translate'] = $translate;
@@ -29,11 +29,11 @@ class MailController extends ActionController {
         $Modele = "/\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/";
         preg_match($Modele, $email, $res);
         
-        if (!$res || $res[0] != $email || empty($email))	{   $this->contact_status = Registry::get("translate")->msg('mail_invalide');     }
+        if (!$res || $res[0] != $email || empty($email))	{   $this->contact_status = Registry::get("translate")->translate('mail_invalide');     }
         else
         {
             list($user, $domain) = explode("@",$email);
-            if(!getmxrr($domain, $MXHost))		{   $this->contact_status = Registry::get("translate")->msg('mail_invalide');	}
+            if(!getmxrr($domain, $MXHost))		{   $this->contact_status = Registry::get("translate")->translate('mail_invalide');	}
             else {
                 $mail = Mailer::getInstance();
                 $mail -> addrecipient('developpeurs@8thwonderland.com','');

@@ -188,8 +188,8 @@ class IntranetController extends ActionController {
         } else {
             $translate = Registry::get("translate");
             $this->_view['translate'] = $translate;
-            $this->_view['msg'] = $translate->msg('fields_empty');
-            $this->display(json_encode(array("status" => 2, "reponse" => $translate->msg('fields_empty'))));
+            $this->_view['msg'] = $translate->translate('fields_empty');
+            $this->display(json_encode(array("status" => 2, "reponse" => $translate->translate('fields_empty'))));
         }
     }
     

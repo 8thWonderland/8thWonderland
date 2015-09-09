@@ -39,9 +39,9 @@ class MessagingController extends ActionController {
         $MaxPage = $paginator->_getNumPage();
         $translate = Registry::get('translate');
         $tab_receivedmsg =   '<table class="pagination"><tr class="entete">' .
-                             '<td>' . $translate->msg("title_message") . '</td>' .
-                             '<td width="140px">' . $translate->msg("sender_message") . '</td>' .
-                             '<td width="140px">' . $translate->msg("date_received") . '</td>' .
+                             '<td>' . $translate->translate("title_message") . '</td>' .
+                             '<td width="140px">' . $translate->translate("sender_message") . '</td>' .
+                             '<td width="140px">' . $translate->translate("date_received") . '</td>' .
                              '<td width="50px"></td>' .
                              '</tr>';
 
@@ -57,24 +57,24 @@ class MessagingController extends ActionController {
                 }
                 $tab_receivedmsg .= "<td>" .
                             "<a onclick=\"Clic('/messaging/delete_msg', 'id_msg=" . $row['id_receivedmessage'] . "&box=0', 'volet_visualisation'); return false;\">" .
-                            "<img height=24 alt='" . $translate->msg('btn_delete') . "' src='" . ICO_PATH . "32x32/delete.png' />" .
+                            "<img height=24 alt='" . $translate->translate('btn_delete') . "' src='" . ICO_PATH . "32x32/delete.png' />" .
                             "</a></td></tr>";
             }
         } else {
-            $tab_receivedmsg .= "<tr><td colspan='4'>" . $translate->msg("no_message") . "</td></tr>";
+            $tab_receivedmsg .= "<tr><td colspan='4'>" . $translate->translate("no_message") . "</td></tr>";
         }
         
         // numéros des items
         $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
         $nLastItem = ($CurPage * $paginator->_getItemsPage());
         if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_receivedmsg .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->msg('item_of') . $paginator->_getItems() . '</td>';
+        $tab_receivedmsg .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
         
         // boutons precedent
-        $previous = '<span class="disabled">' . $translate->msg('page_previous') . '</span>';
+        $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/messaging/display_receivedmessages\', \'&page=' . ($CurPage-1) . '\', \'volet_visualisation\'); return false;">' . $translate->msg('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/messaging/display_receivedmessages\', \'&page=' . ($CurPage-1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_receivedmsg .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         
@@ -94,10 +94,10 @@ class MessagingController extends ActionController {
             }
         }
         // Bouton suivant
-        $next = '<span class="disabled">' . $translate->msg('page_next') . '</span>';
+        $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage)
         {
-            $next = '<a onclick="Clic(\'/messaging/display_receivedmessages\', \'&page=' . ($CurPage+1) . '\', \'volet_visualisation\'); return false;">' . $translate->msg('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/messaging/display_receivedmessages\', \'&page=' . ($CurPage+1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tab_receivedmsg .= $next . '</td></tr></table>';
@@ -121,9 +121,9 @@ class MessagingController extends ActionController {
         $MaxPage = $paginator->_getNumPage();
         $translate = Registry::get('translate');
         $tab_receivedmsg =   '<table class="pagination"><tr class="entete">' .
-                             '<td>' . $translate->msg("title_message") . '</td>' .
-                             '<td width="140px">' . $translate->msg("recipient_message") . '</td>' .
-                             '<td width="140px">' . $translate->msg("date_received") . '</td>' .
+                             '<td>' . $translate->translate("title_message") . '</td>' .
+                             '<td width="140px">' . $translate->translate("recipient_message") . '</td>' .
+                             '<td width="140px">' . $translate->translate("date_received") . '</td>' .
                              '<td width="50px"></td>' .
                              '</tr>';
 
@@ -139,24 +139,24 @@ class MessagingController extends ActionController {
                 }
                 $tab_receivedmsg .= "<td>" .
                             "<a onclick=\"Clic('/messaging/delete_msg', 'id_msg=" . $row['id_sentmessage'] . "&box=1', 'volet_visualisation'); return false;\">" .
-                            "<img height=24 alt='" . $translate->msg('btn_delete') . "' src='" . ICO_PATH . "32x32/delete.png' />" .
+                            "<img height=24 alt='" . $translate->translate('btn_delete') . "' src='" . ICO_PATH . "32x32/delete.png' />" .
                             "</a></td></tr>";
             }
         } else {
-            $tab_receivedmsg .= "<tr><td colspan='4'>" . $translate->msg("no_message") . "</td></tr>";
+            $tab_receivedmsg .= "<tr><td colspan='4'>" . $translate->translate("no_message") . "</td></tr>";
         }
         
         // numéros des items
         $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
         $nLastItem = ($CurPage * $paginator->_getItemsPage());
         if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_receivedmsg .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->msg('item_of') . $paginator->_getItems() . '</td>';
+        $tab_receivedmsg .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
         
         // boutons precedent
-        $previous = '<span class="disabled">' . $translate->msg('page_previous') . '</span>';
+        $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/messaging/display_receivedmessages\', \'&page=' . ($CurPage-1) . '\', \'volet_visualisation\'); return false;">' . $translate->msg('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/messaging/display_receivedmessages\', \'&page=' . ($CurPage-1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_receivedmsg .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         
@@ -176,10 +176,10 @@ class MessagingController extends ActionController {
             }
         }
         // Bouton suivant
-        $next = '<span class="disabled">' . $translate->msg('page_next') . '</span>';
+        $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage)
         {
-            $next = '<a onclick="Clic(\'/messaging/display_receivedmessages\', \'&page=' . ($CurPage+1) . '\', \'volet_visualisation\'); return false;">' . $translate->msg('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/messaging/display_receivedmessages\', \'&page=' . ($CurPage+1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tab_receivedmsg .= $next . '</td></tr></table>';
@@ -287,12 +287,12 @@ class MessagingController extends ActionController {
         $err_msg = '';
         if (!isset($_POST['title_message']) || empty($_POST['title_message']) || !isset($_POST['content_message']) || empty($_POST['content_message']))
         {
-            $err_msg = $translate->msg("fields_empty");
+            $err_msg = $translate->translate("fields_empty");
         } else {
             if (Message::create_message($_POST) == 1) {
                 
             } else {
-                $err_msg = $translate->msg("error");
+                $err_msg = $translate->translate("error");
                 
                 // Journal de log
                 $member = Member::getInstance();
@@ -304,7 +304,7 @@ class MessagingController extends ActionController {
         if (empty($err_msg)) {
             $this->display('<div class="info" style="height:50px;"><table><tr>' .
                           '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
-                          '<td><span style="font-size: 15px;">' . $translate->msg("mail_ok") . '</span></td>' .
+                          '<td><span style="font-size: 15px;">' . $translate->translate("mail_ok") . '</span></td>' .
                           '</tr></table></div>');
         } else {
             $this->display('<div class="error" style="height:50px;"><table><tr>' .
@@ -323,14 +323,14 @@ class MessagingController extends ActionController {
         if (Message::delete_message($_POST['id_msg'], $_POST['box']) > 0) {
             $this->display('<div class="info" style="height:50px;"><table><tr>' .
                            '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
-                           '<td><span style="font-size: 15px;">' . $translate->msg('delete_msg_ok') . '</span></td>' .
+                           '<td><span style="font-size: 15px;">' . $translate->translate('delete_msg_ok') . '</span></td>' .
                            '</tr></table></div>');
         }
         else
         {
             $this->display('<div class="error" style="height:50px;"><table><tr>' .
                            '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
-                           '<td><span style="font-size: 15px;">' . $translate->msg('delete_msg_nok') . '</span></td>' .
+                           '<td><span style="font-size: 15px;">' . $translate->translate('delete_msg_nok') . '</span></td>' .
                            '</tr></table></div>');
 
             // Journal de log

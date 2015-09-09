@@ -20,9 +20,9 @@ class MemberController extends ActionController {
         $member = Member::getInstance();
         // Affichage du genre
         if ($member->sexe == 0) {
-            $this->_view['gender'] = '<option value=1 selected="selected">' . $translate->msg("female") . '</option><option value=2>' . $translate->msg("male") . '</option>';
+            $this->_view['gender'] = '<option value=1 selected="selected">' . $translate->translate("female") . '</option><option value=2>' . $translate->translate("male") . '</option>';
         } else {
-            $this->_view['gender'] = '<option value=1>' . $translate->msg("female") . '</option><option value=2 selected="selected">' . $translate->msg("male") . '</option>';
+            $this->_view['gender'] = '<option value=1>' . $translate->translate("female") . '</option><option value=2 selected="selected">' . $translate->translate("male") . '</option>';
         }
 
         // Affichage des langues
@@ -33,7 +33,7 @@ class MemberController extends ActionController {
         for ($i=0; $i<count($langs); $i++) {
             if ($langs[$i] == $lang_user)       {   $selected = ' selected="selected"'; }
             else                                {   $selected = "";                     }
-            $sel_lang .= "<option value='" . $langs[$i] . "'" . $selected . ">" . $translate->msg($langs[$i]) . "</option>";
+            $sel_lang .= "<option value='" . $langs[$i] . "'" . $selected . ">" . $translate->translate($langs[$i]) . "</option>";
         }
 
         // Affichage des pays
@@ -74,32 +74,32 @@ class MemberController extends ActionController {
         // =======================================
         if (isset($_POST['avatar']) && !empty($_POST['avatar'])) {
             $res = $member->setAvatar($_POST['avatar']);
-            if ($res == 0)          {   $err_msg .= $translate->msg("error") . "<br/>";             }
-            elseif ($res == -1)     {   $err_msg .= $translate->msg("avatar_invalid") . "<br/>";    }
+            if ($res == 0)          {   $err_msg .= $translate->translate("error") . "<br/>";             }
+            elseif ($res == -1)     {   $err_msg .= $translate->translate("avatar_invalid") . "<br/>";    }
         }
         if (isset($_POST['login']) && !empty($_POST['login'])) {
-            if ($member->setLogin($_POST['login']) == 0)    {   $err_msg = $translate->msg("error") . "<br/>";    }
+            if ($member->setLogin($_POST['login']) == 0)    {   $err_msg = $translate->translate("error") . "<br/>";    }
         }
         if (isset($_POST['identity']) && !empty($_POST['identity'])) {
             $res = $member->setIdentite($_POST['identity']);
-            if ($res == 0)          {   $err_msg .= $translate->msg("error") . "<br/>";             }
-            elseif ($res == -1)     {   $err_msg .= $translate->msg("identity_invalid") . "<br/>";  }
-            elseif ($res == -2)     {   $err_msg .= $translate->msg('identity_exist') . "<br/>";    }
+            if ($res == 0)          {   $err_msg .= $translate->translate("error") . "<br/>";             }
+            elseif ($res == -1)     {   $err_msg .= $translate->translate("identity_invalid") . "<br/>";  }
+            elseif ($res == -2)     {   $err_msg .= $translate->translate('identity_exist') . "<br/>";    }
         }
         if (isset($_POST['password']) && !empty($_POST['password'])) {
-            if ($member->setPassword($_POST['password']) == 0)          {   $err_msg .= $translate->msg("error") . "<br/>";    }
+            if ($member->setPassword($_POST['password']) == 0)          {   $err_msg .= $translate->translate("error") . "<br/>";    }
         }
         if (isset($_POST['gender']) && !empty($_POST['gender'])) {
-            if ($member->setSexe($_POST['gender']) == 0)                {   $err_msg .= $translate->msg("error") . "<br/>";    }
+            if ($member->setSexe($_POST['gender']) == 0)                {   $err_msg .= $translate->translate("error") . "<br/>";    }
         }
         if (isset($_POST['mail']) && !empty($_POST['mail'])) {
             $res = $member->setEmail($_POST['mail']);
-            if ($res == 0)          {   $err_msg .= $translate->msg("error") . "<br/>";             }
-            elseif ($res == -1)     {   $err_msg .= $translate->msg("mail_invalid") . "<br/>";      }
-            elseif ($res == -2)     {   $err_msg .= $translate->msg('mail_exist') . "<br/>";        }
+            if ($res == 0)          {   $err_msg .= $translate->translate("error") . "<br/>";             }
+            elseif ($res == -1)     {   $err_msg .= $translate->translate("mail_invalid") . "<br/>";      }
+            elseif ($res == -2)     {   $err_msg .= $translate->translate('mail_exist') . "<br/>";        }
         }
         if (isset($_POST['lang']) || !empty($_POST['lang'])) {
-            if ($member->setLangue($_POST['lang']) == 0)                {   $err_msg .= $translate->msg("error") . "<br/>";    }
+            if ($member->setLangue($_POST['lang']) == 0)                {   $err_msg .= $translate->translate("error") . "<br/>";    }
         }
         
         if (empty($err_msg)) {
@@ -130,8 +130,8 @@ class MemberController extends ActionController {
         $MaxPage = $paginator->_getNumPage();
         $translate = Registry::get('translate');
         $tabmini_contactsgroups = '<table class="pagination"><tr class="entete">' .
-                                '<td width="150px">' . $translate->msg("group_name") . '</td>' .
-                                '<td width="150px">' . $translate->msg("identity") . '</td>' .
+                                '<td width="150px">' . $translate->translate("group_name") . '</td>' .
+                                '<td width="150px">' . $translate->translate("identity") . '</td>' .
                                 '</tr>';
 
         foreach($datas as $row) {
@@ -145,20 +145,20 @@ class MemberController extends ActionController {
         $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
         $nLastItem = ($CurPage * $paginator->_getItemsPage());
         if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tabmini_contactsgroups .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->msg('item_of') . $paginator->_getItems() . '</td>';
+        $tabmini_contactsgroups .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
         
         // boutons precedent
-        $previous = '<span class="disabled">' . $translate->msg('page_previous') . '</span>';
+        $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/member/display_contactsgroups\', \'&page=' . ($CurPage-1) . '\', \'milieu_gauche\'); return false;">' . $translate->msg('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/member/display_contactsgroups\', \'&page=' . ($CurPage-1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tabmini_contactsgroups .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         // Bouton suivant
-        $next = '<span class="disabled">' . $translate->msg('page_next') . '</span>';
+        $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage)
         {
-            $next = '<a onclick="Clic(\'/member/display_contactsgroups\', \'&page=' . ($CurPage+1) . '\', \'milieu_gauche\'); return false;">' . $translate->msg('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/member/display_contactsgroups\', \'&page=' . ($CurPage+1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tabmini_contactsgroups .= $next . '</td></tr></table>';

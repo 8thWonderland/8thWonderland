@@ -37,13 +37,13 @@ class Poll
                             "<td><a onclick=\"Clic('/Motion/display_motion', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" . $motion['date_fin_vote'] . "</a></td>";
                 if ($this->poll_active($motion['motion_id'], $id_member) == 0) {
                     $reponse .= "<td><div class='bouton'><a onclick=\"Clic('/Motion/display_vote', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" .
-                                "<span style='color: #dfdfdf;'>" . $translate->msg('btn_votemotion') . "</span></a></div></td>";
+                                "<span style='color: #dfdfdf;'>" . $translate->translate('btn_votemotion') . "</span></a></div></td>";
                 }
                 $reponse .= "</tr>";
             }
         }
         else {
-            $reponse = "<tr><td>" . $translate->msg('no_result') . "</td></tr>";
+            $reponse = "<tr><td>" . $translate->translate('no_result') . "</td></tr>";
         }
 
         return $reponse;

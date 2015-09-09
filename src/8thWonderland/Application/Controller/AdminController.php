@@ -78,7 +78,7 @@ class AdminController extends ActionController {
         } else {
             $this->_view['crons'] = '<div class="error" style="height:50px;"><table><tr>' .
                                       '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
-                                      '<td><span style="font-size: 15px;">' . $translate->msg('connexion_nok') . '</span></td>' .
+                                      '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
                                       '</tr></table></div>';
         }
         
@@ -103,7 +103,7 @@ class AdminController extends ActionController {
             $member = Member::getInstance();
             $lang = $member->langue;
             $regionUnknown = $db->select("SELECT " . $lang . ", Pays FROM Utilisateurs, country WHERE Region = -1 AND Pays=code");
-            $this->_view['stats_regions_other'] = "<table><tr><td>" . $translate->msg('stats_region_unknown') . "</td></tr>";
+            $this->_view['stats_regions_other'] = "<table><tr><td>" . $translate->translate('stats_region_unknown') . "</td></tr>";
             for ($i=0; $i<count($regionUnknown); $i++) {
                 $this->_view['stats_regions_other'] .= "<tr><td>- " . $regionUnknown[$i][$lang] . " (" . $regionUnknown[$i]['Pays'] . ")</td></tr>";
             }
@@ -132,21 +132,21 @@ class AdminController extends ActionController {
         if (!isset($_POST['cron_file']) || empty($_POST['cron_file']) || !isset($_POST['cron_desc']) || empty($_POST['cron_desc']) || 
             !isset($_POST['cron_day']) || empty($_POST['cron_day']) || count($_POST) <7)
         {
-            $err_msg = $translate->msg('fields_empty');
+            $err_msg = $translate->translate('fields_empty');
         } else {
             $ovh = new myovh();
             $id_cron = $ovh->add_cron($_POST);
             switch ($id_cron) {
                 case -1:
-                    $err_msg = $translate->msg('file_notfound');
+                    $err_msg = $translate->translate('file_notfound');
                     break;
                 
                 case 0:
-                    $err_msg = $translate->msg('error');
+                    $err_msg = $translate->translate('error');
                     break;
                 
                 case -2:
-                    $err_msg = $translate->msg('connexion_nok');
+                    $err_msg = $translate->translate('connexion_nok');
             }
         }
         
@@ -172,7 +172,7 @@ class AdminController extends ActionController {
             if ($res == false) {
                 $this->display('<div class="error" style="height:25px;"><table><tr>' .
                               '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
-                              '<td><span style="font-size: 15px;">' . $translate->msg('error') . '</span></td>' .
+                              '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
                               '</tr></table></div>');
             } else {
                 $this->display("<script type='text/javascript'>window.onload=Clic('/admin/display_server', '', 'milieu_milieu');</script>");
@@ -180,7 +180,7 @@ class AdminController extends ActionController {
         } else {
             $this->display('<div class="error" style="height:25px;"><table><tr>' .
                           '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
-                          '<td><span style="font-size: 15px;">' . $translate->msg('connexion_nok') . '</span></td>' .
+                          '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
                           '</tr></table></div>');
         }
 
@@ -210,10 +210,10 @@ class AdminController extends ActionController {
         $translate = Registry::get("translate");
                 
         $tab_crons = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
-                    '<td width="20px">' . $translate->msg("cron_id") . '</td>' .
-                    '<td>' . $translate->msg("cron_file") . '</td>' .
-                    '<td>' . $translate->msg("cron_description") . '</td>' .
-                    '<td width="40px">' . $translate->msg("cron_active") . '</td>' .
+                    '<td width="20px">' . $translate->translate("cron_id") . '</td>' .
+                    '<td>' . $translate->translate("cron_file") . '</td>' .
+                    '<td>' . $translate->translate("cron_description") . '</td>' .
+                    '<td width="40px">' . $translate->translate("cron_active") . '</td>' .
                     '<td></td>' .
                     '</tr>';
         
@@ -236,13 +236,13 @@ class AdminController extends ActionController {
         $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
         $nLastItem = ($CurPage * $paginator->_getItemsPage());
         if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_crons .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->msg('item_of') . $paginator->_getItems() . '</td>';
+        $tab_crons .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
-        $previous = '<span class="disabled">' . $translate->msg('page_previous') . '</span>';
+        $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/admin/display_server\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/admin/display_server\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_crons .= '<td colspan="4" style="padding-right:15px;" align="right">' . $previous . ' | ';
         $start = $CurPage - $paginator->_getPageRange();
@@ -260,17 +260,17 @@ class AdminController extends ActionController {
                 $tab_crons .= '<b>' . $page . '</b> | ';
             }
         }
-        $next = '<span class="disabled">' . $translate->msg('page_next') . '</span>';
+        $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         
         // Bouton suivant
         if ($CurPage < $MaxPage)
         {
-            $next = '<a onclick="Clic(\'/admin/display_server\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/admin/display_server\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tab_crons .= $next . '</td></tr></table>' .
                       "<div class='bouton' style='width:120px;'><a onclick=\"Clic('/admin/display_createcron', '', 'milieu_milieu'); return false;\">" .
-                      "<span style='color: #dfdfdf;'>" . $translate->msg('btn_addcron') . "</span></a></div>";
+                      "<span style='color: #dfdfdf;'>" . $translate->translate('btn_addcron') . "</span></a></div>";
         
         return $tab_crons;
     }
@@ -289,9 +289,9 @@ class AdminController extends ActionController {
         $translate = Registry::get("translate");
         
         $tab_logs = '<table id="pagination_motions" class="pagination"><tr class="entete">' .
-                    '<td width="20px">' . $translate->msg("logs_level") . '</td>' .
-                    '<td width="150px">' . $translate->msg("logs_date") . '</td>' .
-                    '<td>' . $translate->msg("logs_description") . '</td>' .
+                    '<td width="20px">' . $translate->translate("logs_level") . '</td>' .
+                    '<td width="150px">' . $translate->translate("logs_date") . '</td>' .
+                    '<td>' . $translate->translate("logs_description") . '</td>' .
                     '</tr>';
         
         foreach($datas as $key => $row) {
@@ -308,13 +308,13 @@ class AdminController extends ActionController {
         $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
         $nLastItem = ($CurPage * $paginator->_getItemsPage());
         if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_logs .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->msg('item_of') . $paginator->_getItems() . '</td>';
+        $tab_logs .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
-        $previous = '<span class="disabled">' . $translate->msg('page_previous') . '</span>';
+        $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_logs .= '<td style="padding-right:15px;" align="right">' . $previous . ' | ';
         $start = $CurPage - $paginator->_getPageRange();
@@ -332,12 +332,12 @@ class AdminController extends ActionController {
                 $tab_logs .= '<b>' . $page . '</b> | ';
             }
         }
-        $next = '<span class="disabled">' . $translate->msg('page_next') . '</span>';
+        $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         
         // Bouton suivant
         if ($CurPage < $MaxPage)
         {
-            $next = '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tab_logs .= $next . '</td></tr></table>';
@@ -359,15 +359,15 @@ class AdminController extends ActionController {
         $translate = Registry::get("translate");
         
         $tab_users = '<table id="pagination_users" class="pagination"><tr class="entete">' .
-                    '<td width="50px">' . $translate->msg("avatar") . '</td>' .
-                    '<td width="200px">' . $translate->msg("identity") . '</td>' .
-                    '<td width="50px">' . $translate->msg("gender") . '</td>' .
-                    '<td width="200px">' . $translate->msg("mail") . '</td>' .
-                    '<td width="50px">' . $translate->msg("lang") . '</td>' .
-                    '<td width="150px">' . $translate->msg("country") . '</td>' .
-                    '<td width="150px">' . $translate->msg("region") . '</td>' .
-                    '<td width="150px">' . $translate->msg("last_connexion") . '</td>' .
-                    '<td width="150px">' . $translate->msg("subscription") . '</td>' .
+                    '<td width="50px">' . $translate->translate("avatar") . '</td>' .
+                    '<td width="200px">' . $translate->translate("identity") . '</td>' .
+                    '<td width="50px">' . $translate->translate("gender") . '</td>' .
+                    '<td width="200px">' . $translate->translate("mail") . '</td>' .
+                    '<td width="50px">' . $translate->translate("lang") . '</td>' .
+                    '<td width="150px">' . $translate->translate("country") . '</td>' .
+                    '<td width="150px">' . $translate->translate("region") . '</td>' .
+                    '<td width="150px">' . $translate->translate("last_connexion") . '</td>' .
+                    '<td width="150px">' . $translate->translate("subscription") . '</td>' .
                     '</tr>';
         
         foreach($datas as $key => $row) {
@@ -384,13 +384,13 @@ class AdminController extends ActionController {
         $nFirstItem = (($CurPage - 1) * $paginator->_getItemsPage())+1;
         $nLastItem = ($CurPage * $paginator->_getItemsPage());
         if ($nLastItem>$paginator->_getItems())     {   $nLastItem = $paginator->_getItems();   }
-        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->msg('item_of') . $paginator->_getItems() . '</td>';
+        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->_getItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
-        $previous = '<span class="disabled">' . $translate->msg('page_previous') . '</span>';
+        $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/admin/display_users\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/admin/display_users\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_users .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         $start = $CurPage - $paginator->_getPageRange();
@@ -408,12 +408,12 @@ class AdminController extends ActionController {
                 $tab_users .= '<b>' . $page . '</b> | ';
             }
         }
-        $next = '<span class="disabled">' . $translate->msg('page_next') . '</span>';
+        $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         
         // Bouton suivant
         if ($CurPage < $MaxPage)
         {
-            $next = '<a onclick="Clic(\'/admin/display_users\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->msg('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/admin/display_users\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tab_users .= $next . '</td></tr></table>';
@@ -430,7 +430,7 @@ class AdminController extends ActionController {
         switch($key) {
             case "label_key":
                 $translate = Registry::get("translate");
-                $value = $translate->msg($value);
+                $value = $translate->translate($value);
                 break;
         }
         
@@ -465,7 +465,7 @@ class AdminController extends ActionController {
                 else                
                 {
                     $translate = Translate::getInstance();
-                    $value = $translate->msg("unknown");
+                    $value = $translate->translate("unknown");
                 }
                 break;
             
@@ -478,7 +478,7 @@ class AdminController extends ActionController {
                 else                
                 {
                     $translate = Translate::getInstance();
-                    $value = $translate->msg("unknown");
+                    $value = $translate->translate("unknown");
                 }
                 break;
         }

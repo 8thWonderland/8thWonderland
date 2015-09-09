@@ -38,7 +38,7 @@ class IndexController extends ActionController {
         $langs = $translate->getList();
         $sel_lang = '';
         for ($i=0; $i<count($langs); $i++) {
-            $sel_lang .= "<option value='" . $langs[$i] . "'>" . $translate->msg($langs[$i]) . "</option>";
+            $sel_lang .= "<option value='" . $langs[$i] . "'>" . $translate->translate($langs[$i]) . "</option>";
         }
         
         $this->_view['translate'] = $translate;
