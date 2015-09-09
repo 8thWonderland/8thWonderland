@@ -7,6 +7,8 @@ use Wonderland\Library\Database\Mysqli;
 use Wonderland\Library\Controller\FrontController;
 use Wonderland\Library\Config;
 
+use Pimple\Container;
+
 /**
  * Description of application
  *
@@ -17,6 +19,8 @@ class Application {
     protected $rootPath;
     /** @var Config **/
     protected $config;
+    /** @var Pimple\Container **/
+    protected $container;
     
     /**
      * @param string $environment
@@ -29,8 +33,50 @@ class Application {
     
     public function init($environment = 'production', $options = []) {
         $this->setRootPath();
+        $this->setContainer();
         $this->setConfig($environment, $options);
         $this->setPlugins();
+    }
+    
+    /**
+     * Initialize the Pimple Container
+     */
+    public function setContainer() {
+        $this->container = new Container();
+        
+        $containerData = json_decode(file_get_contents(PUBLIC_ROOT.'Application/config/config.json'), true);
+        
+        $this->setServices($containerData['services']);
+        $this->setParameters($containerData['parameters']);
+    }
+    
+    public function setServices($services) {
+        reset($services);
+        
+        while($key = key($services)) {
+            $service = $services[$key];
+            $this->container[$key] = function($c) use ($service) {
+                return new $service['class']();
+            };
+            next($services);
+        }
+    }
+    
+    public function setParameters($parameters) {
+        reset($parameters);
+        
+        while($key = key($parameters)) {
+            $this->container[$key] = $parameters[$key];
+            
+            next($parameters);
+        }
+    }
+    
+    /**
+     * @return \Pimple\Container
+     */
+    public function getContainer() {
+        return $this->container;
     }
     
     /**
