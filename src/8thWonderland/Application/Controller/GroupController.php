@@ -21,9 +21,9 @@ class GroupController extends ActionController {
     // =================================
     public function display_groupsAction()
     {
-        $this->_view['list_Allgroups'] = $this->_renderGroups();
-        $this->_view['map_coord'] = $this->_renderMapCoord();
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['list_Allgroups'] = $this->_renderGroups();
+        $this->viewParameters['map_coord'] = $this->_renderMapCoord();
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('groups/list_allgroups');
     }
     
@@ -48,8 +48,8 @@ class GroupController extends ActionController {
             $reponse = "<tr><td>" . $translate->translate('no_result') . "</td></tr>";
         }
 
-        $this->_view['list_groups'] = $reponse;
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['list_groups'] = $reponse;
+        $this->viewParameters['translate'] = $translate;
         $this->render('groups/list_groups');
     }
     
@@ -100,8 +100,8 @@ class GroupController extends ActionController {
         
         $tabmini_usersgroup .= $next . '</td></tr></table>';
         
-        $this->_view['list_membersgroup'] = $tabmini_usersgroup;
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['list_membersgroup'] = $tabmini_usersgroup;
+        $this->viewParameters['translate'] = $translate;
         $this->render('groups/list_membersgroup');
     }
                 
@@ -110,14 +110,14 @@ class GroupController extends ActionController {
     // =========================================
     public function display_managegroupsAction()
     {
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
 
         $list_members = ManageGroups::display_listMembersContact();
         $select = "<option></option>";
         for ($i=0; $i<count($list_members); $i++) {
             $select .= "<option value='" . $list_members[$i]['IDUser'] . "'>" . $list_members[$i]['Identite'] . "</option>";
         }
-        $this->_view['select_contactsgroup'] = $select;
+        $this->viewParameters['select_contactsgroup'] = $select;
         $this->render('groups/manage_groups');
     }
     
@@ -126,7 +126,7 @@ class GroupController extends ActionController {
     // =======================
     public function display_calendarAction()
     {
-        $this->_view['translate'] = Registry::get('translate');
+        $this->viewParameters['translate'] = Registry::get('translate');
         $this->render('admin/dev_inprogress');
     }
         
@@ -135,8 +135,8 @@ class GroupController extends ActionController {
     // =======================
     public function display_adressbookAction()
     {
-        $this->_view['list_users'] = $this->_renderUsers();
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['list_users'] = $this->_renderUsers();
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('members/list_users');
     }
             
@@ -145,7 +145,7 @@ class GroupController extends ActionController {
     // =====================
     public function display_bookmarkAction()
     {
-        $this->_view['translate'] = Registry::get('translate');
+        $this->viewParameters['translate'] = Registry::get('translate');
         $this->render('admin/dev_inprogress');
     }
     
@@ -195,7 +195,7 @@ class GroupController extends ActionController {
             }
         }
         
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
     }
     
     
@@ -290,10 +290,10 @@ class GroupController extends ActionController {
         $translate = Registry::get("translate");
         
         $list_groups = ManageGroups::display_groups();
-        $this->_view['select_groups'] = "<option></options>";
+        $this->viewParameters['select_groups'] = "<option></options>";
         $i=0;
         for ($i=0; $i<count($list_groups); $i++) {
-            $this->_view['select_groups'] .= "<option value='" . $list_groups[$i]['Group_id'] . "'>" . utf8_encode($list_groups[$i]['Group_name']) . "</option>";
+            $this->viewParameters['select_groups'] .= "<option value='" . $list_groups[$i]['Group_id'] . "'>" . utf8_encode($list_groups[$i]['Group_name']) . "</option>";
         }
         
         $tab_users = '<table id="pagination_users" class="pagination"><tr class="entete">' .

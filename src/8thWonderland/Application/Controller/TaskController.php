@@ -15,8 +15,8 @@ class TaskController extends ActionController {
 
     public function display_createtaskAction()
     {
-        $this->_view['translate'] = Registry::get("translate");
-        $this->_view['id_group'] = $_POST['id_group'];
+        $this->viewParameters['translate'] = Registry::get("translate");
+        $this->viewParameters['id_group'] = $_POST['id_group'];
         $this->render('tasks/create_task');
     }
     
@@ -81,7 +81,7 @@ class TaskController extends ActionController {
     public function edit_taskAction()
     {
         $translate = Registry::get("translate");
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
         $this->render('admin/dev_inprogress');
     }
     
@@ -90,16 +90,16 @@ class TaskController extends ActionController {
     {
         $translate = Registry::get("translate");
         
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
         $this->render('admin/dev_inprogress');
     }
     
     
     public function display_tasksinprogressAction()
     {
-        $this->_view['list_tasks'] = $this->_renderTasks_inprogress();
-        $this->_view['translate'] = Registry::get("translate");
-        $this->_view['id_group'] = $_POST['id_group'];
+        $this->viewParameters['list_tasks'] = $this->_renderTasks_inprogress();
+        $this->viewParameters['translate'] = Registry::get("translate");
+        $this->viewParameters['id_group'] = $_POST['id_group'];
         $this->render("tasks/tasks_inprogress");
     }
     
@@ -108,10 +108,10 @@ class TaskController extends ActionController {
     {
         $details = ManageTasks::display_detailstask($_POST['task_id']);
         
-        $this->_view['translate'] = Registry::get("translate");
-        $this->_view['details'] = $details[0];
-        $this->_view['cmd_delete'] = "Clic('/tasks/delete_task', 'task_id=" . $_POST['task_id'] . "&id_group=" . $_POST['id_group'] . "', 'task_resultaction'); return false;";
-        $this->_view['cmd_edit'] = "Clic('/tasks/edit_task', 'task_id=" . $_POST['task_id'] . "', 'milieu_milieu'); return false;";
+        $this->viewParameters['translate'] = Registry::get("translate");
+        $this->viewParameters['details'] = $details[0];
+        $this->viewParameters['cmd_delete'] = "Clic('/tasks/delete_task', 'task_id=" . $_POST['task_id'] . "&id_group=" . $_POST['id_group'] . "', 'task_resultaction'); return false;";
+        $this->viewParameters['cmd_edit'] = "Clic('/tasks/edit_task', 'task_id=" . $_POST['task_id'] . "', 'milieu_milieu'); return false;";
         $this->render('tasks/task_details');
     }
     

@@ -20,14 +20,14 @@ class MotionController extends ActionController {
         $translate = Registry::get("translate");
         $list_themes = Poll::_getThemes();
         
-        $this->_view['translate'] = $translate;
-        $this->_view['msg'] = '';
-        $this->_view['select_theme'] = "<option></options>";
+        $this->viewParameters['translate'] = $translate;
+        $this->viewParameters['msg'] = '';
+        $this->viewParameters['select_theme'] = "<option></options>";
         
         $i=0;
         while ($theme = $list_themes->fetch_assoc()) {
             $i++;
-            $this->_view['select_theme'] .= "<option value='" . $i . "'>" . $translate->translate($theme['label_key']) . "</option>";
+            $this->viewParameters['select_theme'] .= "<option value='" . $i . "'>" . $translate->translate($theme['label_key']) . "</option>";
         }
         
         $this->render('actions/create_motion');
@@ -37,16 +37,16 @@ class MotionController extends ActionController {
     public function display_motionsinprogressAction()
     {
         $polls = new Poll;
-        $this->_view['list_motions'] = $polls->display_motionsinprogress();
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['list_motions'] = $polls->display_motionsinprogress();
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render("actions/motions_inprogress");
     }
     
     
     public function display_motionsAction()
     {
-        $this->_view['list_motions'] = $this->_renderMotions();
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['list_motions'] = $this->_renderMotions();
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('actions/motions');
     }
     
@@ -56,10 +56,10 @@ class MotionController extends ActionController {
         $polls = new Poll;
         $details = $polls->display_detailsmotion($_POST['motion_id']);
         
-        $this->_view['translate'] = Registry::get("translate");
-        $this->_view['details'] = $details[0];
-        $this->_view['description'] = str_replace("&gt;", ">", str_replace("&lt;", "<", $details[0]['description']));
-        $this->_view['means'] = html_entity_decode($details[0]['moyens']);
+        $this->viewParameters['translate'] = Registry::get("translate");
+        $this->viewParameters['details'] = $details[0];
+        $this->viewParameters['description'] = str_replace("&gt;", ">", str_replace("&lt;", "<", $details[0]['description']));
+        $this->viewParameters['means'] = html_entity_decode($details[0]['moyens']);
         $this->render('actions/motion_vote_details');
     }
     
@@ -69,10 +69,10 @@ class MotionController extends ActionController {
         $polls = new Poll;
         $details = $polls->display_detailsmotion($_POST['motion_id']);
         
-        $this->_view['translate'] = Registry::get("translate");
-        $this->_view['details'] = $details[0];
-        $this->_view['description'] = str_replace("&gt;", ">", str_replace("&lt;", "<", $details[0]['description']));
-        $this->_view['means'] = html_entity_decode($details[0]['moyens']);
+        $this->viewParameters['translate'] = Registry::get("translate");
+        $this->viewParameters['details'] = $details[0];
+        $this->viewParameters['description'] = str_replace("&gt;", ">", str_replace("&lt;", "<", $details[0]['description']));
+        $this->viewParameters['means'] = html_entity_decode($details[0]['moyens']);
         $this->render('actions/motion_details');
     }
     
@@ -200,26 +200,26 @@ class MotionController extends ActionController {
     {
         $translate = Registry::get("translate");
         $list_themes = Poll::_getThemes();
-        $this->_view['translate'] = $translate;
-        $this->_view['select_theme'] = "<option></options>";
+        $this->viewParameters['translate'] = $translate;
+        $this->viewParameters['select_theme'] = "<option></options>";
         $i=0;
         while ($theme = $list_themes->fetch_assoc()) {
             $i++;
-            $this->_view['select_theme'] .= "<option value='" . $i . "'>" . $translate->translate($theme['label_key']) . "</option>";
+            $this->viewParameters['select_theme'] .= "<option value='" . $i . "'>" . $translate->translate($theme['label_key']) . "</option>";
         }
         
         if(!empty($_POST['theme']) && !empty($_POST['title_motion'])&& !empty($_POST['description_motion'])&& !empty($_POST['means_motion'])) {
             $polls = new Poll;
             if ($polls->valid_motion($_POST['title_motion'], $_POST['theme'], $_POST['description_motion'], $_POST['means_motion']))
             {
-                $this->_view['msg'] = '<div class="info" style="height:50px;"><table><tr>' .
+                $this->viewParameters['msg'] = '<div class="info" style="height:50px;"><table><tr>' .
                                       '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
                                       '<td><span style="font-size: 15px;">' . $translate->translate('depot_motion_ok') . '</span></td>' .
                                       '</tr></table></div>';
             }
             else
             {
-                $this->_view['msg'] = '<div class="error" style="height:50px;"><table><tr>' .
+                $this->viewParameters['msg'] = '<div class="error" style="height:50px;"><table><tr>' .
                                       '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
                                       '<td><span style="font-size: 15px;">' . $translate->translate('depot_motion_nok') . '</span></td>' .
                                       '</tr></table></div>';
@@ -232,7 +232,7 @@ class MotionController extends ActionController {
         }
         else
         {
-            $this->_view['msg'] = '<div class="error" style="height:50px;"><table><tr>' .
+            $this->viewParameters['msg'] = '<div class="error" style="height:50px;"><table><tr>' .
                                   '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
                                   '<td><span style="font-size: 15px;">' . $translate->translate('fields_empty') . '</span></td>' .
                                   '</tr></table></div>';
@@ -250,7 +250,7 @@ class MotionController extends ActionController {
     public function vote_motionAction()
     {
         $translate = Registry::get("translate");
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
         if (!empty($_POST['motion_id']) && !empty($_POST['vote']))
         {
             $polls = new Poll();

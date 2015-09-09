@@ -22,7 +22,7 @@ class IntranetController extends ActionController {
         // controle si l'utilisateur est connecté
         if (!Auth::hasIdentity())    {   $this->redirect("Index/index");      }
 
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         
         $select_geo = false;
         $member = Member::getInstance();
@@ -46,14 +46,14 @@ class IntranetController extends ActionController {
     {
         $member = Member::getInstance();
         $list_country = $member->listCountries();
-        $this->_view['select_country'] = "<option></option>";
+        $this->viewParameters['select_country'] = "<option></option>";
         $i=0;
         for ($i=0; $i<count($list_country); $i++) {
-            $this->_view['select_country'] .= "<option value='" . $list_country[$i]['Code'] . "'>" . $list_country[$i][$member->langue] . "</option>";
+            $this->viewParameters['select_country'] .= "<option value='" . $list_country[$i]['Code'] . "'>" . $list_country[$i][$member->langue] . "</option>";
         }
 
-        $this->_view['msg'] = '';
-        $this->_view['default_view'] = "members/select_country.view";
+        $this->viewParameters['msg'] = '';
+        $this->viewParameters['default_view'] = "members/select_country.view";
         $this->render("connected");
     }
     
@@ -64,51 +64,51 @@ class IntranetController extends ActionController {
         
         // affichage du profil
         $member = Member::getInstance();
-        $this->_view['identity'] = $member->identite;
-        $this->_view['avatar'] = $member->avatar;
-        $this->_view['admin'] = Member::EstMembre(1);
+        $this->viewParameters['identity'] = $member->identite;
+        $this->viewParameters['avatar'] = $member->avatar;
+        $this->viewParameters['admin'] = Member::EstMembre(1);
 
         
         $desktop = Registry::get("desktop");
         if (isset($desktop)) {
-            $this->_view['Contact_Group'] = Member::isContact($desktop);
-            if ($desktop == 1)  {   $this->_view['haut_milieu'] = VIEWS_PATH . "admin/menu_admin.view";     }
-            else                {   $this->_view['haut_milieu'] = VIEWS_PATH . "groups/menu_groups.view";   }
+            $this->viewParameters['Contact_Group'] = Member::isContact($desktop);
+            if ($desktop == 1)  {   $this->viewParameters['haut_milieu'] = VIEWS_PATH . "admin/menu_admin.view";     }
+            else                {   $this->viewParameters['haut_milieu'] = VIEWS_PATH . "groups/menu_groups.view";   }
 
             $milieu_droite = "<table>" .
                              "<tr><td id='md_section1'><script type='text/javascript'>window.onload=Clic('/admin/display_statsCountry', '', 'md_section1');</script></td></tr>" .
                              "<tr><td id='md_section2'><script type='text/javascript'>window.onload=Clic('/groups/display_members', '', 'md_section2');</script></td></tr>" .
                              "</table>";
             
-            $this->_view['milieu_droite'] = $milieu_droite;
-            $this->_view['milieu_milieu'] = "";
-            $this->_view['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/member/display_contactsgroups', '', 'milieu_gauche');</script>";
+            $this->viewParameters['milieu_droite'] = $milieu_droite;
+            $this->viewParameters['milieu_milieu'] = "";
+            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/member/display_contactsgroups', '', 'milieu_gauche');</script>";
             
             
             if ($this->is_Ajax())   {   $this->render("members/intranet");      }
             else
             {
-                $this->_view['default_view'] = "members/intranet.view";
+                $this->viewParameters['default_view'] = "members/intranet.view";
                 $this->render("connected");
             }
         } else {
             // affichage des motions en cours
             $poll = new Poll;
-            $this->_view['haut_milieu'] = VIEWS_PATH . "members/menu.view";
-            $this->_view['milieu_droite'] = "";
-            $this->_view['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('/intranet/communicate', '', 'milieu_milieu');</script>";
-            $this->_view['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/motions/display_motionsinprogress', '', 'milieu_gauche');</script>";
-            $this->_view['list_motions'] = $poll->display_motionsinprogress();
+            $this->viewParameters['haut_milieu'] = VIEWS_PATH . "members/menu.view";
+            $this->viewParameters['milieu_droite'] = "";
+            $this->viewParameters['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('/intranet/communicate', '', 'milieu_milieu');</script>";
+            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/motions/display_motionsinprogress', '', 'milieu_gauche');</script>";
+            $this->viewParameters['list_motions'] = $poll->display_motionsinprogress();
 
             // affichage des groupes du membre
-            $this->_view['list_groups'] = ManageGroups::display_groupsMember();
-            $this->_view['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('/groups/display_groupsmembers', '', 'milieu_droite');</script>";
+            $this->viewParameters['list_groups'] = ManageGroups::display_groupsMember();
+            $this->viewParameters['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('/groups/display_groupsmembers', '', 'milieu_droite');</script>";
 
 
             if ($this->is_Ajax())   {   $this->render("members/intranet");      }
             else
             {
-                $this->_view['default_view'] = "members/intranet.view";
+                $this->viewParameters['default_view'] = "members/intranet.view";
                 $this->render("connected");
             }
         }
@@ -187,8 +187,8 @@ class IntranetController extends ActionController {
             $this->redirect("Intranet/index");
         } else {
             $translate = Registry::get("translate");
-            $this->_view['translate'] = $translate;
-            $this->_view['msg'] = $translate->translate('fields_empty');
+            $this->viewParameters['translate'] = $translate;
+            $this->viewParameters['msg'] = $translate->translate('fields_empty');
             $this->display(json_encode(array("status" => 2, "reponse" => $translate->translate('fields_empty'))));
         }
     }
@@ -221,7 +221,7 @@ class IntranetController extends ActionController {
         // controle si l'utilisateur est connecté
         if (!Auth::hasIdentity())    {   $this->redirect("Index/index");      }
 
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('informations/public_news');
     }
 
@@ -233,7 +233,7 @@ class IntranetController extends ActionController {
             $this->redirect("Index/index");
         }
 
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
     }
 
@@ -243,7 +243,7 @@ class IntranetController extends ActionController {
         // controle si l'utilisateur est connecté
         if (!Auth::hasIdentity())    {   $this->redirect("Index/index");      }
 
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('informations/public_news');
     }
 
@@ -253,7 +253,7 @@ class IntranetController extends ActionController {
         // controle si l'utilisateur est connecté
         if (!Auth::hasIdentity())    {   $this->redirect("Index/index");      }
 
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
     }
     
@@ -269,7 +269,7 @@ class IntranetController extends ActionController {
         $db_log = new Log("db");
         $db_log->log($member->identite . " entre dans la console d'administration.", Log::INFO);
         
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->redirect('Admin/display_console');
     }
 

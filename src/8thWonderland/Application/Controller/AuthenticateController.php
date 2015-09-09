@@ -22,7 +22,7 @@ class AuthenticateController extends ActionController {
 
     public function connectAction()
     {
-        $this->_view['appli_status'] = 1;
+        $this->viewParameters['appli_status'] = 1;
         $valid = $this->_process($_POST['login'], $_POST['password']);
 
         if ($valid)
@@ -52,7 +52,7 @@ class AuthenticateController extends ActionController {
         else
         {
             $translate = Registry::get("translate");
-            $this->_view['translate'] = $translate;
+            $this->viewParameters['translate'] = $translate;
             $this->display(json_encode(array("status" => 0, "reponse" => '<span style="color: red;">' . $translate->translate('connexion_nok') . '</span>')));
         }
 
@@ -121,7 +121,7 @@ class AuthenticateController extends ActionController {
     
     public function display_forgetpasswordAction()
     {
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render("members/forget_password");
     }
     

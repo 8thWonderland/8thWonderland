@@ -25,9 +25,9 @@ class AdminController extends ActionController {
     {
         // affichage du profil
         $member = Member::getInstance();
-        $this->_view['identity'] = $member->identite;
-        $this->_view['avatar'] = $member->avatar;
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['identity'] = $member->identite;
+        $this->viewParameters['avatar'] = $member->avatar;
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('admin/console');
     }
     
@@ -47,23 +47,23 @@ class AdminController extends ActionController {
     
     public function display_logsAction()
     {
-        $this->_view['list_logs'] = $this->_renderLogs();
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['list_logs'] = $this->_renderLogs();
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('admin/logs');
     }
         
     
     public function display_usersAction()
     {
-        $this->_view['list_users'] = $this->_renderUsers();
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['list_users'] = $this->_renderUsers();
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('admin/users');
     }
             
     
     public function display_groupsAction()
     {
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
     }
                 
@@ -74,22 +74,22 @@ class AdminController extends ActionController {
         $ovh = new Ovh();
         $list_cron = $ovh->list_cron();
         if (isset($list_cron)) {
-            $this->_view['crons'] = $this->_renderCrons($list_cron);
+            $this->viewParameters['crons'] = $this->_renderCrons($list_cron);
         } else {
-            $this->_view['crons'] = '<div class="error" style="height:50px;"><table><tr>' .
+            $this->viewParameters['crons'] = '<div class="error" style="height:50px;"><table><tr>' .
                                       '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
                                       '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
                                       '</tr></table></div>';
         }
         
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
         $this->render('admin/console_ovh');
     }
     
     
     public function display_createcronAction()
     {
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('admin/create_cron');
     }
     
@@ -103,20 +103,20 @@ class AdminController extends ActionController {
             $member = Member::getInstance();
             $lang = $member->langue;
             $regionUnknown = $db->select("SELECT " . $lang . ", Pays FROM Utilisateurs, country WHERE Region = -1 AND Pays=code");
-            $this->_view['stats_regions_other'] = "<table><tr><td>" . $translate->translate('stats_region_unknown') . "</td></tr>";
+            $this->viewParameters['stats_regions_other'] = "<table><tr><td>" . $translate->translate('stats_region_unknown') . "</td></tr>";
             for ($i=0; $i<count($regionUnknown); $i++) {
-                $this->_view['stats_regions_other'] .= "<tr><td>- " . $regionUnknown[$i][$lang] . " (" . $regionUnknown[$i]['Pays'] . ")</td></tr>";
+                $this->viewParameters['stats_regions_other'] .= "<tr><td>- " . $regionUnknown[$i][$lang] . " (" . $regionUnknown[$i]['Pays'] . ")</td></tr>";
             }
-            $this->_view['stats_regions_other'] .= "</table>";
-            $this->_view['desktop'] = 1;
+            $this->viewParameters['stats_regions_other'] .= "</table>";
+            $this->viewParameters['desktop'] = 1;
         }
         $regions_ok = $db->count("Utilisateurs", " WHERE Region > 0");
         
         
-        $this->_view['stats_members'] = Member::Nb_Members();
-        $this->_view['stats_members_actives'] = Member::Nb_ActivesMembers();
-        $this->_view['translate'] = $translate;
-        $this->_view['stats_regions_ok'] = $regions_ok;
+        $this->viewParameters['stats_members'] = Member::Nb_Members();
+        $this->viewParameters['stats_members_actives'] = Member::Nb_ActivesMembers();
+        $this->viewParameters['translate'] = $translate;
+        $this->viewParameters['stats_regions_ok'] = $regions_ok;
         
         $this->render("informations/stats_country");
     }
@@ -184,7 +184,7 @@ class AdminController extends ActionController {
                           '</tr></table></div>');
         }
 
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
     }
     
     
@@ -192,7 +192,7 @@ class AdminController extends ActionController {
     // =============================
     public function edit_cronAction()
     {
-        $this->_view['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = Registry::get("translate");
         $this->render('admin/dev_inprogress');
     }
     

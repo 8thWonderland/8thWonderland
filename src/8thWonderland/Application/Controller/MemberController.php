@@ -15,14 +15,14 @@ class MemberController extends ActionController {
     public function display_profileAction()
     {
         $translate = Registry::get("translate");
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
 
         $member = Member::getInstance();
         // Affichage du genre
         if ($member->sexe == 0) {
-            $this->_view['gender'] = '<option value=1 selected="selected">' . $translate->translate("female") . '</option><option value=2>' . $translate->translate("male") . '</option>';
+            $this->viewParameters['gender'] = '<option value=1 selected="selected">' . $translate->translate("female") . '</option><option value=2>' . $translate->translate("male") . '</option>';
         } else {
-            $this->_view['gender'] = '<option value=1>' . $translate->translate("female") . '</option><option value=2 selected="selected">' . $translate->translate("male") . '</option>';
+            $this->viewParameters['gender'] = '<option value=1>' . $translate->translate("female") . '</option><option value=2 selected="selected">' . $translate->translate("male") . '</option>';
         }
 
         // Affichage des langues
@@ -54,12 +54,12 @@ class MemberController extends ActionController {
 
 
         //$this->_view['select_region'] = "<option value='" . $region_user . "' selected='selected'>" . utf8_encode($region_name[0]['Name']) . "</option>";
-        $this->_view['langs']       = $sel_lang;
-        $this->_view['login']       = $member->login;
-        $this->_view['identity']    = $member->identite;
-        $this->_view['mail']        = $member->email;
-        $this->_view['avatar']      = $member->avatar;
-        if ($member->identite == "Brennan Waco")    {   $this->_view['admin'] = true;   }
+        $this->viewParameters['langs']       = $sel_lang;
+        $this->viewParameters['login']       = $member->login;
+        $this->viewParameters['identity']    = $member->identite;
+        $this->viewParameters['mail']        = $member->email;
+        $this->viewParameters['avatar']      = $member->avatar;
+        if ($member->identite == "Brennan Waco")    {   $this->viewParameters['admin'] = true;   }
         $this->render('members/update_profile');
     }
     
@@ -163,8 +163,8 @@ class MemberController extends ActionController {
         
         $tabmini_contactsgroups .= $next . '</td></tr></table>';
         
-        $this->_view['list_contactsgroups'] = $tabmini_contactsgroups;
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['list_contactsgroups'] = $tabmini_contactsgroups;
+        $this->viewParameters['translate'] = $translate;
         $this->render("groups/list_contactsgroups");
     }
 }

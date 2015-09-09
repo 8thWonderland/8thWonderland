@@ -21,7 +21,7 @@ class MessagingController extends ActionController {
     public function display_receptionAction()
     {
         $translate = Registry::get("translate");
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
         $this->render("communications/messaging");
     }
     
@@ -102,8 +102,8 @@ class MessagingController extends ActionController {
         
         $tab_receivedmsg .= $next . '</td></tr></table>';
         
-        $this->_view['list_receivedmessages'] = $tab_receivedmsg;
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['list_receivedmessages'] = $tab_receivedmsg;
+        $this->viewParameters['translate'] = $translate;
         $this->render('communications/received_messages');
     }
     
@@ -184,8 +184,8 @@ class MessagingController extends ActionController {
         
         $tab_receivedmsg .= $next . '</td></tr></table>';
         
-        $this->_view['list_receivedmessages'] = $tab_receivedmsg;
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['list_receivedmessages'] = $tab_receivedmsg;
+        $this->viewParameters['translate'] = $translate;
         $this->render('communications/received_messages');
     }
     
@@ -196,23 +196,23 @@ class MessagingController extends ActionController {
     {
         $db = Mysqli::getInstance();
         $msg = Message::display_contentmessage($_POST['id_msg'], $_POST['box']);
-        $this->_view['recipients_message'] = "";
+        $this->viewParameters['recipients_message'] = "";
         
         if ($_POST['box'] == 0)     {   $dest[0] = $msg[0]['recipient'];                   }
         else                        {   $dest = explode(',', $msg[0]['recipients']);    }
         for ($i=0; $i<count($dest); $i++) {
             $req = "SELECT Identite FROM Utilisateurs WHERE IDUser = " . $dest[$i] . " LIMIT 1";
             $res = $db->select($req);
-            $this->_view['recipients_message'] .= $res[0]['Identite'] . ", ";
+            $this->viewParameters['recipients_message'] .= $res[0]['Identite'] . ", ";
         }
         
-        if ($_POST['box'] == 1) {   $this->_view['back'] = "display_sentmessages";      }
-        else                    {   $this->_view['back'] = "display_receivedmessages";  }
-        $this->_view['title_message'] = $msg[0]['title'];
-        $this->_view['content_message'] = html_entity_decode($msg[0]['content']);
-        $this->_view['date_msg'] = substr($msg[0]['date_msg'], 0, strlen($msg[0]['date_msg'])-3);
+        if ($_POST['box'] == 1) {   $this->viewParameters['back'] = "display_sentmessages";      }
+        else                    {   $this->viewParameters['back'] = "display_receivedmessages";  }
+        $this->viewParameters['title_message'] = $msg[0]['title'];
+        $this->viewParameters['content_message'] = html_entity_decode($msg[0]['content']);
+        $this->viewParameters['date_msg'] = substr($msg[0]['date_msg'], 0, strlen($msg[0]['date_msg'])-3);
         
-        $this->_view['translate'] = memory_registry::get('translate');
+        $this->viewParameters['translate'] = memory_registry::get('translate');
         $this->render("communications/content_message");
     }
     
@@ -263,7 +263,7 @@ class MessagingController extends ActionController {
     public function r_compose_messageAction()
     {
         $translate = Registry::get("translate");
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
         $this->render("communications/r_compose_message");
     }
         
@@ -273,8 +273,8 @@ class MessagingController extends ActionController {
     public function compose_messageAction()
     {
         $translate = Registry::get("translate");
-        $this->_view['translate'] = $translate;
-        $this->_view['recipient_message'] = $_POST['recipient_message'];
+        $this->viewParameters['translate'] = $translate;
+        $this->viewParameters['recipient_message'] = $_POST['recipient_message'];
         $this->render("communications/compose_message");
     }
     
@@ -346,7 +346,7 @@ class MessagingController extends ActionController {
     public function create_groupAction()
     {
         $translate = Registry::get("translate");
-        $this->_view['translate'] = $translate;
+        $this->viewParameters['translate'] = $translate;
         $this->render("admin/dev_inprogress");
     }
 }
