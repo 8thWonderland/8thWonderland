@@ -27,9 +27,9 @@ class Message {
         $author = $auth->_getIdentity();
         
         $req = "INSERT INTO messages_received (title, content, author, recipient) VALUES ('" . $title . "', '" . $msg . "', " . $author . ", " . $datas['recipient_message'] . ")";
-        $db->_query($req);
+        $db->query($req);
         $req = "INSERT INTO messages_sent (title, content, author, recipients) VALUES ('" . $title . "', '" . $msg . "', " . $author . ", " . $datas['recipient_message'] . ")";
-        $db->_query($req);
+        $db->query($req);
         
         return $db->affected_rows;
     }
@@ -104,7 +104,7 @@ class Message {
                    "WHERE id_receivedmessage=" . $id;
         }
 
-        $db->_query($req);
+        $db->query($req);
         return $db->affected_rows;
     }
 }

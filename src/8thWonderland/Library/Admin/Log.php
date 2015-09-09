@@ -42,7 +42,7 @@ class Log
         {
             case "DB":
                 $db = Registry::get('db');
-                $db->_query("INSERT INTO logs (level, msg) VALUES (" . $priority . ", '" . $db->real_escape_string($message) . "')");
+                $db->query("INSERT INTO logs (level, msg) VALUES (" . $priority . ", '" . $db->real_escape_string($message) . "')");
                 break;
 
             case "MAIL":

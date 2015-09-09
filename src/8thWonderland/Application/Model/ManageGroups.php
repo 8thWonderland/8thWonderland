@@ -57,7 +57,7 @@ class ManageGroups {
                "WHERE Groups.Group_id=Citizen_Groups.Group_id AND (Citizen_Groups.Citizen_id=" . $auth->_getIdentity() . " OR ID_Contact=" . $auth->_getIdentity() . ") " .
                "ORDER BY Group_name ASC";
 
-        return $db->_query($req);
+        return $db->query($req);
     }
     
     
@@ -109,7 +109,7 @@ class ManageGroups {
 
         $req = "UPDATE Groups SET ID_Contact=" . $idcontact . " " .
                "WHERE Group_id=" . Registry::get("desktop") . " ";
-        $db->_query($req);
+        $db->query($req);
         
         return $db->affected_rows;
     }

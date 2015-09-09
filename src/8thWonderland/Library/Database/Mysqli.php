@@ -2,76 +2,90 @@
 
 namespace Wonderland\Library\Database;
 
-use Wonderland\Library\Memory\Registry;
+use Wonderland\Library\Application;
 
-/**
- * class db_mysqli
- *
- * Utilisation de l'abstraction pour piloter une base de données
- *
- */
-class Mysqli extends \mysqli
-{
-    public function __construct()
-    {
-        global $application;
-        $cfg = $application->getConfig()->getOptions();
-        parent::__construct($cfg['db']['host'], $cfg['db']['username'], $cfg['db']['password'], $cfg['db']['dbname']);
+class Mysqli extends \mysqli {
+    /** @var \Wonderland\Library\Application **/
+    protected $application;
+    
+    /**
+     * @param Application $application
+     * @throws \Exception
+     */
+    public function __construct(Application $application) {
+        $this->application = $application;
+        
+        $container = $application->getContainer();
+        parent::__construct(
+            $container['database_host'],
+            $container['database_username'],
+            $container['database_password'],
+            $container['database_name'])
+        ;
         if (mysqli_connect_error()) {
             throw new \Exception('Database connect failure : ' . mysqli_connect_error());
         }
     }
     // Récupère le résultat de la requête et le transforme en array
     // ============================================================
-    public function select($query)
-    {
-        $res = $this->_query($query);
-        $result = array(); $num_row = 0;
+    public function select($query) {
+        $res = $this->query($query);
+        $result = [];
         while ($row = $res->fetch_array(MYSQLI_ASSOC)) {
-            $result[$num_row] = $row;
-            $num_row++;
+            $result[] = $row;
         }
         return $result;
     }
     
-    // Récupère le nombre de résultats de la requête
-    // =============================================
-    public function count($tablename, $where='')
+    /**
+     * @param string $tablename
+     * @param string $whereClause
+     * @return int
+     */
+    public function count($tablename, $whereClause = '')
     {
-        $res = $this->_query("SELECT COUNT(*) FROM " . $tablename . $where);
-        $row = $res->fetch_row();
-        return $row[0];
+        return $this
+            ->query("SELECT COUNT(*) FROM $tablename $whereClause")
+            ->fetch_row()[0]
+        ;
     }
-    // Récupère le résultat de la requête
-    // ==================================
-    public function _query($query)
-    {
-        $result = $this->query($query);
-        if ($result === false)      {    throw new \Exception('Database query failure : ' . $this->error);   }
+    
+    /**
+     * @param string $query
+     * @return \mysqli_result|false
+     * @throws \Exception
+     */
+    public function query($query) {
+        if (($result = parent::query($query)) === false) {
+            throw new \Exception('Database query failure : ' . $this->error);
+        }
         return $result;
     }
-    // Récupère la liste des colonnes d'une table
-    // ==========================================
+    
+    /**
+     * @param string $tablename
+     * @return array
+     * @throws \Exception
+     */
     public function getColumns($tablename)
     {
-        $result = $this->_query("SHOW COLUMNS FROM " . $tablename);
-        if ($result === false)      {    throw new \Exception('Database query failure : ' . $this->error);   }
-        
-        $columns = array(); $nCol = 0;
-        while ($nCol < $result->num_rows) {
-            $res = $result->fetch_row();
-            $columns[$nCol] = strtolower($res[0]);
-            $nCol++;
+        if (($result = $this->query("SHOW COLUMNS FROM $tablename")) === false) {
+            throw new \Exception("Database query failure : {$this->error}");
+        }
+        $columns = [];
+        while ($res = $result->fetch_row()) {
+            $columns[] = strtolower($res[0]);
         }
         return $columns;
     }
     
-    
-    // Teste l'existence d'une colonne dans une table
-    // ==============================================
-    public function ExistColumn($colname, $table)
+    /**
+     * @param string $colname
+     * @param string $table
+     * @return int
+     */
+    public function columnExists($colname, $table)
     {
-        $result = $this->_query("SHOW COLUMNS FROM " . $table . " LIKE '" . $colname . "'");
-        return $result->num_rows;
+        return $this->query("SHOW COLUMNS FROM $table LIKE '$colname'")->num_rows;
     }
 }

@@ -30,7 +30,7 @@ class Poll
                "WHERE Date_fin_vote >  NOW() " .
                "ORDER BY date_fin_vote DESC ";
         
-        $list_motions = $db->_query($req);
+        $list_motions = $db->query($req);
         if ($list_motions->num_rows > 0) {
             while ($motion = $list_motions->fetch_assoc()) {
                 $reponse .= "<tr><td><a onclick=\"Clic('/Motion/display_motion', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" . $motion['title_key'] . "</a></td>" .
@@ -87,7 +87,7 @@ class Poll
         $req = "SELECT label_key " .
                "FROM Motions_Themes " .
                "ORDER BY label_key ASC";
-        return $db->_query($req);
+        return $db->query($req);
     }
     
     
@@ -120,7 +120,7 @@ class Poll
                "values ('" . $theme . "', '" . $title . "', '" . nl2br($description) . "', '" . nl2br($means) . "',  NOW(), " .
                "DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM Motions_Themes WHERE Motions_Themes.Theme_id = " . $theme . ") DAY), " .
                $author . ")";
-        return $db->_query($req);
+        return $db->query($req);
     }
     
     
@@ -138,7 +138,7 @@ class Poll
         $req = "INSERT INTO Motions_Votes_Jetons " .
                "(Motion_id, Citizen_id, Date, Ip) " .
                "VALUES (" . $id . ", " . $member . ", '" . $date . "', '" . $ip . "')";
-        $db->_query($req);
+        $db->query($req);
         if ($db->affected_rows == 0)    {   return $db->affected_rows;  }
         
         $choix = ($vote=='approved')?1:2;
@@ -148,7 +148,7 @@ class Poll
         $req = "INSERT INTO Motions_Votes " .
                "(Motion_id, Choix, Hash) " .
                "VALUES (" . $id . ", '" . $choix . "', '" . $hash . "')";
-        $db->_query($req);
+        $db->query($req);
         return $db->affected_rows;
     }
     

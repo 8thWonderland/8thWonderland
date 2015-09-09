@@ -34,7 +34,7 @@ class AuthenticateController extends ActionController {
             
             // Enregistrement de la date et heure de la connexion
             // ==================================================            
-            $db->_query("UPDATE Utilisateurs SET DerConnexion=NOW() WHERE IDUser = " . $auth->_getIdentity());
+            $db->query("UPDATE Utilisateurs SET DerConnexion=NOW() WHERE IDUser = " . $auth->_getIdentity());
             if ($db->affected_rows == 0)    {
                 // log d'échec de mise à jour
                 $db_log = new Log("db");
@@ -104,7 +104,7 @@ class AuthenticateController extends ActionController {
         } else {
             // Enregistrement des infos du membre
             // ==================================
-            $db->_query("INSERT INTO Utilisateurs (Login, Password, Identite, Sexe, Email, Langue, Region, Inscription) " .
+            $db->query("INSERT INTO Utilisateurs (Login, Password, Identite, Sexe, Email, Langue, Region, Inscription) " .
                         "VALUES ('" . $_POST['login'] . "', '" . hash('sha512', $_POST['password']) . "', '" . $_POST['identity'] . "', " . 
                         ($_POST['gender']-1) . ", '" . $_POST['mail'] . "', '" . $_POST['lang'] . "', -2, NOW())");
             if ($db->affected_rows == 0)    {
@@ -186,7 +186,7 @@ class AuthenticateController extends ActionController {
                     if (!$mail->envoi())        {   $err_msg = $mail->error_log();    }
                     else {
                         $req = "UPDATE Utilisateurs SET password='" . hash('sha512', $new_pwd) . "' WHERE login='" . $_POST['memo_login'] . "'";
-                        $db->_query($req);
+                        $db->query($req);
                         if ($db->affected_rows == 0) {
                             // log d'échec de mise à jour
                             $db_log = new Log("db");

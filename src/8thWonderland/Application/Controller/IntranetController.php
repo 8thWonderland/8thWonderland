@@ -135,7 +135,7 @@ class IntranetController extends ActionController {
             $req = "UPDATE Utilisateurs " .
                    "SET Pays='" . $_POST['country'] . "', Region=" . $_POST['region'] . " " .
                    "WHERE IDUser=" . $auth->_getIdentity();
-            $db->_query($req);
+            $db->query($req);
             
             
             if ($_POST['region'] != -1) {
@@ -145,7 +145,7 @@ class IntranetController extends ActionController {
                 $id_group = 0;
                 $group_name = $db->select("SELECT Name FROM regions WHERE Region_id=" . $_POST['region']);
                 if ($db->count("Groups", " WHERE Group_name='" . $db->real_escape_string($group_name[0]['Name']) . "'") == 0) {
-                    $db->_query("INSERT INTO Groups (Group_Type, Description, Group_name, ID_Contact) VALUES (1, 'Groupe regional', '" . $db->real_escape_string($group_name[0]['Name']) . "', 5)");
+                    $db->query("INSERT INTO Groups (Group_Type, Description, Group_name, ID_Contact) VALUES (1, 'Groupe regional', '" . $db->real_escape_string($group_name[0]['Name']) . "', 5)");
                     if ($db->affected_rows == 0) {
                         $echec_createGroup = true;
                         // Journal de log
@@ -160,7 +160,7 @@ class IntranetController extends ActionController {
                 }
 
                 if (!$echec_createGroup) {
-                    $db->_query("INSERT INTO Citizen_Groups (Citizen_id, Group_id) VALUES (" . $auth->_getIdentity() . ", " . $id_group . ")");
+                    $db->query("INSERT INTO Citizen_Groups (Citizen_id, Group_id) VALUES (" . $auth->_getIdentity() . ", " . $id_group . ")");
                     if ($db->affected_rows == 0) {
                         // Journal de log
                         $db_log = new Log("db");

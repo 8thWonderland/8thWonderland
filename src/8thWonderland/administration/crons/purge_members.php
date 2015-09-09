@@ -23,7 +23,7 @@ defined('DELAY_PURGE')                                                          
 $db = memory_registry::get("db");
 $db_log = new Log("db");
 
-$db->_query("DELETE FROM Utilisateurs WHERE DATEDIFF(NOW(), DerConnexion) > " . DELAY_PURGE);
+$db->query("DELETE FROM Utilisateurs WHERE DATEDIFF(NOW(), DerConnexion) > " . DELAY_PURGE);
 
 if (!empty($db->error)) {
     // Journal de log
