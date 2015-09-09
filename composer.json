@@ -9,6 +9,9 @@
             "role": "Developer"
         }
     ],
+    "require" : {
+        "pimple/pimple" : "~3.0"
+    },
     "autoload" : {
         "psr-4" : {
             "Wonderland\\": "src/8thWonderland/"
