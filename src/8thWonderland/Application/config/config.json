@@ -2,6 +2,9 @@
     "services": {
         "mysqli" : {
             "class" : "Wonderland\\Library\\Database\\Mysqli"
+        },
+        "translate" : {
+            "class" : "Wonderland\\Library\\Translate"
         }
     },
     "parameters" : {
