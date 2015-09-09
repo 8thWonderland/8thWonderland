@@ -128,60 +128,60 @@ class Config {
         return $iniArray;
     }
     
-    
-    // Transformation des clés en array si elles comportent le keySeparator
-    // ** Méthode Récursive **
-    // ====================================================================
+    /**
+     * Transform keys to array if they comport the key separator
+     * Recursive method
+     * 
+     * @param array $config
+     * @param string $key
+     * @param mixed $value
+     * @return array
+     * @throws \Exception
+     */
     private function setKey($config, $key, $value)
     {
-        if (strpos($key, $this->_keySeparator) !== false) {
-            $pieces = explode($this->_keySeparator, $key, 2);
-            
-            // Vérifie l'existence de la clé
-            if (strlen($pieces[0]) && strlen($pieces[1])) {
-                
-                // Contrôle si la clé existe déjà
-                if (!isset($config[$pieces[0]])) {
-                    if ($pieces[0] === '0' && !empty($config)) {
-                        // convert the current values in $config into an array
-                        $config = array($pieces[0] => $config);
-                    } else {
-                        $config[$pieces[0]] = array();
-                    }
-                    
-                } elseif (!is_array($config[$pieces[0]])) {
-                    throw new \Exception("Cannot create sub-key for '" . $pieces[0] . "' as key already exists");
-                }
-                unset($config[$key]);
-                $config[$pieces[0]] = $this->setKey($config[$pieces[0]], $pieces[1], $value);
-                
-            } else {
-                throw new \Exception("Invalid key '" . $key . "'");
-            }
-            
-        } else {
+        if (strpos($key, $this->_keySeparator) === false) {
             $config[$key] = $value;
+            return $config;
         }
+        $pieces = explode($this->_keySeparator, $key, 2);
+
+        // Vérifie l'existence de la clé
+        if (empty($pieces[0]) || empty($pieces[1])) {
+            throw new \Exception("Invalid key '" . $key . "'");
+        }
+
+        // Contrôle si la clé existe déjà
+        if (!isset($config[$pieces[0]])) {
+            $config[$pieces[0]] =
+                ($pieces[0] === '0' && !empty($config))
+                ? $config
+                : []
+            ;
+        } elseif (!is_array($config[$pieces[0]])) {
+            throw new \Exception("Cannot create sub-key for '{$pieces[0]}' as key already exists");
+        }
+        unset($config[$key]);
+        $config[$pieces[0]] = $this->setKey($config[$pieces[0]], $pieces[1], $value);
 
         return $config;
     }
 
-    
-    // renvoi des données sous la forme d'un tableau
-    // =============================================
+    /**
+     * Format config to array
+     * 
+     * @return array
+     */
     public function toArray()
     {
-        $array = array();
-        $data = $this->_iniArray;
-        foreach ($data as $key => $value) {
-            if ($value instanceof Config) {
-                $array[$key] = $value->toArray();
-            } else {
-                $array[$key] = $value;
-            }
+        $array = [];
+        foreach ($this->_iniArray as $key => $value) {
+            $array[$key] =
+                ($value instanceof Config)
+                ? $value->toArray()
+                : $value
+            ;
         }
         return $array;
     }
 }
-
-?>
