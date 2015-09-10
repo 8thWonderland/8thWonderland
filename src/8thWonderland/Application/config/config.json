@@ -5,6 +5,9 @@
         },
         "translate" : {
             "class" : "Wonderland\\Library\\Translate"
+        },
+        "auth" : {
+            "class" : "Wonderland\\Library\\Auth"
         }
     },
     "parameters" : {
