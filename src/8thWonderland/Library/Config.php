@@ -2,23 +2,30 @@
 
 namespace Wonderland\Library;
 
-/**
- * Description of config
- *
- * @author Brennan
- */
 class Config {
+    /** @var \Wonderland\Library\Application **/
+    protected $application;
     /** @var array **/
     protected $options = [];
     /** @var string **/
     protected $environment;
-    protected $_keySeparator = ".";                                         // Séparateur à l'intérieur d'une clé
-    protected $_sectionSeparator = ':';                                     // Séparateur à l'intérieur d'une section
-    protected $_defaultSection;                                             // section par défaut définie dans l'application
-    private $_iniArray;
+    /** @var string **/
+    protected $keySeparator = '.';
+    /** @var string **/
+    protected $sectionSeparator = ':';
+    /** @var string **/
+    protected $defaultSection;
+    /** @var string **/
+    protected $filename;
+    /** @var array **/
+    private $iniData;
     
-    public function __construct()
+    /**
+     * @param \Wonderland\Library\Application $application
+     */
+    public function __construct(Application $application)
     {
+        $this->application = $application;
         $this->LoadIniFile();
     }
 
@@ -41,8 +48,7 @@ class Config {
 
     public function LoadIniFile()
     {
-        global $application;
-        $filename = $application->getRootPath() . 'Application/config/application.ini';
+        $filename = $this->application->getRootPath() . 'Application/config/application.ini';
         if (!file_exists($filename)) {
             throw new \Exception('The file ' . $filename . ' is not found !');
         }
@@ -102,15 +108,17 @@ class Config {
         return $this->options[$this->environment];
     }
     
-    
-    // Transformation des sections en array si elles comportent le sectionSeparator
-    // ============================================================================
+    /**
+     * @param array $loaded
+     * @return array
+     * @throws \Exception
+     */
     private function setSection($loaded)
     {
         $iniArray = array();
         foreach ($loaded as $key => $data)
         {
-            $pieces = explode($this->_sectionSeparator, $key);
+            $pieces = explode($this->sectionSeparator, $key);
             $thisSection = strtolower(trim($pieces[0]));
             switch (count($pieces)) {
                 case 1:
@@ -122,7 +130,7 @@ class Config {
                     break;
 
                 default:
-                    throw new \Exception("The section '" . $thisSection . ":" . trim($pieces[1]) . "' may not extended in " . $this->_filename);
+                    throw new \Exception("The section '$thisSection:" . trim($pieces[1]) . "' may not extended in {$this->filename}");
             }
         }
         return $iniArray;
@@ -140,11 +148,11 @@ class Config {
      */
     private function setKey($config, $key, $value)
     {
-        if (strpos($key, $this->_keySeparator) === false) {
+        if (strpos($key, $this->keySeparator) === false) {
             $config[$key] = $value;
             return $config;
         }
-        $pieces = explode($this->_keySeparator, $key, 2);
+        $pieces = explode($this->keySeparator, $key, 2);
 
         // Vérifie l'existence de la clé
         if (empty($pieces[0]) || empty($pieces[1])) {
@@ -175,7 +183,7 @@ class Config {
     public function toArray()
     {
         $array = [];
-        foreach ($this->_iniArray as $key => $value) {
+        foreach ($this->iniData as $key => $value) {
             $array[$key] =
                 ($value instanceof Config)
                 ? $value->toArray()
