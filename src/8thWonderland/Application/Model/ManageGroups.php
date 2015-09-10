@@ -54,7 +54,7 @@ class ManageGroups {
 
         $req = "SELECT DISTINCT Groups.Group_id, Group_name " .
                "FROM Groups, Citizen_Groups " .
-               "WHERE Groups.Group_id=Citizen_Groups.Group_id AND (Citizen_Groups.Citizen_id=" . $auth->_getIdentity() . " OR ID_Contact=" . $auth->_getIdentity() . ") " .
+               "WHERE Groups.Group_id=Citizen_Groups.Group_id AND (Citizen_Groups.Citizen_id=" . $auth->getIdentity() . " OR ID_Contact=" . $auth->getIdentity() . ") " .
                "ORDER BY Group_name ASC";
 
         return $db->query($req);

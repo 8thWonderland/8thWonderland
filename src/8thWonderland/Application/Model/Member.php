@@ -18,7 +18,7 @@ class Member {
         if (isset($id) && !empty($id))      {   $this->_id = $id; return $this;   }
 
         $auth = Auth::getInstance();
-        $this->_id = $auth->_getIdentity();
+        $this->_id = $auth->getIdentity();
 
         $db = Registry::get('db');
         
@@ -343,7 +343,7 @@ class Member {
         $id_user = $User_id;
         if ($id_user == 0) {
             $auth = Auth::getInstance();
-            $id_user = $auth->_getIdentity();
+            $id_user = $auth->getIdentity();
         }
 
         return $db->count("Citizen_Groups", sprintf(" WHERE Citizen_id=%d AND Group_id=%d", $id_user, $Group_id));
@@ -356,7 +356,7 @@ class Member {
     {
         $db = Registry::get('db');
         $auth = Auth::getInstance();
-        $id_user = $auth->_getIdentity();
+        $id_user = $auth->getIdentity();
         
         if (!isset($id_group)) {
             $res = $db->count("Groups", " WHERE ID_Contact=" . $id_user);

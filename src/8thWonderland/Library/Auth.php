@@ -3,106 +3,103 @@
 namespace Wonderland\Library;
 
 use Wonderland\Library\Memory\Registry;
-/**
- * Gestion des connexions/deconnexions des utilisateurs
- *
- * @author Brennan
- */
+
 class Auth {
-    protected static $_instance;                // Instance unique de la classe
-    protected $_tablename;                      // Nom de la table servant pour la liaison
-    protected $_logincolumn;                    // Nom de la colonne dans la table servant pour le login
-    protected $_pwdcolumn;                      // Nom de la colonne dans la table servant pour le password
-    protected $_primarykey = "iduser";          // Clé primaire de la table des membres
-        
+    /** @var \Wonderland\Library\Application **/
+    protected $application;
+    /** @var string **/
+    protected $tableName;
+    /** @var string **/
+    protected $loginColumn;
+    /** @var string **/
+    protected $passwordColumn;
+    /** @var string **/
+    protected $primaryKey = 'iduser';
     
-    // Mise en place du singleton
-    // ==========================
-    public static function getInstance()
-    {
-        if (null === self::$_instance) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
+    /**
+     * @param \Wonderland\Library\Application $application
+     */
+    public function __construct(Application $application) {
+        $this->application = $application;
     }
     
-    
-    // Définition du nom de la table
-    // =============================
-    public function setTableName($nomtable)
-    {
-        $this->_tablename = $nomtable;
+    /**
+     * @param string $tableName
+     * @return \Wonderland\Library\Auth
+     */
+    public function setTableName($tableName) {
+        $this->tableName = $tableName;
+        
+        return $this;
     }
         
-    
-    // Définition du nom de la colonne du login
-    // ========================================
-    public function setIdentityColumn($logincolumn)
-    {
-        $this->_logincolumn = $logincolumn;
+    /**
+     * @param string $loginColumn
+     * @return \Wonderland\Library\Auth
+     */
+    public function setIdentityColumn($loginColumn) {
+        $this->loginColumn = $loginColumn;
+        
+        return $this;
     }
             
-    
-    // Définition du nom de la colonne du password
-    // ===========================================
-    public function setCredentialColumn($pwdcolumn)
-    {
-        $this->_pwdcolumn = $pwdcolumn;
+    /**
+     * @param string $passwordColumn
+     * @return \Wonderland\Library\Auth
+     */
+    public function setCredentialColumn($passwordColumn) {
+        $this->passwordColumn = $passwordColumn;
+        
+        return $this;
     }
     
-    
-    // controle d'authentification
-    // ===========================
-    public function authenticate($login, $pwd)
-    {
-        $req = "SELECT " . $this->_primarykey . " FROM " . $this->_tablename . " " .
-               "WHERE " . $this->_logincolumn . " = '" . $login . "' AND " . $this->_pwdcolumn . " = '" . $pwd . "'";
-        
-        $db = Registry::get('db');
-        if ($res = $db->query($req))
-        {
-            if ($res->num_rows == 1)
-            {
-                $row = $res->fetch_assoc();
-                $this->_setIdentity($row[$this->_primarykey]);
+    /**
+     * @param string $login
+     * @param string $password
+     * @return boolean
+     * @throws \Exception
+     */
+    public function authenticate($login, $password) {
+        $db = $this->application->get('db');
+        $res = $db->query(
+            "SELECT {$this->primaryKey} FROM {$this->tableName} " .
+            "WHERE {$this->loginColumn} = '$login' AND {$this->passwordColumn} = '$password'"
+        );
+        if ($res) {
+            if ($res->num_rows == 1) {
+                $this->setIdentity($res->fetch_assoc()[$this->primaryKey]);
                 return true;
             }
-            
             return false;
         }
-        else {
-            if ($db->connect_errno)   {   throw new exception($this->_dbAdapter->connect_error);  }
+        if ($db->connect_errno) {
+            throw new \Exception($this->_dbAdapter->connect_error);
         }
-        
     }
     
-    
-    // Déconnexion de l'utilisateur
-    // ============================
-    public function logout()
-    {
-        Registry::delete("__identity__");
+    public function logout() {
+        Registry::delete('__identity__');
     }
     
-    
-    // Identité de l'utilisateur
-    // =========================
-    protected function _setIdentity($id)
-    {
-        Registry::set("__identity__", $id);
-    }
-    public function _getIdentity()
-    {
-        return Registry::get("__identity__");
+    /**
+     * @param int $id
+     */
+    protected function setIdentity($id) {
+        Registry::set('__identity__', $id);
     }
     
-    
-    // Test l'existence de l'identité
-    // ==============================
-    public static function hasIdentity()
+    /**
+     * @return int
+     */
+    public function getIdentity()
     {
-        return (Registry::get("__identity__") != null);
+        return Registry::get('__identity__');
+    }
+    
+    /**
+     * @return boolean
+     */
+    public static function hasIdentity() {
+        return (Registry::get('__identity__') !== null);
     }
 }
-
-?>

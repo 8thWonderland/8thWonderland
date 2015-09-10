@@ -22,7 +22,7 @@ class Poll
         $db = Registry::get('db');
         $translate = Registry::get('translate');
         $auth = Auth::getInstance();
-        $id_member = $auth->_getIdentity();
+        $id_member = $auth->getIdentity();
         $reponse = '';
         
         $req = "SELECT motion_id, title_key, date_fin_vote " .
@@ -113,7 +113,7 @@ class Poll
         $title = htmlentities(utf8_decode($p_title), ENT_QUOTES);
         $description = htmlentities($p_description);
         $means = htmlentities($p_means);
-        $author = $auth->_getIdentity();
+        $author = $auth->getIdentity();
                 
         $req = "INSERT INTO Motions " .
                "(Theme_id, Title_key, Description, Moyens, Submission_date, Date_fin_vote, Citizen_id) " .
@@ -130,7 +130,7 @@ class Poll
     {
         $db     = Registry::get('db');
         $auth   = Auth::getInstance();
-        $member = $auth->_getIdentity();
+        $member = $auth->getIdentity();
         $date   = date('Y-m-d h-i-s');
         (isset($_SERVER['REMOTE_ADDR']))?$ip = $_SERVER['REMOTE_ADDR']:$ip='inconnue';
         

@@ -34,7 +34,7 @@ class AuthenticateController extends ActionController {
             
             // Enregistrement de la date et heure de la connexion
             // ==================================================            
-            $db->query("UPDATE Utilisateurs SET DerConnexion=NOW() WHERE IDUser = " . $auth->_getIdentity());
+            $db->query("UPDATE Utilisateurs SET DerConnexion=NOW() WHERE IDUser = " . $auth->getIdentity());
             if ($db->affected_rows == 0)    {
                 // log d'échec de mise à jour
                 $db_log = new Log("db");

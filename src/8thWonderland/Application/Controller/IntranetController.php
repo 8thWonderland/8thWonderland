@@ -134,7 +134,7 @@ class IntranetController extends ActionController {
             // =======================================================
             $req = "UPDATE Utilisateurs " .
                    "SET Pays='" . $_POST['country'] . "', Region=" . $_POST['region'] . " " .
-                   "WHERE IDUser=" . $auth->_getIdentity();
+                   "WHERE IDUser=" . $auth->getIdentity();
             $db->query($req);
             
             
@@ -160,7 +160,7 @@ class IntranetController extends ActionController {
                 }
 
                 if (!$echec_createGroup) {
-                    $db->query("INSERT INTO Citizen_Groups (Citizen_id, Group_id) VALUES (" . $auth->_getIdentity() . ", " . $id_group . ")");
+                    $db->query("INSERT INTO Citizen_Groups (Citizen_id, Group_id) VALUES (" . $auth->getIdentity() . ", " . $id_group . ")");
                     if ($db->affected_rows == 0) {
                         // Journal de log
                         $db_log = new Log("db");
@@ -176,7 +176,7 @@ class IntranetController extends ActionController {
                 $mail -> addfrom('developpeurs@8thwonderland.com','');
                 $mail -> addsubject('regions inconnues','');
                 $message = "<table>" .
-                    "<tr><td>ID User : " . $auth->_getIdentity() . " :<br/>====================</td></tr>" .
+                    "<tr><td>ID User : " . $auth->getIdentity() . " :<br/>====================</td></tr>" .
                     "<tr><td>" . $_POST['country'] . "<br/></td></tr>" .
                     "<tr><td>Message :<br/>====================</td></tr>" .
                     "</table>";

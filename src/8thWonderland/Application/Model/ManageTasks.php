@@ -46,7 +46,7 @@ class ManageTasks {
         if (!isset($date) || empty($date))                  {   $date = "0000-00-00 00:00:00";     }
         $description = htmlentities($description);
         $auth = Auth::getInstance();
-        $author = $auth->_getIdentity();
+        $author = $auth->getIdentity();
         $db = Registry::get('db');
         $req = "INSERT INTO tasks (Description, date, id_group, status, author) " .
                "VALUES ('" . $description . "', '" . $date . "', " . $id_group . ", 0, " . $author . ")";
