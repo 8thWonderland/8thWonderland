@@ -2,8 +2,6 @@
 
 namespace Wonderland\Library;
 
-use Wonderland\Library\Memory\Registry;
-use Wonderland\Library\Database\Mysqli;
 use Wonderland\Library\Controller\FrontController;
 use Wonderland\Library\Config;
 
@@ -45,8 +43,9 @@ class Application {
         
         while($key = key($services)) {
             $service = $services[$key];
-            $this->container[$key] = function($c) use ($service, $this) {
-                return new $service['class']($this);
+            $app = $this;
+            $this->container[$key] = function($c) use ($service, $app) {
+                return new $service['class']($app);
             };
             next($services);
         }
@@ -101,7 +100,7 @@ class Application {
      */
     public function setConfig($environment, $options = []) {
         $this->config =
-            (new Config())
+            (new Config($this))
             ->setEnvironment($environment)
             ->setOptions($options)
         ;
@@ -119,7 +118,7 @@ class Application {
     // ==========================
     public function run()
     {
-        $front = new FrontController($this->config->getOptions());
+        $front = new FrontController($this);
         $front->dispatch();
     }
 }

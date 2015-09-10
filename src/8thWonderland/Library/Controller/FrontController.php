@@ -67,6 +67,6 @@ class FrontController {
         if (!method_exists($controller, $action)) {
             throw new \Exception("The Action '$action' does not exist !");
         }
-        (new $controller())->$action();
+        (new $controller($this->application))->$action();
     }
 }
