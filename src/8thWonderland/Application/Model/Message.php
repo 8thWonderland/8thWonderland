@@ -39,72 +39,63 @@ class Message {
     // ============================
     public static function display_receivedmessages()
     {
-        $db = Registry::get('db');
-        $auth = Auth::getInstance();
-        
-        $req = "SELECT id_receivedmessage, title, identite, date_msg " .
-               "FROM messages_received, Utilisateurs " .
-               "WHERE author=Utilisateurs.IDUser AND recipient=" . $auth->getIdentity() . " " .
-               "ORDER BY date_msg DESC";
-
-        return $db->select($req);
+        return Registry::get('db')->select(
+            'SELECT id_receivedmessage, title, identite, date_msg ' .
+            'FROM messages_received, Utilisateurs ' .
+            'WHERE author=Utilisateurs.IDUser AND recipient=' . Auth::getInstance()->getIdentity() . ' ' .
+            'ORDER BY date_msg DESC'
+        );
     }
         
     
     // Affichage des messages envoyés
     // ==============================
-    public static function display_sentmessages()
-    {
+    public static function display_sentmessages() {
+        return Registry::get('db')->select(
+            'SELECT id_sentmessage, title, recipients, date_msg ' .
+            'FROM messages_sent ' .
+            'WHERE author=' . Auth::getInstance()->getIdentity() . ' ' .
+            'ORDER BY date_msg DESC'
+        );
+    }
+    
+    /**
+     * @param int $id
+     * @param string $type
+     * @return array
+     */
+    public static function display_contentmessage($id, $type) {
         $db = Registry::get('db');
         $auth = Auth::getInstance();
         
-        $req = "SELECT id_sentmessage, title, recipients, date_msg " .
-               "FROM messages_sent " .
-               "WHERE author=" . $auth->getIdentity() . " " .
-               "ORDER BY date_msg DESC";
-
+        $req =
+            ($type === 1)
+            ? 
+                "SELECT title, content, recipients, date_msg " .
+                "FROM messages_sent " .
+                "WHERE author=" . $auth->getIdentity() . " " .
+                "ORDER BY date_msg DESC"
+            :
+                "SELECT title, content, recipient, date_msg " .
+                "FROM messages_received, Utilisateurs " .
+                "WHERE author=Utilisateurs.IDUser AND recipient=" . $auth->getIdentity() . " " .
+                "ORDER BY date_msg DESC"
+        ;
         return $db->select($req);
     }
     
-    
-    // Affichage du contenu d'un message
-    // =================================
-    public static function display_contentmessage($id, $type)
-    {
+    /**
+     * @param int $id
+     * @param string $type
+     * @return int
+     */
+    public static function delete_message($id, $type) {
         $db = Registry::get('db');
-        $auth = Auth::getInstance();
-        
-        if ($type == 1) {
-            $req = "SELECT title, content, recipients, date_msg " .
-                   "FROM messages_sent " .
-                   "WHERE author=" . $auth->getIdentity() . " " .
-                   "ORDER BY date_msg DESC";
-        } else {
-            $req = "SELECT title, content, recipient, date_msg " .
-                   "FROM messages_received, Utilisateurs " .
-                   "WHERE author=Utilisateurs.IDUser AND recipient=" . $auth->getIdentity() . " " .
-                   "ORDER BY date_msg DESC";
-        }
-
-        return $db->select($req);
-    }
-    
-    
-    // Suppression d'un message
-    // ========================
-    public static function delete_message($id, $type)
-    {
-        $db = Registry::get('db');
-        
-        if ($type == 1) {
-            $req = "DELETE FROM messages_sent " .
-                   "WHERE id_sentmessage=" . $id;
-        } else {
-            $req = "DELETE FROM messages_received " .
-                   "WHERE id_receivedmessage=" . $id;
-        }
-
-        $db->query($req);
+        $db->query(
+            ($type === 1)
+            ? "DELETE FROM messages_sent WHERE id_sentmessage=$id"
+            : "DELETE FROM messages_received WHERE id_receivedmessage=$id"
+        );
         return $db->affected_rows;
     }
 }

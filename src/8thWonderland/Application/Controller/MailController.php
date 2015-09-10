@@ -39,18 +39,18 @@ class MailController extends ActionController {
             if(!getmxrr($domain, $MXHost)) {
                 $this->contactStatus = $translator->translate('mail_invalide');
             } else {
-                $mail = Mailer::getInstance();
-                $mail->addrecipient('developpeurs@8thwonderland.com', '');
-                $mail->addfrom($email, '');
-                $mail->addsubject($_POST['mail_title'], '');
+                $mail = new Mailer();
+                $mail->addRecipient('developpeurs@8thwonderland.com', '');
+                $mail->addFrom($email, '');
+                $mail->addSubject($_POST['mail_title'], '');
                 $mail->html =
                     "<table><tr><td>" . utf8_decode('Identité') . " :<br/>====================</td></tr>" .
                     "<tr><td>{$_POST['mail_sender']}<br/></td></tr>" .
                     "<tr><td>Message :<br/>====================</td></tr>" .
                     "<tr><td>" . nl2br(htmlspecialchars(utf8_decode($_POST['mail_message']))) . "</td></tr></table>"
                 ;
-                if (!$mail->envoi()) {
-                    $this->contactStatus = $mail->error_log();
+                if (!$mail->send()) {
+                    $this->contactStatus = $mail->errorLog();
                 }
             }
         }

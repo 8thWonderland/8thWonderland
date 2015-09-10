@@ -71,9 +71,8 @@ class Auth {
                 return true;
             }
             return false;
-        }
-        if ($db->connect_errno) {
-            throw new \Exception($this->_dbAdapter->connect_error);
+        } elseif ($db->connect_errno) {
+            throw new exception($this->_dbAdapter->connect_error);
         }
     }
     

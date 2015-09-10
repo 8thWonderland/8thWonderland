@@ -16,7 +16,7 @@ class AuthenticateController extends ActionController {
         if (($valid = $this->process($_POST['login'], $_POST['password']))) {
             $auth = $this->application->get('auth');
             $db = $this->application->get('mysqli');
-            $member = Member::getInstance();
+            $member = new Member();
             
             // Enregistrement de la date et heure de la connexion
             // ==================================================            
@@ -28,9 +28,9 @@ class AuthenticateController extends ActionController {
             
             // Mémorisation de l'ID du membre
             // ==============================
-            Registry::set('__login__', $member->identite); // indipensable pour l'identification au forum
+            Registry::set('__login__', $member->getIdentity()); // indipensable pour l'identification au forum
             $translate = $this->application->get('translate');
-            $translate->setUserLang($member->langue);
+            $translate->setUserLang($member->getLanguage());
             $this->redirect('Intranet/index');
         } else {
             $translate = $this->application->get('translate');
@@ -119,13 +119,13 @@ class AuthenticateController extends ActionController {
             } else {
                 $code_generated = $this->generateCode($_POST['login']);
                 
-                $mail = Mailer::getInstance();
-                $mail->addrecipient($email[0]['email'], '');
-                $mail->addfrom('developpeurs@8thwonderland.com', '');
-                $mail->addsubject('8thwonderland - ' . $translate->translate('forget_pwd'),'');
+                $mail = new Mailer();
+                $mail->addRecipient($email[0]['email'], '');
+                $mail->addFrom('developpeurs@8thwonderland.com', '');
+                $mail->addSubject('8thwonderland - ' . $translate->translate('forget_pwd'),'');
                 $mail->html = $translate->translate('mail_forgetpwd') . $code_generated;
                 if (!$mail->envoi()) {
-                    $err_msg = $mail->error_log();
+                    $err_msg = $mail->errorLog();
                 }
             }
         }
@@ -166,10 +166,10 @@ class AuthenticateController extends ActionController {
                     $err_msg = $translate->translate('no_result');
                 } else {
                     $new_pwd = $this->createPassword();
-                    $mail = Mailer::getInstance();
-                    $mail->addrecipient($email[0]['email'],'');
-                    $mail->addfrom('developpeurs@8thwonderland.com','');
-                    $mail->addsubject('8thwonderland - ' . $translate->translate('forget_pwd'),'');
+                    $mail = new Mailer();
+                    $mail->addRecipient($email[0]['email'], '');
+                    $mail->addFrom('developpeurs@8thwonderland.com', '');
+                    $mail->addSubject('8thwonderland - ' . $translate->translate('forget_pwd'), '');
                     $mail->html = $translate->translate('mail_newpwd') . $new_pwd;
                     if (!$mail->envoi()) {
                         $err_msg = $mail->error_log();
@@ -179,8 +179,9 @@ class AuthenticateController extends ActionController {
                         );
                         if ($db->affected_rows == 0) {
                             // log d'échec de mise à jour
-                            $db_log = new Log('db');
-                            $db_log->log("Echec de changement du mot de passe (" . $_POST['memo_login'] . ")", Log::ERR);
+                            $logger = $this->application->get('logger');
+                            $logger->setWriter('db');
+                            $logger->log("Echec de changement du mot de passe ({$_POST['memo_login']})", Log::ERR);
                         }
                     }
                 }
