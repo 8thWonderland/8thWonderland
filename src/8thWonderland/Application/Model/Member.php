@@ -18,7 +18,7 @@ class Member {
         if (isset($id) && !empty($id))      {   $this->_id = $id; return $this;   }
 
         $auth = Auth::getInstance();
-        $this->_id = $auth->_getIdentity();
+        $this->_id = $auth->getIdentity();
 
         $db = Registry::get('db');
         
@@ -68,7 +68,7 @@ class Member {
         if ($this->getLogin() != $value) {
             $db = Registry::get('db');
             $req = "UPDATE Utilisateurs SET Login='" . $value . "' WHERE IDUser=" . $this->_id;
-            $res = $db->_query($req);
+            $res = $db->query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
                 $db_log = new Log("db");
@@ -95,7 +95,7 @@ class Member {
         if ($this->getPassword() != $value) {
             $db = Registry::get('db');
             $req = "UPDATE Utilisateurs SET Password='" . $value . "' WHERE IDUser=" . $this->_id;
-            $res = $db->_query($req);
+            $res = $db->query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
                 $db_log = new Log("db");
@@ -128,14 +128,14 @@ class Member {
             if ($db->count("Utilisateurs", " WHERE Identite='" . $value . "'") > 0) {   return -2;  }
 
             $req = "UPDATE Utilisateurs SET Identite='" . $value . "' WHERE IDUser=" . $this->_id;
-            $db->_query($req);
+            $db->query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
                 $db_log = new Log("db");
                 $db_log->log("Echec de l'update de l'identite (" . $this->getIdentite() . ")", Log::ERR);
             } else {
                 $req = "UPDATE phpbb_users SET username='" . $value . "' WHERE username='" . $old_identite . "'";
-                $db->_query($req);
+                $db->query($req);
                 if ($db->affected_rows == 0) {
                     // log d'échec de mise à jour
                     $db_log = new Log("db");
@@ -166,7 +166,7 @@ class Member {
             if(!filter_var($value, FILTER_VALIDATE_URL))    {   return -1;  }
             $db = Registry::get('db');
             $req = "UPDATE Utilisateurs SET Avatar='" . $value . "' WHERE IDUser=" . $this->_id;
-            $db->_query($req);
+            $db->query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
                 $db_log = new Log("db");
@@ -197,7 +197,7 @@ class Member {
             if ($db->count("Utilisateurs", " WHERE Email='" . $value . "'") > 0) {   return -2;  }
 
             $req = "UPDATE Utilisateurs SET Email='" . $value . "' WHERE IDUser=" . $this->_id;
-            $db->_query($req);
+            $db->query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
                 $db_log = new Log("db");
@@ -227,7 +227,7 @@ class Member {
         if ($this->getSexe() != $value) {
             $db = Registry::get('db');
             $req = "UPDATE Utilisateurs SET Sexe=" . $value . " WHERE IDUser=" . $this->_id;
-            $res = $db->_query($req);
+            $res = $db->query($req);
             if ($db->affected_rows == 0) {
                 // log d'échec de mise à jour
                 $db_log = new Log("db");
@@ -259,7 +259,7 @@ class Member {
             if (array_key_exists($value, $langs)) {
                 $db = Registry::getInstance();
                 $req = "UPDATE Utilisateurs SET Langue='" . $value . "' WHERE IDUser=" . $this->_id;
-                $db->_query($req);
+                $db->query($req);
                 if ($db->affected_rows == 0) {
                     // log d'échec de mise à jour
                     $db_log = new Log("db");
@@ -267,7 +267,7 @@ class Member {
                 } else
                 {
                     $translate = Registry::get("translate");
-                    $translate->setLangUser($value);
+                    $translate->setUserLang($value);
                 }
                 return $db->affected_rows;
             } else {    return 0;   }
@@ -343,7 +343,7 @@ class Member {
         $id_user = $User_id;
         if ($id_user == 0) {
             $auth = Auth::getInstance();
-            $id_user = $auth->_getIdentity();
+            $id_user = $auth->getIdentity();
         }
 
         return $db->count("Citizen_Groups", sprintf(" WHERE Citizen_id=%d AND Group_id=%d", $id_user, $Group_id));
@@ -356,7 +356,7 @@ class Member {
     {
         $db = Registry::get('db');
         $auth = Auth::getInstance();
-        $id_user = $auth->_getIdentity();
+        $id_user = $auth->getIdentity();
         
         if (!isset($id_group)) {
             $res = $db->count("Groups", " WHERE ID_Contact=" . $id_user);
@@ -392,7 +392,7 @@ class Member {
     {
         $db = Registry::get('db');
         $code_lang = $this->langue;
-        if ($db->ExistColumn($code_lang, "country") == 0)       {   $code_lang = "en";  }
+        if ($db->columnExists($code_lang, "country") == 0)       {   $code_lang = "en";  }
 
         $req = "SELECT Code, " . $code_lang . " " .
                "FROM country";

@@ -24,7 +24,7 @@ defined('DELAY_PURGE')                                                          
 $db = memory_registry::get("db");
 $db_log = new Log("db");
 
-$db->_query("DELETE FROM logs WHERE DATEDIFF(NOW(), timelogs) > " . DELAY_PURGE);
+$db->query("DELETE FROM logs WHERE DATEDIFF(NOW(), timelogs) > " . DELAY_PURGE);
 
 if (!empty($db->error)) {
     // Journal de log

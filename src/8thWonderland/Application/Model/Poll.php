@@ -22,7 +22,7 @@ class Poll
         $db = Registry::get('db');
         $translate = Registry::get('translate');
         $auth = Auth::getInstance();
-        $id_member = $auth->_getIdentity();
+        $id_member = $auth->getIdentity();
         $reponse = '';
         
         $req = "SELECT motion_id, title_key, date_fin_vote " .
@@ -30,20 +30,20 @@ class Poll
                "WHERE Date_fin_vote >  NOW() " .
                "ORDER BY date_fin_vote DESC ";
         
-        $list_motions = $db->_query($req);
+        $list_motions = $db->query($req);
         if ($list_motions->num_rows > 0) {
             while ($motion = $list_motions->fetch_assoc()) {
                 $reponse .= "<tr><td><a onclick=\"Clic('/Motion/display_motion', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" . $motion['title_key'] . "</a></td>" .
                             "<td><a onclick=\"Clic('/Motion/display_motion', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" . $motion['date_fin_vote'] . "</a></td>";
                 if ($this->poll_active($motion['motion_id'], $id_member) == 0) {
                     $reponse .= "<td><div class='bouton'><a onclick=\"Clic('/Motion/display_vote', 'motion_id=" . $motion['motion_id'] . "', 'milieu_milieu'); return false;\">" .
-                                "<span style='color: #dfdfdf;'>" . $translate->msg('btn_votemotion') . "</span></a></div></td>";
+                                "<span style='color: #dfdfdf;'>" . $translate->translate('btn_votemotion') . "</span></a></div></td>";
                 }
                 $reponse .= "</tr>";
             }
         }
         else {
-            $reponse = "<tr><td>" . $translate->msg('no_result') . "</td></tr>";
+            $reponse = "<tr><td>" . $translate->translate('no_result') . "</td></tr>";
         }
 
         return $reponse;
@@ -87,7 +87,7 @@ class Poll
         $req = "SELECT label_key " .
                "FROM Motions_Themes " .
                "ORDER BY label_key ASC";
-        return $db->_query($req);
+        return $db->query($req);
     }
     
     
@@ -113,14 +113,14 @@ class Poll
         $title = htmlentities(utf8_decode($p_title), ENT_QUOTES);
         $description = htmlentities($p_description);
         $means = htmlentities($p_means);
-        $author = $auth->_getIdentity();
+        $author = $auth->getIdentity();
                 
         $req = "INSERT INTO Motions " .
                "(Theme_id, Title_key, Description, Moyens, Submission_date, Date_fin_vote, Citizen_id) " .
                "values ('" . $theme . "', '" . $title . "', '" . nl2br($description) . "', '" . nl2br($means) . "',  NOW(), " .
                "DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM Motions_Themes WHERE Motions_Themes.Theme_id = " . $theme . ") DAY), " .
                $author . ")";
-        return $db->_query($req);
+        return $db->query($req);
     }
     
     
@@ -130,7 +130,7 @@ class Poll
     {
         $db     = Registry::get('db');
         $auth   = Auth::getInstance();
-        $member = $auth->_getIdentity();
+        $member = $auth->getIdentity();
         $date   = date('Y-m-d h-i-s');
         (isset($_SERVER['REMOTE_ADDR']))?$ip = $_SERVER['REMOTE_ADDR']:$ip='inconnue';
         
@@ -138,7 +138,7 @@ class Poll
         $req = "INSERT INTO Motions_Votes_Jetons " .
                "(Motion_id, Citizen_id, Date, Ip) " .
                "VALUES (" . $id . ", " . $member . ", '" . $date . "', '" . $ip . "')";
-        $db->_query($req);
+        $db->query($req);
         if ($db->affected_rows == 0)    {   return $db->affected_rows;  }
         
         $choix = ($vote=='approved')?1:2;
@@ -148,7 +148,7 @@ class Poll
         $req = "INSERT INTO Motions_Votes " .
                "(Motion_id, Choix, Hash) " .
                "VALUES (" . $id . ", '" . $choix . "', '" . $hash . "')";
-        $db->_query($req);
+        $db->query($req);
         return $db->affected_rows;
     }
     

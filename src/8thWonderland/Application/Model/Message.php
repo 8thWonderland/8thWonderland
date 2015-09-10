@@ -24,12 +24,12 @@ class Message {
         $title = htmlentities($datas['title_message']);
         $msg   = htmlentities($datas['content_message']);
         $auth = Auth::getInstance();
-        $author = $auth->_getIdentity();
+        $author = $auth->getIdentity();
         
         $req = "INSERT INTO messages_received (title, content, author, recipient) VALUES ('" . $title . "', '" . $msg . "', " . $author . ", " . $datas['recipient_message'] . ")";
-        $db->_query($req);
+        $db->query($req);
         $req = "INSERT INTO messages_sent (title, content, author, recipients) VALUES ('" . $title . "', '" . $msg . "', " . $author . ", " . $datas['recipient_message'] . ")";
-        $db->_query($req);
+        $db->query($req);
         
         return $db->affected_rows;
     }
@@ -44,7 +44,7 @@ class Message {
         
         $req = "SELECT id_receivedmessage, title, identite, date_msg " .
                "FROM messages_received, Utilisateurs " .
-               "WHERE author=Utilisateurs.IDUser AND recipient=" . $auth->_getIdentity() . " " .
+               "WHERE author=Utilisateurs.IDUser AND recipient=" . $auth->getIdentity() . " " .
                "ORDER BY date_msg DESC";
 
         return $db->select($req);
@@ -60,7 +60,7 @@ class Message {
         
         $req = "SELECT id_sentmessage, title, recipients, date_msg " .
                "FROM messages_sent " .
-               "WHERE author=" . $auth->_getIdentity() . " " .
+               "WHERE author=" . $auth->getIdentity() . " " .
                "ORDER BY date_msg DESC";
 
         return $db->select($req);
@@ -77,12 +77,12 @@ class Message {
         if ($type == 1) {
             $req = "SELECT title, content, recipients, date_msg " .
                    "FROM messages_sent " .
-                   "WHERE author=" . $auth->_getIdentity() . " " .
+                   "WHERE author=" . $auth->getIdentity() . " " .
                    "ORDER BY date_msg DESC";
         } else {
             $req = "SELECT title, content, recipient, date_msg " .
                    "FROM messages_received, Utilisateurs " .
-                   "WHERE author=Utilisateurs.IDUser AND recipient=" . $auth->_getIdentity() . " " .
+                   "WHERE author=Utilisateurs.IDUser AND recipient=" . $auth->getIdentity() . " " .
                    "ORDER BY date_msg DESC";
         }
 
@@ -104,7 +104,7 @@ class Message {
                    "WHERE id_receivedmessage=" . $id;
         }
 
-        $db->_query($req);
+        $db->query($req);
         return $db->affected_rows;
     }
 }

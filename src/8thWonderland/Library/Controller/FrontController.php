@@ -2,26 +2,41 @@
 
 namespace Wonderland\Library\Controller;
 
-/**
- * Description of front
- *
- * @author Brennan
- */
+use Wonderland\Library\Application;
+
 class FrontController {
-    protected $_directory;                      // Chemin par défaut des controleurs action
-    protected $_defaultController = 'Index';                                // Nom du controleur par défaut
-    protected $_defaultAction = 'index';                                    // Action par défaut
+    /** @var \Wonderland\Library\Application */
+    protected $application;
+    /** @var string **/
+    protected $directory;
+    /** @var string **/
+    protected $defaultController = 'Index';
+    /** @var string **/
+    protected $defaultAction = 'index';
 
-
-    public function __construct($options = null)
+    /**
+     * @param Application $application
+     * @throws \Exception
+     */
+    public function __construct(Application $application)
     {
-        global $application;
-        $this->_directory = $application->getRootPath() . 'Application/Controller';
-        if (isset($options['defaultController']))               {   $this->_defaultController = $options['defaultController'];   }
-        if (isset($options['defaultAction']))                   {   $this->_defaultAction = $options['defaultAction'];   }
-        if (isset($options['controllerDirectory']))             {   $this->_directory = $options['controllerDirectory'];   }
-        if (!is_dir($this->_directory))         {   throw new \Exception("The default controllerDirectory '" . $this->_directory . "' is not exist !");  }
-
+        $this->application = $application;
+        $this->directory = $application->getRootPath() . 'Application/Controller';
+        
+        $options = $application->getConfig()->getOptions();
+        
+        if (isset($options['defaultController'])) {
+            $this->defaultController = $options['defaultController'];
+        }
+        if (isset($options['defaultAction'])) {
+            $this->defaultAction = $options['defaultAction'];
+        }
+        if (isset($options['controllerDirectory'])) {
+            $this->directory = $options['controllerDirectory'];
+        }
+        if (!is_dir($this->directory)) {
+            throw new \Exception("The default controllerDirectory '{$this->directory}' is not exist !");
+        }
     }
 
     // Transfert de la requête au controleur d'action approprié
@@ -29,12 +44,20 @@ class FrontController {
     public function dispatch()
     {
         // Détermination du controleur et de l'action pour cette requête
-
-        $requestedController = (isset($_REQUEST['controller'])) ? $_REQUEST['controller'] : $this->_defaultController;
-        $controller = 'Wonderland\\Application\\Controller\\' . $requestedController . 'Controller';
+        $controller = 'Wonderland\\Application\\Controller\\';
+        $controller .= 
+            (isset($_REQUEST['controller']))
+            ? $_REQUEST['controller']
+            : $this->defaultController
+        ;
+        $controller .=  'Controller';
         
-        $requestedAction = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : $this->_defaultAction;
-        $action = $requestedAction . 'Action';
+        $action =
+            (isset($_REQUEST['action']))
+            ? $_REQUEST['action']
+            : $this->defaultAction
+        ;
+        $action .= 'Action';
 
         // Vérification si le controleur existe
         if (!class_exists($controller)) {
@@ -44,8 +67,6 @@ class FrontController {
         if (!method_exists($controller, $action)) {
             throw new \Exception("The Action '$action' does not exist !");
         }
-        // route vers le controleur et l'action demandée
-        $ctrl = new $controller();
-        $ctrl->$action();
+        (new $controller($this->application))->$action();
     }
 }

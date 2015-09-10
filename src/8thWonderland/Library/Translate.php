@@ -2,53 +2,52 @@
 
 namespace Wonderland\Library;
 
-/**
- * class translate
- *
- * Gestion de l'internationalisation du site
- *
- */
-class Translate
-{
-    private $_langs = array();                  // Tableau des langues implémentées
-    private $_defaultLang;                      // Langue par défaut de l'application si celle du navigateur n'est pas implémentée
-    public $_langUser;                         // Langue définie par les membres quand ils sont connectés
-    private $_langPath = 'langs/';              // Emplacement par défaut des fichiers de langues
+class Translate {
+    /** @var \Wonderland\Library\Application **/
+    protected $application;
+    /** @var array **/
+    protected $languages = [];
+    /** @var string **/
+    protected $defaultLanguage;
+    /** @var string **/
+    protected $userLanguage;
+    /** @var string **/
+    protected $languagesPath = 'langs/';
 
-    public function __construct($options = [])
-    {
-        if (!is_array($options))
-        {
-            throw new \InvalidArgumentException('Invalid options provider : This must be an array !');
-        }
+    public function __construct(Application $application) {
+        $this->application = $application;
+        
+        $options = $application->getConfig()->getOptions();
         if (!empty($options['path']) && is_dir($options['path'])) {
-            $this->_langPath = $options['path'];
+            $this->languagesPath = $options['path'];
         }
         if (!empty($options['langs'])) {
-            $this->AddLang($options['langs']);
+            $this->addLanguage($options['langs']);
         }
         if (!empty($options['default'])) {
-            $this->setDefault($options['default']);
+            $this->setDefaultLanguage($options['default']);
         }
     }
 
-    // Ajout d'une langue si elle n'existe pas déjà
-    // ============================================
-    public function AddLang(array $langs)
+    /**
+     * @param array $langs
+     */
+    public function addLanguage(array $langs)
     {
-        foreach($langs as $name => $file)
-        {
-            if (!array_key_exists($name, $this->_langs))    {   $this->_langs[$name] = self::LoadFile($file);   }
+        foreach($langs as $name => $file) {
+            if (!array_key_exists($name, $this->languages)) {
+                $this->languages[$name] = self::LoadFile($file);
+            }
         }
     }
     
     
     // Suppression d'une langue
     // ========================
-    public function RemoveLang($name)
+    public function removeLanguage($name)
     {
-        if (array_key_exists($name, $this->_langs)) {
-            unset($this->_langs[$name]);
+        if (array_key_exists($name, $this->languages)) {
+            unset($this->languages[$name]);
         }
     }
     
@@ -57,7 +56,7 @@ class Translate
     // ==========================================
     public function getList()
     {
-        return array_keys($this->_langs);
+        return array_keys($this->languages);
     }
     
     /**
@@ -66,7 +65,7 @@ class Translate
      */
     public function isAvailable($language)
     {
-        if ($language != null) {
+        if ($language !== null) {
             return (in_array($language, $this->getList()));
         }
         return false;
@@ -79,17 +78,16 @@ class Translate
      */
     protected function LoadFile($filename)
     {
-        global $application;
         $array = null;
         // Controle la validité du fichier de langue
         // =========================================
         if (preg_match('/[^a-z0-9\\/\\\\_.:-]/i', $filename)) {
             throw new \InvalidArgumentException('filename incorrect !');
         }
-        if(!file_exists($application->getRootPath() . $this->_langPath . $filename)) {
-            throw new \InvalidArgumentException('file "' . $application->getRootPath() . $this->_langPath . $filename . '" not exist !');
+        if(!file_exists($this->application->getRootPath() . $this->languagesPath . $filename)) {
+            throw new \InvalidArgumentException('file "' . $this->application->getRootPath() . $this->languagesPath . $filename . '" not exist !');
         }
-        require_once $application->getRootPath() . $this->_langPath . $filename;
+        require_once $this->application->getRootPath() . $this->languagesPath . $filename;
         return $array;
     }
 
@@ -97,47 +95,46 @@ class Translate
      * @param string $language
      * @throws \InvalidArgumentException
      */
-    public function setLangUser($language)
+    public function setUserLang($language)
     {
         if (!$this->isAvailable($language)) {
-            throw new \InvalidArgumentException('Language "' . $language . '" not implemented !');
+            throw new \InvalidArgumentException("Language $language is not implemented !");
         }
-        $this->_langUser = $language;
+        $this->userLanguage = $language;
     }
     
     /**
      * @param string $language
      * @throws \InvalidArgumentException
      */
-    public function setDefault($language) {
+    public function setDefaultLanguage($language) {
         if (!$this->isAvailable($language)) {
-            throw new \InvalidArgumentException('Language "' . $language . '" not implemented !');
+            throw new \InvalidArgumentException("Language $language is not implemented !");
         }
-        $this->_defaultLang = $language;
+        $this->defaultLanguage = $language;
     }
 
-
-    // Récupération de la langue par défaut
-    // ====================================
-    public function getDefault()
+    /**
+     * @return string
+     */
+    public function getDefaultLanguage()
     {
-        return $this->_defaultLang;
+        return $this->defaultLanguage;
     }
 
-
-    // Récupération de la langue du navigateur
-    // =======================================
+    /**
+     * @return string
+     */
     public function getBrowserLang()
     {
         $tmp = null;
-        $lg_nav = '';
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $tmp = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         }
         $tmp = explode(',' , $tmp);
         $lg_nav = explode('-', $tmp[0]);
         if (!$this->isAvailable($lg_nav[0])) {
-            return $this->getDefault();
+            return $this->getDefaultLanguage();
         }
         return $lg_nav[0];
     }
@@ -147,16 +144,15 @@ class Translate
      * @param string $lang
      * @return string
      */
-    public function msg($key, $lang=null)
+    public function translate($key, $lang = null)
     {
-        if (!isset($lang) || !$this->isAvailable($lang))
-        {
+        if (!isset($lang) || !$this->isAvailable($lang)) {
             $lang = 
-                (isset($this->_langUser) && $this->isAvailable($this->_langUser))
-                ? $this->_langUser
+                (isset($this->userLanguage) && $this->isAvailable($this->userLanguage))
+                ? $this->userLanguage
                 : $this->getBrowserLang()
             ;
         }
-        return $this->_langs[$lang][$key];
+        return $this->languages[$lang][$key];
     }
 }

@@ -83,5 +83,3 @@ class Cache {
         return false;
     }
 }
-
-?>

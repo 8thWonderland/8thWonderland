@@ -2,8 +2,6 @@
 
 namespace Wonderland\Library;
 
-use Wonderland\Library\Memory\Registry;
-use Wonderland\Library\Database\Mysqli;
 use Wonderland\Library\Controller\FrontController;
 use Wonderland\Library\Config;
 
@@ -22,20 +20,10 @@ class Application {
     /** @var Pimple\Container **/
     protected $container;
     
-    /**
-     * @param string $environment
-     */
-    public function __construct()
-    {
-        // Gestion des sessions - memory_registry
-        Registry::start();
-    }
-    
     public function init($environment = 'production', $options = []) {
         $this->setRootPath();
         $this->setContainer();
         $this->setConfig($environment, $options);
-        $this->setPlugins();
     }
     
     /**
@@ -55,8 +43,9 @@ class Application {
         
         while($key = key($services)) {
             $service = $services[$key];
-            $this->container[$key] = function($c) use ($service) {
-                return new $service['class']();
+            $app = $this;
+            $this->container[$key] = function($c) use ($service, $app) {
+                return new $service['class']($app);
             };
             next($services);
         }
@@ -70,6 +59,16 @@ class Application {
             
             next($parameters);
         }
+    }
+    
+    /**
+     * Shortcut to get a container item
+     * 
+     * @param string $item
+     * @return mixed
+     */
+    public function get($item) {
+        return $this->container[$item];
     }
     
     /**
@@ -101,7 +100,7 @@ class Application {
      */
     public function setConfig($environment, $options = []) {
         $this->config =
-            (new Config())
+            (new Config($this))
             ->setEnvironment($environment)
             ->setOptions($options)
         ;
@@ -114,21 +113,12 @@ class Application {
         return $this->config;
     }
     
-
-    // Initialisation des plugins (translate, db, logs, mail, etc .....)
-    // =================================================================
-    private function setPlugins()
-    {
-        Registry::set('db', new Mysqli());
-        Registry::set('translate', new Translate($this->config->getOption('language')));
-    }
-    
     
     // Démarrage de l'application
     // ==========================
     public function run()
     {
-        $front = new FrontController($this->config->getOptions());
+        $front = new FrontController($this);
         $front->dispatch();
     }
 }

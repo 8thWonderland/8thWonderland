@@ -26,7 +26,7 @@ class ManageTasks {
                "WHERE status = 0 AND id_group=" . $id_group . " AND author=iduser " .
                "ORDER BY date DESC";
         
-        return $db->_query($req);
+        return $db->query($req);
     }
     
     
@@ -46,11 +46,11 @@ class ManageTasks {
         if (!isset($date) || empty($date))                  {   $date = "0000-00-00 00:00:00";     }
         $description = htmlentities($description);
         $auth = Auth::getInstance();
-        $author = $auth->_getIdentity();
+        $author = $auth->getIdentity();
         $db = Registry::get('db');
         $req = "INSERT INTO tasks (Description, date, id_group, status, author) " .
                "VALUES ('" . $description . "', '" . $date . "', " . $id_group . ", 0, " . $author . ")";
-        $db->_query($req);
+        $db->query($req);
         return $db->affected_rows;
     }
     
@@ -59,7 +59,7 @@ class ManageTasks {
     {
         $db = Registry::get('db');
         $req = "DELETE FROM tasks WHERE IDTask=" . $id;
-        $db->_query($req);
+        $db->query($req);
         return $db->affected_rows;
     }
 }

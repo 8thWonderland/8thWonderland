@@ -2,6 +2,18 @@
     "services": {
         "mysqli" : {
             "class" : "Wonderland\\Library\\Database\\Mysqli"
+        },
+        "translate" : {
+            "class" : "Wonderland\\Library\\Translate"
+        },
+        "auth" : {
+            "class" : "Wonderland\\Library\\Auth"
+        },
+        "paginator" : {
+            "class" : "Wonderland\\Library\\Plugin\\Paginator"
+        },
+        "logger" : {
+            "class" : "Wonderland\\Library\\Admin\\Log"
         }
     },
     "parameters" : {

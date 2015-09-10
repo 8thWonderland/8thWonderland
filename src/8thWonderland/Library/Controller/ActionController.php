@@ -2,43 +2,55 @@
 
 namespace Wonderland\Library\Controller;
 
-/**
- * Classe abstraite fournissant les fonction de base d'un controleur Action
- *
- * @author Brennan
- */
+use Wonderland\Library\Application;
+
 abstract class ActionController {
-    protected $_directoryViews = 'src/8thWonderland/Application/views';                   // Chemin par défaut des vues
-    protected $_directoryControllers = 'src/8thWonderland/Application/Controller';       // Chemin par défaut des controleurs
-    protected $_view = array();                                         // Liste des valeurs transmises à la vue
-    protected $_suffix = ".view";                                       // Suffixe des fichiers de vues
+    /** @var \Wonderland\Library\Application **/
+    protected $application;
+    /** @var string **/
+    protected $viewsDirectory = 'src/8thWonderland/Application/views';
+    /** @var string **/
+    protected $controllersDirectory = 'src/8thWonderland/Application/Controller';
+    /** @var array **/
+    protected $viewParameters = [];
+    /** @var string **/
+    protected $suffix = '.view';
     
+    public function __construct(Application $application) {
+        $this->application = $application;
+    }
     
-    // Appel du fichier de vue
-    // =======================
+    /**
+     * @param string $action
+     * @throws \Exception
+     */
     public function render($action)
     {
-        $filename = $this->_directoryViews . "/" . $action . $this->_suffix;
-        if (!file_exists($filename))    {   throw new \Exception("The view '" . $filename . "' not found !");    }
-        
+        $filename = "{$this->viewsDirectory}/{$action}{$this->suffix}";
+        if (!file_exists($filename)) {
+            throw new \Exception("The view '$filename' not found !");
+        }
         include $filename;
     }
     
-    
     // Affichage d'un texte directement
+    // SHAME
+    // @ToRemove !!!
     // ================================
-    public function display($msg)
-    {
+    public function display($msg) {
         echo $msg;
     }
     
-    
-    // Exécute une redirection
-    // =======================
+    /**
+     * @param string $url
+     */
     public function redirect($url)
     {   
         if ($this->is_Ajax()) {
-            echo json_encode(array("status" => 1, "reponse" => $url));
+            echo json_encode([
+                'status' => 1,
+                'reponse' => $url
+            ]);
         } else {
             $params = $this->_formatURL($url);
 
@@ -48,13 +60,18 @@ abstract class ActionController {
 
             $ctrl->$action();
         }
-        
         exit();
     }
     
+    /**
+     * @return boolean
+     */
     protected function is_Ajax()
     {
-        return (array_key_exists('HTTP_X_REQUESTED_WITH', $_SERVER) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+        return (
+            array_key_exists('HTTP_X_REQUESTED_WITH', $_SERVER) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
+        );
     }
     
     /**
@@ -79,15 +96,14 @@ abstract class ActionController {
         }
         
         // Vérification si le controleur existe
-        $filename = "{$this->_directoryControllers}/{$params[1]}Controller.php";
+        $filename = "{$this->controllersDirectory}/{$params[1]}Controller.php";
         if (!file_exists($filename)) {
-            throw new \Exception("The ActionController '" . $controller . "' does not exist !");
+            throw new \Exception("The ActionController '$controller' does not exist !");
         }
         // Vérification si l'action existe
-        if (!in_array($action . "Action", get_class_methods($controller))) {
-            throw new \Exception("The Action '" . $action . "' does not exist !");
+    if (!in_array("{$action}Action", get_class_methods($controller))) {
+            throw new \Exception("The Action '$action' does not exist !");
         }
-        
-        return array($controller, $action);
+        return [$controller, $action];
     }
 }

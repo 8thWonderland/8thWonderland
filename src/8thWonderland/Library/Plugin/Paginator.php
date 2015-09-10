@@ -2,113 +2,147 @@
 
 namespace Wonderland\Library\Plugin;
 
-/**
- * plugin permettant la pagination de résultats
- *
- * @author: BrennanWaco - waco.brennan@gmail.com
- *
- **/
+use Wonderland\Library\Application;
+
 class Paginator {
-    protected $_ItemsperPage = 10;                                              // Nb d'éléments par page (par défaut)
-    protected $_PageRange = 5;                                                  // Nb pages par saut
-    protected $_datas;                                                          // Jeu de résultat de données
-    protected $_CurrentPage = 1;                                                // Page courante
+    /** @var \Wonderland\Library\Application **/
+    protected $application;
+    /** @var int **/
+    protected $itemsPerPage = 10;
+    /** @var int **/
+    protected $pageRange = 5;
+    /** @var array **/
+    protected $data;
+    /** @var int **/
+    protected $currentPage = 1;
     
+    /**
+     * @param \Wonderland\Library\Application $application
+     */
+    public function __construct(Application $application) {
+        $this->application = $application;
+    }
     
-    public function __construct($datas, $options=null) 
-    {
-        if (isset($options)) {
-            $options = array_change_key_case($options, CASE_LOWER);
-            if (isset($options["itemperpage"]) && intval($options["itemperpage"]))      {   $this->_ItemperPage = $options["itemperpage"];  }
-            if (isset($options["pagerange"]) && intval($options["pagerange"]))          {   $this->_PageRange = $options["pagerange"];      }
+    /**
+     * @param array $data
+     */
+    public function setData(array $data) {
+        $this->data = $data;
+    }
+    
+    /**
+     * @return int
+     */
+    public function getNumPage() {
+        if ($this->itemsPerPage === 0) {
+            return -1;
+        }
+        if (count($this->data) === 0) {
+            return 0;
+        }
+        return (intval(count($this->data) / $this->itemsPerPage) + 1);
+    }
+    
+    /**
+     * @return int
+     */
+    public function countItems() {
+        return count($this->data);
+    }
+        
+    /**
+     * @param int $value
+     * @return \Wonderland\Library\Plugin\Paginator
+     * @throws \InvalidArgumentException
+     */
+    public function setItemsPerPage($value) {
+        if (!is_int($value)) {
+            throw new \InvalidArgumentException('The items per page value must be an integer');
+        }
+        $this->itemsPerPage = $value;
+        return $this;
+    }
+    
+    /**
+     * @return int
+     */
+    public function getItemsPerPage() {
+        return $this->itemsPerPage;
+    }
+    
+    /**
+     * @param int $value
+     * @return \Wonderland\Library\Plugin\Paginator
+     */
+    public function setCurrentPage($value) {
+        if ($value > 1 && $value < $this->getNumPage() + 1) {
+            $this->currentPage = $value;
+        }
+        return $this;
+    }
+    
+    /**
+     * @return int
+     */
+    public function getCurrentPage() {
+        return $this->currentPage;
+    }
+        
+    /**
+     * @param int $pageRange
+     * @return \Wonderland\Library\Plugin\Paginator
+     * @throws \InvalidArgumentException
+     */
+    public function setPageRange($pageRange) {
+        if(!is_int($pageRange)) {
+            throw new \InvalidArgumentException('The page range must be an integer');
+        }
+        $this->pageRange = $pageRange;
+        return $this;
+    }
+    
+    /**
+     * @return int
+     */
+    public function getPageRange() {
+        return $this->pageRange;
+    }
+    
+    /**
+     * @return array
+     */
+    public function getCurrentItems() {
+        $nFirstItem = (($this->currentPage - 1) * $this->itemsPerPage);
+        $nLastItem = ($this->currentPage * $this->itemsPerPage) -1;
+        
+        if ($nLastItem >= $this->countItems()) {
+            $nLastItem = $this->countItems() - 1;
         }
         
-        $this->_datas = $datas;
-    }
-    
-    
-    // Nombre total de pages
-    // =====================
-    public function _getNumPage()
-    {
-        if ($this->_ItemsperPage == 0)       {   return -1;  }
-        if (count($this->_datas) == 0)      {   return 0;   }
-        return (intval(count($this->_datas) / $this->_ItemsperPage) + 1);
-    }
-    
-    
-    // Nombre total d'items
-    // ====================
-    public function _getItems()
-    {
-        return count($this->_datas);
-    }
-        
-    
-    // Nb items par page
-    // =================
-    public function _setItemsPage($value)
-    {
-        if (intval($value))     {   $this->_ItemsperPage = $value;  }
-    }
-    public function _getItemsPage()
-    {
-        return $this->_ItemsperPage;
-    }
-    
-    
-    // Page courante
-    // =============
-    public function _setCurrentPage($value)
-    {
-        if ($value >1 && $value < $this->_getNumPage()+1)     {   $this->_CurrentPage = $value;   }
-    }
-    public function _getCurrentPage()
-    {
-        return $this->_CurrentPage;
-    }
-        
-    
-    // Page range
-    // ==========
-    public function _getPageRange()
-    {
-        return $this->_PageRange;
-    }
-    
-    
-    // Renvoi des items de la page courante
-    // ====================================
-    public function _getCurrentItems()
-    {
-        $nFirstItem = (($this->_CurrentPage - 1) * $this->_ItemsperPage);
-        $nLastItem = ($this->_CurrentPage * $this->_ItemsperPage) -1;
-        if ($nLastItem >= $this->_getItems())    {   $nLastItem = $this->_getItems()-1;    }
-        
-        $result = array();
-        for ($i=$nFirstItem; $i<=$nLastItem; $i++) {
-            $result[$i-$nFirstItem] = $this->_datas[$i];
+        $result = [];
+        for ($i = $nFirstItem; $i <= $nLastItem; ++$i) {
+            $result[$i-$nFirstItem] = $this->data[$i];
         }
-        
         return $result;
     }
     
-    
-    // Affichage de la page suivante
-    // =============================
-    public function NextPage() 
-    {
-        if ($this->_CurrentPage < $this->_getNumPage())     {   $this->_CurrentPage = $this->_CurrentPage +1;   }
-        return ($this->_getCurrentItems());
+    /**
+     * @return array
+     */
+    public function NextPage() {
+        if ($this->currentPage < $this->getNumPage()) {
+            ++$this->currentPage;
+        }
+        return $this->getCurrentItems();
     }
         
-    
-    // Affichage de la page précédente
-    // ===============================
-    public function PreciousPage() 
-    {
-        if ($this->_CurrentPage > 1)    {   $this->_CurrentPage = $this->_CurrentPage -1;   }
-        return ($this->_getCurrentItems());
+    /**
+     * @return array
+     */
+    public function PreciousPage() {
+        if ($this->currentPage > 1) {
+            --$this->currentPage;
+        }
+        return $this->getCurrentItems();
     }
-} 
-?>
+}
