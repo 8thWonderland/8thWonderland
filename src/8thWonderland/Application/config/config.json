@@ -8,6 +8,9 @@
         },
         "auth" : {
             "class" : "Wonderland\\Library\\Auth"
+        },
+        "paginator" : {
+            "class" : "Wonderland\\Library\\Plugin\\Paginator"
         }
     },
     "parameters" : {
