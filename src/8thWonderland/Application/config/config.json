@@ -11,6 +11,9 @@
         },
         "paginator" : {
             "class" : "Wonderland\\Library\\Plugin\\Paginator"
+        },
+        "logger" : {
+            "class" : "Wonderland\\Library\\Admin\\Log"
         }
     },
     "parameters" : {
