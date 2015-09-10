@@ -31,7 +31,7 @@ class MessagingController extends ActionController {
     public function display_receivedmessagesAction()
     {
         $paginator = new Paginator(Message::display_receivedmessages());
-        $paginator->_setItemsPage(15);
+        $paginator->setItemsPerPage(15);
         $paginator->setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->setCurrentPage($_POST['page']);  }
         $datas = $paginator->getCurrentItems();
@@ -65,10 +65,10 @@ class MessagingController extends ActionController {
         }
         
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->getItemsPage());
-        if ($nLastItem>$paginator->getItems())     {   $nLastItem = $paginator->getItems();   }
-        $tab_receivedmsg .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
+        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPerPage())+1;
+        $nLastItem = ($CurPage * $paginator->getItemsPerPage());
+        if ($nLastItem>$paginator->countItems())     {   $nLastItem = $paginator->countItems();   }
+        $tab_receivedmsg .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->countItems() . '</td>';
         
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
@@ -113,7 +113,7 @@ class MessagingController extends ActionController {
     public function display_sentmessagesAction()
     {
         $paginator = new Paginator(Message::display_sentmessages());
-        $paginator->_setItemsPage(15);
+        $paginator->setItemsPerPage(15);
         $paginator->setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->setCurrentPage($_POST['page']);  }
         $datas = $paginator->getCurrentItems();
@@ -147,10 +147,10 @@ class MessagingController extends ActionController {
         }
         
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->getItemsPage());
-        if ($nLastItem>$paginator->getItems())     {   $nLastItem = $paginator->getItems();   }
-        $tab_receivedmsg .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
+        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPerPage())+1;
+        $nLastItem = ($CurPage * $paginator->getItemsPerPage());
+        if ($nLastItem>$paginator->countItems())     {   $nLastItem = $paginator->countItems();   }
+        $tab_receivedmsg .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->countItems() . '</td>';
         
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';

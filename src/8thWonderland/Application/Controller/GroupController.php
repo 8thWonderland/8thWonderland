@@ -59,7 +59,7 @@ class GroupController extends ActionController {
     public function display_membersAction()
     {
         $paginator = new Paginator(ManageGroups::display_listMembers());
-        $paginator->_setItemsPage(15);
+        $paginator->setItemsPerPage(15);
         $paginator->setCurrentPage(1);
         if (isset($_POST['page']) && !empty($_POST['page']))        {   $paginator->setCurrentPage($_POST['page']);  }
         $datas = $paginator->getCurrentItems();
@@ -79,10 +79,10 @@ class GroupController extends ActionController {
         }
 
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->getItemsPage());
-        if ($nLastItem>$paginator->getItems())     {   $nLastItem = $paginator->getItems();   }
-        $tabmini_usersgroup .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
+        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPerPage())+1;
+        $nLastItem = ($CurPage * $paginator->getItemsPerPage());
+        if ($nLastItem>$paginator->countItems())     {   $nLastItem = $paginator->countItems();   }
+        $tabmini_usersgroup .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->countItems() . '</td>';
         
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
@@ -232,10 +232,10 @@ class GroupController extends ActionController {
         }
         
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->getItemsPage());
-        if ($nLastItem>$paginator->getItems())     {   $nLastItem = $paginator->getItems();   }
-        $tab_groups .= '<tr class="pied"><td align="left" colspan="3">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
+        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPerPage())+1;
+        $nLastItem = ($CurPage * $paginator->getItemsPerPage());
+        if ($nLastItem>$paginator->countItems())     {   $nLastItem = $paginator->countItems();   }
+        $tab_groups .= '<tr class="pied"><td align="left" colspan="3">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->countItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
@@ -322,10 +322,10 @@ class GroupController extends ActionController {
         }
         
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->getItemsPage());
-        if ($nLastItem>$paginator->getItems())     {   $nLastItem = $paginator->getItems();   }
-        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
+        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPerPage())+1;
+        $nLastItem = ($CurPage * $paginator->getItemsPerPage());
+        if ($nLastItem>$paginator->countItems())     {   $nLastItem = $paginator->countItems();   }
+        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->countItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';

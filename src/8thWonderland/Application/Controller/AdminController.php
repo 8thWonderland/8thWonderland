@@ -209,15 +209,15 @@ class AdminController extends ActionController {
             ;
         }
         // numéros des items
-        $itemsPage = $paginator->getItemsPage();
+        $itemsPage = $paginator->getItemsPerPage();
         $nFirstItem = (($CurPage - 1) * $itemsPage) + 1;
         $nLastItem = ($CurPage * $itemsPage);
         
-        $items = $paginator->getItems();
+        $items = $paginator->countItems();
         if ($nLastItem > $items) {
             $nLastItem = $items;
         }
-        $tab_crons .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
+        $tab_crons .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->countItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
@@ -290,15 +290,15 @@ class AdminController extends ActionController {
         }
         
         // numéros des items
-        $itemsPage = $paginator->getItemsPage();
+        $itemsPage = $paginator->getItemsPerPage();
         $nFirstItem = (($CurPage - 1) * $itemsPage) + 1;
         $nLastItem = ($CurPage * $itemsPage);
         
-        $items = $paginator->getItems();
+        $items = $paginator->countItems();
         if ($nLastItem > $items) {
             $nLastItem = $items;
         }
-        $tab_logs .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
+        $tab_logs .= '<tr class="pied"><td colspan="2" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->countItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
@@ -375,15 +375,15 @@ class AdminController extends ActionController {
         }
         
         // numéros des items
-        $itemsPage = $paginator->getItemsPage();
+        $itemsPage = $paginator->getItemsPerPage();
         $nFirstItem = (($CurPage - 1) * $itemsPage) + 1;
         $nLastItem = ($CurPage * $itemsPage);
         
-        $items = $paginator->getItems();
+        $items = $paginator->countItems();
         if ($nLastItem > $items) {
             $nLastItem = $items;
         }
-        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
+        $tab_users .= '<tr class="pied"><td colspan="6" align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->countItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';

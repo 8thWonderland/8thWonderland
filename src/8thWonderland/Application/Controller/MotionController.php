@@ -122,10 +122,10 @@ class MotionController extends ActionController {
         }
         
         // numéros des items
-        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPage())+1;
-        $nLastItem = ($CurPage * $paginator->getItemsPage());
-        if ($nLastItem>$paginator->getItems())     {   $nLastItem = $paginator->getItems();   }
-        $tab_motions .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->getItems() . '</td>';
+        $nFirstItem = (($CurPage - 1) * $paginator->getItemsPerPage())+1;
+        $nLastItem = ($CurPage * $paginator->getItemsPerPage());
+        if ($nLastItem>$paginator->countItems())     {   $nLastItem = $paginator->countItems();   }
+        $tab_motions .= '<tr class="pied"><td align="left">' . $nFirstItem . '-' . $nLastItem . $translate->translate('item_of') . $paginator->countItems() . '</td>';
         
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
