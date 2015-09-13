@@ -17,6 +17,9 @@
         },
         "member_manager" : {
             "class" : "Wonderland\\Application\\Manager\\MemberManager"
+        },
+        "group_manager" : {
+            "class" : "Wonderland\\Application\\Manager\\GroupManager"
         }
     },
     "parameters" : {
