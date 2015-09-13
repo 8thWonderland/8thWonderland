@@ -26,6 +26,9 @@
         },
         "motion_manager" : {
             "class" : "Wonderland\\Application\\Manager\\MotionManager"
+        },
+        "message_manager" : {
+            "class" : "Wonderland\\Application\\Manager\\MessageManager"
         }
     },
     "parameters" : {
