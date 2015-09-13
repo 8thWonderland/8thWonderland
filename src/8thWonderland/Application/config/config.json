@@ -20,6 +20,12 @@
         },
         "group_manager" : {
             "class" : "Wonderland\\Application\\Manager\\GroupManager"
+        },
+        "ovh_manager" : {
+            "class" : "Wonderland\\Application\\Manager\\OvhManager"
+        },
+        "motion_manager" : {
+            "class" : "Wonderland\\Application\\Manager\\MotionManager"
         }
     },
     "parameters" : {
