@@ -24,7 +24,7 @@ class IntranetController extends ActionController {
         $this->viewParameters['translate'] = $this->application->get('translate');
         
         $select_geo = false;
-        $member = Member::getInstance();
+        $member = new Member();
         $db = $this->application->get('mysqli');
 
         // Teste si le code country du membre est valide
@@ -47,7 +47,7 @@ class IntranetController extends ActionController {
     }
     
     protected function displaySelectCountry() {
-        $member = Member::getInstance();
+        $member = new Member();
         $countries = $member->listCountries();
         $this->viewParameters['select_country'] = '<option></option>';
         $nbCountries = count($countries);
@@ -65,9 +65,9 @@ class IntranetController extends ActionController {
         }
         
         // affichage du profil
-        $member = Member::getInstance();
-        $this->viewParameters['identity'] = $member->identite;
-        $this->viewParameters['avatar'] = $member->avatar;
+        $member = new Member();
+        $this->viewParameters['identity'] = $member->getIdentity();
+        $this->viewParameters['avatar'] = $member->getAvatar();
         $this->viewParameters['admin'] = Member::EstMembre(1);
 
         $desktop = Registry::get('desktop');
@@ -90,11 +90,12 @@ class IntranetController extends ActionController {
         } else {
             // affichage des motions en cours
             $poll = new Poll;
+            
             $this->viewParameters['haut_milieu'] = VIEWS_PATH . 'members/menu.view';
             $this->viewParameters['milieu_droite'] = '';
             $this->viewParameters['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('/intranet/communicate', '', 'milieu_milieu');</script>";
             $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/motions/display_motionsinprogress', '', 'milieu_gauche');</script>";
-            $this->viewParameters['list_motions'] = $poll->display_motionsinprogress();
+            $this->viewParameters['list_motions'] = $poll->displayActiveMotions();
 
             // affichage des groupes du membre
             $this->viewParameters['list_groups'] = ManageGroups::display_groupsMember();
@@ -118,7 +119,7 @@ class IntranetController extends ActionController {
         
         if (!empty($_POST['country']) && isset($_POST['region']) && $_POST['region'] !== 0) {
             $db = $this->application->get('mysqli');
-            $member = Member::getInstance();
+            $member = new Member();
             
             $db->query(
                 "UPDATE Utilisateurs SET Pays='{$_POST['country']}', Region={$_POST['region']} WHERE IDUser={$auth->getIdentity()}"
@@ -137,7 +138,7 @@ class IntranetController extends ActionController {
                     if ($db->affected_rows == 0) {
                         $echec_createGroup = true;
                         // Journal de log
-                        $logger->log("Création du groupe régional " . $group_name[0]['Name'] . " par l'utilisateur " . $member->identite, Log::ERR);
+                        $logger->log("Création du groupe régional " . $group_name[0]['Name'] . " par l'utilisateur " . $member->getIdentity(), Log::ERR);
                     } else {
                         $groupId = $db->insert_id;
                     }
@@ -157,16 +158,16 @@ class IntranetController extends ActionController {
             } else {
                 // Si la region choisie est 'other' alors Brennan Waco reçoit un mail
                 // ==================================================================
-                $mail = Mailer::getInstance();
-                $mail->addrecipient('waco.brennan@gmail.com','');
-                $mail->addfrom('developpeurs@8thwonderland.com','');
-                $mail->addsubject('regions inconnues','');
+                $mail = new Mailer();
+                $mail->addRecipient('waco.brennan@gmail.com','');
+                $mail->addFrom('developpeurs@8thwonderland.com','');
+                $mail->addSubject('regions inconnues','');
                 $mail->html = 
                     "<table><tr><td>ID User : {$auth->getIdentity()} :<br/>====================</td></tr>" .
                     "<tr><td>{$_POST['country']}<br/></td></tr>" .
                     '<tr><td>Message :<br/>====================</td></tr></table>'
                 ;
-                $mail->envoi();
+                $mail->send();
             }
             $this->redirect('Intranet/index');
         } else {
@@ -216,7 +217,6 @@ class IntranetController extends ActionController {
         $this->render('admin/dev_inprogress');
     }
 
-
     public function communicateAction() {
         if (!$this->application->get('auth')->hasIdentity()) {
             $this->redirect('Index/index');
@@ -224,7 +224,6 @@ class IntranetController extends ActionController {
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('informations/public_news');
     }
-
 
     public function financeAction() {
         if (!$this->application->get('auth')->hasIdentity()) {
@@ -234,7 +233,6 @@ class IntranetController extends ActionController {
         $this->render('admin/dev_inprogress');
     }
     
-    
     public function consoleAction() {
         if (!$this->application->get('auth')->hasIdentity()) {
             $this->redirect('Index/index');
@@ -243,10 +241,10 @@ class IntranetController extends ActionController {
             $this->redirect('Intranet/index');
         }
         
-        // Journal de log
-        $member = Member::getInstance();
+        $member = new Member();
         $logger = $this->application->get('logger');
-        $logger->log($member->identite . " entre dans la console d'administration.", Log::INFO);
+        $logger->setWriter('db');
+        $logger->log($member->getIdentity() . " entre dans la console d'administration.", Log::INFO);
         
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->redirect('Admin/display_console');

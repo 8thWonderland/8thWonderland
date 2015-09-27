@@ -60,20 +60,19 @@ class Auth {
      * @throws \Exception
      */
     public function authenticate($login, $password) {
-        $db = $this->application->get('db');
+        $db = $this->application->get('mysqli');
         $res = $db->query(
             "SELECT {$this->primaryKey} FROM {$this->tableName} " .
             "WHERE {$this->loginColumn} = '$login' AND {$this->passwordColumn} = '$password'"
         );
         if ($res) {
-            if ($res->num_rows == 1) {
+            if ($res->num_rows === 1) {
                 $this->setIdentity($res->fetch_assoc()[$this->primaryKey]);
                 return true;
             }
             return false;
-        }
-        if ($db->connect_errno) {
-            throw new \Exception($this->_dbAdapter->connect_error);
+        } elseif ($db->connect_errno) {
+            throw new exception($this->_dbAdapter->connect_error);
         }
     }
     
@@ -91,8 +90,7 @@ class Auth {
     /**
      * @return int
      */
-    public function getIdentity()
-    {
+    public function getIdentity() {
         return Registry::get('__identity__');
     }
     

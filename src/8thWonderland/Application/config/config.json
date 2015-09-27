@@ -14,6 +14,21 @@
         },
         "logger" : {
             "class" : "Wonderland\\Library\\Admin\\Log"
+        },
+        "member_manager" : {
+            "class" : "Wonderland\\Application\\Manager\\MemberManager"
+        },
+        "group_manager" : {
+            "class" : "Wonderland\\Application\\Manager\\GroupManager"
+        },
+        "ovh_manager" : {
+            "class" : "Wonderland\\Application\\Manager\\OvhManager"
+        },
+        "motion_manager" : {
+            "class" : "Wonderland\\Application\\Manager\\MotionManager"
+        },
+        "message_manager" : {
+            "class" : "Wonderland\\Application\\Manager\\MessageManager"
         }
     },
     "parameters" : {

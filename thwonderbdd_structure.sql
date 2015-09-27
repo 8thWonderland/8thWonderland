@@ -4347,27 +4347,27 @@ CREATE TABLE IF NOT EXISTS `tasks` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `utilisateurs`
+-- Structure de la table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `utilisateurs` (
-  `IDUser` int(11) NOT NULL AUTO_INCREMENT,
-  `Login` varchar(50) NOT NULL,
-  `Password` varchar(128) NOT NULL,
-  `Identite` varchar(50) NOT NULL,
-  `Sexe` tinyint(1) NOT NULL,
-  `Email` varchar(50) NOT NULL,
-  `Avatar` varchar(100) NOT NULL DEFAULT 'http://www.8thwonderland.com/public/images/avatar_inconnu.png',
-  `Langue` varchar(3) NOT NULL,
-  `Pays` varchar(100) NOT NULL,
-  `Region` int(11) DEFAULT NULL,
-  `Navigateur` varchar(150) NOT NULL,
-  `DerConnexion` timestamp NULL DEFAULT NULL,
-  `Inscription` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `isBlocked` tinyint(1) NOT NULL DEFAULT '0',
-  `Theme` varchar(50) NOT NULL DEFAULT 'Rouge_Noir',
-  `Ip` varchar(15) DEFAULT NULL,
-  PRIMARY KEY (`IDUser`)
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `login` varchar(50) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `salt` varchar(85) NOT NULL,
+  `identity` varchar(50) NOT NULL,
+  `gender` tinyint(1) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `avatar` varchar(100) NOT NULL DEFAULT 'http://www.8thwonderland.com/public/images/avatar_inconnu.png',
+  `language` varchar(3) NOT NULL,
+  `country` varchar(100) NOT NULL,
+  `region` int(11) DEFAULT NULL,
+  `last_connected_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `is_enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `is_banned` tinyint(1) NOT NULL DEFAULT '0',
+  `theme` varchar(50) NOT NULL DEFAULT 'Rouge_Noir'
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10113 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
