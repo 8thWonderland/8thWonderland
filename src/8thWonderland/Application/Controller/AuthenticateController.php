@@ -8,6 +8,7 @@ use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Mailer;
 
 use Wonderland\Library\Memory\Registry;
+use Wonderland\Library\Admin\Log;
 
 class AuthenticateController extends ActionController {
     public function connectAction() {
@@ -20,10 +21,12 @@ class AuthenticateController extends ActionController {
             
             // Enregistrement de la date et heure de la connexion
             // ==================================================            
-            $db->query("UPDATE Utilisateurs SET DerConnexion = NOW() WHERE IDUser = {$auth->getIdentity()}");
+            $db->query("UPDATE users SET last_connected_at = NOW() WHERE id = {$auth->getIdentity()}");
             if ($db->affected_rows == 0)    {
                 // log d'échec de mise à jour
-                (new Log('db'))->log("Echec de l'update de la connexion ({$member->identite})", Log::ERR);
+                $logger = $this->application->get('logger');
+                $logger->setWriter('db');
+                $logger->log("Echec de l'update de la connexion ({$member->getIdentity()})", Log::ERR);
             }
             
             // Mémorisation de l'ID du membre
@@ -230,11 +233,9 @@ class AuthenticateController extends ActionController {
      */
     protected function createPassword() {
 	$chars = '234567890abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	$i = 0;
 	$password = '';
-	while ($i <= 8) {
-		$password .= $chars{mt_rand(0,strlen($chars)-1)};
-		$i++;
+	for ($i = 0; $i <= 8; ++$i) {
+            $password .= $chars{mt_rand(0, strlen($chars) - 1)};
 	}
 	return $password;
     }
@@ -245,30 +246,23 @@ class AuthenticateController extends ActionController {
      * @return boolean
      */
     protected function process($login, $password) {
-        $connected = $this->getAuthAdapter()->authenticate($login, hash('sha512', $password));
+        $connected = $this
+            ->application
+            ->get('auth')
+            ->authenticate($login, hash('sha512', $password))
+        ;
 
-        if ($connected !== true)
-        {
+        if ($connected !== true) {
             // log d'échec de connexion
             $ip =
                 (isset($_SERVER['REMOTE_ADDR']))
                 ? $_SERVER['REMOTE_ADDR']
                 : 'inconnu'
             ;
-            (new Log('db'))->log("Echec de la connexion ($ip)", Log::WARN);
+            $logger = $this->application->get('logger');
+            $logger->setWriter('db');
+            $logger->log("Echec de la connexion ($ip)", Log::WARN);
         }
         return $connected;
-    }
-
-    /**
-     * @return \Wonderland\Library\Auth
-     */
-    protected function getAuthAdapter() {
-        return 
-            $this->application->get('auth')
-            ->setTableName('Utilisateurs')
-            ->setIdentityColumn('Login')
-            ->setCredentialColumn('Password')
-        ;
     }
 }
