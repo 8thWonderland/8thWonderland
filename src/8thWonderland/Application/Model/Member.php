@@ -37,13 +37,6 @@ class Member {
     protected $isBanned;
     /** @var string **/
     protected $theme;
-
-    public function __construct($id = null) {
-        if (empty($id)) {
-            $this->id = Auth::getInstance()->_getIdentity();
-        }
-        $this->id = $id;
-    }
     
     /**
      * @return int
