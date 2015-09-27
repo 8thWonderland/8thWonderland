@@ -1,14 +1,8 @@
 <?php
 
-namespace Wonderland\Application\Model;
+namespace Wonderland\Application\Manager;
 
-/**
- * class mailer
- *
- * Classe gérant les envois de mails de l'application
- *
- */
-class Mailer {
+class MailManager {
     protected $recipientlist;
     protected $subject;
     protected $hfrom;
