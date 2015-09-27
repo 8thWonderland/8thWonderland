@@ -7,50 +7,12 @@ use Wonderland\Library\Memory\Registry;
 class Auth {
     /** @var \Wonderland\Library\Application **/
     protected $application;
-    /** @var string **/
-    protected $tableName;
-    /** @var string **/
-    protected $loginColumn;
-    /** @var string **/
-    protected $passwordColumn;
-    /** @var string **/
-    protected $primaryKey = 'iduser';
     
     /**
      * @param \Wonderland\Library\Application $application
      */
     public function __construct(Application $application) {
         $this->application = $application;
-    }
-    
-    /**
-     * @param string $tableName
-     * @return \Wonderland\Library\Auth
-     */
-    public function setTableName($tableName) {
-        $this->tableName = $tableName;
-        
-        return $this;
-    }
-        
-    /**
-     * @param string $loginColumn
-     * @return \Wonderland\Library\Auth
-     */
-    public function setIdentityColumn($loginColumn) {
-        $this->loginColumn = $loginColumn;
-        
-        return $this;
-    }
-            
-    /**
-     * @param string $passwordColumn
-     * @return \Wonderland\Library\Auth
-     */
-    public function setCredentialColumn($passwordColumn) {
-        $this->passwordColumn = $passwordColumn;
-        
-        return $this;
     }
     
     /**
@@ -62,17 +24,17 @@ class Auth {
     public function authenticate($login, $password) {
         $db = $this->application->get('mysqli');
         $res = $db->query(
-            "SELECT {$this->primaryKey} FROM {$this->tableName} " .
-            "WHERE {$this->loginColumn} = '$login' AND {$this->passwordColumn} = '$password'"
+            "SELECT id FROM users " .
+            "WHERE login = '$login' AND password = '$password'"
         );
         if ($res) {
             if ($res->num_rows === 1) {
-                $this->setIdentity($res->fetch_assoc()[$this->primaryKey]);
+                $this->setIdentity($res->fetch_assoc()['id']);
                 return true;
             }
             return false;
         } elseif ($db->connect_errno) {
-            throw new exception($this->_dbAdapter->connect_error);
+            throw new \Exception($this->_dbAdapter->connect_error);
         }
     }
     
