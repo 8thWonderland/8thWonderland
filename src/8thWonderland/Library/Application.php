@@ -32,7 +32,7 @@ class Application {
     public function setContainer() {
         $this->container = new Container();
         
-        $containerData = json_decode(file_get_contents(PUBLIC_ROOT.'Application/config/config.json'), true);
+        $containerData = json_decode(file_get_contents($this->rootPath.'Application/config/config.json'), true);
         
         $this->setServices($containerData['services']);
         $this->setParameters($containerData['parameters']);

@@ -2,15 +2,12 @@
 
 require_once 'vendor/autoload.php';
 
-use Wonderland\Library\Application;
+define ( 'VIEWS_PATH', $_SERVER['REQUEST_URI'] . '/src/8thWonderland/Application/views/' );
+define ( 'CSS_PATH', $_SERVER['REQUEST_URI'] . '/src/8thWonderland/public/css/' );
+define ( 'IMG_PATH', $_SERVER['REQUEST_URI'] . '/src/8thWonderland/public/images/' );
+define ( 'ICO_PATH', $_SERVER['REQUEST_URI'] . '/src/8thWonderland/public/icones/' );
+define ( 'JS_PATH', $_SERVER['REQUEST_URI'] . '/src/8thWonderland/public/js/' );
 
-define('PUBLIC_ROOT', 'http://127.0.0.1/Developpement/PHP/8thWonderland/site_23-04-2012/src/8thWonderland/');
-define ( 'VIEWS_PATH', PUBLIC_ROOT . 'Application/views/' );
-define ( 'CSS_PATH', PUBLIC_ROOT . 'public/css/' );
-define ( 'IMG_PATH', PUBLIC_ROOT . 'public/images/' );
-define ( 'ICO_PATH', PUBLIC_ROOT . 'public/icones/' );
-define ( 'JS_PATH', PUBLIC_ROOT . 'public/js/' );
-
-$application = new Application();
+$application = new Wonderland\Library\Application();
 $application->init();
 $application->run();
