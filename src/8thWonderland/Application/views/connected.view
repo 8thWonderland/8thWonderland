@@ -18,6 +18,6 @@
     </head>
 
     <body>
-        <?php include $this->_view['default_view']; ?>
+        <?php include $this->viewParameters['default_view']; ?>
     </body>
 </html>
