@@ -20,8 +20,12 @@ class GroupController extends ActionController {
     }
     
     public function displayGroupsMembersAction() {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
+            $this->redirect('Index/index');
+        }
+        
         $translate = $this->application->get('translate');
-        $list_groups = ManageGroups::display_groupsMember();
+        $list_groups = $this->application->get('group_manager')->getMemberGroups($id);
         $response = '';
 
         if ($list_groups->num_rows > 0) {

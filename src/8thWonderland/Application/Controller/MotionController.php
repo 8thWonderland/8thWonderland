@@ -25,8 +25,7 @@ class MotionController extends ActionController {
     }
     
     public function displayMotionsInProgressAction() {
-        $polls = new Poll;
-        $this->viewParameters['list_motions'] = $polls->display_motionsinprogress();
+        $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions();
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('actions/motions_inprogress');
     }
