@@ -4,7 +4,6 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Mailer;
 
 use Wonderland\Library\Memory\Registry;
@@ -13,16 +12,14 @@ use Wonderland\Library\Admin\Log;
 class AuthenticateController extends ActionController {
     public function connectAction() {
         $this->viewParameters['appli_status'] = 1;
-
-        if (($valid = $this->process($_POST['login'], $_POST['password']))) {
-            $auth = $this->application->get('auth');
+        $memberManager = $this->application->get('member_manager');
+        $translate = $this->application->get('translate');
+        
+        if (($member = $memberManager->getMemberByLoginAndPassword($_POST['login'], hash('sha512', $_POST['password'])))) {
             $db = $this->application->get('mysqli');
-            $member = new Member();
-            
-            // Enregistrement de la date et heure de la connexion
-            // ==================================================            
-            $db->query("UPDATE users SET last_connected_at = NOW() WHERE id = {$auth->getIdentity()}");
-            if ($db->affected_rows == 0)    {
+            // Enregistrement de la date et heure de la connexion         
+            $db->query("UPDATE users SET last_connected_at = NOW() WHERE id = {$member->getId()}");
+            if ($db->affected_rows === 0)    {
                 // log d'échec de mise à jour
                 $logger = $this->application->get('logger');
                 $logger->setWriter('db');
@@ -32,11 +29,9 @@ class AuthenticateController extends ActionController {
             // Mémorisation de l'ID du membre
             // ==============================
             Registry::set('__login__', $member->getIdentity()); // indipensable pour l'identification au forum
-            $translate = $this->application->get('translate');
             $translate->setUserLang($member->getLanguage());
             $this->redirect('Intranet/index');
         } else {
-            $translate = $this->application->get('translate');
             $this->viewParameters['translate'] = $translate;
             $this->display(json_encode([
                 'status' => 0,
@@ -239,31 +234,5 @@ class AuthenticateController extends ActionController {
             $password .= $chars{mt_rand(0, strlen($chars) - 1)};
 	}
 	return $password;
-    }
-
-    /**
-     * @param string $login
-     * @param string $password
-     * @return boolean
-     */
-    protected function process($login, $password) {
-        $connected = $this
-            ->application
-            ->get('auth')
-            ->authenticate($login, hash('sha512', $password))
-        ;
-
-        if ($connected !== true) {
-            // log d'échec de connexion
-            $ip =
-                (isset($_SERVER['REMOTE_ADDR']))
-                ? $_SERVER['REMOTE_ADDR']
-                : 'inconnu'
-            ;
-            $logger = $this->application->get('logger');
-            $logger->setWriter('db');
-            $logger->log("Echec de la connexion ($ip)", Log::WARN);
-        }
-        return $connected;
     }
 }
