@@ -40,15 +40,14 @@ class GroupManager {
     }
     
     /**
+     * @param int $memberId
      * @return array
      */
-    public function getMemberGroups() {
-        $identity = $this->application->get('auth')->getIdentity();
-        
+    public function getMemberGroups($memberId) {
         return $this->application->get('mysqli')->query(
             'SELECT DISTINCT Groups.Group_id, Group_name ' .
             'FROM Groups, Citizen_Groups ' .
-            "WHERE Groups.Group_id=Citizen_Groups.Group_id AND (Citizen_Groups.Citizen_id = $identity OR ID_Contact = $identity) " .
+            "WHERE Groups.Group_id=Citizen_Groups.Group_id AND (Citizen_Groups.Citizen_id = $memberId OR ID_Contact = $memberId) " .
             'ORDER BY Group_name ASC'
         );
     }

@@ -6,7 +6,6 @@ use Wonderland\Library\Controller\ActionController;
 
 use Wonderland\Application\Model\Mailer;
 
-use Wonderland\Library\Memory\Registry;
 use Wonderland\Library\Admin\Log;
 
 class AuthenticateController extends ActionController {
@@ -26,9 +25,9 @@ class AuthenticateController extends ActionController {
                 $logger->log("Echec de l'update de la connexion ({$member->getIdentity()})", Log::ERR);
             }
             
-            // Mémorisation de l'ID du membre
-            // ==============================
-            Registry::set('__login__', $member->getIdentity()); // indipensable pour l'identification au forum
+            $session = $this->application->get('session');
+            $session->set('__login__', $member->getIdentity()); // indipensable pour l'identification au forum
+            $session->set('__id__', $member->getId());
             $translate->setUserLang($member->getLanguage());
             $this->redirect('Intranet/index');
         } else {
@@ -41,7 +40,7 @@ class AuthenticateController extends ActionController {
     }
 
     public function logoutAction() {
-        $this->application->get('auth')->logout();
+        $this->application->get('session')->delete('__id__');
     }
     
     public function subscribeAction() {

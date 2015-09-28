@@ -120,15 +120,16 @@ class MemberManager {
     }
     
     /**
-     * @param int $groupId
      * @param int $userId
+     * @param int $groupId
      * @return int
      */
-    public function isMember($groupId, $userId = 0) {
-        if ($userId === 0) {
-            $userId = $this->application->get('auth')->getIdentity();
-        }
-        return $this->application->get('mysqli')->count('Citizen_Groups', sprintf('WHERE Citizen_id=%d AND Group_id=%d', $userId, $groupId));
+    public function isMemberInGroup($userId, $groupId) {
+        return $this
+            ->application
+            ->get('mysqli')
+            ->count('Citizen_Groups', sprintf('WHERE Citizen_id=%d AND Group_id=%d', $userId, $groupId))
+        ;
     }
     
     /**
@@ -137,7 +138,7 @@ class MemberManager {
      */
     public function isContact($groupId = null) {
         $db = $this->application->get('mysqli');
-        $userId = $this->application->get('auth')->getIdentity();
+        $userId = $this->application->get('session')->get('__id__');
         
         return
             (!isset($groupId))

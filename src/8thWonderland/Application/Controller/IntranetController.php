@@ -4,8 +4,6 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Library\Auth;
-
 use Wonderland\Library\Memory\Registry;
 
 use Wonderland\Application\Model\ManageGroups;
@@ -17,19 +15,18 @@ use Wonderland\Library\Admin\Log;
 
 class IntranetController extends ActionController {
     public function indexAction() {
-        if (!$this->application->get('auth')->hasIdentity()) {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
-
         $this->viewParameters['translate'] = $this->application->get('translate');
         
         $select_geo = false;
-        $member = new Member();
+        $member = $this->application->get('member_manager')->getMember($id);
         $db = $this->application->get('mysqli');
 
         // Teste si le code country du membre est valide
         // =============================================
-        $country_ok = $db->count('country', " WHERE code='{$member->pays}'");
+        $country_ok = $db->count('country', " WHERE code='{$member->getCountry()}'");
         if ($country_ok === 0) {
             $select_geo = true;
         } else {
@@ -40,14 +37,16 @@ class IntranetController extends ActionController {
         }
 
         if ($select_geo) {
-            $this->displaySelectCountry();
+            $this->displaySelectCountry($member);
         } else {
-            $this->displayIntranet();
+            $this->displayIntranet($member);
         }
     }
     
-    protected function displaySelectCountry() {
-        $member = new Member();
+    /**
+     * @param \Wonderland\Application\Model\Member $member
+     */
+    protected function displaySelectCountry(Member $member) {
         $countries = $member->listCountries();
         $this->viewParameters['select_country'] = '<option></option>';
         $nbCountries = count($countries);
@@ -59,20 +58,20 @@ class IntranetController extends ActionController {
         $this->render('connected');
     }
     
-    protected function displayIntranet() {
+    protected function displayIntranet(Member $member) {
+        $session = $this->application->get('session');
         if (!empty($_POST['group_id'])) {
-            Registry::set('desktop', $_POST['group_id']);
+            $session->set('desktop', $_POST['group_id']);
         }
-        
+        $memberManager = $this->application->get('member_manager');
         // affichage du profil
-        $member = new Member();
         $this->viewParameters['identity'] = $member->getIdentity();
         $this->viewParameters['avatar'] = $member->getAvatar();
-        $this->viewParameters['admin'] = Member::EstMembre(1);
+        $this->viewParameters['admin'] = $memberManager->isMemberInGroup($member->getId(), 1);
 
-        $desktop = Registry::get('desktop');
+        $desktop = $session->get('desktop');
         if (isset($desktop)) {
-            $this->viewParameters['Contact_Group'] = Member::isContact($desktop);
+            $this->viewParameters['Contact_Group'] = $memberManager->isContact($desktop);
             $this->viewParameters['haut_milieu'] =
                 ($desktop === 1)
                 ? VIEWS_PATH . 'admin/menu_admin.view'
@@ -88,17 +87,14 @@ class IntranetController extends ActionController {
             $this->viewParameters['milieu_milieu'] = "";
             $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/member/display_contactsgroups', '', 'milieu_gauche');</script>";
         } else {
-            // affichage des motions en cours
-            $poll = new Poll;
-            
             $this->viewParameters['haut_milieu'] = VIEWS_PATH . 'members/menu.view';
             $this->viewParameters['milieu_droite'] = '';
             $this->viewParameters['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('/intranet/communicate', '', 'milieu_milieu');</script>";
             $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/motions/display_motionsinprogress', '', 'milieu_gauche');</script>";
-            $this->viewParameters['list_motions'] = $poll->displayActiveMotions();
+            $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions();
 
             // affichage des groupes du membre
-            $this->viewParameters['list_groups'] = ManageGroups::display_groupsMember();
+            $this->viewParameters['list_groups'] = $this->application->get('group_manager')->getMemberGroups($member->getId());
             $this->viewParameters['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('/groups/display_groupsmembers', '', 'milieu_droite');</script>";
 
         }

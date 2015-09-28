@@ -18,8 +18,7 @@ class MotionManager {
      */
     public function displayActiveMotions() {
         $translate = $this->application->get('translate');
-        $auth = $this->application->get('auth');
-        $memberId = $auth->getIdentity();
+        $memberId = $this->application->get('session')->get('__id__');
         
         $montionsList = $this->application->get('mysqli')->query(
             'SELECT motion_id, title_key, date_fin_vote ' .
