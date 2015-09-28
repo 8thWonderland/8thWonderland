@@ -113,11 +113,10 @@ class Application {
         return $this->config;
     }
     
-    
-    // Démarrage de l'application
-    // ==========================
-    public function run()
-    {
+    /**
+     * Démarrage de l'application
+     */
+    public function run() {
         $front = new FrontController($this);
         $front->dispatch();
     }
