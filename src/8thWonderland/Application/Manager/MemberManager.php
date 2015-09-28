@@ -23,11 +23,35 @@ class MemberManager {
      */
     public function getMember($id) {
         $data = $this->application->get('mysqli')->select(
-            'SELECT login, password, salt, identity, gender, email, avatar, language, ' .
+            'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
             "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE id = $id"
-        )[0];
+        );
+        return $this->formatMemberData($data[0]);
+    }
+    
+    /**
+     * @param string $login
+     * @param string $password
+     * @return \Wonderland\Application\Model\Member
+     */
+    public function getMemberByLoginAndPassword($login, $password) {
+        $data = $this->application->get('mysqli')->select(
+            'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
+            "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE login = '$login' AND password = '$password'"
+        );
+        return $this->formatMemberData($data[0]);
+    }
+    
+    /**
+     * Turn fetched data into Member object
+     * 
+     * @param array $data
+     * @return \Wonderland\Application\Model\Member
+     */
+    public function formatMemberData($data) {
         return
             (new Member())
+            ->setId($data['id'])
             ->setLogin($data['login'])
             ->setIdentity($data['identity'])
             ->setPassword($data['password'])
@@ -41,7 +65,7 @@ class MemberManager {
             ->setLastConnectedAt(new \DateTime($data['last_connected_at']))
             ->setIsEnabled($data['is_enabled'])
             ->setIsBanned($data['is_banned'])
-            ->setTheme($data['Theme'])
+            ->setTheme($data['theme'])
         ;
     }
     
