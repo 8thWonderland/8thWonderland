@@ -5,27 +5,27 @@
             <td align="center">
                 <table>
                     <tr>
-                        <td colspan="2" align="center"><h2><?php echo $this->_view['details']['description']; ?></h2></td>
+                        <td colspan="2" align="center"><h2><?php echo $this->viewParameters['details']['description']; ?></h2></td>
                     </tr>
                     <tr>
-                        <td style="width: 80px; padding-top: 25px;"><?php echo $this->_view['translate']->msg('date_task'); ?></td>
-                        <td style="padding-top: 25px;"><?php echo $this->_view['details']['date']; ?></td>
+                        <td style="width: 80px; padding-top: 25px;"><?php echo $this->viewParameters['translate']->translate('date_task'); ?></td>
+                        <td style="padding-top: 25px;"><?php echo $this->viewParameters['details']['date']; ?></td>
                     </tr>
                     <tr>
-                        <td style="width: 80px; padding-top: 25px;"><?php echo $this->_view['translate']->msg('author_task'); ?></td>
-                        <td style="padding-top: 25px;"><?php echo $this->_view['details']['identite']; ?></td>
+                        <td style="width: 80px; padding-top: 25px;"><?php echo $this->viewParameters['translate']->translate('author_task'); ?></td>
+                        <td style="padding-top: 25px;"><?php echo $this->viewParameters['details']['identite']; ?></td>
                     </tr>
                     <tr>
                         <td id="action_motion" colspan="2" style="padding-top: 25px;">
                             <table>
                                 <tr>
                                     <td align="center">
-                                        <div class="bouton" style="width:70px;"><a onclick="<?php echo $this->_view['cmd_delete']; ?>">
-                                            <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('btn_delete'); ?></span></a></div>
+                                        <div class="bouton" style="width:70px;"><a onclick="<?php echo $this->viewParameters['cmd_delete']; ?>">
+                                            <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('btn_delete'); ?></span></a></div>
                                     </td>
                                     <td align="center">
-                                        <div class="bouton" style="width:70px;"><a onclick="<?php echo $this->_view['cmd_edit']; ?>">
-                                            <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('btn_modify'); ?></span></a></div>
+                                        <div class="bouton" style="width:70px;"><a onclick="<?php echo $this->viewParameters['cmd_edit']; ?>">
+                                            <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('btn_modify'); ?></span></a></div>
                                     </td>
                                 </tr>
                                 <tr>
