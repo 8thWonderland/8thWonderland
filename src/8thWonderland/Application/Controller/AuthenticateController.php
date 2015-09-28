@@ -52,6 +52,7 @@ class AuthenticateController extends ActionController {
     public function subscribeAction() {
         $translate = $this->application->get('translate');
         $db = $this->application->get('mysqli');
+        $memberManager = $this->application->get('member_manager');
         $err_msg = '';
         
         if (
@@ -62,8 +63,8 @@ class AuthenticateController extends ActionController {
             $err_msg = $translate->translate('fields_empty');
         } else {
             // Controle de l'identite
-            if (Member::ctrlIdentity($_POST['identity'])) {
-                if ($db->count('Utilisateurs', " WHERE Identite='{$_POST['identity']}'") > 0) {
+            if ($memberManager->validateIdentity($_POST['identity'])) {
+                if ($db->count('users', " WHERE identity='{$_POST['identity']}'") > 0) {
                     $err_msg .= $translate->translate('identity_exist') . "<br/>";
                 }
             } else {
@@ -71,7 +72,7 @@ class AuthenticateController extends ActionController {
             }
             
             // Controle de l'existence du mail
-            if (!Member::ctrlMail($_POST["mail"])) {
+            if (!$memberManager->validateEmailAddress($_POST['mail'])) {
                 $err_msg .= $translate->translate('mail_invalid') . "<br/>";
             }
         }
@@ -87,7 +88,7 @@ class AuthenticateController extends ActionController {
             // Enregistrement des infos du membre
             // ==================================
             $db->query(
-                "INSERT INTO Utilisateurs (Login, Password, Identite, Sexe, Email, Langue, Region, Inscription) " .
+                "INSERT INTO users (login, password, identity, gender, email, language, region, created_at) " .
                 "VALUES ('" . $_POST['login'] . "', '" . hash('sha512', $_POST['password']) . "', '" . $_POST['identity'] . "', " . 
                 ($_POST['gender']-1) . ", '" . $_POST['mail'] . "', '" . $_POST['lang'] . "', -2, NOW())");
             if ($db->affected_rows === 0) {
