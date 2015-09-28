@@ -82,7 +82,9 @@ class Application {
      * Set the absolute path to the project
      */
     public function setRootPath() {
-        $this->rootPath = dirname(__DIR__) . '\\';
+        $this->rootPath = str_replace('\\', '/', dirname(__DIR__) . '\\');
+        // Temporary fix
+        define ( 'VIEWS_PATH', $this->rootPath . 'Application/views/' );
     }
     
     /**
