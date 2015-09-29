@@ -4,7 +4,6 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Application\Model\Poll;
 use Wonderland\Application\Model\Member;
 
 use Wonderland\Library\Admin\Log;
@@ -12,7 +11,7 @@ use Wonderland\Library\Admin\Log;
 class MotionController extends ActionController {
     public function displayCreateMotionAction() {
         $translate = $this->application->get('translate');
-        $list_themes = Poll::_getThemes();
+        $list_themes = $this->application->get('motion_manager')->getMotionThemes();
         
         $this->viewParameters['translate'] = $translate;
         $this->viewParameters['msg'] = '';
@@ -37,8 +36,7 @@ class MotionController extends ActionController {
     }
     
     public function displayVoteAction() {
-        $polls = new Poll;
-        $details = $polls->displayMotionDetails($_POST['motion_id']);
+        $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->viewParameters['details'] = $details[0];
@@ -48,8 +46,7 @@ class MotionController extends ActionController {
     }
     
     public function displayMotionAction() {
-        $polls = new Poll;
-        $details = $polls->displayMotionDetails($_POST['motion_id']);
+        $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->viewParameters['details'] = $details[0];
@@ -62,9 +59,8 @@ class MotionController extends ActionController {
      * @return string
      */
     protected function renderMotions() {
-        $polls = new Poll;
         $paginator = $this->application->get('paginator');
-        $paginator->setData($polls->displayMotions());
+        $paginator->setData($this->application->get('motion_manager')->displayMotions());
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -177,7 +173,8 @@ class MotionController extends ActionController {
         $translate = $this->application->get('translate');
         $logger = $this->application->get('logger');
         $logger->setWriter('db');
-        $list_themes = Poll::_getThemes();
+        $motionManager = $this->application->get('motion_manager');
+        $list_themes = $motionManager->getMotionThemes();
         $this->viewParameters['translate'] = $translate;
         $this->viewParameters['select_theme'] = '<option></options>';
         for ($i = 0; ($theme = $list_themes->fetch_assoc()); ++$i) {
@@ -188,8 +185,7 @@ class MotionController extends ActionController {
             !empty($_POST['theme']) && !empty($_POST['title_motion']) &&
             !empty($_POST['description_motion'])&& !empty($_POST['means_motion'])
         ) {
-            $polls = new Poll;
-            if ($polls->valid_motion($_POST['title_motion'], $_POST['theme'], $_POST['description_motion'], $_POST['means_motion'])) {
+            if ($motionManager->validateMotion($_POST['title_motion'], $_POST['theme'], $_POST['description_motion'], $_POST['means_motion'])) {
                 $this->viewParameters['msg'] =
                     '<div class="info" style="height:50px;"><table><tr>' .
                     '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
@@ -225,8 +221,7 @@ class MotionController extends ActionController {
         $translate = $this->application->get('translate');
         $this->viewParameters['translate'] = $translate;
         if (!empty($_POST['motion_id']) && !empty($_POST['vote'])) {
-            $polls = new Poll();
-            if ($polls->vote_motion($_POST['motion_id'], $_POST['vote']) === 1) {
+            if ($this->application->get('motion_manager')->voteMotion($_POST['motion_id'], $_POST['vote']) === 1) {
                 $this->display(
                     '<div class="info" style="height:50px;"><table><tr>' .
                     '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
@@ -251,6 +246,6 @@ class MotionController extends ActionController {
     }
     
     public function checkMotionAction() {
-        (new Poll())->checkMotion();
+        $this->application->get('motion_manager')->checkMotion();
     }
 }
