@@ -59,8 +59,9 @@ class MotionController extends ActionController {
      * @return string
      */
     protected function renderMotions() {
+        $motionManager = $this->application->get('motion_manager');
         $paginator = $this->application->get('paginator');
-        $paginator->setData($this->application->get('motion_manager')->displayMotions());
+        $paginator->setData($motionManager->displayMotions());
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -85,12 +86,12 @@ class MotionController extends ActionController {
             foreach($row as $key => $value) {
                 if ($key !== 'Motion_id') {
                     $tab_motions .=
-                        "<td><a style='background-color:#000000' onclick=\"Clic('/motions/display_motion', " .
+                        "<td><a style='background-color:#000000' onclick=\"Clic('/Motion/displayMotion', " .
                         "'motion_id={$row['Motion_id']}', 'milieu_milieu'); return false;\">{$this->filterMotions($key, $value)}</a></td>"
                     ;
                 }
             }
-            $votes = Poll::_getVotes($row['Motion_id']);
+            $votes = $motionManager->getVotes($row['Motion_id']);
             if ($votes[0] > $votes[1]) {
                 $percent = round((($votes[0] / ($votes[0] + $votes[1]) * 100) * 100) / 100, 2);
                 $resultat_vote =
@@ -119,7 +120,7 @@ class MotionController extends ActionController {
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/motions/display_motions\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/Motion/displayMotions\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_motions .= '<td colspan="5" style="padding-right:15px;" align="right">' . $previous . ' | ';
         $start = $CurPage - $paginator->getPageRange();
@@ -130,7 +131,7 @@ class MotionController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_motions .=
                 ($page !== $CurPage)
-                ? '<a onclick="Clic(\'/motions/display_motions\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'/Motion/displayMotions\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : '<b>' . $page . '</b> | '
             ;
         }
@@ -138,7 +139,7 @@ class MotionController extends ActionController {
 
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/motions/display_motions\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/Motion/displayMotions\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_motions . $next . '</td></tr></table>';
     }
@@ -151,10 +152,10 @@ class MotionController extends ActionController {
     protected function filterMotions($key, $value) {
         switch(strtolower($key)) {
             case 'citizen_id':
-                $identite = $this->application->get('mysqli')->select("SELECT Identite FROM Utilisateurs WHERE IDUser=$value");
+                $identite = $this->application->get('mysqli')->select("SELECT identity FROM users WHERE id = $value");
                 return
-                    (isset($identite[0]['Identite']))
-                    ? $identite[0]['Identite']
+                    (isset($identite[0]['identity']))
+                    ? $identite[0]['identity']
                     : $this->application->get('translate')->translate('unknown')
                 ;
             
@@ -166,6 +167,9 @@ class MotionController extends ActionController {
                         
             case 'date_fin_vote':
                 return explode(' ', $value)[0];
+                
+            default:
+                return $value;
         }
     }
     
@@ -202,7 +206,7 @@ class MotionController extends ActionController {
                 
                 // Journal de log
                 $member = Member::getInstance();
-                $logger->log("Echec du dépot de motion par l'utilisateur {$member->identite}", Log::WARN);
+                $logger->log("Echec du dépot de motion par l'utilisateur {$member->getIdentity()}", Log::WARN);
             }
         } else {
             $this->viewParameters['msg'] = 
