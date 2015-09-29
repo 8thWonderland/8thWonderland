@@ -1,8 +1,8 @@
 <!-- Module des membres -->
 <div id="members" class="encadre">
     <table width=90%>
-        <caption><?php echo $this->_view['translate']->msg('admin_users'); ?></caption>
+        <caption><?php echo $this->viewsParameters['translate']->translate('admin_users'); ?></caption>
         <tr><td><?php include VIEWS_PATH . "members/search_members.view"; ?></td></tr>
-        <tr><td><?php echo $this->_view['list_users']; ?></td></tr>
+        <tr><td><?php echo $this->viewsParameters['list_users']; ?></td></tr>
     </table>
 </div>

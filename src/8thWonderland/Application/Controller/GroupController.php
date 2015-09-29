@@ -14,8 +14,8 @@ use Wonderland\Library\Admin\Log;
 class GroupController extends ActionController {
     public function displayGroupsAction() {
         $this->viewParameters['list_Allgroups'] = $this->renderGroups();
-        $this->viewParameters['map_coord'] = $this->renderMapCoord();
         $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['map_coord'] = $this->renderMapCoord();
         $this->render('groups/list_allgroups');
     }
     
