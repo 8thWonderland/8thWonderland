@@ -4,24 +4,22 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Application\Model\Member;
-
 class MemberController extends ActionController {
     public function displayProfileAction() {
         $translate = $this->application->get('translate');
         $this->viewParameters['translate'] = $translate;
 
-        $member = Member::getInstance();
+        $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
         // Affichage du genre
-        if ($member->sexe == 0) {
-            $this->viewParameters['gender'] = '<option value=1 selected="selected">' . $translate->translate('female') . '</option><option value=2>' . $translate->translate('male') . '</option>';
-        } else {
-            $this->viewParameters['gender'] = '<option value=1>' . $translate->translate('female') . '</option><option value=2 selected="selected">' . $translate->translate('male') . '</option>';
-        }
+        $this->viewParameters['gender'] = 
+            ($member->getGender() === 0)
+            ? '<option value=1 selected="selected">' . $translate->translate('female') . '</option><option value=2>' . $translate->translate('male') . '</option>'
+            : '<option value=1>' . $translate->translate('female') . '</option><option value=2 selected="selected">' . $translate->translate('male') . '</option>'
+        ;
 
         // Affichage des langues
         $langs = $translate->getList();
-        $lang_user = $member->langue;
+        $lang_user = $member->getLanguage();
         $sel_lang = ''; $selected = "";
         
         $nbLangs = count($langs);
@@ -54,21 +52,20 @@ class MemberController extends ActionController {
 
         //$this->_view['select_region'] = "<option value='" . $region_user . "' selected='selected'>" . utf8_encode($region_name[0]['Name']) . "</option>";
         $this->viewParameters['langs'] = $sel_lang;
-        $this->viewParameters['login'] = $member->login;
-        $this->viewParameters['identity'] = $member->identite;
-        $this->viewParameters['mail'] = $member->email;
-        $this->viewParameters['avatar'] = $member->avatar;
-        if ($member->identite == 'Brennan Waco') {
+        $this->viewParameters['login'] = $member->getLogin();
+        $this->viewParameters['identity'] = $member->getIdentity();
+        $this->viewParameters['mail'] = $member->getEmail();
+        $this->viewParameters['avatar'] = $member->getAvatar();
+        if ($member->getIdentity() === 'Brennan Waco') {
             $this->viewParameters['admin'] = true;
         }
         $this->render('members/update_profile');
     }
     
-    
-    public function validProfileAction()
-    {
+    public function validProfileAction() {
         $translate = $this->application->get('translate');
-        $member = Member::getInstance();
+        $memberManager = $this->application->get('member_manager');
+        $member = $memberManager->getMember($this->application->get('session')->get('__id__'));
         $err_msg = '';
         
         if (!empty($_POST['avatar'])) {
@@ -83,7 +80,7 @@ class MemberController extends ActionController {
             $err_msg = "{$translate->translate('error')}<br/>";
         }
         if (!empty($_POST['identity'])) {
-            $res = $member->setIdentite($_POST['identity']);
+            $res = $member->setIdentity($_POST['identity']);
             if ($res === 0) {
                 $err_msg .= "{$translate->translate('error')}<br/>";
             } elseif ($res === -1) {
@@ -92,10 +89,10 @@ class MemberController extends ActionController {
                 $err_msg .= "{$translate->translate('identity_exist')}<br/>";
             }
         }
-        if (!empty($_POST['password']) && $member->setPassword($_POST['password']) === 0) {
+        if (!empty($_POST['password']) && $member->setPassword(hash('sha512', $_POST['password'])) === 0) {
             $err_msg .= "{$translate->translate('error')}<br/>";
         }
-        if (!empty($_POST['gender']) && $member->setSexe($_POST['gender']) === 0) {
+        if (!empty($_POST['gender']) && $member->setGender($_POST['gender']) === 0) {
             $err_msg .= "{$translate->translate('error')}<br/>";
         }
         if (!empty($_POST['mail'])) {
@@ -108,9 +105,10 @@ class MemberController extends ActionController {
                 $err_msg .= "{$translate->translate('mail_exist')}<br/>";
             }
         }
-        if (!empty($_POST['lang']) && $member->setLangue($_POST['lang']) === 0) {
+        if (!empty($_POST['lang']) && $member->setLanguage($_POST['lang']) === 0) {
             $err_msg .= "{$translate->translate("error")}<br/>";
         }
+        $memberManager->updateMember($member);
         if (empty($err_msg)) {
             $this->redirect('Intranet/index');
         } else {
@@ -131,7 +129,7 @@ class MemberController extends ActionController {
     
     public function displayContactsGroupsAction() {
         $paginator = $this->application->get('paginator');
-        $paginator->setData(Member::ListContactsGroups());
+        $paginator->setData($this->application->get('member_manager')->getContactGroups());
         $paginator->setItemsPerPage(15);
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
@@ -151,7 +149,7 @@ class MemberController extends ActionController {
         foreach($datas as $row) {
             $tabmini_contactsgroups .=
                 "<tr style='height:25px'><td>" . utf8_encode($row['Group_name']) . "</td>" .
-                "<td><a onclick=\"Clic('/messaging/compose_message', 'recipient_message={$row['IDUser']}', 'milieu_milieu')\">" . utf8_encode($row['Identite']) . "</a></td>" .
+                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message={$row['id']}', 'milieu_milieu')\">" . utf8_encode($row['identity']) . "</a></td>" .
                 "</tr>"
             ;
         }
@@ -167,13 +165,13 @@ class MemberController extends ActionController {
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/member/display_contactsgroups\', \'&page=' . ($CurPage - 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/Member/displayContactsGroups\', \'&page=' . ($CurPage - 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tabmini_contactsgroups .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         // Bouton suivant
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/member/display_contactsgroups\', \'&page=' . ($CurPage + 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/member/displayContactsGroups\', \'&page=' . ($CurPage + 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         $tabmini_contactsgroups .= $next . '</td></tr></table>';
         

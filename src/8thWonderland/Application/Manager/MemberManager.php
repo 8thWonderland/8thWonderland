@@ -71,7 +71,7 @@ class MemberManager {
     
     public function createMember(Member $member) {
         $this->application->get('mysqli')->query(
-            'INSERT INTO Utilisateurs(login, password, salt, identity, gender, ' .
+            'INSERT INTO users(login, password, salt, identity, gender, ' .
             'email, avatar, language, country, region, last_connected_at, created_at, is_enabled, is_banned, theme) ' .
             "VALUES('{$member->getLogin()}', '{$member->getPassword()}', '{$member->getSalt()}', " .
             "'{$member->getIdentity()}', '{$member->getGender()}', '{$member->getEmail()}', " .
@@ -79,6 +79,19 @@ class MemberManager {
             "'{$member->getRegion()}', '{$member->getLastConnectedAt()->format('c')}', " .
             "'{$member->getCreatedAt()->format('c')}', {$member->getIsEnabled()}, " .
             "{$member->getIsBanned()}, '{$member->getTheme()}')"
+        );
+    }
+    
+    public function updateMember(Member $member) {
+        $this->application->get('mysqli')->query(
+            "UPDATE users SET login = '{$member->getLogin()}', password = '{$member->getPassword()}', " .
+            "salt = '{$member->getSalt()}', identity = '{$member->getIdentity()}', " .
+            "gender = '{$member->getGender()}', email = '{$member->getEmail()}', " .
+            "avatar = '{$member->getAvatar()}', language = '{$member->getLanguage()}', " .
+            "country = '{$member->getCountry()}', region = '{$member->getRegion()}', " .
+            "last_connected_at = '{$member->getLastConnectedAt()->format('c')}', created_at = '{$member->getCreatedAt()->format('c')}', " .
+            "is_enabled = {$member->getIsEnabled()}, is_banned = {$member->getIsBanned()}, " .
+            "theme = '{$member->getTheme()}' WHERE id = {$member->getId()}"
         );
     }
     
