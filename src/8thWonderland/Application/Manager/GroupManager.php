@@ -22,7 +22,7 @@ class GroupManager {
         return $this->application->get('mysqli')->select(
             'SELECT Group_id, Group_name, Description, identity, Creation, Group_Type_Description ' .
             'FROM Groups, Group_Types, users ' .
-            'WHERE ID_Contact = Utilisateurs.IDUser AND Group_Type = Group_Type_Id ' .
+            'WHERE ID_Contact = users.id AND Group_Type = Group_Type_Id ' .
             'ORDER BY Group_name ASC'
         );
     }
@@ -68,11 +68,11 @@ class GroupManager {
      * 
      * @return array
      */
-    public function getGroupMembers() {
+    public function getGroupMembers($groupId) {
         return $this->application->get('mysqli')->select(
             'SELECT id, identity, last_connected_at ' .
             'FROM Citizen_Groups, users ' .
-            'WHERE Citizen_id = id AND Group_id=' . Registry::get('desktop') . ' ' .
+            "WHERE Citizen_id = id AND Group_id = $groupId " .
             'ORDER BY identity ASC'
         );
     }
@@ -80,16 +80,13 @@ class GroupManager {
     /**
      * Update Group's contact
      * 
+     * @param int $groupId
      * @param int $contactId
      * @return int
      */
-    public function updateContact($contactId) {
+    public function updateContact($groupId, $contactId) {
         $db = $this->application->get('mysqli');
-
-        $db->query(
-            "UPDATE Groups SET ID_Contact = $contactId " .
-            'WHERE Group_id=' . Registry::get('desktop')
-        );
+        $db->query("UPDATE Groups SET ID_Contact = $contactId WHERE Group_id = $groupId");
         return $db->affected_rows;
     }
 }

@@ -182,7 +182,7 @@ class MemberManager {
      */
     public function getMembers($params) {
         $search = '';
-        $table = 'Utilisateurs';
+        $table = 'users';
         if (!empty($params['sel_groups'])) {
             $table = 'Citizen_Groups, users';
             $search = " WHERE Citizen_id = id AND Group_id={$params['sel_groups']} ";
