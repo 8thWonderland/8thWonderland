@@ -2,7 +2,7 @@
 <div id="dev_inprogress" class="encadre">
     <table width=90%>
         <tr>
-            <td><?php echo $this->_view['translate']->msg('dev_inprogress'); ?></td>
+            <td><?php echo $this->viewParameters['translate']->translate('dev_inprogress'); ?></td>
         </tr>
     </table>
 </div>
