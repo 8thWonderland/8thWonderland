@@ -71,7 +71,7 @@ class MotionManager {
             'FROM Motions, Motions_Themes ' .
             "WHERE motion_id = $id AND Motions.theme_id=Motions_Themes.Theme_id"
         );
-        $motion[0]['vote'] = $this->_getVotes($id);
+        $motion[0]['vote'] = $this->getVotes($id);
         return $motion;
     }
     

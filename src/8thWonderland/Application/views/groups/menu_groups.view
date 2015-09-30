@@ -4,25 +4,25 @@
         <tr>
             <td align="center">
                 <a onclick="Clic('/groups/display_calendar', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Calendar.png"/><br/>
-                    <?php echo $this->_view['translate']->msg('calendar'); ?></a>
+                    <?php echo $this->viewParameters['translate']->translate('calendar'); ?></a>
             </td>
             <td align="center">
                 <a onclick="Clic('/groups/display_adressbook', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Users.png"/><br/>
-                    <?php echo $this->_view['translate']->msg('adressbook'); ?></a>
+                    <?php echo $this->viewParameters['translate']->translate('adressbook'); ?></a>
             </td>
-            <?php if ($this->_view['Contact_Group']) { ?>
+            <?php if ($this->viewParameters['Contact_Group']) { ?>
             <td align="center">
                 <a onclick="Clic('/groups/display_managegroups', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/><br/>
-                    <?php echo $this->_view['translate']->msg('admin_groups'); ?></a>
+                    <?php echo $this->viewParameters['translate']->translate('admin_groups'); ?></a>
             </td>
             <?php } ?>
             <td align="center">
                 <a onclick="Clic('/groups/display_bookmark', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Bookmark.png"/><br/>
-                    <?php echo $this->_view['translate']->msg('bookmark'); ?></a>
+                    <?php echo $this->viewParameters['translate']->translate('bookmark'); ?></a>
             </td>
             <td align="center">
                 <a onclick="Clic('/groups/quit_desktop', '', 'milieu_milieu', 'json'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Exit.png"/><br/>
-                    <?php echo $this->_view['translate']->msg('quit_desktop'); ?></a>
+                    <?php echo $this->viewParameters['translate']->translate('quit_desktop'); ?></a>
             </td>
         </tr>
     </table>
