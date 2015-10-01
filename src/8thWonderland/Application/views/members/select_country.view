@@ -50,23 +50,23 @@
                                 <table>
                                     <tr>
                                       <td><img alt="info" src="<?php echo ICO_PATH; ?>64x64/Info.png" style="width:48px;"/></td>
-                                      <td><span style="font-size: 15px;"><?php echo $this->_view['translate']->msg('select_country'); ?></span></td>
+                                      <td><span style="font-size: 15px;"><?php echo $this->viewParameters['translate']->translate('select_country'); ?></span></td>
                                     </tr>
                                 </table>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td width="150px" style="height:100px"><?php echo $this->_view['translate']->msg('country'); ?></td>
-                        <td><select id="country" name="country" width="300" style="width: 300px"><?php echo $this->_view['select_country']; ?></select></td>
-                        <td width="150px"><?php echo $this->_view['translate']->msg('region'); ?></td>
+                        <td width="150px" style="height:100px"><?php echo $this->viewParameters['translate']->translate('country'); ?></td>
+                        <td><select id="country" name="country" width="300" style="width: 300px"><?php echo $this->viewParameters['select_country']; ?></select></td>
+                        <td width="150px"><?php echo $this->viewParameters['translate']->translate('region'); ?></td>
                         <td id="select_region"><select id="region" name="region" width="300" style="width: 300px"></select></td>
                     </tr>
                     <tr>
-                        <td align="center" colspan="4"><input type="submit" name="btn_updatezone" id="btn_updatezone" value="<?php echo $this->_view['translate']->msg('btn_updatezone'); ?>"></td>
+                        <td align="center" colspan="4"><input type="submit" name="btn_updatezone" id="btn_updatezone" value="<?php echo $this->viewParameters['translate']->translate('btn_updatezone'); ?>"></td>
                     </tr>
                     <tr>
-                        <td colspan="4"><?php echo $this->_view['msg']; ?></td>
+                        <td colspan="4"><?php echo $this->viewParameters['msg']; ?></td>
                     </tr>
                 </table>
                 </form>
