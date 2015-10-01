@@ -178,15 +178,15 @@ class MemberManager {
      * Countries should have their own manager
      * 
      * @ToRemove
+     * @param string $language
      * @return array
      */
-    public function getCountries() {
+    public function getCountries($language) {
         $db = $this->application->get('mysqli');
-        $language = $this->langue;
-        if ($db->ExistColumn($language, 'country') == 0) {
+        if ($db->columnExists($language, 'country') === 0) {
             $language = 'en';
         }
-        return $db->select("SELECT Code, $language FROM country");
+        return $db->select("SELECT Code, '$language' FROM country");
     }
     
     /**

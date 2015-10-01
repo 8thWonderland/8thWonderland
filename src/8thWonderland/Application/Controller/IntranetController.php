@@ -43,11 +43,11 @@ class IntranetController extends ActionController {
      * @param \Wonderland\Application\Model\Member $member
      */
     protected function displaySelectCountry(Member $member) {
-        $countries = $member->listCountries();
+        $countries = $this->application->get('member_manager')->getCountries($member->getLanguage());
         $this->viewParameters['select_country'] = '<option></option>';
         $nbCountries = count($countries);
         for ($i = 0; $i < $nbCountries; ++$i) {
-            $this->viewParameters['select_country'] .= "<option value='{$countries[$i]['Code']}'>{$countries[$i][$member->langue]}</option>";
+            $this->viewParameters['select_country'] .= "<option value='{$countries[$i]['Code']}'>{$countries[$i][$member->getLanguage()]}</option>";
         }
         $this->viewParameters['msg'] = '';
         $this->viewParameters['default_view'] = 'members/select_country.view';
