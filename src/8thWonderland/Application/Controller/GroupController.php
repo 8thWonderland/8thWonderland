@@ -118,7 +118,7 @@ class GroupController extends ActionController {
         $this->render('admin/dev_inprogress');
     }
     
-    public function displayAdressbookAction() {
+    public function displayAddressbookAction() {
         $this->viewParameters['list_users'] = $this->renderUsers();
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('members/list_users');
@@ -261,7 +261,7 @@ class GroupController extends ActionController {
             $session->set('search_users', $_POST);
         }
         $paginator = $this->application->get('paginator');
-        $paginator->setData(Member::ListMembers($search));
+        $paginator->setData($memberManager->getMembers($search));
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -271,7 +271,7 @@ class GroupController extends ActionController {
         $MaxPage = $paginator->getNumPage();
         $translate = $this->application->get('translate');
         
-        $list_groups = ManageGroups::display_groups();
+        $list_groups = $this->application->get('group_manager')->getGroups();
         $this->viewParameters['select_groups'] = '<option></options>';
         $nbGroups = count($list_groups);
         for ($i = 0; $i < $nbGroups; ++$i) {
@@ -294,10 +294,13 @@ class GroupController extends ActionController {
         foreach($datas as $key => $row) {
             $tab_users .= "<tr style='height:25px'>";
             foreach($row as $key => $value) {
+                if($key === 'id') {
+                    continue;
+                }
                 $tab_users .= 
-                    ($key !== 'id' && $key !== 'identity')
+                    ($key !== 'identity')
                     ? "<td>{$this->filterUsers($key, $value)}</td>"
-                    : "<td><a onclick=\"Clic('/messaging/compose_message', 'recipient_message=" . $row['id'] . "', 'milieu_milieu')\">" . utf8_encode($row['identity']) . "</a></td>"
+                    : "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message=" . $row['id'] . "', 'milieu_milieu')\">" . utf8_encode($row['identity']) . "</a></td>"
                 ;
             }
             $tab_users .= "</tr>";
@@ -316,7 +319,7 @@ class GroupController extends ActionController {
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/groups/display_adressbook\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/Group/displayAddressBook\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_users .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         
@@ -372,44 +375,40 @@ class GroupController extends ActionController {
     protected function filterUsers($key, $value) {
         switch(strtolower($key)) {
             case 'avatar':
-                $value = '<img width="50" alt="Avatar" src="' . $value . '">';
-                break;
+                return '<img width="50" alt="Avatar" src="' . $value . '">';
             
             case 'identity':
-                $value = utf8_encode($value);
-                break;
+                return utf8_encode($value);
             
             case 'gender':
-                $value = ($value === 1 ? 'M' : 'F');
-                break;
+                return ($value === '2') ? 'M' : 'F';
             
             case 'country':
                 $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
                 $lang = $member->getLanguage();
                 $res = $this->application->get('mysqli')->select("SELECT $lang FROM country WHERE code = '$value' LIMIT 1");
-                $value =
+                return
                     (count($res) > 0)
                     ? $res[0][$lang]
                     : $this->application->get('translate')->translate("unknown")
                 ;
-                break;
             
             case 'region':
                 $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
-                $lang = $member->langue;
+                $lang = $member->getLanguage();
                 $res = $this->application->get('mysqli')->select("SELECT Name FROM regions WHERE Region_id = $value LIMIT 1");
-                $value =
+                return
                     (count($res) > 0 && $value > 0)
                     ? utf8_encode($res[0]['Name'])
                     : $this->application->get('translate')->translate('unknown')
                 ;
-                break;
             
             case 'last_connected_at':
-                $value = substr($value, 0, strlen($value)-3);
-                break;
+                return substr($value, 0, strlen($value)-3);
+            
+            default:
+                return $value;
         }
-        return $value;
     }
     
     protected function renderMapCoord() {
