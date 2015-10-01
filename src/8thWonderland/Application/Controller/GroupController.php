@@ -86,13 +86,13 @@ class GroupController extends ActionController {
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/groups/display_members\', \'&page=' . ($CurPage-1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/Group/displayMembers\', \'&page=' . ($CurPage-1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tabmini_usersgroup .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         // Bouton suivant
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/groups/display_members\', \'&page=' . ($CurPage + 1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/Group/displayMembers\', \'&page=' . ($CurPage + 1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $this->viewParameters['list_membersgroup'] = $tabmini_usersgroup . $next . '</td></tr></table>';
@@ -107,7 +107,7 @@ class GroupController extends ActionController {
         $select = '<option></option>';
         $nbMembers = count($membersList);
         for ($i = 0; $i < $nbMembers; ++$i) {
-            $select .= "<option value='{$membersList[$i]['IDUser']}'>{$membersList[$i]['Identite']}</option>";
+            $select .= "<option value='{$membersList[$i]['id']}'>{$membersList[$i]['identity']}</option>";
         }
         $this->viewParameters['select_contactsgroup'] = $select;
         $this->render('groups/manage_groups');
@@ -164,7 +164,7 @@ class GroupController extends ActionController {
                 
                 $dbLogger->log("Echec du changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::ERR);
             } else {
-                $this->display("<script type='text/javascript'>window.onload=Clic('/intranet/index', '$desktop', 'body');</script>");
+                $this->display("<script type='text/javascript'>window.onload=Clic('/Intranet/index', '$desktop', 'body');</script>");
                 
                 $dbLogger->log("Changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::INFO);
             }
@@ -363,7 +363,10 @@ class GroupController extends ActionController {
                 return html_entity_decode($value);
             
             case 'group_type_description':
-                return html_entity_decode($value);
+                return utf8_encode(html_entity_decode($value));
+                
+            default:
+                return $value;
         }
     }
     
