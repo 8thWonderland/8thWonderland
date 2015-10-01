@@ -23,11 +23,35 @@ class MemberManager {
      */
     public function getMember($id) {
         $data = $this->application->get('mysqli')->select(
-            'SELECT login, password, salt, identity, gender, email, avatar, language, ' .
+            'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
             "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE id = $id"
-        )[0];
+        );
+        return $this->formatMemberData($data[0]);
+    }
+    
+    /**
+     * @param string $login
+     * @param string $password
+     * @return \Wonderland\Application\Model\Member
+     */
+    public function getMemberByLoginAndPassword($login, $password) {
+        $data = $this->application->get('mysqli')->select(
+            'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
+            "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE login = '$login' AND password = '$password'"
+        );
+        return $this->formatMemberData($data[0]);
+    }
+    
+    /**
+     * Turn fetched data into Member object
+     * 
+     * @param array $data
+     * @return \Wonderland\Application\Model\Member
+     */
+    public function formatMemberData($data) {
         return
             (new Member())
+            ->setId($data['id'])
             ->setLogin($data['login'])
             ->setIdentity($data['identity'])
             ->setPassword($data['password'])
@@ -41,13 +65,13 @@ class MemberManager {
             ->setLastConnectedAt(new \DateTime($data['last_connected_at']))
             ->setIsEnabled($data['is_enabled'])
             ->setIsBanned($data['is_banned'])
-            ->setTheme($data['Theme'])
+            ->setTheme($data['theme'])
         ;
     }
     
     public function createMember(Member $member) {
         $this->application->get('mysqli')->query(
-            'INSERT INTO Utilisateurs(login, password, salt, identity, gender, ' .
+            'INSERT INTO users(login, password, salt, identity, gender, ' .
             'email, avatar, language, country, region, last_connected_at, created_at, is_enabled, is_banned, theme) ' .
             "VALUES('{$member->getLogin()}', '{$member->getPassword()}', '{$member->getSalt()}', " .
             "'{$member->getIdentity()}', '{$member->getGender()}', '{$member->getEmail()}', " .
@@ -55,6 +79,19 @@ class MemberManager {
             "'{$member->getRegion()}', '{$member->getLastConnectedAt()->format('c')}', " .
             "'{$member->getCreatedAt()->format('c')}', {$member->getIsEnabled()}, " .
             "{$member->getIsBanned()}, '{$member->getTheme()}')"
+        );
+    }
+    
+    public function updateMember(Member $member) {
+        $this->application->get('mysqli')->query(
+            "UPDATE users SET login = '{$member->getLogin()}', password = '{$member->getPassword()}', " .
+            "salt = '{$member->getSalt()}', identity = '{$member->getIdentity()}', " .
+            "gender = '{$member->getGender()}', email = '{$member->getEmail()}', " .
+            "avatar = '{$member->getAvatar()}', language = '{$member->getLanguage()}', " .
+            "country = '{$member->getCountry()}', region = '{$member->getRegion()}', " .
+            "last_connected_at = '{$member->getLastConnectedAt()->format('c')}', created_at = '{$member->getCreatedAt()->format('c')}', " .
+            "is_enabled = {$member->getIsEnabled()}, is_banned = {$member->getIsBanned()}, " .
+            "theme = '{$member->getTheme()}' WHERE id = {$member->getId()}"
         );
     }
     
@@ -96,15 +133,16 @@ class MemberManager {
     }
     
     /**
-     * @param int $groupId
      * @param int $userId
+     * @param int $groupId
      * @return int
      */
-    public function isMember($groupId, $userId = 0) {
-        if ($userId === 0) {
-            $userId = $this->application->get('auth')->getIdentity();
-        }
-        return $this->application->get('mysqli')->count('Citizen_Groups', sprintf('WHERE Citizen_id=%d AND Group_id=%d', $userId, $groupId));
+    public function isMemberInGroup($userId, $groupId) {
+        return $this
+            ->application
+            ->get('mysqli')
+            ->count('Citizen_Groups', sprintf('WHERE Citizen_id=%d AND Group_id=%d', $userId, $groupId))
+        ;
     }
     
     /**
@@ -113,7 +151,7 @@ class MemberManager {
      */
     public function isContact($groupId = null) {
         $db = $this->application->get('mysqli');
-        $userId = $this->application->get('auth')->getIdentity();
+        $userId = $this->application->get('session')->get('__id__');
         
         return
             (!isset($groupId))
@@ -125,14 +163,14 @@ class MemberManager {
     /**
      * @return int
      */
-    public static function countMembers() {
+    public function countMembers() {
         return $this->application->get('mysqli')->count('users');
     }
     
     /**
      * @return int
      */
-    public static function countActiveMembers() {
+    public function countActiveMembers() {
         return $this->application->get('mysqli')->count('users', ' WHERE DATEDIFF(CURDATE(), last_connected_at) < 21');
     }
     
@@ -140,15 +178,15 @@ class MemberManager {
      * Countries should have their own manager
      * 
      * @ToRemove
+     * @param string $language
      * @return array
      */
-    public function getCountries() {
+    public function getCountries($language) {
         $db = $this->application->get('mysqli');
-        $language = $this->langue;
-        if ($db->ExistColumn($language, 'country') == 0) {
+        if ($db->columnExists($language, 'country') === 0) {
             $language = 'en';
         }
-        return $db->select("SELECT Code, $language FROM country");
+        return $db->select("SELECT Code, '$language' FROM country");
     }
     
     /**
@@ -157,7 +195,7 @@ class MemberManager {
      */
     public function getMembers($params) {
         $search = '';
-        $table = 'Utilisateurs';
+        $table = 'users';
         if (!empty($params['sel_groups'])) {
             $table = 'Citizen_Groups, users';
             $search = " WHERE Citizen_id = id AND Group_id={$params['sel_groups']} ";

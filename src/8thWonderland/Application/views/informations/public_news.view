@@ -1,7 +1,7 @@
 <!-- news publiques -->
 <div id="public_news" class="encadre">
     <table>
-        <caption><?php echo $this->_view['translate']->msg('what_new'); ?></caption>
+        <caption><?php echo $this->viewParameters['translate']->translate('what_new'); ?></caption>
         <tr>
             <td>
                 <table>

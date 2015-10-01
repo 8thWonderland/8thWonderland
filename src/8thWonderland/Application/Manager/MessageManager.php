@@ -25,13 +25,15 @@ class MessageManager {
         $title = htmlentities($data['title_message']);
         $msg   = htmlentities($data['content_message']);
         
-        $author = $this->application->get('auth')->getIdentity();
+        $author = $this->application->get('session')->get('__id__');
         
         $db->query(
             'INSERT INTO messages_received (title, content, author, recipient) ' .
-            "VALUES ('$title', '$msg', $author, {$data['recipient_message']});" .
+            "VALUES ('$title', '$msg', $author, '{$data['recipient_message']}')"
+        );
+        $db->query(
             'INSERT INTO messages_sent (title, content, author, recipients) ' .
-            "VALUES ('$title', '$msg', $author, {$data['recipient_message']})"
+            "VALUES ('$title', '$msg', $author, '{$data['recipient_message']}')"
         );
         
         return $db->affected_rows;
@@ -42,9 +44,9 @@ class MessageManager {
      */
     public function getReceivedMessages() {
         return $this->application->get('mysqli')->select(
-            'SELECT id_receivedmessage, title, identite, date_msg ' .
-            'FROM messages_received, Utilisateurs ' .
-            "WHERE author=Utilisateurs.IDUser AND recipient = {$this->application->get('auth')->getIdentity()} " .
+            'SELECT id_receivedmessage, title, identity, date_msg ' .
+            'FROM messages_received, users ' .
+            "WHERE author=users.id AND recipient = {$this->application->get('session')->get('__id__')} " .
             'ORDER BY date_msg DESC'
         );
     }
@@ -56,9 +58,30 @@ class MessageManager {
         return $this->application->get('mysqli')->select(
             'SELECT id_sentmessage, title, recipients, date_msg ' .
             'FROM messages_sent ' .
-            "WHERE author = {$this->application->get('auth')->getIdentity()} " .
+            "WHERE author = {$this->application->get('session')->get('__id__')} " .
             'ORDER BY date_msg DESC'
         );
+    }
+    
+    /**
+     * @param int $id
+     * @param int $type
+     * @return \mysqli_result
+     */
+    public function getMessage($id, $type) {
+        $db = $this->application->get('mysqli');
+        return
+            ($type === 1)
+            ? $db->select(
+                'SELECT title, content, recipients, date_msg ' .
+                "FROM messages_sent WHERE id_sentmessage = $id " .
+                'ORDER BY date_msg DESC'
+            ) : $db->select(
+                'SELECT title, content, recipient, date_msg ' .
+                "FROM messages_received WHERE id_receivedmessage = $id " .
+                'ORDER BY date_msg DESC'
+            )
+        ;
     }
     
     /**

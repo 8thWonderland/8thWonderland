@@ -18,14 +18,14 @@ class Translate {
         $this->application = $application;
         
         $options = $application->getConfig()->getOptions();
-        if (!empty($options['path']) && is_dir($options['path'])) {
-            $this->languagesPath = $options['path'];
+        if (!empty($options['language']['path']) && is_dir($options['language']['path'])) {
+            $this->languagesPath = $options['language']['path'];
         }
-        if (!empty($options['langs'])) {
-            $this->addLanguage($options['langs']);
+        if (!empty($options['language']['langs'])) {
+            $this->addLanguage($options['language']['langs']);
         }
-        if (!empty($options['default'])) {
-            $this->setDefaultLanguage($options['default']);
+        if (!empty($options['language']['default'])) {
+            $this->setDefaultLanguage($options['language']['default']);
         }
     }
 
@@ -95,8 +95,7 @@ class Translate {
      * @param string $language
      * @throws \InvalidArgumentException
      */
-    public function setUserLang($language)
-    {
+    public function setUserLang($language) {
         if (!$this->isAvailable($language)) {
             throw new \InvalidArgumentException("Language $language is not implemented !");
         }
@@ -144,13 +143,12 @@ class Translate {
      * @param string $lang
      * @return string
      */
-    public function translate($key, $lang = null)
-    {
-        if (!isset($lang) || !$this->isAvailable($lang)) {
+    public function translate($key, $lang = null) {
+        if ($lang === null || !$this->isAvailable($lang)) {
             $lang = 
-                (isset($this->userLanguage) && $this->isAvailable($this->userLanguage))
-                ? $this->userLanguage
-                : $this->getBrowserLang()
+                ($this->userLanguage === null || !$this->isAvailable($this->userLanguage))
+                ? $this->getBrowserLang()
+                : $this->userLanguage
             ;
         }
         return $this->languages[$lang][$key];

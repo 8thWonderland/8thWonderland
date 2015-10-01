@@ -7,7 +7,7 @@ use Wonderland\Library\Controller\ActionController;
 class IndexController extends ActionController {   
     public function indexAction() {
         // controle si l'utilisateur est déjà connecté
-        if ($this->application->get('auth')->hasIdentity()) {
+        if ($this->application->get('session')->get('__id__') !== null) {
             $this->redirect('Intranet/index');
         }
 

@@ -4366,7 +4366,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `is_enabled` tinyint(1) NOT NULL DEFAULT '0',
   `is_banned` tinyint(1) NOT NULL DEFAULT '0',
-  `theme` varchar(50) NOT NULL DEFAULT 'Rouge_Noir'
+  `theme` varchar(50) NOT NULL DEFAULT 'Rouge_Noir',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10113 ;
 

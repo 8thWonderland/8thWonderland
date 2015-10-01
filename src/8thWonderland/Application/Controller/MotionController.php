@@ -4,7 +4,6 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Application\Model\Poll;
 use Wonderland\Application\Model\Member;
 
 use Wonderland\Library\Admin\Log;
@@ -12,21 +11,20 @@ use Wonderland\Library\Admin\Log;
 class MotionController extends ActionController {
     public function displayCreateMotionAction() {
         $translate = $this->application->get('translate');
-        $list_themes = Poll::_getThemes();
+        $motionThemes = $this->application->get('motion_manager')->getMotionThemes();
         
         $this->viewParameters['translate'] = $translate;
         $this->viewParameters['msg'] = '';
         $this->viewParameters['select_theme'] = '<option></options>';
         
-        for ($i = 0; ($theme = $list_themes->fetch_assoc()); ++$i) {
-            $this->viewParameters['select_theme'] .= "<option value='$i'>{$translate->translate($theme['label_key'])}</option>";
+        while ($theme = $motionThemes->fetch_assoc()) {
+            $this->viewParameters['select_theme'] .= "<option value='{$theme['theme_id']}'>{$translate->translate($theme['label_key'])}</option>";
         }
         $this->render('actions/create_motion');
     }
     
     public function displayMotionsInProgressAction() {
-        $polls = new Poll;
-        $this->viewParameters['list_motions'] = $polls->display_motionsinprogress();
+        $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions();
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('actions/motions_inprogress');
     }
@@ -38,8 +36,7 @@ class MotionController extends ActionController {
     }
     
     public function displayVoteAction() {
-        $polls = new Poll;
-        $details = $polls->displayMotionDetails($_POST['motion_id']);
+        $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->viewParameters['details'] = $details[0];
@@ -49,8 +46,7 @@ class MotionController extends ActionController {
     }
     
     public function displayMotionAction() {
-        $polls = new Poll;
-        $details = $polls->displayMotionDetails($_POST['motion_id']);
+        $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->viewParameters['details'] = $details[0];
@@ -63,9 +59,9 @@ class MotionController extends ActionController {
      * @return string
      */
     protected function renderMotions() {
-        $polls = new Poll;
+        $motionManager = $this->application->get('motion_manager');
         $paginator = $this->application->get('paginator');
-        $paginator->setData($polls->displayMotions());
+        $paginator->setData($motionManager->displayMotions());
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -90,12 +86,12 @@ class MotionController extends ActionController {
             foreach($row as $key => $value) {
                 if ($key !== 'Motion_id') {
                     $tab_motions .=
-                        "<td><a style='background-color:#000000' onclick=\"Clic('/motions/display_motion', " .
+                        "<td><a style='background-color:#000000' onclick=\"Clic('/Motion/displayMotion', " .
                         "'motion_id={$row['Motion_id']}', 'milieu_milieu'); return false;\">{$this->filterMotions($key, $value)}</a></td>"
                     ;
                 }
             }
-            $votes = Poll::_getVotes($row['Motion_id']);
+            $votes = $motionManager->getVotes($row['Motion_id']);
             if ($votes[0] > $votes[1]) {
                 $percent = round((($votes[0] / ($votes[0] + $votes[1]) * 100) * 100) / 100, 2);
                 $resultat_vote =
@@ -124,7 +120,7 @@ class MotionController extends ActionController {
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/motions/display_motions\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/Motion/displayMotions\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_motions .= '<td colspan="5" style="padding-right:15px;" align="right">' . $previous . ' | ';
         $start = $CurPage - $paginator->getPageRange();
@@ -135,7 +131,7 @@ class MotionController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_motions .=
                 ($page !== $CurPage)
-                ? '<a onclick="Clic(\'/motions/display_motions\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'/Motion/displayMotions\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : '<b>' . $page . '</b> | '
             ;
         }
@@ -143,7 +139,7 @@ class MotionController extends ActionController {
 
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/motions/display_motions\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/Motion/displayMotions\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_motions . $next . '</td></tr></table>';
     }
@@ -156,10 +152,10 @@ class MotionController extends ActionController {
     protected function filterMotions($key, $value) {
         switch(strtolower($key)) {
             case 'citizen_id':
-                $identite = $this->application->get('mysqli')->select("SELECT Identite FROM Utilisateurs WHERE IDUser=$value");
+                $identite = $this->application->get('mysqli')->select("SELECT identity FROM users WHERE id = $value");
                 return
-                    (isset($identite[0]['Identite']))
-                    ? $identite[0]['Identite']
+                    (isset($identite[0]['identity']))
+                    ? $identite[0]['identity']
                     : $this->application->get('translate')->translate('unknown')
                 ;
             
@@ -171,6 +167,9 @@ class MotionController extends ActionController {
                         
             case 'date_fin_vote':
                 return explode(' ', $value)[0];
+                
+            default:
+                return $value;
         }
     }
     
@@ -178,19 +177,20 @@ class MotionController extends ActionController {
         $translate = $this->application->get('translate');
         $logger = $this->application->get('logger');
         $logger->setWriter('db');
-        $list_themes = Poll::_getThemes();
+        $motionManager = $this->application->get('motion_manager');
+        $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
+        $motionThemes = $motionManager->getMotionThemes();
         $this->viewParameters['translate'] = $translate;
         $this->viewParameters['select_theme'] = '<option></options>';
-        for ($i = 0; ($theme = $list_themes->fetch_assoc()); ++$i) {
-            $this->viewParameters['select_theme'] .= "<option value='$i'>{$translate->translate($theme['label_key'])}</option>";
+        while ($theme = $motionThemes->fetch_assoc()) {
+            $this->viewParameters['select_theme'] .= "<option value='{$theme['theme_id']}'>{$translate->translate($theme['label_key'])}</option>";
         }
         
         if(
             !empty($_POST['theme']) && !empty($_POST['title_motion']) &&
             !empty($_POST['description_motion'])&& !empty($_POST['means_motion'])
         ) {
-            $polls = new Poll;
-            if ($polls->valid_motion($_POST['title_motion'], $_POST['theme'], $_POST['description_motion'], $_POST['means_motion'])) {
+            if ($motionManager->validateMotion($_POST['title_motion'], $_POST['theme'], $_POST['description_motion'], $_POST['means_motion'])) {
                 $this->viewParameters['msg'] =
                     '<div class="info" style="height:50px;"><table><tr>' .
                     '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
@@ -204,10 +204,8 @@ class MotionController extends ActionController {
                     '<td><span style="font-size: 15px;">' . $translate->translate('depot_motion_nok') . '</span></td>' .
                     '</tr></table></div>'
                 ;
-                
                 // Journal de log
-                $member = Member::getInstance();
-                $logger->log("Echec du dépot de motion par l'utilisateur {$member->identite}", Log::WARN);
+                $logger->log("Echec du dépot de motion par l'utilisateur {$member->getIdentity()}", Log::WARN);
             }
         } else {
             $this->viewParameters['msg'] = 
@@ -216,8 +214,7 @@ class MotionController extends ActionController {
                 '<td><span style="font-size: 15px;">' . $translate->translate('fields_empty') . '</span></td>' .
                 '</tr></table></div>'
             ;
-            $member = Member::getInstance();
-            $logger->log("Echec du dépot de motion par l'utilisateur {$member->identite} (champs vides)", Log::WARN);
+            $logger->log("Echec du dépot de motion par l'utilisateur {$member->getIdentity()} (champs vides)", Log::WARN);
         }
         $this->render('actions/create_motion');
     }
@@ -226,14 +223,13 @@ class MotionController extends ActionController {
         $translate = $this->application->get('translate');
         $this->viewParameters['translate'] = $translate;
         if (!empty($_POST['motion_id']) && !empty($_POST['vote'])) {
-            $polls = new Poll();
-            if ($polls->vote_motion($_POST['motion_id'], $_POST['vote']) === 1) {
+            if ($this->application->get('motion_manager')->voteMotion($_POST['motion_id'], $_POST['vote']) === 1) {
                 $this->display(
                     '<div class="info" style="height:50px;"><table><tr>' .
                     '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
                     '<td><span style="font-size: 15px;">' . $translate->translate('vote_motion_ok') . '</span></td>' .
                     '</tr></table></div>' .
-                    '<script type="text/javascript">Clic("/motions/display_motionsinprogress", "", "milieu_gauche");</script>'
+                    '<script type="text/javascript">Clic("/Motion/displayMotionsInProgress", "", "milieu_gauche");</script>'
                 );
             } else {
                 $this->display(
@@ -243,15 +239,15 @@ class MotionController extends ActionController {
                     '</tr></table></div>'
                 );
                 // Journal de log
-                $member = Member::getInstance();
+                $member = $this->application->get('motion_manager')->getMember($this->applicaiton->get('session')->get('__id__'));
                 $logger = $this->application->get('logger');
                 $logger->setWriter('db');
-                $logger->log("Echec du vote de motion par l'utilisateur {$member->identite}", Log::WARN);
+                $logger->log("Echec du vote de motion par l'utilisateur {$member->getIdentity()}", Log::WARN);
             }
         }
     }
     
     public function checkMotionAction() {
-        (new Poll())->checkMotion();
+        $this->application->get('motion_manager')->checkMotion();
     }
 }

@@ -5,8 +5,12 @@ namespace Wonderland\Application\Manager;
 use Wonderland\Library\Application;
 
 class MotionManager {
+    /** @var \Wonderland\Library\Application **/
     protected $application;
     
+    /**
+     * @param \Wonderland\Library\Application $application
+     */
     public function __construct(Application $application) {
         $this->application = $application;
     }
@@ -18,25 +22,24 @@ class MotionManager {
      */
     public function displayActiveMotions() {
         $translate = $this->application->get('translate');
-        $auth = $this->application->get('auth');
-        $memberId = $auth->getIdentity();
+        $memberId = $this->application->get('session')->get('__id__');
         
-        $montionsList = $this->application->get('mysqli')->query(
+        $motions = $this->application->get('mysqli')->query(
             'SELECT motion_id, title_key, date_fin_vote ' .
             'FROM Motions ' .
             'WHERE Date_fin_vote >  NOW() ' .
             'ORDER BY date_fin_vote DESC '
         );
-        if ($montionsList->num_rows > 0) {
+        if ($motions->num_rows > 0) {
             $response = '';
-            while ($motion = $montionsList->fetch_assoc()) {
+            while ($motion = $motions->fetch_assoc()) {
                 $response .=
-                    "<tr><td><a onclick=\"Clic('/Motion/display_motion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['title_key']}</a></td>" .
-                    "<td><a onclick=\"Clic('/Motion/display_motion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['date_fin_vote']}</a></td>"
+                    "<tr><td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['title_key']}</a></td>" .
+                    "<td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['date_fin_vote']}</a></td>"
                 ;
                 if ($this->hasAlreadyVoted($motion['motion_id'], $memberId) == 0) {
                     $response .=
-                        "<td><div class='bouton'><a onclick=\"Clic('/Motion/display_vote', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">" .
+                        "<td><div class='bouton'><a onclick=\"Clic('/Motion/displayVote', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">" .
                         "<span style='color: #dfdfdf;'>{$translate->translate('btn_votemotion')}</span></a></div></td>"
                     ;
                 }
@@ -72,7 +75,7 @@ class MotionManager {
             'FROM Motions, Motions_Themes ' .
             "WHERE motion_id = $id AND Motions.theme_id=Motions_Themes.Theme_id"
         );
-        $motion[0]['vote'] = $this->_getVotes($id);
+        $motion[0]['vote'] = $this->getVotes($id);
         return $motion;
     }
     
@@ -82,7 +85,7 @@ class MotionManager {
     public function getMotionThemes()
     {
         return $this->application->get('mysqli')->query(
-            'SELECT label_key FROM Motions_Themes ORDER BY label_key ASC'
+            'SELECT theme_id, label_key FROM Motions_Themes ORDER BY label_key ASC'
         );
     }
     
@@ -113,8 +116,8 @@ class MotionManager {
             "values ('" . htmlentities(utf8_decode($theme), ENT_QUOTES) . "', " . 
             "'" . htmlentities(utf8_decode($title), ENT_QUOTES) . "', " .
             "'" . nl2br(htmlentities($description)) . "', '" . nl2br(htmlentities($means)) . "',  NOW(), " .
-            "DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM Motions_Themes WHERE Motions_Themes.Theme_id = " . $theme . ") DAY), " .
-            $this->application->get('auth')->getIdentity() . ")"
+            "DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM Motions_Themes WHERE Motions_Themes.Theme_id = $theme) DAY), " .
+            $this->application->get('session')->get('__id__') . ")"
         );
     }
     
@@ -128,7 +131,7 @@ class MotionManager {
     public function voteMotion($id, $vote)
     {
         $db     = $this->application->get('mysqli');
-        $member = $this->application->get('auth')->getIdentity();
+        $member = $this->application->get('session')->get('__id__');
         $date   = date('Y-m-d h-i-s');
         $ip =
             (isset($_SERVER['REMOTE_ADDR']))

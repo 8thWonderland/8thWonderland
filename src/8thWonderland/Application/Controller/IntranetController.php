@@ -4,32 +4,25 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Library\Auth;
-
-use Wonderland\Library\Memory\Registry;
-
-use Wonderland\Application\Model\ManageGroups;
 use Wonderland\Application\Model\Member;
-use Wonderland\Application\Model\Poll;
 use Wonderland\Application\Model\Mailer;
 
 use Wonderland\Library\Admin\Log;
 
 class IntranetController extends ActionController {
     public function indexAction() {
-        if (!$this->application->get('auth')->hasIdentity()) {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
-
         $this->viewParameters['translate'] = $this->application->get('translate');
         
         $select_geo = false;
-        $member = new Member();
+        $member = $this->application->get('member_manager')->getMember($id);
         $db = $this->application->get('mysqli');
 
         // Teste si le code country du membre est valide
         // =============================================
-        $country_ok = $db->count('country', " WHERE code='{$member->pays}'");
+        $country_ok = $db->count('country', " WHERE code='{$member->getCountry()}'");
         if ($country_ok === 0) {
             $select_geo = true;
         } else {
@@ -40,39 +33,41 @@ class IntranetController extends ActionController {
         }
 
         if ($select_geo) {
-            $this->displaySelectCountry();
+            $this->displaySelectCountry($member);
         } else {
-            $this->displayIntranet();
+            $this->displayIntranet($member);
         }
     }
     
-    protected function displaySelectCountry() {
-        $member = new Member();
-        $countries = $member->listCountries();
+    /**
+     * @param \Wonderland\Application\Model\Member $member
+     */
+    protected function displaySelectCountry(Member $member) {
+        $countries = $this->application->get('member_manager')->getCountries($member->getLanguage());
         $this->viewParameters['select_country'] = '<option></option>';
         $nbCountries = count($countries);
         for ($i = 0; $i < $nbCountries; ++$i) {
-            $this->viewParameters['select_country'] .= "<option value='{$countries[$i]['Code']}'>{$countries[$i][$member->langue]}</option>";
+            $this->viewParameters['select_country'] .= "<option value='{$countries[$i]['Code']}'>{$countries[$i][$member->getLanguage()]}</option>";
         }
         $this->viewParameters['msg'] = '';
         $this->viewParameters['default_view'] = 'members/select_country.view';
         $this->render('connected');
     }
     
-    protected function displayIntranet() {
+    protected function displayIntranet(Member $member) {
+        $session = $this->application->get('session');
         if (!empty($_POST['group_id'])) {
-            Registry::set('desktop', $_POST['group_id']);
+            $session->set('desktop', $_POST['group_id']);
         }
-        
+        $memberManager = $this->application->get('member_manager');
         // affichage du profil
-        $member = new Member();
         $this->viewParameters['identity'] = $member->getIdentity();
         $this->viewParameters['avatar'] = $member->getAvatar();
-        $this->viewParameters['admin'] = Member::EstMembre(1);
+        $this->viewParameters['admin'] = $memberManager->isMemberInGroup($member->getId(), 1);
 
-        $desktop = Registry::get('desktop');
+        $desktop = $session->get('desktop');
         if (isset($desktop)) {
-            $this->viewParameters['Contact_Group'] = Member::isContact($desktop);
+            $this->viewParameters['Contact_Group'] = $memberManager->isContact($desktop);
             $this->viewParameters['haut_milieu'] =
                 ($desktop === 1)
                 ? VIEWS_PATH . 'admin/menu_admin.view'
@@ -81,25 +76,22 @@ class IntranetController extends ActionController {
 
             $this->viewParameters['milieu_droite'] = 
                 "<table>" .
-                "<tr><td id='md_section1'><script type='text/javascript'>window.onload=Clic('/admin/display_statsCountry', '', 'md_section1');</script></td></tr>" .
-                "<tr><td id='md_section2'><script type='text/javascript'>window.onload=Clic('/groups/display_members', '', 'md_section2');</script></td></tr>" .
+                "<tr><td id='md_section1'><script type='text/javascript'>window.onload=Clic('/Admin/displayStatsCountry', '', 'md_section1');</script></td></tr>" .
+                "<tr><td id='md_section2'><script type='text/javascript'>window.onload=Clic('/Group/displayMembers', '', 'md_section2');</script></td></tr>" .
                 "</table>"
             ;
             $this->viewParameters['milieu_milieu'] = "";
-            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/member/display_contactsgroups', '', 'milieu_gauche');</script>";
+            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/Member/displayContactsGroups', '', 'milieu_gauche');</script>";
         } else {
-            // affichage des motions en cours
-            $poll = new Poll;
-            
             $this->viewParameters['haut_milieu'] = VIEWS_PATH . 'members/menu.view';
             $this->viewParameters['milieu_droite'] = '';
-            $this->viewParameters['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('/intranet/communicate', '', 'milieu_milieu');</script>";
-            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/motions/display_motionsinprogress', '', 'milieu_gauche');</script>";
-            $this->viewParameters['list_motions'] = $poll->displayActiveMotions();
+            $this->viewParameters['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('/Intranet/communicate', '', 'milieu_milieu');</script>";
+            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/Motion/displayMotionsInProgress', '', 'milieu_gauche');</script>";
+            $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions();
 
             // affichage des groupes du membre
-            $this->viewParameters['list_groups'] = ManageGroups::display_groupsMember();
-            $this->viewParameters['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('/groups/display_groupsmembers', '', 'milieu_droite');</script>";
+            $this->viewParameters['list_groups'] = $this->application->get('group_manager')->getMemberGroups($member->getId());
+            $this->viewParameters['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('/Group/displayGroupsMembers', '', 'milieu_droite');</script>";
 
         }
         if ($this->is_Ajax()) {
@@ -111,18 +103,16 @@ class IntranetController extends ActionController {
     }
     
     public function zoneGeoAction() {
-        $auth = $this->application->get('auth');
-        
-        if (!$auth->hasIdentity()) {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
         
         if (!empty($_POST['country']) && isset($_POST['region']) && $_POST['region'] !== 0) {
             $db = $this->application->get('mysqli');
-            $member = new Member();
+            $member = $this->application->get('member_manager')->getMember($id);
             
             $db->query(
-                "UPDATE Utilisateurs SET Pays='{$_POST['country']}', Region={$_POST['region']} WHERE IDUser={$auth->getIdentity()}"
+                "UPDATE Utilisateurs SET Pays='{$_POST['country']}', Region={$_POST['region']} WHERE IDUser={$member->getId()}"
             );
             
             if ($_POST['region'] !== -1) {
@@ -202,7 +192,7 @@ class IntranetController extends ActionController {
     }
 
     public function infosAction() {
-        if (!$this->application->get('auth')->hasIdentity()) {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
         $this->viewParameters['translate'] = $this->application->get('translate');
@@ -210,7 +200,7 @@ class IntranetController extends ActionController {
     }
 
     public function shareAction() {
-        if (!$this->application->get('auth')->hasIdentity()) {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
         $this->viewParameters['translate'] = $this->application->get('translate');
@@ -218,7 +208,7 @@ class IntranetController extends ActionController {
     }
 
     public function communicateAction() {
-        if (!$this->application->get('auth')->hasIdentity()) {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
         $this->viewParameters['translate'] = $this->application->get('translate');
@@ -226,7 +216,7 @@ class IntranetController extends ActionController {
     }
 
     public function financeAction() {
-        if (!$this->application->get('auth')->hasIdentity()) {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
         $this->viewParameters['translate'] = $this->application->get('translate');
@@ -234,14 +224,14 @@ class IntranetController extends ActionController {
     }
     
     public function consoleAction() {
-        if (!$this->application->get('auth')->hasIdentity()) {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
-        if (!Member::EstMembre(1)) {
+        if (!$memberManager->isMemberInGroup($id, 1)) {
             $this->redirect('Intranet/index');
         }
         
-        $member = new Member();
+        $member = $memberManager->getMember($id);
         $logger = $this->application->get('logger');
         $logger->setWriter('db');
         $logger->log($member->getIdentity() . " entre dans la console d'administration.", Log::INFO);

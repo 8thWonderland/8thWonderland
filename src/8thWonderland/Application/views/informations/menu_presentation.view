@@ -9,23 +9,23 @@
                             <tr>
                                 <td style="width:20%">
                                     <a onclick="Clic('/index/presentation', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Presentation.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('presentation'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('presentation'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
                                     <a onclick="Clic('/index/subscribe', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Subscribe.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('subscribe'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('subscribe'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
                                     <a onclick="Clic('/index/partners', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Network.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('partners'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('partners'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
                                     <a onclick="Clic('/index/news', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Events.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('news'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('news'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
                                     <a onclick="Clic('/index/contact', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Contact.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->_view['translate']->msg('contact-us'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('contact-us'); ?></span></a>
                                 </td>
                             </tr>
                         </tbody>

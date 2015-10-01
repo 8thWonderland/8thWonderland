@@ -15,13 +15,13 @@
 		
 		map.setView(new L.LatLng(51.505, -0.09), 2).addLayer(cloudmade);
 	
-		<?php echo $this->_view['map_coord']; ?>
+		<?php echo $this->viewParameters['map_coord']; ?>
 
 		for(var i=0; i< regions.length; i++){	
 				markerLocation = new L.LatLng(regions[i][1], regions[i][2]),
 				marker = new L.Marker(markerLocation);
 				map.addLayer(marker);
-				marker.bindPopup("<b>"+regions[i][0]+'</b><br/>'+regions[i][3]+" <?php $translate = memory_registry::get("translate"); echo $translate->msg("group_members"); ?>");
+				marker.bindPopup("<b>"+regions[i][0]+'</b><br/>'+regions[i][3]+" <?php echo $this->viewParameters['translate']->translate('group_members'); ?>");
 		}
 	
 	

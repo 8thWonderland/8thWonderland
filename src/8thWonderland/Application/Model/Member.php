@@ -37,12 +37,15 @@ class Member {
     protected $isBanned;
     /** @var string **/
     protected $theme;
-
-    public function __construct($id = null) {
-        if (empty($id)) {
-            $this->id = Auth::getInstance()->_getIdentity();
-        }
+    
+    /**
+     * @param int $id
+     * @return \Wonderland\Application\Model\Member
+     */
+    public function setId($id) {
         $this->id = $id;
+        
+        return $this;
     }
     
     /**

@@ -32,7 +32,7 @@ class Application {
     public function setContainer() {
         $this->container = new Container();
         
-        $containerData = json_decode(file_get_contents(PUBLIC_ROOT.'Application/config/config.json'), true);
+        $containerData = json_decode(file_get_contents($this->rootPath.'Application/config/config.json'), true);
         
         $this->setServices($containerData['services']);
         $this->setParameters($containerData['parameters']);
@@ -82,7 +82,9 @@ class Application {
      * Set the absolute path to the project
      */
     public function setRootPath() {
-        $this->rootPath = dirname(__DIR__) . '\\';
+        $this->rootPath = str_replace('\\', '/', dirname(__DIR__) . '\\');
+        // Temporary fix
+        define ( 'VIEWS_PATH', $this->rootPath . 'Application/views/' );
     }
     
     /**
@@ -113,11 +115,10 @@ class Application {
         return $this->config;
     }
     
-    
-    // Démarrage de l'application
-    // ==========================
-    public function run()
-    {
+    /**
+     * Démarrage de l'application
+     */
+    public function run() {
         $front = new FrontController($this);
         $front->dispatch();
     }

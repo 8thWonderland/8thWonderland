@@ -55,7 +55,7 @@ abstract class ActionController {
             $params = $this->_formatURL($url);
 
             // route vers le controleur et l'action demandée
-            $ctrl = new $params[0]();
+            $ctrl = new $params[0]($this->application);
             $action = $params[1] . "Action";
 
             $ctrl->$action();

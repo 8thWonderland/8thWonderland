@@ -14,14 +14,18 @@ use Wonderland\Library\Admin\Log;
 class GroupController extends ActionController {
     public function displayGroupsAction() {
         $this->viewParameters['list_Allgroups'] = $this->renderGroups();
-        $this->viewParameters['map_coord'] = $this->renderMapCoord();
         $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['map_coord'] = $this->renderMapCoord();
         $this->render('groups/list_allgroups');
     }
     
     public function displayGroupsMembersAction() {
+        if (($id = $this->application->get('session')->get('__id__')) === null) {
+            $this->redirect('Index/index');
+        }
+        
         $translate = $this->application->get('translate');
-        $list_groups = ManageGroups::display_groupsMember();
+        $list_groups = $this->application->get('group_manager')->getMemberGroups($id);
         $response = '';
 
         if ($list_groups->num_rows > 0) {
@@ -43,7 +47,7 @@ class GroupController extends ActionController {
     
     public function displayMembersAction() {
         $paginator = $this->application->get('paginator');
-        $paginator->setData(ManageGroups::display_listMembers());
+        $paginator->setData($this->application->get('group_manager')->getGroupMembers($this->application->get('session')->get('desktop')));
         $paginator->setItemsPerPage(15);
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
@@ -57,14 +61,14 @@ class GroupController extends ActionController {
         $tabmini_usersgroup =   
             '<table class="pagination"><tr class="entete">' .
             '<td>' . $translate->translate('identity') . '</td>' .
-            '<td width="140px">' . $translate->translate("last_connexion") . '</td></tr>'
+            '<td width="140px">' . $translate->translate('last_connexion') . '</td></tr>'
         ;
 
         foreach($datas as $row) {
             $tabmini_usersgroup .=
                 "<tr style='height:25px'>".
-                "<td><a onclick=\"Clic('/messaging/compose_message', 'recipient_message={$row['IDUser']}', 'milieu_milieu')\">" . utf8_encode($row['Identite']) . "</a></td>" .
-                "<td>" . substr($row['DerConnexion'], 0, strlen($row['DerConnexion'])-3) . "</td></tr>"
+                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message={$row['id']}', 'milieu_milieu')\">" . utf8_encode($row['identity']) . "</a></td>" .
+                "<td>" . substr($row['last_connected_at'], 0, strlen($row['last_connected_at'])-3) . "</td></tr>"
             ;
         }
         $itemsPerPage = $paginator->getItemsPerPage();
@@ -82,13 +86,13 @@ class GroupController extends ActionController {
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/groups/display_members\', \'&page=' . ($CurPage-1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/Group/displayMembers\', \'&page=' . ($CurPage-1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tabmini_usersgroup .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         // Bouton suivant
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/groups/display_members\', \'&page=' . ($CurPage + 1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/Group/displayMembers\', \'&page=' . ($CurPage + 1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $this->viewParameters['list_membersgroup'] = $tabmini_usersgroup . $next . '</td></tr></table>';
@@ -99,11 +103,11 @@ class GroupController extends ActionController {
     public function displayManageGroupsAction() {
         $this->viewParameters['translate'] = $this->application->get('translate');
 
-        $membersList = ManageGroups::display_listMembersContact();
+        $membersList = $this->application->get('group_manager')->getGroupMembers($this->application->get('session')->get('desktop'));
         $select = '<option></option>';
         $nbMembers = count($membersList);
         for ($i = 0; $i < $nbMembers; ++$i) {
-            $select .= "<option value='{$membersList[$i]['IDUser']}'>{$membersList[$i]['Identite']}</option>";
+            $select .= "<option value='{$membersList[$i]['id']}'>{$membersList[$i]['identity']}</option>";
         }
         $this->viewParameters['select_contactsgroup'] = $select;
         $this->render('groups/manage_groups');
@@ -114,7 +118,7 @@ class GroupController extends ActionController {
         $this->render('admin/dev_inprogress');
     }
     
-    public function displayAdressbookAction() {
+    public function displayAddressbookAction() {
         $this->viewParameters['list_users'] = $this->renderUsers();
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('members/list_users');
@@ -127,8 +131,9 @@ class GroupController extends ActionController {
     
     
     public function quitDesktopAction() {
-        Registry::delete('desktop');
-        Registry::delete('search_users');
+        $session = $this->application->get('session');
+        $session->delete('desktop');
+        $session->delete('search_users');
         $this->redirect('intranet/index');
     }
     
@@ -136,7 +141,8 @@ class GroupController extends ActionController {
         $translate = $this->application->get('translate');
         $dbLogger = $this->application->get('logger');
         $dbLogger->setWriter('db');
-        $member = Member::getInstance();
+        $session = $this->application->get('session');
+        $member = $this->application->get('member_manager')->getMember($session->get('__id__'));
         
         if (!isset($_POST['sel_contactgroups']) || intval($_POST['sel_contactgroups']) === 0) {
             $this->display(
@@ -146,21 +152,21 @@ class GroupController extends ActionController {
                 '</tr></table></div>'
             );
             
-            $dbLogger->log("Echec du changement de CG par " . $member->identite . " (id_user inconnu : " . $_POST['sel_contactgroups'] . ")", Log::ERR);
+            $dbLogger->log("Echec du changement de CG par {$member->getIdentity()} (id_user inconnu : {$_POST['sel_contactgroups']})", Log::ERR);
         } else {
-            $res = ManageGroups::change_contact($_POST['sel_contactgroups']);
+            $desktop = $session->get('desktop');
+            $res = $this->application->get('group_manager')->updateContact($desktop, $_POST['sel_contactgroups']);
             if ($res === 0) {
                 $this->display('<div class="error" style="height:25px;"><table><tr>' .
                           '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
                           '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
                           '</tr></table></div>');
                 
-                $dbLogger->log("Echec du changement de CG par " . $member->identite . " (id_user=" . $_POST['sel_contactgroups'] . ")", Log::ERR);
+                $dbLogger->log("Echec du changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::ERR);
             } else {
-                $desktop = Registry::get("desktop");
-                $this->display("<script type='text/javascript'>window.onload=Clic('/intranet/index', '" . $desktop . "', 'body');</script>");
+                $this->display("<script type='text/javascript'>window.onload=Clic('/Intranet/index', '$desktop', 'body');</script>");
                 
-                $dbLogger->log("Changement de CG par " . $member->identite . " (id_user=" . $_POST['sel_contactgroups'] . ")", Log::INFO);
+                $dbLogger->log("Changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::INFO);
             }
         }
         
@@ -171,8 +177,9 @@ class GroupController extends ActionController {
      * @return string
      */
     protected function renderGroups() {
+        $groupManager = $this->application->get('group_manager');
         $paginator = $this->application->get('paginator');
-        $paginator->setData(managegroups::display_groups());
+        $paginator->setData($groupManager->getGroups());
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -199,7 +206,7 @@ class GroupController extends ActionController {
                     $tab_groups .= "<td>{$this->filterGroups($key, $value)}</td>";
                 }
             }
-            $tab_groups .= "<td align='center'>" . ManageGroups::NbMembers($row['Group_id']) . "</td></tr>";
+            $tab_groups .= "<td align='center'>{$groupManager->countMembers($row['Group_id'])}</td></tr>";
         }
         
         // numéros des items
@@ -213,7 +220,7 @@ class GroupController extends ActionController {
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/groups/display_groups\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/Group/displayGroups\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_groups .= '<td colspan="3" style="padding-right:15px;" align="right">' . $previous . ' | ';
         $start = $CurPage - $paginator->getPageRange();
@@ -228,7 +235,7 @@ class GroupController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_groups .=
                 ($page != $CurPage)
-                ? '<a onclick="Clic(\'/groups/display_groups\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'/Group/displayGroups\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : "<b>$page</b> | "
             ;
         }
@@ -236,7 +243,7 @@ class GroupController extends ActionController {
         
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/groups/display_groups\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/Group/displayGroups\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_groups . $next . '</td></tr></table>';
     }
@@ -245,14 +252,16 @@ class GroupController extends ActionController {
      * @return string
      */
     protected function renderUsers() {
+        $session = $this->application->get('session');
+        $memberManager = $this->application->get('member_manager');
         $search = $_POST;
         if (isset($_POST['page'])) {
-            $search = Registry::get('search_users');
+            $search = $session->get('search_users');
         } else {
-            Registry::set('search_users', $_POST);
+            $session->set('search_users', $_POST);
         }
         $paginator = $this->application->get('paginator');
-        $paginator->setData(Member::ListMembers($search));
+        $paginator->setData($memberManager->getMembers($search));
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -262,7 +271,7 @@ class GroupController extends ActionController {
         $MaxPage = $paginator->getNumPage();
         $translate = $this->application->get('translate');
         
-        $list_groups = ManageGroups::display_groups();
+        $list_groups = $this->application->get('group_manager')->getGroups();
         $this->viewParameters['select_groups'] = '<option></options>';
         $nbGroups = count($list_groups);
         for ($i = 0; $i < $nbGroups; ++$i) {
@@ -285,10 +294,13 @@ class GroupController extends ActionController {
         foreach($datas as $key => $row) {
             $tab_users .= "<tr style='height:25px'>";
             foreach($row as $key => $value) {
+                if($key === 'id') {
+                    continue;
+                }
                 $tab_users .= 
-                    ($key !== 'iduser' && $key !== 'identite')
+                    ($key !== 'identity')
                     ? "<td>{$this->filterUsers($key, $value)}</td>"
-                    : "<td><a onclick=\"Clic('/messaging/compose_message', 'recipient_message=" . $row['iduser'] . "', 'milieu_milieu')\">" . utf8_encode($row['identite']) . "</a></td>"
+                    : "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message=" . $row['id'] . "', 'milieu_milieu')\">" . utf8_encode($row['identity']) . "</a></td>"
                 ;
             }
             $tab_users .= "</tr>";
@@ -307,7 +319,7 @@ class GroupController extends ActionController {
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/groups/display_adressbook\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/Group/displayAddressBook\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_users .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         
@@ -324,7 +336,7 @@ class GroupController extends ActionController {
         for ($page=$start; $page < $end + 1; ++$page) {
             $tab_users .= 
                 ($page != $CurPage)
-                ? '<a onclick="Clic(\'/groups/display_adressbook\', \'page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'/Group/displayAddressBook\', \'page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : '<b>' . $page . '</b> | '
             ;
         }
@@ -351,7 +363,10 @@ class GroupController extends ActionController {
                 return html_entity_decode($value);
             
             case 'group_type_description':
-                return html_entity_decode($value);
+                return utf8_encode(html_entity_decode($value));
+                
+            default:
+                return $value;
         }
     }
     
@@ -363,44 +378,40 @@ class GroupController extends ActionController {
     protected function filterUsers($key, $value) {
         switch(strtolower($key)) {
             case 'avatar':
-                $value = '<img width="50" alt="Avatar" src="' . $value . '">';
-                break;
+                return '<img width="50" alt="Avatar" src="' . $value . '">';
             
-            case 'identite':
-                $value = utf8_encode($value);
-                break;
+            case 'identity':
+                return utf8_encode($value);
             
-            case 'sexe':
-                $value = ($value==1?'M':'F');
-                break;
+            case 'gender':
+                return ($value === '2') ? 'M' : 'F';
             
-            case 'pays':
-                $member = Member::getInstance();
-                $lang = $member->langue;
+            case 'country':
+                $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
+                $lang = $member->getLanguage();
                 $res = $this->application->get('mysqli')->select("SELECT $lang FROM country WHERE code = '$value' LIMIT 1");
-                $value =
+                return
                     (count($res) > 0)
                     ? $res[0][$lang]
                     : $this->application->get('translate')->translate("unknown")
                 ;
-                break;
             
             case 'region':
-                $member = Member::getInstance();
-                $lang = $member->langue;
+                $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
+                $lang = $member->getLanguage();
                 $res = $this->application->get('mysqli')->select("SELECT Name FROM regions WHERE Region_id = $value LIMIT 1");
-                $value =
+                return
                     (count($res) > 0 && $value > 0)
                     ? utf8_encode($res[0]['Name'])
                     : $this->application->get('translate')->translate('unknown')
                 ;
-                break;
             
-            case 'derconnexion':
-                $value = substr($value, 0, strlen($value)-3);
-                break;
+            case 'last_connected_at':
+                return substr($value, 0, strlen($value)-3);
+            
+            default:
+                return $value;
         }
-        return $value;
     }
     
     protected function renderMapCoord() {
@@ -441,7 +452,8 @@ class GroupController extends ActionController {
                 ];
         */
         $render = '';
-        foreach(ManageGroups::display_groups_regions() as $key => $row) {
+        $regionalGroups = $this->application->get('group_manager')->getRegionalGroups();
+        foreach($regionalGroups as $row) {
             if(!empty($row['Longitude']) && !empty($row['Latitude'])) {
                 $render .= '["'.htmlentities($row['Group_name'], ENT_QUOTES).'", '.$row['Longitude'].", ".$row['Latitude'].", ". ManageGroups::NbMembers($row['Group_id'])."],\n";
             }

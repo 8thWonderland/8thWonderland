@@ -4,36 +4,33 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Mailer;
 
-use Wonderland\Library\Memory\Registry;
+use Wonderland\Library\Admin\Log;
 
 class AuthenticateController extends ActionController {
     public function connectAction() {
         $this->viewParameters['appli_status'] = 1;
-
-        if (($valid = $this->process($_POST['login'], $_POST['password']))) {
-            $auth = $this->application->get('auth');
+        $memberManager = $this->application->get('member_manager');
+        $translate = $this->application->get('translate');
+        
+        if (($member = $memberManager->getMemberByLoginAndPassword($_POST['login'], hash('sha512', $_POST['password'])))) {
             $db = $this->application->get('mysqli');
-            $member = new Member();
-            
-            // Enregistrement de la date et heure de la connexion
-            // ==================================================            
-            $db->query("UPDATE Utilisateurs SET DerConnexion = NOW() WHERE IDUser = {$auth->getIdentity()}");
-            if ($db->affected_rows == 0)    {
+            // Enregistrement de la date et heure de la connexion         
+            $db->query("UPDATE users SET last_connected_at = NOW() WHERE id = {$member->getId()}");
+            if ($db->affected_rows === 0)    {
                 // log d'échec de mise à jour
-                (new Log('db'))->log("Echec de l'update de la connexion ({$member->identite})", Log::ERR);
+                $logger = $this->application->get('logger');
+                $logger->setWriter('db');
+                $logger->log("Echec de l'update de la connexion ({$member->getIdentity()})", Log::ERR);
             }
             
-            // Mémorisation de l'ID du membre
-            // ==============================
-            Registry::set('__login__', $member->getIdentity()); // indipensable pour l'identification au forum
-            $translate = $this->application->get('translate');
+            $session = $this->application->get('session');
+            $session->set('__login__', $member->getIdentity()); // indipensable pour l'identification au forum
+            $session->set('__id__', $member->getId());
             $translate->setUserLang($member->getLanguage());
             $this->redirect('Intranet/index');
         } else {
-            $translate = $this->application->get('translate');
             $this->viewParameters['translate'] = $translate;
             $this->display(json_encode([
                 'status' => 0,
@@ -43,12 +40,13 @@ class AuthenticateController extends ActionController {
     }
 
     public function logoutAction() {
-        $this->application->get('auth')->logout();
+        $this->application->get('session')->delete('__id__');
     }
     
     public function subscribeAction() {
         $translate = $this->application->get('translate');
         $db = $this->application->get('mysqli');
+        $memberManager = $this->application->get('member_manager');
         $err_msg = '';
         
         if (
@@ -59,8 +57,8 @@ class AuthenticateController extends ActionController {
             $err_msg = $translate->translate('fields_empty');
         } else {
             // Controle de l'identite
-            if (Member::ctrlIdentity($_POST['identity'])) {
-                if ($db->count('Utilisateurs', " WHERE Identite='{$_POST['identity']}'") > 0) {
+            if ($memberManager->validateIdentity($_POST['identity'])) {
+                if ($db->count('users', " WHERE identity='{$_POST['identity']}'") > 0) {
                     $err_msg .= $translate->translate('identity_exist') . "<br/>";
                 }
             } else {
@@ -68,7 +66,7 @@ class AuthenticateController extends ActionController {
             }
             
             // Controle de l'existence du mail
-            if (!Member::ctrlMail($_POST["mail"])) {
+            if (!$memberManager->validateEmailAddress($_POST['mail'])) {
                 $err_msg .= $translate->translate('mail_invalid') . "<br/>";
             }
         }
@@ -84,7 +82,7 @@ class AuthenticateController extends ActionController {
             // Enregistrement des infos du membre
             // ==================================
             $db->query(
-                "INSERT INTO Utilisateurs (Login, Password, Identite, Sexe, Email, Langue, Region, Inscription) " .
+                "INSERT INTO users (login, password, identity, gender, email, language, region, created_at) " .
                 "VALUES ('" . $_POST['login'] . "', '" . hash('sha512', $_POST['password']) . "', '" . $_POST['identity'] . "', " . 
                 ($_POST['gender']-1) . ", '" . $_POST['mail'] . "', '" . $_POST['lang'] . "', -2, NOW())");
             if ($db->affected_rows === 0) {
@@ -230,45 +228,10 @@ class AuthenticateController extends ActionController {
      */
     protected function createPassword() {
 	$chars = '234567890abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	$i = 0;
 	$password = '';
-	while ($i <= 8) {
-		$password .= $chars{mt_rand(0,strlen($chars)-1)};
-		$i++;
+	for ($i = 0; $i <= 8; ++$i) {
+            $password .= $chars{mt_rand(0, strlen($chars) - 1)};
 	}
 	return $password;
-    }
-
-    /**
-     * @param string $login
-     * @param string $password
-     * @return boolean
-     */
-    protected function process($login, $password) {
-        $connected = $this->getAuthAdapter()->authenticate($login, hash('sha512', $password));
-
-        if ($connected !== true)
-        {
-            // log d'échec de connexion
-            $ip =
-                (isset($_SERVER['REMOTE_ADDR']))
-                ? $_SERVER['REMOTE_ADDR']
-                : 'inconnu'
-            ;
-            (new Log('db'))->log("Echec de la connexion ($ip)", Log::WARN);
-        }
-        return $connected;
-    }
-
-    /**
-     * @return \Wonderland\Library\Auth
-     */
-    protected function getAuthAdapter() {
-        return 
-            $this->application->get('auth')
-            ->setTableName('Utilisateurs')
-            ->setIdentityColumn('Login')
-            ->setCredentialColumn('Password')
-        ;
     }
 }

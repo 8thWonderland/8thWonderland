@@ -3,11 +3,11 @@
         "mysqli" : {
             "class" : "Wonderland\\Library\\Database\\Mysqli"
         },
+        "session" : {
+            "class" : "Wonderland\\Library\\Memory\\Session"
+        },
         "translate" : {
             "class" : "Wonderland\\Library\\Translate"
-        },
-        "auth" : {
-            "class" : "Wonderland\\Library\\Auth"
         },
         "paginator" : {
             "class" : "Wonderland\\Library\\Plugin\\Paginator"
