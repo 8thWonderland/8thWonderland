@@ -87,11 +87,13 @@ class AdminController extends ActionController {
     public function displayStatsCountryAction() {
         $db = $this->application->get('mysqli');
         $translate = $this->application->get('translate');
-        $desktop = Registry::get('desktop');
+        $session = $this->application->get('session');
+        $desktop = $session->get('desktop');
+        $memberManager = $this->application->get('member_manager');
         if (isset($desktop) && $desktop == 1)   {
-            $member = Member::getInstance();
-            $lang = $member->langue;
-            $regionUnknown = $db->select("SELECT $lang, Pays FROM Utilisateurs, country WHERE Region = -1 AND Pays=code");
+            $member = $memberManager->getMember($session->get('__id__'));
+            $lang = $member->getLanguage();
+            $regionUnknown = $db->select("SELECT $lang, country FROM users, country WHERE region = -1 AND country = code");
             $this->viewParameters['stats_regions_other'] = "<table><tr><td>" . $translate->translate('stats_region_unknown') . "</td></tr>";
             for ($i=0; $i<count($regionUnknown); $i++) {
                 $this->viewParameters['stats_regions_other'] .= "<tr><td>- " . $regionUnknown[$i][$lang] . " (" . $regionUnknown[$i]['Pays'] . ")</td></tr>";
@@ -99,14 +101,14 @@ class AdminController extends ActionController {
             $this->viewParameters['stats_regions_other'] .= "</table>";
             $this->viewParameters['desktop'] = 1;
         }
-        $regions_ok = $db->count('Utilisateurs', ' WHERE Region > 0');
+        $regions_ok = $db->count('users', ' WHERE region > 0');
         
-        $this->viewParameters['stats_members'] = Member::Nb_Members();
-        $this->viewParameters['stats_members_actives'] = Member::Nb_ActivesMembers();
+        $this->viewParameters['stats_members'] = $memberManager->countMembers();
+        $this->viewParameters['stats_members_actives'] = $memberManager->countActiveMembers();
         $this->viewParameters['translate'] = $translate;
         $this->viewParameters['stats_regions_ok'] = $regions_ok;
         
-        $this->render("informations/stats_country");
+        $this->render('informations/stats_country');
     }
     
     public function addCronAction() {

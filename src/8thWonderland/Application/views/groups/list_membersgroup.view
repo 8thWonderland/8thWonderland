@@ -1,8 +1,8 @@
 <!-- Module des membres du groupe -->
 <div id="list_groups" class="encadre-top">
     <table>
-        <caption><?php echo $this->viewsParameters['translate']->translate('group_listmembers'); ?></caption>
-        <tr><td align="center" style="padding:5px;"><?php echo $this->viewsParameters['list_membersgroup']; ?></td></tr>
+        <caption><?php echo $this->viewParameters['translate']->translate('group_listmembers'); ?></caption>
+        <tr><td align="center" style="padding:5px;"><?php echo $this->viewParameters['list_membersgroup']; ?></td></tr>
     </table>
     <div id="separator" style="height:10px; border-bottom: 2px dotted #dfdfdf; margin-bottom:30px;"></div>
 </div>

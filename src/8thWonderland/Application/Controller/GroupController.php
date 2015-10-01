@@ -61,14 +61,14 @@ class GroupController extends ActionController {
         $tabmini_usersgroup =   
             '<table class="pagination"><tr class="entete">' .
             '<td>' . $translate->translate('identity') . '</td>' .
-            '<td width="140px">' . $translate->translate("last_connexion") . '</td></tr>'
+            '<td width="140px">' . $translate->translate('last_connexion') . '</td></tr>'
         ;
 
         foreach($datas as $row) {
             $tabmini_usersgroup .=
                 "<tr style='height:25px'>".
-                "<td><a onclick=\"Clic('/messaging/compose_message', 'recipient_message={$row['IDUser']}', 'milieu_milieu')\">" . utf8_encode($row['Identite']) . "</a></td>" .
-                "<td>" . substr($row['DerConnexion'], 0, strlen($row['DerConnexion'])-3) . "</td></tr>"
+                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message={$row['id']}', 'milieu_milieu')\">" . utf8_encode($row['identity']) . "</a></td>" .
+                "<td>" . substr($row['last_connected_at'], 0, strlen($row['last_connected_at'])-3) . "</td></tr>"
             ;
         }
         $itemsPerPage = $paginator->getItemsPerPage();

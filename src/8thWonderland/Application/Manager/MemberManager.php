@@ -163,14 +163,14 @@ class MemberManager {
     /**
      * @return int
      */
-    public static function countMembers() {
+    public function countMembers() {
         return $this->application->get('mysqli')->count('users');
     }
     
     /**
      * @return int
      */
-    public static function countActiveMembers() {
+    public function countActiveMembers() {
         return $this->application->get('mysqli')->count('users', ' WHERE DATEDIFF(CURDATE(), last_connected_at) < 21');
     }
     
