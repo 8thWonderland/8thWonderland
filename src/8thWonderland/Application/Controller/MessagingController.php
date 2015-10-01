@@ -187,27 +187,27 @@ class MessagingController extends ActionController {
     
     public function displayContentMessageAction() {
         $db = $this->application->get('mysqli');
-        $msg = Message::display_contentmessage($_POST['id_msg'], $_POST['box']);
+        $message = $this->application->get('message_manager')->getMessage($_POST['id_msg'], $_POST['box']);
         $this->viewParameters['recipients_message'] = '';
         
         $dest =
             ($_POST['box'] === 0)
-            ? [$msg[0]['recipient']]
-            : explode(',', $msg[0]['recipients'])
+            ? [$message[0]['recipient']]
+            : explode(',', $message[0]['recipients'])
         ;
         $nbDest = count($dest);
         for ($i = 0; $i < $nbDest; ++$i) {
-            $this->viewParameters['recipients_message'] .= $db->select("SELECT Identite FROM Utilisateurs WHERE IDUser = {$dest[$i]} LIMIT 1")[0]['Identite'] . ', ';
+            $this->viewParameters['recipients_message'] .= $db->select("SELECT identity FROM users WHERE id = {$dest[$i]} LIMIT 1")[0]['identity'] . ', ';
         }
         
         $this->viewParameters['back'] =
             ($_POST['box'] === 1)
-            ? 'display_sentmessages'
-            : 'display_receivedmessages'
+            ? 'displaySentMessages'
+            : 'displayReceivedMessages'
         ;
-        $this->viewParameters['title_message'] = $msg[0]['title'];
-        $this->viewParameters['content_message'] = html_entity_decode($msg[0]['content']);
-        $this->viewParameters['date_msg'] = substr($msg[0]['date_msg'], 0, strlen($msg[0]['date_msg'])-3);
+        $this->viewParameters['title_message'] = $message[0]['title'];
+        $this->viewParameters['content_message'] = html_entity_decode($message[0]['content']);
+        $this->viewParameters['date_msg'] = substr($message[0]['date_msg'], 0, strlen($message[0]['date_msg'])-3);
         
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('communications/content_message');
@@ -263,13 +263,13 @@ class MessagingController extends ActionController {
         
         if (empty($_POST['title_message']) || empty($_POST['content_message'])) {
             $err_msg = $translate->translate('fields_empty');
-        } elseif (Message::create_message($_POST) !== 1) {
+        } elseif ($this->application->get('message_manager')->createMessage($_POST) !== 1) {
             $err_msg = $translate->translate('error');
 
-            $member = Member::getInstance();
+            $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
             $logger = $this->application->get('logger');
             $logger->setWriter('db');
-            $logger->log("Echec de l'envoi d'un message par l'utilisateur {$member->identite}", Log::ERR);
+            $logger->log("Echec de l'envoi d'un message par l'utilisateur {$member->getIdentity()}", Log::ERR);
         }
         
         if (empty($err_msg)) {
@@ -291,7 +291,7 @@ class MessagingController extends ActionController {
     
     public function deleteMessageAction() {
         $translate = $this->application->get('translate');
-        if (Message::delete_message($_POST['id_msg'], $_POST['box']) > 0) {
+        if ($this->application->get('message_manager')->deleteMessage($_POST['id_msg'], $_POST['box']) > 0) {
             $this->display(
                 '<div class="info" style="height:50px;"><table><tr>' .
                 '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
@@ -305,10 +305,10 @@ class MessagingController extends ActionController {
                 '<td><span style="font-size: 15px;">' . $translate->translate('delete_msg_nok') . '</span></td>' .
                 '</tr></table></div>'
             );
-            $member = Member::getInstance();
+            $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
             $logger = $this->application->get('logger');
             $logger->setWriter('db');
-            $logger->log("Echec de la suppression du message {$_POST['id_msg']} (box={$_POST['box']}) par l'utilisateur {$member->identite}", Log::ERR);
+            $logger->log("Echec de la suppression du message {$_POST['id_msg']} (box={$_POST['box']}) par l'utilisateur {$member->getIdentity()}", Log::ERR);
         }
     }
     

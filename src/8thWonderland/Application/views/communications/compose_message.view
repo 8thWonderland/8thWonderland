@@ -3,21 +3,21 @@
 <script type="text/javascript" src="public/js/plugins_editor/jquery.cleditor.advancedtable.js"></script>
 
 <div id="compose_message" class="encadre">
-    <form id="form_composemessage" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/messaging/valid_message", "form_composemessage", "result_composemessage"); return false;' method="post" action="">
+    <form id="form_composemessage" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/Messaging/validateMessage", "form_composemessage", "result_composemessage"); return false;' method="post" action="">
         <table style="width: 70%" align="center">
             <tr>
-                <td style="height:50px;"><?php echo $this->_view['translate']->msg('title_message'); ?></td>
+                <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate('title_message'); ?></td>
                 <td><input type="text" name="title_message" id="title_message" size="30" /></td>
             </tr>
             <tr>
-                <td style="height:50px;"><?php echo $this->_view['translate']->msg('content_message'); ?></td>
+                <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate('content_message'); ?></td>
                 <td><textarea name="content_message" id="content_message" rows=10 cols=100></textarea>
                 <script type="text/javascript">$("#content_message").cleditor({height:180, width:"100%", useCSS:true})[0].focus();</script></td>
             </tr>
             <tr align="center">
-                <td><input type="hidden" name="recipient_message" value="<?php echo $this->_view['recipient_message']; ?>"/></td>
+                <td><input type="hidden" name="recipient_message" value="<?php echo $this->viewParameters['recipient_message']; ?>"/></td>
                 <td style="height:50px;">
-                    <input type="submit" name="btn_composemessage" id="btn_composemessage" value="<?php echo $this->_view['translate']->msg('contact_send'); ?>" />
+                    <input type="submit" name="btn_composemessage" id="btn_composemessage" value="<?php echo $this->viewParameters['translate']->translate('contact_send'); ?>" />
                 </td>
             </tr>
             <tr>

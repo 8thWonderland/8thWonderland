@@ -29,9 +29,11 @@ class MessageManager {
         
         $db->query(
             'INSERT INTO messages_received (title, content, author, recipient) ' .
-            "VALUES ('$title', '$msg', $author, {$data['recipient_message']});" .
+            "VALUES ('$title', '$msg', $author, '{$data['recipient_message']}')"
+        );
+        $db->query(
             'INSERT INTO messages_sent (title, content, author, recipients) ' .
-            "VALUES ('$title', '$msg', $author, {$data['recipient_message']})"
+            "VALUES ('$title', '$msg', $author, '{$data['recipient_message']}')"
         );
         
         return $db->affected_rows;
@@ -56,9 +58,30 @@ class MessageManager {
         return $this->application->get('mysqli')->select(
             'SELECT id_sentmessage, title, recipients, date_msg ' .
             'FROM messages_sent ' .
-            "WHERE author = {$this->application->get('auth')->getIdentity()} " .
+            "WHERE author = {$this->application->get('session')->get('__id__')} " .
             'ORDER BY date_msg DESC'
         );
+    }
+    
+    /**
+     * @param int $id
+     * @param int $type
+     * @return \mysqli_result
+     */
+    public function getMessage($id, $type) {
+        $db = $this->application->get('mysqli');
+        return
+            ($type === 1)
+            ? $db->select(
+                'SELECT title, content, recipients, date_msg ' .
+                "FROM messages_sent WHERE id_sentmessage = $id " .
+                'ORDER BY date_msg DESC'
+            ) : $db->select(
+                'SELECT title, content, recipient, date_msg ' .
+                "FROM messages_received WHERE id_receivedmessage = $id " .
+                'ORDER BY date_msg DESC'
+            )
+        ;
     }
     
     /**
