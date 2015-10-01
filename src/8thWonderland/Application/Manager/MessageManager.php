@@ -25,7 +25,7 @@ class MessageManager {
         $title = htmlentities($data['title_message']);
         $msg   = htmlentities($data['content_message']);
         
-        $author = $this->application->get('auth')->getIdentity();
+        $author = $this->application->get('session')->get('__id__');
         
         $db->query(
             'INSERT INTO messages_received (title, content, author, recipient) ' .
@@ -42,9 +42,9 @@ class MessageManager {
      */
     public function getReceivedMessages() {
         return $this->application->get('mysqli')->select(
-            'SELECT id_receivedmessage, title, identite, date_msg ' .
-            'FROM messages_received, Utilisateurs ' .
-            "WHERE author=Utilisateurs.IDUser AND recipient = {$this->application->get('auth')->getIdentity()} " .
+            'SELECT id_receivedmessage, title, identity, date_msg ' .
+            'FROM messages_received, users ' .
+            "WHERE author=users.id AND recipient = {$this->application->get('session')->get('__id__')} " .
             'ORDER BY date_msg DESC'
         );
     }
