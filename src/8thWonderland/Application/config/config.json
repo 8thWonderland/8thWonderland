@@ -29,6 +29,9 @@
         },
         "message_manager" : {
             "class" : "Wonderland\\Application\\Manager\\MessageManager"
+        },
+        "message_repository" : {
+            "class" : "Wonderland\\Application\\Repository\\MessageRepository"
         }
     },
     "parameters" : {
