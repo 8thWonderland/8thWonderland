@@ -17,6 +17,15 @@ class Message {
     protected $recipient;
     
     /**
+     * @param int $id
+     * @return \Wonderland\Application\Model\Message
+     */
+    public function setId($id) {
+        $this->id = $id;
+        
+        return $this;
+    }
+    /**
      * @return int
      */
     public function getId() {
