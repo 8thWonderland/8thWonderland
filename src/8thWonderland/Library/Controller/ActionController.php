@@ -15,6 +15,8 @@ abstract class ActionController {
     protected $viewParameters = [];
     /** @var string **/
     protected $suffix = '.view';
+    /** @var \Wonderland\Application\Model\Member **/
+    protected $user;
     
     public function __construct(Application $application) {
         $this->application = $application;
@@ -31,6 +33,20 @@ abstract class ActionController {
             throw new \Exception("The view '$filename' not found !");
         }
         include $filename;
+    }
+    
+    /**
+     * @return \Wonderland\Application\Model\Member
+     */
+    public function getUser() {
+        if($this->user === null) {
+            $this->user = $this
+                ->application
+                ->get('member_manager')
+                ->getMember($this->application->get('session')->get('__id__'))
+            ;
+        }
+        return $this->user;
     }
     
     // Affichage d'un texte directement

@@ -9,13 +9,22 @@ class Message {
     protected $title;
     /** @var string **/
     protected $content;
-    /** @var string **/
+    /** @var \Wonderland\Application\Model\Member **/
     protected $author;
     /** @var \DateTime **/
     protected $createdAt;
-    /** @var array **/
-    protected $recipients;
+    /** @var \Wonderland\Application\Model\Member **/
+    protected $recipient;
     
+    /**
+     * @param int $id
+     * @return \Wonderland\Application\Model\Message
+     */
+    public function setId($id) {
+        $this->id = $id;
+        
+        return $this;
+    }
     /**
      * @return int
      */
@@ -58,17 +67,17 @@ class Message {
     }
     
     /**
-     * @param string $author
+     * @param \Wonderland\Application\Model\Member $author
      * @return \Wonderland\Application\Model\Message
      */
-    public function setAuthor($author) {
+    public function setAuthor(Member $author) {
         $this->author = $author;
         
         return $this;
     }
     
     /**
-     * @return string
+     * @return \Wonderland\Application\Model\Member
      */
     public function getAuthor() {
         return $this->author;
@@ -92,19 +101,19 @@ class Message {
     }
     
     /**
-     * @param array $recipients
+     * @param \Wonderland\Application\Model\Member $recipient
      * @return \Wonderland\Application\Model\Message
      */
-    public function setRecipients($recipients) {
-        $this->recipients = $recipients;
+    public function setRecipient(Member $recipient) {
+        $this->recipient = $recipient;
         
         return $this;
     }
     
     /**
-     * @return array
+     * @return \Wonderland\Application\Model\Member
      */
-    public function getRecipients() {
-        return $this->recipients;
+    public function getRecipient() {
+        return $this->recipient;
     }
 }
