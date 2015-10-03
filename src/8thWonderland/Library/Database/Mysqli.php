@@ -2,19 +2,11 @@
 
 namespace Wonderland\Library\Database;
 
-use Wonderland\Library\Application;
-
 class Mysqli extends \mysqli {
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
-    
     /**
-     * @param Application $application
      * @throws \Exception
      */
-    public function __construct(Application $application) {
-        $this->application = $application;
-        
+    public function __construct() {
         $container = $application->getContainer();
         parent::__construct(
             $container['database_host'],

@@ -2,11 +2,7 @@
 
 namespace Wonderland\Library\Plugin;
 
-use Wonderland\Library\Application;
-
 class Paginator {
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
     /** @var int **/
     protected $itemsPerPage = 10;
     /** @var int **/
@@ -15,13 +11,6 @@ class Paginator {
     protected $data;
     /** @var int **/
     protected $currentPage = 1;
-    
-    /**
-     * @param \Wonderland\Library\Application $application
-     */
-    public function __construct(Application $application) {
-        $this->application = $application;
-    }
     
     /**
      * @param array $data

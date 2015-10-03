@@ -2,27 +2,26 @@
 
 namespace Wonderland\Application\Manager;
 
-use Wonderland\Library\Application;
+use Wonderland\Application\Model\Member;
 
 use Wonderland\Library\Admin\Log;
 
 class OvhManager {
-    /** @var Application **/
-    protected $application;
+    /** @var \Wonderland\Library\Admin\Log **/
+    protected $logger;
     
     /**
-     * @param \Wonderland\Library\Application $application
+     * @param \Wonderland\Library\Admin\Log $logger
      */
-    public function __construct(Application $application) {
-        $this->application = $application;
+    public function __construct(Log $logger) {
+        $this->logger = $logger;
     }
     
     /**
+     * @param \Wonderland\Application\Model\Member $member
      * @return boolean
      */
-    protected function connect() {
-        $memberManager = $this->application->get('member_manager');
-        $member = $memberManager->getCurrentMember();
+    protected function connect(Member $member) {
         $memberLanguage = $member->getLanguage();
         $lang =
             (in_array($memberLanguage, $this->_langs))
@@ -44,54 +43,54 @@ class OvhManager {
     }
     
     /**
+     * @param \Wonderland\Application\Model\Member
      * @return array|null
      */
-    public function getDomainQuotas() {
-        if ($this->connect()) {
+    public function getDomainQuotas(Member $member) {
+        if ($this->connect($member)) {
             return $this->_soap->overquotaInfo($this->_ovh, $this->_domain);
         }
         return null;
     }
     
     /**
+     * @param \Wonderland\Application\Model\Member $member
      * @return boolean
      */
-    protected function disconnect() {
+    protected function disconnect(Member $member) {
         try {
             $this->_ovh = $this->_soap->logout($this->_ovh);
             return true;
         
         } catch (SoapFault $fault) {
             // Journal de log
-            $member = $this->application->get('member_manager')->getCurrentMember();
-            $logger = $this->application->get('logger');
-            $logger->setWriter('db');
-            $logger->log("Echec de la deconnexion SOAP par {$member->getIdentity()}<br/>" . $fault, Log::WARN);
+            $this->logger->setWriter('db');
+            $this->logger->log("Echec de la deconnexion SOAP par {$member->getIdentity()}<br/>" . $fault, Log::WARN);
             return false;
         }
     }
     
     /**
+     * @param \Wonderland\Application\Model\Member $member
      * @return array|null
      */
-    public function getCrons()
+    public function getCrons(Member $member)
     {
-        if ($this->connect()) {
+        if ($this->connect($member)) {
             return $this->_soap->crontabList($this->_ovh, $this->_domain);
         }
         return null;
     }
     
     /**
+     * @param \Wonderland\Application\Model\Member
      * @param array $params
      * @return int
      */
-    public function addCron($params) {
-        if ($this->connect()) {
+    public function addCron(Member $member, $params) {
+        if ($this->connect($member)) {
             $res = false;
-            $member = $this->application->get('member_manager')->getCurrentMember();
-            $logger = $this->application->get('logger');
-            $logger->setWriter('db');
+            $this->logger->setWriter('db');
             
             $desc = htmlentities($params['cron_desc']);
             // controle du script
@@ -126,13 +125,13 @@ class OvhManager {
             try {
                 $res = $this->_soap->crontabAdd($this->_ovh, $this->_domain, $path, 'php5_3', $weekday, $days, $hours, $desc, 'no');
                 // Journal de log
-                $logger->log("Ajout de la tache cron '$desc' ($res) par {$member->getIdentity()}", Log::INFO);
+                $this->logger->log("Ajout de la tache cron '$desc' ($res) par {$member->getIdentity()}", Log::INFO);
                 
             } catch (SoapFault $fault) {
                 // Journal de log
-                $logger->log("Echec de l'ajout de la tache cron '$desc' par {$member->getIdentity()}<br/>$fault", Log::ERR);
+                $this->logger->log("Echec de l'ajout de la tache cron '$desc' par {$member->getIdentity()}<br/>$fault", Log::ERR);
             }
-            $this->disconnect();
+            $this->disconnect($member);
             return $res;
         } else {
             return -2;
@@ -140,16 +139,15 @@ class OvhManager {
     }
     
     /**
+     * @param \Wonderland\Application\Model\Member $member
      * @param int $id
      * @param string $desc
      * @return boolean|null
      */
-    public function deleteCron($id, $desc) {
-        if ($this->connect()) {
+    public function deleteCron(Member $member, $id, $desc) {
+        if ($this->connect($member)) {
             $res = false;
-            $member = $this->application->get('member_manager')->getCurrentMember();
-            $logger = $this->application->get('logger');
-            $logger->setWriter('db');
+            $this->logger->setWriter('db');
             
             try {
                 $this->_soap->crontabDel($this->_ovh, $this->_domain, $id);
@@ -161,7 +159,7 @@ class OvhManager {
                 // Journal de log
                 $logger->log("Echec de la suppression de la tache cron '$desc' ($id) par {$member->getIdentity()}<br/>$fault", Log::ERR);
             }
-            $this->disconnect();
+            $this->disconnect($member);
             return $res;
         }
         return null;

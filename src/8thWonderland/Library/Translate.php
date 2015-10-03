@@ -3,8 +3,8 @@
 namespace Wonderland\Library;
 
 class Translate {
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
+    /** @var string **/
+    protected $rootPath;
     /** @var array **/
     protected $languages = [];
     /** @var string **/
@@ -14,10 +14,13 @@ class Translate {
     /** @var string **/
     protected $languagesPath = 'langs/';
 
-    public function __construct(Application $application) {
-        $this->application = $application;
+    /**
+     * @param string $rootPath
+     * @param array $options
+     */
+    public function __construct($rootPath, $options) {
+        $this->rootPath = $rootPath;
         
-        $options = $application->getConfig()->getOptions();
         if (!empty($options['language']['path']) && is_dir($options['language']['path'])) {
             $this->languagesPath = $options['language']['path'];
         }

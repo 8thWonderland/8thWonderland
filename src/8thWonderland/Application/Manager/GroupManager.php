@@ -2,24 +2,24 @@
 
 namespace Wonderland\Application\Manager;
 
-use Wonderland\Library\Application;
+use Wonderland\Library\Database\Mysqli;
 
 class GroupManager {
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
+    /** @var \Wonderland\Library\Database\Mysqli **/
+    protected $connection;
     
     /**
-     * @param \Wonderland\Library\Application $application
+     * @param \Wonderland\Library\Database\Mysqli $connection
      */
-    public function __construct(Application $application) {
-        $this->application = $application;
+    public function __construct(Mysqli $connection) {
+        $this->connection = $connection;
     }
     
     /**
      * @return array
      */
     public function getGroups() {
-        return $this->application->get('mysqli')->select(
+        return $this->connection->select(
             'SELECT Group_id, Group_name, Description, identity, Creation, Group_Type_Description ' .
             'FROM Groups, Group_Types, users ' .
             'WHERE ID_Contact = users.id AND Group_Type = Group_Type_Id ' .
@@ -31,7 +31,7 @@ class GroupManager {
      * @return array
      */
     public function getRegionalGroups() {
-        return $this->application->get('mysqli')->select(
+        return $this->connection->select(
             'SELECT Group_id, Group_name, Description, identity, Groups.Creation as Creation, Group_Type_Description, Longitude, Latitude ' .
             'FROM Groups, Group_Types, users, regions ' .
             'WHERE ID_Contact = users.id AND Group_Type = Group_Type_Id AND regions.Name = Groups.Group_name AND regions.Longitude IS NOT NULL AND regions.Latitude IS NOT NULL ' .
@@ -44,7 +44,7 @@ class GroupManager {
      * @return array
      */
     public function getMemberGroups($memberId) {
-        return $this->application->get('mysqli')->query(
+        return $this->connection->query(
             'SELECT DISTINCT Groups.Group_id, Group_name ' .
             'FROM Groups, Citizen_Groups ' .
             "WHERE Groups.Group_id=Citizen_Groups.Group_id AND (Citizen_Groups.Citizen_id = $memberId OR ID_Contact = $memberId) " .
@@ -60,7 +60,7 @@ class GroupManager {
         if (!isset($groupId)) {
             return 0;
         }
-        return $this->application->get('mysqli')->count('Citizen_Groups', " WHERE Group_id = $groupId");
+        return $this->connection->count('Citizen_Groups', " WHERE Group_id = $groupId");
     }
     
     /**
@@ -69,7 +69,7 @@ class GroupManager {
      * @return array
      */
     public function getGroupMembers($groupId) {
-        return $this->application->get('mysqli')->select(
+        return $this->connection->select(
             'SELECT id, identity, last_connected_at ' .
             'FROM Citizen_Groups, users ' .
             "WHERE Citizen_id = id AND Group_id = $groupId " .
@@ -85,8 +85,7 @@ class GroupManager {
      * @return int
      */
     public function updateContact($groupId, $contactId) {
-        $db = $this->application->get('mysqli');
-        $db->query("UPDATE Groups SET ID_Contact = $contactId WHERE Group_id = $groupId");
-        return $db->affected_rows;
+        $this->connection->query("UPDATE Groups SET ID_Contact = $contactId WHERE Group_id = $groupId");
+        return $this->connection->affected_rows;
     }
 }

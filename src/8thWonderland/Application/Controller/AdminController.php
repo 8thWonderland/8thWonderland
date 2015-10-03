@@ -4,12 +4,7 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Library\Memory\Registry;
-
-use Wonderland\Library\Plugin\Paginator;
-
 use Wonderland\Application\Model\Member;
-use Wonderland\Application\Model\Ovh;
 
 /**
  * Controleur des administreteurs (développeurs)
@@ -19,28 +14,24 @@ use Wonderland\Application\Model\Ovh;
  **/
 class AdminController extends ActionController {   
     
-    public function displayConsoleAction()
-    {
+    public function displayConsoleAction() {
         // affichage du profil
-        $member = Member::getInstance();
-        $this->viewParameters['identity'] = $member->identite;
-        $this->viewParameters['avatar'] = $member->avatar;
+        $member = $this->getUser();
+        $this->viewParameters['identity'] = $member->getIdentity();
+        $this->viewParameters['avatar'] = $member->getAvatar();
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('admin/console');
     }
     
-    
     public function quitConsoleAction() {
-        Registry::delete("desktop");
+        $this->application->get('session')->delete("desktop");
         
         // Journal de log
-        $member = Member::getInstance();
-        $db_log = new Log("db");
-        $db_log->log($member->identite . " quitte la console d'administration.", Log::INFO);
+        $logger = new Log("db");
+        $logger->log("{$this->getUser()->getIdentity()} quitte la console d'administration.", Log::INFO);
         
         $this->redirect('intranet/index');
     }
-    
     
     public function displayLogsAction() {
         $this->viewParameters['list_logs'] = $this->renderLogs();
@@ -64,7 +55,7 @@ class AdminController extends ActionController {
     
     public function displayServerAction() {
         $translate = $this->application->get('translate');
-        $cronsList = (new Ovh())->list_cron();
+        $cronsList = $this->application->get('ovh_manager')->getCrons($this->getUser());
         $this->viewParameters['crons'] = 
             (isset($cronsList))
             ? $this->renderCrons($cronsList)
@@ -87,15 +78,14 @@ class AdminController extends ActionController {
     public function displayStatsCountryAction() {
         $db = $this->application->get('mysqli');
         $translate = $this->application->get('translate');
-        $session = $this->application->get('session');
-        $desktop = $session->get('desktop');
-        $memberManager = $this->application->get('member_manager');
+        $desktop = $this->application->get('session')->get('desktop');
+        
         if (isset($desktop) && $desktop == 1)   {
-            $member = $memberManager->getMember($session->get('__id__'));
-            $lang = $member->getLanguage();
+            $lang = $this->getUser()->getLanguage();
             $regionUnknown = $db->select("SELECT $lang, country FROM users, country WHERE region = -1 AND country = code");
             $this->viewParameters['stats_regions_other'] = "<table><tr><td>" . $translate->translate('stats_region_unknown') . "</td></tr>";
-            for ($i=0; $i<count($regionUnknown); $i++) {
+            $nbRegions = count($regionUnknown);
+            for ($i = 0; $i < $nbRegions; ++$i) {
                 $this->viewParameters['stats_regions_other'] .= "<tr><td>- " . $regionUnknown[$i][$lang] . " (" . $regionUnknown[$i]['Pays'] . ")</td></tr>";
             }
             $this->viewParameters['stats_regions_other'] .= "</table>";
@@ -103,6 +93,7 @@ class AdminController extends ActionController {
         }
         $regions_ok = $db->count('users', ' WHERE region > 0');
         
+        $memberManager = $this->application->get('member_manager');
         $this->viewParameters['stats_members'] = $memberManager->countMembers();
         $this->viewParameters['stats_members_actives'] = $memberManager->countActiveMembers();
         $this->viewParameters['translate'] = $translate;
@@ -119,7 +110,7 @@ class AdminController extends ActionController {
         {
             $err_msg = $translate->translate('fields_empty');
         } else {
-            $id_cron = (new myovh())->addCron($_POST);
+            $id_cron = $this->application->get('ovh_manager')->addCron($this->getUser(), $_POST);
             switch ($id_cron) {
                 case -1:
                     $err_msg = $translate->translate('file_notfound');
@@ -146,7 +137,7 @@ class AdminController extends ActionController {
     
     public function deleteCronAction() {
         $translate = $this->application->get('translate');
-        $res = (new myovh())->deleteCron($_POST['cronid'], $_POST['crondesc']);
+        $res = $this->application->get('ovh_manager')->deleteCron($_POST['cronid'], $_POST['crondesc']);
         if (isset($res)) {
             if ($res == false) {
                 $this->display('<div class="error" style="height:25px;"><table><tr>' .
@@ -167,16 +158,17 @@ class AdminController extends ActionController {
     }
     
     public function editCronAction() {
-        $this->viewParameters['translate'] = Registry::get("translate");
+        $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('admin/dev_inprogress');
     }
     
     /**
-     * @param string $cron
+     * @param string $crons
      * @return string
      */
-    protected function renderCrons($cron) {
-        $paginator = new Paginator($cron);
+    protected function renderCrons($crons) {
+        $paginator = $this->application->get('paginator');
+        $paginator->setData($crons);
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -261,9 +253,9 @@ class AdminController extends ActionController {
     /**
      * @return string
      */
-    protected function renderLogs()
-    {
-        $paginator = new Paginator(Log::display_dblogs());
+    protected function renderLogs() {
+        $paginator = $this->application->get('paginator');
+        $paginator->setData($this->application->get('logger'));
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -341,7 +333,8 @@ class AdminController extends ActionController {
      * @return string
      */
     protected function renderUsers() {
-        $paginator = new Paginator(members::ListMembers());
+        $paginator = $this->application->get('paginator');
+        $paginator->setData($this->application->get('member_manager')->getMembers());
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
@@ -424,8 +417,7 @@ class AdminController extends ActionController {
     
     // Affichage du filtre de données si il existe
     // ===========================================
-    protected function filterLogs($key, $value)
-    {
+    protected function filterLogs($key, $value) {
         if(strtolower($key) === 'label_key') {
             $value = $this->application->get('translate')->translate($value);
         }
@@ -435,8 +427,7 @@ class AdminController extends ActionController {
     
     // Affichage du filtre de données si il existe
     // ===========================================
-    protected function filterUsers($key, $value)
-    {
+    protected function filterUsers($key, $value) {
         $key = strtolower($key);
         switch($key) {
             case 'avatar':

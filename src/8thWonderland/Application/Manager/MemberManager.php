@@ -4,17 +4,17 @@ namespace Wonderland\Application\Manager;
 
 use Wonderland\Application\Model\Member;
 
-use Wonderland\Library\Application;
+use Wonderland\Library\Database\Mysqli;
 
 class MemberManager {
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
+    /** @var \Wonderland\Library\Database\Mysqli **/
+    protected $connection;
     
     /**
-     * @param Application $application
+     * @param \Wonderland\Library\Database\Mysqli
      */
-    public function __construct(Application $application) {
-        $this->application = $application;
+    public function __construct(Mysqli $connection) {
+        $this->connection = $connection;
     }
     
     /**
@@ -22,7 +22,7 @@ class MemberManager {
      * @return \Wonderland\Application\Model\Member
      */
     public function getMember($id) {
-        $data = $this->application->get('mysqli')->select(
+        $data = $this->connection->select(
             'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
             "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE id = $id"
         );
@@ -34,7 +34,7 @@ class MemberManager {
      * @return \Wonderland\Application\Model\Member
      */
     public function getMemberByIdentity($identity) {
-        $data = $this->application->get('mysqli')->select(
+        $data = $this->connection->select(
             'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
             "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE identity = '$identity'"
         );
@@ -47,7 +47,7 @@ class MemberManager {
      * @return \Wonderland\Application\Model\Member
      */
     public function getMemberByLoginAndPassword($login, $password) {
-        $data = $this->application->get('mysqli')->select(
+        $data = $this->connection->select(
             'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
             "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE login = '$login' AND password = '$password'"
         );
@@ -82,7 +82,7 @@ class MemberManager {
     }
     
     public function createMember(Member $member) {
-        $this->application->get('mysqli')->query(
+        $this->connection->query(
             'INSERT INTO users(login, password, salt, identity, gender, ' .
             'email, avatar, language, country, region, last_connected_at, created_at, is_enabled, is_banned, theme) ' .
             "VALUES('{$member->getLogin()}', '{$member->getPassword()}', '{$member->getSalt()}', " .
@@ -95,7 +95,7 @@ class MemberManager {
     }
     
     public function updateMember(Member $member) {
-        $this->application->get('mysqli')->query(
+        $this->connection->query(
             "UPDATE users SET login = '{$member->getLogin()}', password = '{$member->getPassword()}', " .
             "salt = '{$member->getSalt()}', identity = '{$member->getIdentity()}', " .
             "gender = '{$member->getGender()}', email = '{$member->getEmail()}', " .
@@ -145,30 +145,27 @@ class MemberManager {
     }
     
     /**
-     * @param int $userId
+     * @param \Wonderland\Application\Model\Member $member
      * @param int $groupId
      * @return int
      */
-    public function isMemberInGroup($userId, $groupId) {
+    public function isMemberInGroup(Member $member, $groupId) {
         return $this
-            ->application
-            ->get('mysqli')
-            ->count('Citizen_Groups', sprintf('WHERE Citizen_id=%d AND Group_id=%d', $userId, $groupId))
+            ->connection
+            ->count('Citizen_Groups', "WHERE Citizen_id = {$member->getId()} AND Group_id = $groupId")
         ;
     }
     
     /**
+     * @param \Wonderland\Application\Model\Member $member
      * @param int $groupId
      * @return int
      */
-    public function isContact($groupId = null) {
-        $db = $this->application->get('mysqli');
-        $userId = $this->application->get('session')->get('__id__');
-        
+    public function isContact(Member $member, $groupId = null) {
         return
             (!isset($groupId))
-            ? $db->count('Groups', " WHERE ID_Contact = $userId")
-            : $db->count('Groups', " WHERE ID_Contact = $userId AND Group_id = $groupId")
+            ? $this->connection->count('Groups', " WHERE ID_Contact = {$member->getId()}")
+            : $this->connection->count('Groups', " WHERE ID_Contact = {$member->getId()} AND Group_id = $groupId")
         ;
     }
 
@@ -176,14 +173,14 @@ class MemberManager {
      * @return int
      */
     public function countMembers() {
-        return $this->application->get('mysqli')->count('users');
+        return $this->connection->count('users');
     }
     
     /**
      * @return int
      */
     public function countActiveMembers() {
-        return $this->application->get('mysqli')->count('users', ' WHERE DATEDIFF(CURDATE(), last_connected_at) < 21');
+        return $this->connection->count('users', ' WHERE DATEDIFF(CURDATE(), last_connected_at) < 21');
     }
     
     /**
@@ -194,11 +191,10 @@ class MemberManager {
      * @return array
      */
     public function getCountries($language) {
-        $db = $this->application->get('mysqli');
-        if ($db->columnExists($language, 'country') === 0) {
+        if ($this->connection->columnExists($language, 'country') === 0) {
             $language = 'en';
         }
-        return $db->select("SELECT Code, '$language' FROM country");
+        return $this->connection->select("SELECT Code, '$language' FROM country");
     }
     
     /**
@@ -213,7 +209,7 @@ class MemberManager {
             $search = " WHERE Citizen_id = id AND Group_id={$params['sel_groups']} ";
         }
         
-        return $this->application->get('mysqli')->select(
+        return $this->connection->select(
             'SELECT id, avatar, identity, gender, email, language, country, region, last_connected_at, created_at ' .
             "FROM $table $search ORDER BY identity ASC"
         );
@@ -223,7 +219,7 @@ class MemberManager {
      * @return array
      */
     public function getContactGroups() {
-        return $this->application->get('mysqli')->select(
+        return $this->connection->select(
             'SELECT id, Group_name, identity ' .
             'FROM users, Groups WHERE id = ID_Contact ' .
             'ORDER BY Group_name ASC'

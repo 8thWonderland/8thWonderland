@@ -2,20 +2,30 @@
 
 namespace Wonderland\Application\Manager;
 
-use Wonderland\Library\Application;
+use Wonderland\Library\Database\Mysqli;
+use Wonderland\Application\Manager\MemberManager;
+use Wonderland\Application\Repository\MessageRepository;
 
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Message;
 
 class MessageManager {
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
+    /** @var \Wonderland\Library\Database\Mysqli **/
+    protected $connection;
+    /** @var \Wonderland\Application\Manager\MemberManager **/
+    protected $memberManager;
+    /** @var \Wonderland\Application\Repository\MessageRepository **/
+    protected $repository;
     
     /**
-     * @param \Wonderland\Library\Application $application
+     * @param \Wonderland\Library\Database\Mysqli $connection
+     * @param \Wonderland\Application\Manager\MemberManager $memberManager
+     * @param \Wonderland\Application\Repository\MessageRepository $repository
      */
-    public function __construct(Application $application) {
-        $this->application = $application;
+    public function __construct(Mysqli $connection, MemberManager $memberManager, MessageRepository $repository) {
+        $this->connection = $connection;
+        $this->memberManager = $memberManager;
+        $this->repository = $repository;
     }
     
     /**
@@ -26,11 +36,7 @@ class MessageManager {
      * @return \Wonderland\Application\Model\Message
      */
     public function createMessage($title, $content, Member $author, $recipientIdentity) {
-        $recipient = $this
-            ->application
-            ->get('member_manager')
-            ->getMemberByIdentity($recipientIdentity)
-        ;
+        $recipient = $this->memberManager->getMemberByIdentity($recipientIdentity);
         $message =
             (new Message())
             ->setTitle($title)
@@ -39,7 +45,7 @@ class MessageManager {
             ->setRecipient($recipient)
             ->setCreatedAt(new \DateTime())
         ;
-        $this->application->get('message_repository')->create($message);
+        $this->repository->create($message);
         return $message;
     }
     
@@ -48,12 +54,12 @@ class MessageManager {
      * @return array
      */
     public function getReceivedMessages(Member $recipient) {
-        $statement = $this->application->get('message_repository')->findByRecipient($recipient);
+        $statement = $this->repository->findByRecipient($recipient);
         
         $messages = [];
         
         while($data = $statement->fetch_assoc()) {
-            $author = $this->application->get('member_manager')->getMember($data['author_id']);
+            $author = $this->memberManager->getMember($data['author_id']);
             $messages[] =
                 (new Message())
                 ->setId($data['id'])
@@ -72,12 +78,12 @@ class MessageManager {
      * @return array
      */
     public function getSentMessages(Member $author) {
-        $statement = $this->application->get('message_repository')->findByAuthor($author);
+        $statement = $this->repository->findByAuthor($author);
         
         $messages = [];
         
         while($data = $statement->fetch_assoc()) {
-            $recipient = $this->application->get('member_manager')->getMember($data['recipient_id']);
+            $recipient = $this->memberManager->getMember($data['recipient_id']);
             $messages[] =
                 (new Message())
                 ->setId($data['id'])
@@ -96,12 +102,10 @@ class MessageManager {
      * @return \Wonderland\Application\Model\Message
      */
     public function getMessage($id) {
-        $data = $this->application->get('message_repository')->find($id);
+        $data = $this->repository->find($id);
         
-        $memberManager = $this->application->get('member_manager');
-        
-        $author = $memberManager->getMember($data['author_id']);
-        $recipient = $memberManager->getMember($data['recipient_id']);
+        $author = $this->memberManager->getMember($data['author_id']);
+        $recipient = $this->memberManager->getMember($data['recipient_id']);
         
         return
             (new Message())
@@ -120,6 +124,6 @@ class MessageManager {
      * @return \mysqli_result
      */
     public function deleteMessage($id, $box) {
-        return $this->application->get('message_repository')->delete($id, $box);
+        return $this->repository->delete($id, $box);
     }
 }

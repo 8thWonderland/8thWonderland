@@ -4,8 +4,6 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Application\Model\Member;
-
 use Wonderland\Library\Admin\Log;
 
 class MotionController extends ActionController {
@@ -24,7 +22,7 @@ class MotionController extends ActionController {
     }
     
     public function displayMotionsInProgressAction() {
-        $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions();
+        $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions($this->getUser());
         $this->viewParameters['translate'] = $this->application->get('translate');
         $this->render('actions/motions_inprogress');
     }
@@ -178,7 +176,6 @@ class MotionController extends ActionController {
         $logger = $this->application->get('logger');
         $logger->setWriter('db');
         $motionManager = $this->application->get('motion_manager');
-        $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
         $motionThemes = $motionManager->getMotionThemes();
         $this->viewParameters['translate'] = $translate;
         $this->viewParameters['select_theme'] = '<option></options>';
@@ -190,7 +187,7 @@ class MotionController extends ActionController {
             !empty($_POST['theme']) && !empty($_POST['title_motion']) &&
             !empty($_POST['description_motion'])&& !empty($_POST['means_motion'])
         ) {
-            if ($motionManager->validateMotion($_POST['title_motion'], $_POST['theme'], $_POST['description_motion'], $_POST['means_motion'])) {
+            if ($motionManager->validateMotion($this->getUser(), $_POST['title_motion'], $_POST['theme'], $_POST['description_motion'], $_POST['means_motion'])) {
                 $this->viewParameters['msg'] =
                     '<div class="info" style="height:50px;"><table><tr>' .
                     '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
@@ -205,7 +202,7 @@ class MotionController extends ActionController {
                     '</tr></table></div>'
                 ;
                 // Journal de log
-                $logger->log("Echec du dépot de motion par l'utilisateur {$member->getIdentity()}", Log::WARN);
+                $logger->log("Echec du dépot de motion par l'utilisateur {$this->getUser()->getIdentity()}", Log::WARN);
             }
         } else {
             $this->viewParameters['msg'] = 
@@ -214,7 +211,7 @@ class MotionController extends ActionController {
                 '<td><span style="font-size: 15px;">' . $translate->translate('fields_empty') . '</span></td>' .
                 '</tr></table></div>'
             ;
-            $logger->log("Echec du dépot de motion par l'utilisateur {$member->getIdentity()} (champs vides)", Log::WARN);
+            $logger->log("Echec du dépot de motion par l'utilisateur {$this->getUser()->getIdentity()} (champs vides)", Log::WARN);
         }
         $this->render('actions/create_motion');
     }
@@ -223,7 +220,7 @@ class MotionController extends ActionController {
         $translate = $this->application->get('translate');
         $this->viewParameters['translate'] = $translate;
         if (!empty($_POST['motion_id']) && !empty($_POST['vote'])) {
-            if ($this->application->get('motion_manager')->voteMotion($_POST['motion_id'], $_POST['vote']) === 1) {
+            if ($this->application->get('motion_manager')->voteMotion($this->getUser(), $_POST['motion_id'], $_POST['vote']) === 1) {
                 $this->display(
                     '<div class="info" style="height:50px;"><table><tr>' .
                     '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
@@ -239,10 +236,9 @@ class MotionController extends ActionController {
                     '</tr></table></div>'
                 );
                 // Journal de log
-                $member = $this->application->get('motion_manager')->getMember($this->applicaiton->get('session')->get('__id__'));
                 $logger = $this->application->get('logger');
                 $logger->setWriter('db');
-                $logger->log("Echec du vote de motion par l'utilisateur {$member->getIdentity()}", Log::WARN);
+                $logger->log("Echec du vote de motion par l'utilisateur {$this->getUser()->getIdentity()}", Log::WARN);
             }
         }
     }
