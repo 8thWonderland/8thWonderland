@@ -13,10 +13,10 @@ class MessageRepository extends AbstractRepository {
      */
     public function create(Message $message) {
         return $this->connection->query(
-            'INSERT INTO messages (title, content, author, recipient, created_at) ' .
-            "VALUES ('{$message->getTitle()}}', '{$message->getContent()}', " .
-            "'{$message->getAuthor()->getId()}, {$message->getRecipient()->getId()}), " .
-            "'{$message->getCreatedAt()->format('c')}'"
+            'INSERT INTO messages (title, content, author_id, recipient_id, created_at) ' .
+            "VALUES ('{$message->getTitle()}', '{$message->getContent()}', " .
+            "{$message->getAuthor()->getId()}, {$message->getRecipient()->getId()}, " .
+            "'{$message->getCreatedAt()->format('c')}')"
         );
     }
     
@@ -27,7 +27,7 @@ class MessageRepository extends AbstractRepository {
     public function find($id) {
         return $this->connection->query(
             "SELECT * FROM messages WHERE id = $id"
-        );
+        )->fetch_assoc();
     }
     
     /**
@@ -36,7 +36,7 @@ class MessageRepository extends AbstractRepository {
      */
     public function findByRecipient(Member $recipient) {
         return $this->connection->query(
-            "SELECT * FROM messages WHERE recipient_id = {$recipient->getId()}"
+            "SELECT * FROM messages WHERE recipient_id = {$recipient->getId()} AND deleted_by_recipient = 0"
         );
     }
     
@@ -46,17 +46,23 @@ class MessageRepository extends AbstractRepository {
      */
     public function findByAuthor(Member $author) {
         return $this->connection->query(
-            "SELECT * FROM messages WHERE author_id = {$author->getId()}"
+            "SELECT * FROM messages WHERE author_id = {$author->getId()} AND deleted_by_author = 0"
         );
     }
     
     /**
      * @param int $id
+     * @param int $box
      * @return \mysqli_result
      */
-    public function delete($id) {
+    public function delete($id, $box) {
+        $deleteField =
+            ($box === '1')
+            ? 'deleted_by_author'
+            : 'deleted_by_recipient'
+        ;
         return $this->connection->query(
-            "DELETE FROM messages WHERE id = $id"
+            "UPDATE messages SET $deleteField = 1 WHERE id = $id"
         );
     }
 }

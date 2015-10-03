@@ -22,10 +22,15 @@ class MessageManager {
      * @param string $title
      * @param string $content
      * @param \Wonderland\Application\Model\Member $author
-     * @param \Wonderland\Application\Model\Member $recipient
+     * @param string $recipientIdentity
      * @return \Wonderland\Application\Model\Message
      */
-    public function createMessage($title, $content, Member $author, Member $recipient) {
+    public function createMessage($title, $content, Member $author, $recipientIdentity) {
+        $recipient = $this
+            ->application
+            ->get('member_manager')
+            ->getMemberByIdentity($recipientIdentity)
+        ;
         $message =
             (new Message())
             ->setTitle($title)
@@ -47,7 +52,7 @@ class MessageManager {
         
         $messages = [];
         
-        while($data = $statement->fetch()) {
+        while($data = $statement->fetch_assoc()) {
             $author = $this->application->get('member_manager')->getMember($data['author_id']);
             $messages[] =
                 (new Message())
@@ -71,7 +76,7 @@ class MessageManager {
         
         $messages = [];
         
-        while($data = $statement->fetch()) {
+        while($data = $statement->fetch_assoc()) {
             $recipient = $this->application->get('member_manager')->getMember($data['recipient_id']);
             $messages[] =
                 (new Message())
@@ -96,7 +101,7 @@ class MessageManager {
         $memberManager = $this->application->get('member_manager');
         
         $author = $memberManager->getMember($data['author_id']);
-        $recipient = $memberManager->getMember($data['message_id']);
+        $recipient = $memberManager->getMember($data['recipient_id']);
         
         return
             (new Message())
@@ -111,9 +116,10 @@ class MessageManager {
     
     /**
      * @param int $id
+     * @param int $box
      * @return \mysqli_result
      */
-    public function deleteMessage($id) {
-        return $this->application->get('message_repository')->delete($id);
+    public function deleteMessage($id, $box) {
+        return $this->application->get('message_repository')->delete($id, $box);
     }
 }

@@ -30,6 +30,18 @@ class MemberManager {
     }
     
     /**
+     * @param string $identity
+     * @return \Wonderland\Application\Model\Member
+     */
+    public function getMemberByIdentity($identity) {
+        $data = $this->application->get('mysqli')->select(
+            'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
+            "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE identity = '$identity'"
+        );
+        return $this->formatMemberData($data[0]);
+    }
+    
+    /**
      * @param string $login
      * @param string $password
      * @return \Wonderland\Application\Model\Member
