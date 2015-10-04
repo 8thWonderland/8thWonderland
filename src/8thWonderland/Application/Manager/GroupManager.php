@@ -20,10 +20,11 @@ class GroupManager {
      */
     public function getGroups() {
         return $this->connection->select(
-            'SELECT Group_id, Group_name, Description, identity, Creation, Group_Type_Description ' .
-            'FROM Groups, Group_Types, users ' .
-            'WHERE ID_Contact = users.id AND Group_Type = Group_Type_Id ' .
-            'ORDER BY Group_name ASC'
+            'SELECT g.Group_id, g.Group_name, g.Description, u.identity, g.Creation, gt.Group_Type_Description ' .
+            'FROM Groups g ' .
+            'INNER JOIN Group_Types gt ON gt.Group_Type_Id = g.Group_Type ' .
+            'INNER JOIN users u ON u.id = g.ID_Contact ' .
+            'ORDER BY g.Group_name ASC'
         );
     }
     
@@ -32,10 +33,13 @@ class GroupManager {
      */
     public function getRegionalGroups() {
         return $this->connection->select(
-            'SELECT Group_id, Group_name, Description, identity, Groups.Creation as Creation, Group_Type_Description, Longitude, Latitude ' .
-            'FROM Groups, Group_Types, users, regions ' .
-            'WHERE ID_Contact = users.id AND Group_Type = Group_Type_Id AND regions.Name = Groups.Group_name AND regions.Longitude IS NOT NULL AND regions.Latitude IS NOT NULL ' .
-            'ORDER BY Group_name ASC'
+            'SELECT g.Group_id, g.Group_name, g.Description, u.identity, g.Creation, gt.Group_Type_Description, r.Longitude, r.Latitude ' .
+            'FROM Groups g ' .
+            'INNER JOIN Group_Types gt ON gt.Group_Type_Id = g.Group_Type ' .
+            'INNER JOIN users u ON u.id = g.ID_Contact ' .
+            'INNER JOIN regions r ON r.Name = g.Group_name ' .
+            'WHERE r.Longitude IS NOT NULL AND r.Latitude IS NOT NULL ' .
+            'ORDER BY g.Group_name ASC'
         );
     }
     
@@ -45,10 +49,11 @@ class GroupManager {
      */
     public function getMemberGroups($memberId) {
         return $this->connection->query(
-            'SELECT DISTINCT Groups.Group_id, Group_name ' .
-            'FROM Groups, Citizen_Groups ' .
-            "WHERE Groups.Group_id=Citizen_Groups.Group_id AND (Citizen_Groups.Citizen_id = $memberId OR ID_Contact = $memberId) " .
-            'ORDER BY Group_name ASC'
+            'SELECT DISTINCT g.Group_id, g.Group_name ' .
+            'FROM Groups g ' .
+            'INNER JOIN Citizen_Groups cg ON g.Group_id = cg.Group_id ' .
+            "WHERE cg.Citizen_id = $memberId OR g.ID_Contact = $memberId " .
+            'ORDER BY g.Group_name ASC'
         );
     }
     
@@ -70,10 +75,11 @@ class GroupManager {
      */
     public function getGroupMembers($groupId) {
         return $this->connection->select(
-            'SELECT id, identity, last_connected_at ' .
-            'FROM Citizen_Groups, users ' .
-            "WHERE Citizen_id = id AND Group_id = $groupId " .
-            'ORDER BY identity ASC'
+            'SELECT u.id, u.identity, u.last_connected_at ' .
+            'FROM Citizen_Groups cg ' .
+            'INNER JOIN users u ON cg.Citizen_id = u.id ' .
+            "WHERE cg.Group_id = $groupId " .
+            'ORDER BY u.identity ASC'
         );
     }
 
