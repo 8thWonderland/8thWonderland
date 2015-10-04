@@ -269,6 +269,26 @@ class MemberManager {
         );
     }
     
+    public function findByGroup($groupId) {
+        $statement = $this->connection->query(
+            'SELECT u.id, u.identity, u.last_connected_at ' .
+            'FROM Citizen_Groups cg ' .
+            'INNER JOIN users u ON cg.Citizen_id = u.id ' .
+            "WHERE cg.Group_id = $groupId " .
+            'ORDER BY u.identity ASC'
+        );
+        $members = [];
+        while($data = $statement->fetch_assoc()) {
+            $members[] =
+                (new Member())
+                ->setId($data['id'])
+                ->setIdentity($data['identity'])
+                ->setLastConnectedAt(new \DateTime($data['last_connected_at']))
+            ;
+        }
+        return $members;
+    }
+    
     /**
      * @return array
      */
