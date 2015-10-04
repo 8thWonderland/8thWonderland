@@ -19,6 +19,16 @@ class Group {
     protected $updatedAt;
     
     /**
+     * @param int $id
+     * @return \Wonderland\Application\Model\Group
+     */
+    public function setId($id) {
+        $this->id = $id;
+        
+        return $this;
+    }
+    
+    /**
      * @return int
      */
     public function getId() {
