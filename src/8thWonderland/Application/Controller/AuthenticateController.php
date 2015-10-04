@@ -12,10 +12,10 @@ class AuthenticateController extends ActionController {
     public function connectAction() {
         $this->viewParameters['appli_status'] = 1;
         $memberManager = $this->application->get('member_manager');
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         
         if (($member = $memberManager->getMemberByLoginAndPassword($_POST['login'], hash('sha512', $_POST['password'])))) {
-            $db = $this->application->get('mysqli');
+            $db = $this->application->get('database_connection');
             // Enregistrement de la date et heure de la connexion         
             $db->query("UPDATE users SET last_connected_at = NOW() WHERE id = {$member->getId()}");
             if ($db->affected_rows === 0)    {
@@ -44,8 +44,8 @@ class AuthenticateController extends ActionController {
     }
     
     public function subscribeAction() {
-        $translate = $this->application->get('translate');
-        $db = $this->application->get('mysqli');
+        $translate = $this->application->get('translator');
+        $db = $this->application->get('database_connection');
         $memberManager = $this->application->get('member_manager');
         $err_msg = '';
         
@@ -101,17 +101,17 @@ class AuthenticateController extends ActionController {
     }
     
     public function displayForgetPasswordAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('members/forget_password');
     }
     
     public function forgetPasswordAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         
         if (empty($_POST['login'])) {
             $err_msg = $translate->translate('fields_empty');
         } else {
-            $email = $this->application->get('mysqli')->select("SELECT email FROM Utilisateurs WHERE login='{$_POST['login']}'");
+            $email = $this->application->get('database_connection')->select("SELECT email FROM Utilisateurs WHERE login='{$_POST['login']}'");
             if (count($email) === 0) {
                 $err_msg = $translate->translate('no_result');
             } else {
@@ -150,12 +150,12 @@ class AuthenticateController extends ActionController {
     }
     
     public function validCodeForgetPasswordAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         
         if (empty($_POST['code'])) {
             $err_msg = $translate->translate('fields_empty');
         } else {
-            $db = $this->application->get('mysqli');
+            $db = $this->application->get('database_connection');
             if ($db->count('recovery', " WHERE code={$_POST['code']} AND login='{$_POST['memo_login']}'") === 0) {
                 $err_msg = $translate->translate('no_result');
             } else {
@@ -208,7 +208,7 @@ class AuthenticateController extends ActionController {
      * @return int
      */
     protected function generateCode($login) {
-        $db = $this->application->get('mysqli');
+        $db = $this->application->get('database_connection');
         $code = rand(10000, 99999);
         while ($db->count('recovery', " WHERE code=" . $code) > 0) {
             $code = rand(10000, 99999);

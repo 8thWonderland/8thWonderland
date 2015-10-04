@@ -11,13 +11,13 @@ use Wonderland\Library\Admin\Log;
 
 class TaskController extends ActionController {
     public function displayCreateTaskAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->viewParameters['id_group'] = $_POST['id_group'];
         $this->render('tasks/create_task');
     }
     
     public function validTaskAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $res = ManageTasks::valid_task($_POST['description_task'], $_POST['datepicker_task'], $_POST['id_group']);
         switch ($res) {
             case 1:
@@ -51,7 +51,7 @@ class TaskController extends ActionController {
     }
     
     public function deleteTaskAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         if (ManageTasks::delete_task($_POST['task_id']) > 0) {
             $this->display(
                 '<div class="info" style="height:50px;"><table><tr>' .
@@ -76,20 +76,20 @@ class TaskController extends ActionController {
     }
     
     public function editTaskAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
     
     public function displayTasksAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
     
     public function displayTasksInProgressAction() {
         $this->viewParameters['list_tasks'] = $this->renderTasksInProgress();
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->viewParameters['id_group'] = $_POST['id_group'];
         $this->render('tasks/tasks_inprogress');
     }
@@ -98,7 +98,7 @@ class TaskController extends ActionController {
     public function displayDetailsTaskAction() {
         $details = ManageTasks::display_detailstask($_POST['task_id']);
         
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->viewParameters['details'] = $details[0];
         $this->viewParameters['cmd_delete'] = "Clic('/tasks/delete_task', 'task_id=" . $_POST['task_id'] . "&id_group=" . $_POST['id_group'] . "', 'task_resultaction'); return false;";
         $this->viewParameters['cmd_edit'] = "Clic('/tasks/edit_task', 'task_id=" . $_POST['task_id'] . "', 'milieu_milieu'); return false;";
@@ -110,7 +110,7 @@ class TaskController extends ActionController {
      */
     protected function renderTasksInProgress() {
         $list_tasks = ManageTasks::display_tasksinprogress($_POST['id_group']);
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $reponse = '';
         
         if ($list_tasks->num_rows > 0) {

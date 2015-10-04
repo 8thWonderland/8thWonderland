@@ -8,7 +8,7 @@ use Wonderland\Library\Admin\Log;
 
 class MotionController extends ActionController {
     public function displayCreateMotionAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $motionThemes = $this->application->get('motion_manager')->getMotionThemes();
         
         $this->viewParameters['translate'] = $translate;
@@ -23,20 +23,20 @@ class MotionController extends ActionController {
     
     public function displayMotionsInProgressAction() {
         $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions($this->getUser());
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('actions/motions_inprogress');
     }
     
     public function displayMotionsAction() {
         $this->viewParameters['list_motions'] = $this->renderMotions();
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('actions/motions');
     }
     
     public function displayVoteAction() {
         $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->viewParameters['details'] = $details[0];
         $this->viewParameters['description'] = str_replace('&gt;', '>', str_replace('&lt;', '<', $details[0]['description']));
         $this->viewParameters['means'] = html_entity_decode($details[0]['moyens']);
@@ -46,7 +46,7 @@ class MotionController extends ActionController {
     public function displayMotionAction() {
         $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->viewParameters['details'] = $details[0];
         $this->viewParameters['description'] = str_replace('&gt;', '>', str_replace('&lt;', '<', $details[0]['description']));
         $this->viewParameters['means'] = html_entity_decode($details[0]['moyens']);
@@ -67,7 +67,7 @@ class MotionController extends ActionController {
         $datas = $paginator->getCurrentItems();
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         
         $tab_motions =
             '<table id="pagination_motions" class="pagination"><tr class="entete">' .
@@ -150,15 +150,15 @@ class MotionController extends ActionController {
     protected function filterMotions($key, $value) {
         switch(strtolower($key)) {
             case 'citizen_id':
-                $identite = $this->application->get('mysqli')->select("SELECT identity FROM users WHERE id = $value");
+                $identite = $this->application->get('database_connection')->select("SELECT identity FROM users WHERE id = $value");
                 return
                     (isset($identite[0]['identity']))
                     ? $identite[0]['identity']
-                    : $this->application->get('translate')->translate('unknown')
+                    : $this->application->get('translator')->translate('unknown')
                 ;
             
             case 'label_key':
-                return $this->application->get('translate')->translate($value);
+                return $this->application->get('translator')->translate($value);
             
             case 'submission_date':
                 return explode(' ', $value)[0];
@@ -172,7 +172,7 @@ class MotionController extends ActionController {
     }
     
     public function createMotionAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $logger = $this->application->get('logger');
         $logger->setWriter('db');
         $motionManager = $this->application->get('motion_manager');
@@ -217,7 +217,7 @@ class MotionController extends ActionController {
     }
     
     public function voteMotionAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $this->viewParameters['translate'] = $translate;
         if (!empty($_POST['motion_id']) && !empty($_POST['vote'])) {
             if ($this->application->get('motion_manager')->voteMotion($this->getUser(), $_POST['motion_id'], $_POST['vote']) === 1) {

@@ -1,13 +1,19 @@
 {
     "services": {
         "database_connection" : {
-            "class" : "Wonderland\\Library\\Database\\Mysqli"
+            "class" : "Wonderland\\Library\\Database\\Mysqli",
+            "arguments" : [
+                "%database_host%",
+                "%database_username%",
+                "%database_password%",
+                "%database_name%"
+            ]
         },
         "session" : {
             "class" : "Wonderland\\Library\\Memory\\Session"
         },
-        "translate" : {
-            "class" : "Wonderland\\Library\\Translate",
+        "translator" : {
+            "class" : "Wonderland\\Library\\Translator",
             "arguments" : [
                 "%root_path%",
                 "%language_options%"
@@ -69,6 +75,15 @@
         "database_host": "localhost",
         "database_username": "root",
         "database_password": "",
-        "database_name": "thwonderbdd"
+        "database_name": "thwonderbdd",
+        "language_options": {
+            "path": "langs/",
+            "langs": {
+                "fr": "fr.php",
+                "en": "en.php",
+                "es": "es.php"
+            },
+            "default": "fr"
+        }
     }
 }

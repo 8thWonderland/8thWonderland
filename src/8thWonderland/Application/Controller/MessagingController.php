@@ -10,7 +10,7 @@ use Wonderland\Library\Admin\Log;
 
 class MessagingController extends ActionController {
     public function displayReceptionAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('communications/messaging');
     }
     
@@ -29,7 +29,7 @@ class MessagingController extends ActionController {
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
         
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $tab_receivedmsg = 
             '<table class="pagination"><tr class="entete">' .
             '<td>' . $translate->translate("title_message") . '</td>' .
@@ -116,7 +116,7 @@ class MessagingController extends ActionController {
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
         
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $tab_receivedmsg =  
             '<table class="pagination"><tr class="entete">' .
             '<td>' . $translate->translate('title_message') . '</td>' .
@@ -197,23 +197,23 @@ class MessagingController extends ActionController {
         $this->viewParameters['content_message'] = $message->getContent();
         $this->viewParameters['date_msg'] = $message->getCreatedAt()->format('d/m/Y H:i:s');
         
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('communications/content_message');
     }
     
     public function composeMessageToUnknownAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('communications/r_compose_message');
     }
     
     public function composeMessageAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->viewParameters['recipient_message'] = $_POST['recipient_message'];
         $this->render("communications/compose_message");
     }
     
     public function validateMessageAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $author = $this->getUser();
         
         if (empty($_POST['title_message']) || empty($_POST['content_message'])) {
@@ -244,7 +244,7 @@ class MessagingController extends ActionController {
     }
     
     public function deleteMessageAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         if ($this->application->get('message_manager')->deleteMessage($_POST['id_msg'], $_POST['box']) > 0) {
             $this->display(
                 '<div class="info" style="height:50px;"><table><tr>' .
@@ -267,7 +267,7 @@ class MessagingController extends ActionController {
     }
     
     public function createGroupAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
 }

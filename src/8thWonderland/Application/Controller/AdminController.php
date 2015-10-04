@@ -19,7 +19,7 @@ class AdminController extends ActionController {
         $member = $this->getUser();
         $this->viewParameters['identity'] = $member->getIdentity();
         $this->viewParameters['avatar'] = $member->getAvatar();
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/console');
     }
     
@@ -35,26 +35,26 @@ class AdminController extends ActionController {
     
     public function displayLogsAction() {
         $this->viewParameters['list_logs'] = $this->renderLogs();
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/logs');
     }
         
     
     public function displayUsersAction() {
         $this->viewParameters['list_users'] = $this->renderUsers();
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/users');
     }
             
     
     public function displayGroupsAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
                 
     
     public function displayServerAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $cronsList = $this->application->get('ovh_manager')->getCrons($this->getUser());
         $this->viewParameters['crons'] = 
             (isset($cronsList))
@@ -71,13 +71,13 @@ class AdminController extends ActionController {
     
     
     public function displayCreateCronAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/create_cron');
     }
     
     public function displayStatsCountryAction() {
-        $db = $this->application->get('mysqli');
-        $translate = $this->application->get('translate');
+        $db = $this->application->get('database_connection');
+        $translate = $this->application->get('translator');
         $desktop = $this->application->get('session')->get('desktop');
         
         if (isset($desktop) && $desktop == 1)   {
@@ -103,7 +103,7 @@ class AdminController extends ActionController {
     }
     
     public function addCronAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $err_msg = '';
         
         if (empty($_POST['cron_file']) || empty($_POST['cron_desc']) || empty($_POST['cron_day']) || count($_POST) < 7)
@@ -136,7 +136,7 @@ class AdminController extends ActionController {
     }
     
     public function deleteCronAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $res = $this->application->get('ovh_manager')->deleteCron($_POST['cronid'], $_POST['crondesc']);
         if (isset($res)) {
             if ($res == false) {
@@ -158,7 +158,7 @@ class AdminController extends ActionController {
     }
     
     public function editCronAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
@@ -176,7 +176,7 @@ class AdminController extends ActionController {
         $datas = $paginator->getCurrentItems();
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
                 
         $tab_crons =
             '<table id="pagination_motions" class="pagination"><tr class="entete">' .
@@ -264,7 +264,7 @@ class AdminController extends ActionController {
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
         
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         
         $tab_logs =
             '<table id="pagination_motions" class="pagination"><tr class="entete">' .
@@ -344,7 +344,7 @@ class AdminController extends ActionController {
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
         
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         
         $tab_users =
             '<table id="pagination_users" class="pagination"><tr class="entete">' .
@@ -419,7 +419,7 @@ class AdminController extends ActionController {
     // ===========================================
     protected function filterLogs($key, $value) {
         if(strtolower($key) === 'label_key') {
-            $value = $this->application->get('translate')->translate($value);
+            $value = $this->application->get('translator')->translate($value);
         }
         return $value;
     }
@@ -443,14 +443,14 @@ class AdminController extends ActionController {
                 break;
             
             case 'pays':
-                $db = $this->application->get('mysqli');
+                $db = $this->application->get('database_connection');
                 $member = Member::getInstance();
                 $lang = $member->langue;
                 $res = $db->select("SELECT $lang FROM country WHERE code = '$value' LIMIT 1");
                 $value =
                     (count($res) > 0)
                     ? $res[0][$lang]
-                    : $this->application->get('translate')->translate('unknown')
+                    : $this->application->get('translator')->translate('unknown')
                 ;
                 break;
             
@@ -462,7 +462,7 @@ class AdminController extends ActionController {
                 $value =
                     (count($res) >0 && $value >0)
                     ? utf8_encode($res[0]['Name'])
-                    : $this->application->get('translate')->translate('unknown')
+                    : $this->application->get('translator')->translate('unknown')
                 ;
                 break;
         }

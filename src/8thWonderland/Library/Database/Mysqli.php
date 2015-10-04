@@ -6,14 +6,8 @@ class Mysqli extends \mysqli {
     /**
      * @throws \Exception
      */
-    public function __construct() {
-        $container = $application->getContainer();
-        parent::__construct(
-            $container['database_host'],
-            $container['database_username'],
-            $container['database_password'],
-            $container['database_name'])
-        ;
+    public function __construct($host, $username, $password, $databaseName) {
+        parent::__construct($host, $username, $password, $databaseName);
         if (mysqli_connect_error()) {
             throw new \Exception('Database connect failure : ' . mysqli_connect_error());
         }
