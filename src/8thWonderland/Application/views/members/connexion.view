@@ -16,7 +16,7 @@
                         </tr>
                         <tr>
                             <td colspan="5" align="center">
-                                <a onclick="Clic('/authenticate/display_forgetpassword', '', 'milieu_milieu'); return false;">
+                                <a onclick="Clic('/Authenticate/displayForgetPassword', '', 'milieu_milieu'); return false;">
                                     <?php echo $this->viewParameters['translate']->translate('forget_pwd'); ?></a>
                             </td>
                         </tr>

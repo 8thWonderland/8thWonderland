@@ -8,23 +8,23 @@
                         <tbody>
                             <tr>
                                 <td style="width:20%">
-                                    <a onclick="Clic('/index/presentation', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Presentation.png"><br/>
+                                    <a onclick="Clic('/Index/presentation', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Presentation.png"><br/>
                                         <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('presentation'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
-                                    <a onclick="Clic('/index/subscribe', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Subscribe.png"><br/>
+                                    <a onclick="Clic('/Index/subscribe', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Subscribe.png"><br/>
                                         <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('subscribe'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
-                                    <a onclick="Clic('/index/partners', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Network.png"><br/>
+                                    <a onclick="Clic('/Index/partners', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Network.png"><br/>
                                         <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('partners'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
-                                    <a onclick="Clic('/index/news', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Events.png"><br/>
+                                    <a onclick="Clic('/Index/news', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Events.png"><br/>
                                         <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('news'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
-                                    <a onclick="Clic('/index/contact', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Contact.png"><br/>
+                                    <a onclick="Clic('/Index/contact', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Contact.png"><br/>
                                         <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('contact-us'); ?></span></a>
                                 </td>
                             </tr>
