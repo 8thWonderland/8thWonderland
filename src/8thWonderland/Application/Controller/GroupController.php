@@ -14,7 +14,7 @@ use Wonderland\Library\Admin\Log;
 class GroupController extends ActionController {
     public function displayGroupsAction() {
         $this->viewParameters['list_Allgroups'] = $this->renderGroups();
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->viewParameters['map_coord'] = $this->renderMapCoord();
         $this->render('groups/list_allgroups');
     }
@@ -24,7 +24,7 @@ class GroupController extends ActionController {
             $this->redirect('Index/index');
         }
         
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $list_groups = $this->application->get('group_manager')->getMemberGroups($id);
         $response = '';
 
@@ -57,7 +57,7 @@ class GroupController extends ActionController {
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
         
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $tabmini_usersgroup =   
             '<table class="pagination"><tr class="entete">' .
             '<td>' . $translate->translate('identity') . '</td>' .
@@ -101,7 +101,7 @@ class GroupController extends ActionController {
     }
     
     public function displayManageGroupsAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
 
         $membersList = $this->application->get('group_manager')->getGroupMembers($this->application->get('session')->get('desktop'));
         $select = '<option></option>';
@@ -114,18 +114,18 @@ class GroupController extends ActionController {
     }
     
     public function displayCalendarAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
     public function displayAddressbookAction() {
         $this->viewParameters['list_users'] = $this->renderUsers();
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('members/list_users');
     }
     
     public function displayBookmarkAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
@@ -138,7 +138,7 @@ class GroupController extends ActionController {
     }
     
     public function changeContactGroupsAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $dbLogger = $this->application->get('logger');
         $dbLogger->setWriter('db');
         $session = $this->application->get('session');
@@ -187,7 +187,7 @@ class GroupController extends ActionController {
         $datas = $paginator->getCurrentItems();
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         
         $tab_groups = 
             '<table id="pagination_motions" class="pagination"><tr class="entete">' .
@@ -269,7 +269,7 @@ class GroupController extends ActionController {
         $datas = $paginator->getCurrentItems();
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         
         $list_groups = $this->application->get('group_manager')->getGroups();
         $this->viewParameters['select_groups'] = '<option></options>';
@@ -389,21 +389,21 @@ class GroupController extends ActionController {
             case 'country':
                 $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
                 $lang = $member->getLanguage();
-                $res = $this->application->get('mysqli')->select("SELECT $lang FROM country WHERE code = '$value' LIMIT 1");
+                $res = $this->application->get('database_connection')->select("SELECT $lang FROM country WHERE code = '$value' LIMIT 1");
                 return
                     (count($res) > 0)
                     ? $res[0][$lang]
-                    : $this->application->get('translate')->translate("unknown")
+                    : $this->application->get('translator')->translate("unknown")
                 ;
             
             case 'region':
                 $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
                 $lang = $member->getLanguage();
-                $res = $this->application->get('mysqli')->select("SELECT Name FROM regions WHERE Region_id = $value LIMIT 1");
+                $res = $this->application->get('database_connection')->select("SELECT Name FROM regions WHERE Region_id = $value LIMIT 1");
                 return
                     (count($res) > 0 && $value > 0)
                     ? utf8_encode($res[0]['Name'])
-                    : $this->application->get('translate')->translate('unknown')
+                    : $this->application->get('translator')->translate('unknown')
                 ;
             
             case 'last_connected_at':

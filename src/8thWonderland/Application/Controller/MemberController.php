@@ -6,7 +6,7 @@ use Wonderland\Library\Controller\ActionController;
 
 class MemberController extends ActionController {
     public function displayProfileAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $this->viewParameters['translate'] = $translate;
 
         $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
@@ -63,7 +63,7 @@ class MemberController extends ActionController {
     }
     
     public function validProfileAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $memberManager = $this->application->get('member_manager');
         $member = $memberManager->getMember($this->application->get('session')->get('__id__'));
         $err_msg = '';
@@ -138,7 +138,7 @@ class MemberController extends ActionController {
         $datas = $paginator->getCurrentItems();
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $tabmini_contactsgroups = 
             '<table class="pagination"><tr class="entete">' .
             '<td width="150px">' . $translate->translate('group_name') . '</td>' .

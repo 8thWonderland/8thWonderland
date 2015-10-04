@@ -12,7 +12,7 @@ class IndexController extends ActionController {
         }
 
         $this->viewParameters['appli_status'] = 1;
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
 	$this->viewParameters['msg'] = '';
         $this->default_file = "{$this->application->getRootPath()}Application/views/informations/presentation.view";
 
@@ -20,12 +20,12 @@ class IndexController extends ActionController {
     }
 
     function presentationAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('informations/presentation');
     }
 
     function subscribeAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $langs = $translate->getList();
         $sel_lang = '';
         $nbLangs = count($langs);
@@ -39,19 +39,19 @@ class IndexController extends ActionController {
     }
 
     function partnersAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('informations/partners');
     }
 
 
     function newsAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('informations/public_news');
     }
 
 
     function contactAction() {
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->contact_status = '';
         $this->render('communications/contactus');
     }

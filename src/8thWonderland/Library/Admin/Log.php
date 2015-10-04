@@ -2,8 +2,6 @@
 
 namespace Wonderland\Library\Admin;
 
-use Wonderland\Library\Application;
-
 class Log {
     const EMERG   = 0;  // Emergency: system is unusable
     const ALERT   = 1;  // Alert: action must be taken immediately
@@ -13,8 +11,8 @@ class Log {
     const NOTICE  = 5;  // Notice: normal but significant condition
     const INFO    = 6;  // Informational: informational messages
     const DEBUG   = 7;  // Debug: debug messages
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
+    /** @var \Wonderland\Library\Database\Connection **/
+    protected $connection;
     /** @var array **/
     protected $priorities = [];
     /** @var array **/
@@ -23,10 +21,10 @@ class Log {
     protected $writer;
     
     /**
-     * @param Application $application
+     * @param \Wonderland\Library\Database\Mysqli $connection
      */
-    public function __construct(Application $application) {
-        $this->application = $application;
+    public function __construct(Mysqli $connection) {
+        $this->connection = $connection;
     }
     
     /**
@@ -45,8 +43,7 @@ class Log {
      */
     public function log($message, $priority) {       
         if ($this->writer === 'DB') {
-            $db = $this->application->get('mysqli');
-            $db->query(
+            $this->connection->query(
                 "INSERT INTO logs (level, msg) VALUES ($priority, '{$db->real_escape_string($message)}')"
             );
         }
@@ -56,7 +53,7 @@ class Log {
      * @return array
      */
     public static function displayDbLogs() {
-        return $this->application->get('mysqli')->select(
+        return $this->connection->select(
             'SELECT level, timelogs, msg FROM logs ORDER BY timelogs DESC'
         );
     }

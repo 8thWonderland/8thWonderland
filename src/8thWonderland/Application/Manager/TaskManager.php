@@ -20,7 +20,7 @@ class TaskManager {
      * @return array
      */
     public function getCurrentTasks($groupId) {
-        return $this->application->get('mysqli')->query(
+        return $this->application->get('database_connection')->query(
             'SELECT idtask, description, date, identite FROM tasks, Utilisateurs ' .
             "WHERE status = 0 AND id_group = $groupId AND author = iduser " .
             'ORDER BY date DESC'
@@ -28,7 +28,7 @@ class TaskManager {
     }
     
     public function getTask($id) {
-        return $this->application->get('mysqli')->select(
+        return $this->application->get('database_connection')->select(
             "SELECT idtask, description, date, identite FROM tasks, Utilisateurs WHERE author = iduser AND idtask = $id"
         );
     }
@@ -47,7 +47,7 @@ class TaskManager {
             $date = '0000-00-00 00:00:00';
         }
         $author = $this->application->get('auth')->getIdentity();
-        $db = $this->application->get('mysqli');
+        $db = $this->application->get('database_connection');
         $db->query(
             "INSERT INTO tasks (Description, date, id_group, status, author) " .
             "VALUES ('" . htmlentities($description) . "', '$date', $groupId, 0, $author)"
@@ -60,7 +60,7 @@ class TaskManager {
      * @return int
      */
     public function deleteTask($id) {
-        $db = $this->application->get('mysqli');
+        $db = $this->application->get('database_connection');
         $db->query("DELETE FROM tasks WHERE IDTask = $id");
         return $db->affected_rows;
     }

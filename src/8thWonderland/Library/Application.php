@@ -35,7 +35,7 @@ class Application {
         $containerData = json_decode(file_get_contents($this->rootPath.'Application/config/config.json'), true);
         
         $this->setServices($containerData['services']);
-        $this->setParameters($containerData['parameters']);
+        $this->setParameters(array_merge($containerData['parameters'], ['root_path' => $this->rootPath]));
     }
     
     public function setServices($services) {
@@ -43,12 +43,39 @@ class Application {
         
         while($key = key($services)) {
             $service = $services[$key];
-            $app = $this;
-            $this->container[$key] = function($c) use ($service, $app) {
-                return new $service['class']($app);
+            $this->container[$key] = function($c) use ($service) {
+                return
+                    (new \ReflectionClass($service['class']))
+                    ->newInstanceArgs($this->parseArguments($c, $service))
+                ;
             };
             next($services);
         }
+    }
+    
+    /**
+     * @param array $service
+     * @return array
+     */
+    public function parseArguments($container, $service) {
+        $arguments = [];
+        if(!isset($service['arguments'])) {
+            return $arguments;
+        }
+        $nbArguments = count($service['arguments']);
+        for($i = 0; $i < $nbArguments; ++$i) {
+            $argument = $service['arguments'][$i];
+            // retrieve the prefix to know which type of argument it is
+            $argumentType = substr($argument, 0, 1);
+            $arguments[] =
+                ($argumentType === '@')
+                // If this is a service, we cut the '@' prefix
+                ? $container[substr($argument, 1)]
+                // If this is a parameter, we cut the '%' delimiters
+                : $container[substr($argument, 1, -1)]
+            ;
+        }
+        return $arguments;
     }
     
     public function setParameters($parameters) {
@@ -84,7 +111,7 @@ class Application {
     public function setRootPath() {
         $this->rootPath = str_replace('\\', '/', dirname(__DIR__) . '\\');
         // Temporary fix
-        define ( 'VIEWS_PATH', $this->rootPath . 'Application/views/' );
+        define('VIEWS_PATH', $this->rootPath . 'Application/views/' );
     }
     
     /**

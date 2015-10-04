@@ -2,9 +2,9 @@
 
 namespace Wonderland\Library;
 
-class Translate {
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
+class Translator {
+    /** @var string **/
+    protected $rootPath;
     /** @var array **/
     protected $languages = [];
     /** @var string **/
@@ -14,18 +14,21 @@ class Translate {
     /** @var string **/
     protected $languagesPath = 'langs/';
 
-    public function __construct(Application $application) {
-        $this->application = $application;
+    /**
+     * @param string $rootPath
+     * @param array $options
+     */
+    public function __construct($rootPath, $options) {
+        $this->rootPath = $rootPath;
         
-        $options = $application->getConfig()->getOptions();
-        if (!empty($options['language']['path']) && is_dir($options['language']['path'])) {
-            $this->languagesPath = $options['language']['path'];
+        if (!empty($options['path']) && is_dir($options['path'])) {
+            $this->languagesPath = $options['path'];
         }
-        if (!empty($options['language']['langs'])) {
-            $this->addLanguage($options['language']['langs']);
+        if (!empty($options['langs'])) {
+            $this->addLanguage($options['langs']);
         }
-        if (!empty($options['language']['default'])) {
-            $this->setDefaultLanguage($options['language']['default']);
+        if (!empty($options['default'])) {
+            $this->setDefaultLanguage($options['default']);
         }
     }
 
@@ -84,10 +87,10 @@ class Translate {
         if (preg_match('/[^a-z0-9\\/\\\\_.:-]/i', $filename)) {
             throw new \InvalidArgumentException('filename incorrect !');
         }
-        if(!file_exists($this->application->getRootPath() . $this->languagesPath . $filename)) {
-            throw new \InvalidArgumentException('file "' . $this->application->getRootPath() . $this->languagesPath . $filename . '" not exist !');
+        if(!file_exists($this->rootPath . $this->languagesPath . $filename)) {
+            throw new \InvalidArgumentException('file "' . $this->rootPath . $this->languagesPath . $filename . '" not exist !');
         }
-        require_once $this->application->getRootPath() . $this->languagesPath . $filename;
+        require_once $this->rootPath . $this->languagesPath . $filename;
         return $array;
     }
 

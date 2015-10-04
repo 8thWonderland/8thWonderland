@@ -2,17 +2,8 @@
 
 namespace Wonderland\Library\Memory;
 
-use Wonderland\Library\Application;
-
 class Session {
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
-    
-    /**
-     * @param \Wonderland\Library\Application $application
-     */
-    public function __construct(Application $application) {
-        $this->application = $application;
+    public function __construct() {
         session_start();
     }
     

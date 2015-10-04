@@ -48,7 +48,7 @@ class Config {
 
     public function LoadIniFile()
     {
-        $filename = $this->application->getRootPath() . 'Application/config/application.ini';
+        $filename = $this->application->get('root_path') . 'Application/config/application.ini';
         if (!file_exists($filename)) {
             throw new \Exception('The file ' . $filename . ' is not found !');
         }

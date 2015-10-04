@@ -11,14 +11,13 @@ use Wonderland\Library\Admin\Log;
 
 class IntranetController extends ActionController {
     public function indexAction() {
-        if (($id = $this->application->get('session')->get('__id__')) === null) {
+        if (($member = $this->getUser()) === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         
         $select_geo = false;
-        $member = $this->application->get('member_manager')->getMember($id);
-        $db = $this->application->get('mysqli');
+        $db = $this->application->get('database_connection');
 
         // Teste si le code country du membre est valide
         // =============================================
@@ -63,11 +62,11 @@ class IntranetController extends ActionController {
         // affichage du profil
         $this->viewParameters['identity'] = $member->getIdentity();
         $this->viewParameters['avatar'] = $member->getAvatar();
-        $this->viewParameters['admin'] = $memberManager->isMemberInGroup($member->getId(), 1);
+        $this->viewParameters['admin'] = $memberManager->isMemberInGroup($member, 1);
 
         $desktop = $session->get('desktop');
         if (isset($desktop)) {
-            $this->viewParameters['Contact_Group'] = $memberManager->isContact($desktop);
+            $this->viewParameters['Contact_Group'] = $memberManager->isContact($member, $desktop);
             $this->viewParameters['haut_milieu'] =
                 ($desktop === 1)
                 ? VIEWS_PATH . 'admin/menu_admin.view'
@@ -87,7 +86,7 @@ class IntranetController extends ActionController {
             $this->viewParameters['milieu_droite'] = '';
             $this->viewParameters['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('/Intranet/communicate', '', 'milieu_milieu');</script>";
             $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/Motion/displayMotionsInProgress', '', 'milieu_gauche');</script>";
-            $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions();
+            $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions($member);
 
             // affichage des groupes du membre
             $this->viewParameters['list_groups'] = $this->application->get('group_manager')->getMemberGroups($member->getId());
@@ -103,13 +102,12 @@ class IntranetController extends ActionController {
     }
     
     public function zoneGeoAction() {
-        if (($id = $this->application->get('session')->get('__id__')) === null) {
+        if (($member = $this->getUser()) === null) {
             $this->redirect('Index/index');
         }
         
         if (!empty($_POST['country']) && isset($_POST['region']) && $_POST['region'] !== 0) {
-            $db = $this->application->get('mysqli');
-            $member = $this->application->get('member_manager')->getMember($id);
+            $db = $this->application->get('database_connection');
             
             $db->query(
                 "UPDATE Utilisateurs SET Pays='{$_POST['country']}', Region={$_POST['region']} WHERE IDUser={$member->getId()}"
@@ -161,7 +159,7 @@ class IntranetController extends ActionController {
             }
             $this->redirect('Intranet/index');
         } else {
-            $translate = $this->application->get('translate');
+            $translate = $this->application->get('translator');
             $this->viewParameters['translate'] = $translate;
             $this->viewParameters['msg'] = $translate->translate('fields_empty');
             $this->display(json_encode([
@@ -195,7 +193,7 @@ class IntranetController extends ActionController {
         if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('informations/public_news');
     }
 
@@ -203,7 +201,7 @@ class IntranetController extends ActionController {
         if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
 
@@ -211,7 +209,7 @@ class IntranetController extends ActionController {
         if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('informations/public_news');
     }
 
@@ -219,7 +217,7 @@ class IntranetController extends ActionController {
         if (($id = $this->application->get('session')->get('__id__')) === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
@@ -236,7 +234,7 @@ class IntranetController extends ActionController {
         $logger->setWriter('db');
         $logger->log($member->getIdentity() . " entre dans la console d'administration.", Log::INFO);
         
-        $this->viewParameters['translate'] = $this->application->get('translate');
+        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->redirect('Admin/display_console');
     }
 }

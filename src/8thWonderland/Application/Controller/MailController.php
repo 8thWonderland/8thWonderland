@@ -13,7 +13,7 @@ class MailController extends ActionController {
     protected $defaultFile;
     
     public function envoiAction() {
-        $translate = $this->application->get('translate');
+        $translate = $this->application->get('translator');
         $this->contactStatus = $translate->translate('mail_ok');
         $this->process();
 
@@ -30,7 +30,7 @@ class MailController extends ActionController {
         $MXHost = null;
         preg_match("/\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/", $email, $res);
         
-        $translator = $this->application->get('translate');
+        $translator = $this->application->get('translator');
         
         if (!$res || $res[0] !== $email || empty($email)) {
             $this->contactStatus = $translator->translate('mail_invalide');

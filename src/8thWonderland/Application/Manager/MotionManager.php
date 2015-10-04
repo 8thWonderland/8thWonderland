@@ -2,59 +2,64 @@
 
 namespace Wonderland\Application\Manager;
 
-use Wonderland\Library\Application;
+use Wonderland\Application\Model\Member;
+
+use Wonderland\Library\Database\Mysqli;
+use Wonderland\Library\Translator;
 
 class MotionManager {
-    /** @var \Wonderland\Library\Application **/
-    protected $application;
+    /** @var \Wonderland\Library\Database\Mysqli **/
+    protected $connection;
+    /** @var \Wonderland\Library\Translator **/
+    protected $translator;
     
     /**
-     * @param \Wonderland\Library\Application $application
+     * @param \Wonderland\Library\Database\Mysqli $connection
+     * @param \Wonderland\Library\Translator $translator
      */
-    public function __construct(Application $application) {
-        $this->application = $application;
+    public function __construct(Mysqli $connection, Translator $translator) {
+        $this->connection = $connection;
+        $this->translator = $translator;
     }
     
     /**
      * Return motions which are currently being voted
      * 
+     * @param \Wonderland\Application\Model\Member
      * @return string
      */
-    public function displayActiveMotions() {
-        $translate = $this->application->get('translate');
-        $memberId = $this->application->get('session')->get('__id__');
-        
-        $motions = $this->application->get('mysqli')->query(
+    public function displayActiveMotions(Member $member) {
+        $motions = $this->connection->query(
             'SELECT motion_id, title_key, date_fin_vote ' .
             'FROM Motions ' .
             'WHERE Date_fin_vote >  NOW() ' .
             'ORDER BY date_fin_vote DESC '
         );
-        if ($motions->num_rows > 0) {
-            $response = '';
-            while ($motion = $motions->fetch_assoc()) {
-                $response .=
-                    "<tr><td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['title_key']}</a></td>" .
-                    "<td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['date_fin_vote']}</a></td>"
-                ;
-                if ($this->hasAlreadyVoted($motion['motion_id'], $memberId) == 0) {
-                    $response .=
-                        "<td><div class='bouton'><a onclick=\"Clic('/Motion/displayVote', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">" .
-                        "<span style='color: #dfdfdf;'>{$translate->translate('btn_votemotion')}</span></a></div></td>"
-                    ;
-                }
-                $response .= '</tr>';
-            }
-            return $response;
+        if ($motions->num_rows === 0) {
+            return "<tr><td>{$this->translator->translate('no_result')}</td></tr>";
         }
-        return "<tr><td>{$translate->translate('no_result')}</td></tr>";
+        $response = '';
+        while ($motion = $motions->fetch_assoc()) {
+            $response .=
+                "<tr><td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['title_key']}</a></td>" .
+                "<td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['date_fin_vote']}</a></td>"
+            ;
+            if ($this->hasAlreadyVoted($motion['motion_id'], $member->getId()) == 0) {
+                $response .=
+                    "<td><div class='bouton'><a onclick=\"Clic('/Motion/displayVote', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">" .
+                    "<span style='color: #dfdfdf;'>{$this->translator->translate('btn_votemotion')}</span></a></div></td>"
+                ;
+            }
+            $response .= '</tr>';
+        }
+        return $response;
     }
     
     /**
      * @return array
      */
     public function displayMotions() {
-        return $this->application->get('mysqli')->select(
+        return $this->connection->select(
             'SELECT Motion_id, Title_key, Label_key, Submission_date, Date_fin_vote, Citizen_id ' .
             'FROM Motions, Motions_Themes ' .
             'WHERE Date_fin_vote < NOW() AND Motions.Theme_id=Motions_Themes.Theme_id ' .
@@ -68,9 +73,8 @@ class MotionManager {
      * @param int $id
      * @return array
      */
-    public function displayMotionDetails($id)
-    {
-        $motion = $this->application->get('mysqli')->select(
+    public function displayMotionDetails($id) {
+        $motion = $this->connection->select(
             'SELECT motion_id, title_key, label_key, description, moyens, submission_date, date_fin_vote ' .
             'FROM Motions, Motions_Themes ' .
             "WHERE motion_id = $id AND Motions.theme_id=Motions_Themes.Theme_id"
@@ -82,9 +86,8 @@ class MotionManager {
     /**
      * @return array
      */
-    public function getMotionThemes()
-    {
-        return $this->application->get('mysqli')->query(
+    public function getMotionThemes() {
+        return $this->connection->query(
             'SELECT theme_id, label_key FROM Motions_Themes ORDER BY label_key ASC'
         );
     }
@@ -93,70 +96,67 @@ class MotionManager {
      * @param int $motionId
      * @return array
      */
-    public function getVotes($motionId)
-    {
-        $db = $this->application->get('mysqli');
+    public function getVotes($motionId) {
         return [
-            $db->count('Motions_Votes', " WHERE Motion_id = $motionId AND Choix = 1"),
-            $db->count('Motions_Votes', " WHERE Motion_id = $motionId AND Choix = 2")
+            $this->connection->count('Motions_Votes', " WHERE Motion_id = $motionId AND Choix = 1"),
+            $this->connection->count('Motions_Votes', " WHERE Motion_id = $motionId AND Choix = 2")
         ];
     }
     
     /**
+     * @param \Wonderland\Application\Model\Member $member
      * @param string $title
      * @param string $theme
      * @param string $description
      * @param string $means
      * @return \mysqli_result
      */
-    public function validateMotion($title, $theme, $description, $means) {
-        return $this->application->get('mysqli')->query(
+    public function validateMotion(Member $member, $title, $theme, $description, $means) {
+        return $this->connection->query(
             'INSERT INTO Motions ' .
             "(Theme_id, Title_key, Description, Moyens, Submission_date, Date_fin_vote, Citizen_id) " .
             "values ('" . htmlentities(utf8_decode($theme), ENT_QUOTES) . "', " . 
             "'" . htmlentities(utf8_decode($title), ENT_QUOTES) . "', " .
             "'" . nl2br(htmlentities($description)) . "', '" . nl2br(htmlentities($means)) . "',  NOW(), " .
-            "DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM Motions_Themes WHERE Motions_Themes.Theme_id = $theme) DAY), " .
-            $this->application->get('session')->get('__id__') . ")"
+            'DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM Motions_Themes ' .
+            "WHERE Motions_Themes.Theme_id = $theme) DAY), {$member->getId()})"
         );
     }
     
     /**
      * Returns number of affected rows
      * 
+     * @param \Wonderland\Application\Model\Member $member
      * @param int $id
      * @param string $vote
      * @return int
      */
-    public function voteMotion($id, $vote)
-    {
-        $db     = $this->application->get('mysqli');
-        $member = $this->application->get('session')->get('__id__');
-        $date   = date('Y-m-d h-i-s');
+    public function voteMotion(Member $member, $id, $vote) {
+        $date = date('Y-m-d h-i-s');
         $ip =
             (isset($_SERVER['REMOTE_ADDR']))
             ? $_SERVER['REMOTE_ADDR']
             : 'inconnue'
         ;
         
-        $db->query(
+        $this->connection->query(
             'INSERT INTO Motions_Votes_Jetons ' .
             '(Motion_id, Citizen_id, Date, Ip) ' .
-            "VALUES ($id, $member, '$date', '$ip')"
+            "VALUES ($id, {$member->getId()}, '$date', '$ip')"
         );
-        if ($db->affected_rows == 0) {
-            return $db->affected_rows;
+        if ($this->connection->affected_rows == 0) {
+            return $this->connection->affected_rows;
         }
         
         $choice = ($vote === 'approved') ? 1 : 2;
         
-        $hash = hash('sha512', "{$db->insert_id}#$id#$member#$choice#$date#$ip");
-        $db->query(
+        $hash = hash('sha512', "{$this->connection->insert_id}#$id#$member#$choice#$date#$ip");
+        $this->connection->query(
             'INSERT INTO Motions_Votes ' .
             '(Motion_id, Choix, Hash) ' .
             "VALUES ($id, '$choice', '$hash')"
         );
-        return $db->affected_rows;
+        return $this->connection->affected_rows;
     }
     
     /**
@@ -166,8 +166,7 @@ class MotionManager {
      */
     protected function hasAlreadyVoted($motionId, $memberId) {
         return $this
-            ->application
-            ->get('mysqli')
+            ->connection
             ->count("Motions_Votes_Jetons", " WHERE Motion_id = $motionId AND Citizen_id = $memberId")
         ;
     }
