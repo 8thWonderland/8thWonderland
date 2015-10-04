@@ -2,8 +2,6 @@
 
 namespace Wonderland\Application\Model;
 
-use Wonderland\Library\Auth;
-
 class Member {
     /** @var int **/
     protected $id;
@@ -37,6 +35,8 @@ class Member {
     protected $isBanned;
     /** @var string **/
     protected $theme;
+    /** @var array **/
+    protected $groups;
     
     /**
      * @param int $id
@@ -308,5 +308,32 @@ class Member {
      */
     public function getTheme() {
         return $this->theme;
+    }
+    
+    /**
+     * @param \Wonderland\Application\Model\Group $group
+     * @return \Wonderland\Application\Model\Member
+     */
+    public function addGroup(Group $group) {
+        $this->groups[] = $group;
+        
+        return $this;
+    }
+    
+    /**
+     * @param \Wonderland\Application\Model\Group $group
+     * @return \Wonderland\Application\Model\Member
+     */
+    public function removeGroup(Group $group) {
+        unset($this->groups[array_search($group, $this->groups)]);
+        
+        return $this;
+    }
+    
+    /**
+     * @return array
+     */
+    public function getGroups() {
+        return $this->groups;
     }
 }

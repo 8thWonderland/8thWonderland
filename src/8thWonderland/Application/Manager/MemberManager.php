@@ -3,6 +3,8 @@
 namespace Wonderland\Application\Manager;
 
 use Wonderland\Application\Model\Member;
+use Wonderland\Application\Model\Group;
+use Wonderland\Application\Model\GroupType;
 
 use Wonderland\Library\Database\Mysqli;
 
@@ -22,11 +24,20 @@ class MemberManager {
      * @return \Wonderland\Application\Model\Member
      */
     public function getMember($id) {
-        $data = $this->connection->select(
-            'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
-            "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE id = $id"
-        );
-        return $this->formatMemberData($data[0]);
+        return $this->formatMemberData($this->connection->query(
+            'SELECT u.id, u.login, u.password, u.salt, u.identity, u.gender,' .
+            'u.email, u.avatar, u.language, u.country, u.region, u.last_connected_at, ' .
+            'u.created_at, u.is_enabled, u.is_banned, u.theme, ' .
+            'g.id AS group_id, g.name, g.description, g.created_at AS group_created_at, ' .
+            'g.updated_at AS group_updated_at, gt.id AS group_type_id, gt.label, ' .
+            'u2.id AS contact_id, u2.identity AS contact_identity ' .
+            'FROM users u ' .
+            'LEFT JOIN citizen_groups cg ON citizen_id = u.id ' .
+            'LEFT JOIN groups g ON g.id = cg.group_id OR g.contact_id = u.id ' .
+            'LEFT JOIN group_types gt ON gt.id = g.type_id ' .
+            'LEFT JOIN users u2 ON u2.id = g.contact_id ' .
+            "WHERE u.id = $id"
+        ));
     }
     
     /**
@@ -34,11 +45,20 @@ class MemberManager {
      * @return \Wonderland\Application\Model\Member
      */
     public function getMemberByIdentity($identity) {
-        $data = $this->connection->select(
-            'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
-            "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE identity = '$identity'"
-        );
-        return $this->formatMemberData($data[0]);
+        return $this->formatMemberData($this->connection->query(
+            'SELECT u.id, u.login, u.password, u.salt, u.identity, u.gender,' .
+            'u.email, u.avatar, u.language, u.country, u.region, u.last_connected_at, ' .
+            'u.created_at, u.is_enabled, u.is_banned, u.theme, ' .
+            'g.id AS group_id, g.name, g.description, g.created_at AS group_created_at, ' .
+            'g.updated_at AS group_updated_at, gt.id AS group_type_id, gt.label, ' .
+            'u2.id AS contact_id, u2.identity AS contact_identity ' .
+            'FROM users u ' .
+            'LEFT JOIN citizen_groups cg ON citizen_id = u.id ' .
+            'LEFT JOIN groups g ON g.id = cg.group_id OR g.contact_id = u.id ' .
+            'LEFT JOIN group_types gt ON gt.id = g.type_id ' .
+            'LEFT JOIN users u2 ON u2.id = g.contact_id ' .
+            "WHERE u.identity = '$identity'"
+        ));
     }
     
     /**
@@ -47,21 +67,33 @@ class MemberManager {
      * @return \Wonderland\Application\Model\Member
      */
     public function getMemberByLoginAndPassword($login, $password) {
-        $data = $this->connection->select(
-            'SELECT id, login, password, salt, identity, gender, email, avatar, language, ' .
-            "country, region, last_connected_at, created_at, is_enabled, is_banned, theme FROM users WHERE login = '$login' AND password = '$password'"
-        );
-        return $this->formatMemberData($data[0]);
+        return $this->formatMemberData($this->connection->query(
+            'SELECT u.id, u.login, u.password, u.salt, u.identity, u.gender,' .
+            'u.email, u.avatar, u.language, u.country, u.region, u.last_connected_at, ' .
+            'u.created_at, u.is_enabled, u.is_banned, u.theme, ' .
+            'g.id AS group_id, g.name, g.description, g.created_at AS group_created_at, ' .
+            'g.updated_at AS group_updated_at, gt.id AS group_type_id, gt.label, ' .
+            'u2.id AS contact_id, u2.identity AS contact_identity ' .
+            'FROM users u ' .
+            'LEFT JOIN citizen_groups cg ON citizen_id = u.id ' .
+            'LEFT JOIN groups g ON g.id = cg.group_id OR g.contact_id = u.id ' .
+            'LEFT JOIN group_types gt ON gt.id = g.type_id ' .
+            'LEFT JOIN users u2 ON u2.id = g.contact_id ' .
+            "WHERE u.login = '$login' AND u.password = '$password'"
+        ));
     }
     
     /**
      * Turn fetched data into Member object
      * 
-     * @param array $data
+     * @param array $rawData
      * @return \Wonderland\Application\Model\Member
      */
-    public function formatMemberData($data) {
-        return
+    public function formatMemberData($rawData) {
+        if(($data = $rawData->fetch_assoc()) === false) {
+            return null;
+        }
+        $member =
             (new Member())
             ->setId($data['id'])
             ->setLogin($data['login'])
@@ -79,6 +111,28 @@ class MemberManager {
             ->setIsBanned($data['is_banned'])
             ->setTheme($data['theme'])
         ;
+        // Currently, the next rows are containing the user's groups
+        while($data = $rawData->fetch_assoc()) {
+            $member->addGroup(
+                (new Group())
+                ->setId($data['group_id'])
+                ->setName($data['name'])
+                ->setDescription($data['description'])
+                ->setType(
+                    (new GroupType())
+                    ->setId($data['group_type_id'])
+                    ->setLabel($data['label'])
+                )
+                ->setContact(
+                    (new Member())
+                    ->setId($data['contact_id'])
+                    ->setIdentity($data['contact_identity'])
+                )
+                ->setCreatedAt(new \DateTime($data['group_created_at']))
+                ->setUpdatedAt(new \DateTime($data['group_updated_at']))
+            );
+        }
+        return $member;
     }
     
     public function createMember(Member $member) {
@@ -164,8 +218,8 @@ class MemberManager {
     public function isContact(Member $member, $groupId = null) {
         return
             (!isset($groupId))
-            ? $this->connection->count('Groups', " WHERE ID_Contact = {$member->getId()}")
-            : $this->connection->count('Groups', " WHERE ID_Contact = {$member->getId()} AND Group_id = $groupId")
+            ? $this->connection->count('Groups', " WHERE contact_id = {$member->getId()}")
+            : $this->connection->count('Groups', " WHERE contact_id = {$member->getId()} AND id = $groupId")
         ;
     }
 
@@ -203,14 +257,14 @@ class MemberManager {
      */
     public function getMembers($params) {
         $search = '';
-        $table = 'users';
+        $table = 'users u';
         if (!empty($params['sel_groups'])) {
-            $table = 'Citizen_Groups, users';
-            $search = " WHERE Citizen_id = id AND Group_id={$params['sel_groups']} ";
+            $table = 'citizen_groups, users u';
+            $search = " WHERE citizen_id = id AND group_id = {$params['sel_groups']} ";
         }
         
         return $this->connection->select(
-            'SELECT id, avatar, identity, gender, email, language, country, region, last_connected_at, created_at ' .
+            'SELECT u.id, avatar, identity, gender, email, language, country, region, last_connected_at, u.created_at ' .
             "FROM $table $search ORDER BY identity ASC"
         );
     }
@@ -220,9 +274,10 @@ class MemberManager {
      */
     public function getContactGroups() {
         return $this->connection->select(
-            'SELECT id, Group_name, identity ' .
-            'FROM users, Groups WHERE id = ID_Contact ' .
-            'ORDER BY Group_name ASC'
+            'SELECT u.id, g.name, u.identity ' .
+            'FROM users u ' .
+            'INNER JOIN groups g ON g.contact_id = u.id ' .
+            'ORDER BY g.name ASC'
         );
     }
 }
