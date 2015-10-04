@@ -4,11 +4,6 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Library\Memory\Registry;
-
-use Wonderland\Application\Model\ManageGroups;
-use Wonderland\Application\Model\Member;
-
 use Wonderland\Library\Admin\Log;
 
 class GroupController extends ActionController {
@@ -20,24 +15,23 @@ class GroupController extends ActionController {
     }
     
     public function displayGroupsMembersAction() {
-        if (($id = $this->application->get('session')->get('__id__')) === null) {
+        if (($member = $this->getUser()) === null) {
             $this->redirect('Index/index');
         }
         
         $translate = $this->application->get('translator');
-        $list_groups = $this->application->get('group_manager')->getMemberGroups($id);
+        $groups = $member->getGroups();
         $response = '';
 
-        if ($list_groups->num_rows > 0) {
-            while ($group = $list_groups->fetch_assoc()) {
-                $response .=
-                    "<tr><td>" . utf8_encode($group['Group_name']) . "</td>" .
-                    "<td><div class='bouton' style='margin:3px;'><a onclick=\"Clic('/intranet/index', 'group_id={$group['Group_id']}', 'body'); return false;\">" .
-                    "<span style='color: #dfdfdf;'>{$translate->translate('btn_enterdesktop')}</span></a></div></td></tr>"
-                ;
-            }
-        } else {
+        if (count($groups) === 0) {
             $response = "<tr><td>{$translate->translate('no_result')}</td></tr>";
+        }
+        foreach ($groups as $group) {
+            $response .=
+                "<tr><td>" . utf8_encode($group->getName()) . "</td>" .
+                "<td><div class='bouton' style='margin:3px;'><a onclick=\"Clic('/intranet/index', 'group_id={$group->getId()}', 'body'); return false;\">" .
+                "<span style='color: #dfdfdf;'>{$translate->translate('btn_enterdesktop')}</span></a></div></td></tr>"
+            ;
         }
 
         $this->viewParameters['list_groups'] = $response;
@@ -47,7 +41,13 @@ class GroupController extends ActionController {
     
     public function displayMembersAction() {
         $paginator = $this->application->get('paginator');
-        $paginator->setData($this->application->get('group_manager')->getGroupMembers($this->application->get('session')->get('desktop')));
+        $paginator->setData($this
+            ->application
+            ->get('member_manager')
+            ->findByGroup(
+                $this->application->get('session')->get('desktop')
+            )
+        );
         $paginator->setItemsPerPage(15);
         $paginator->setCurrentPage(1);
         if (!empty($_POST['page'])) {
@@ -64,11 +64,11 @@ class GroupController extends ActionController {
             '<td width="140px">' . $translate->translate('last_connexion') . '</td></tr>'
         ;
 
-        foreach($datas as $row) {
+        foreach($datas as $member) {
             $tabmini_usersgroup .=
                 "<tr style='height:25px'>".
-                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message={$row['id']}', 'milieu_milieu')\">" . utf8_encode($row['identity']) . "</a></td>" .
-                "<td>" . substr($row['last_connected_at'], 0, strlen($row['last_connected_at'])-3) . "</td></tr>"
+                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message={$member->getId()}', 'milieu_milieu')\">{$member->getIdentity()}</a></td>" .
+                "<td>{$member->getLastConnectedAt()->format('d/m/Y H:i:s')}</td></tr>"
             ;
         }
         $itemsPerPage = $paginator->getItemsPerPage();
@@ -271,11 +271,11 @@ class GroupController extends ActionController {
         $MaxPage = $paginator->getNumPage();
         $translate = $this->application->get('translator');
         
-        $list_groups = $this->application->get('group_manager')->getGroups();
+        $groups = $this->application->get('group_manager')->getGroups();
         $this->viewParameters['select_groups'] = '<option></options>';
-        $nbGroups = count($list_groups);
+        $nbGroups = count($groups);
         for ($i = 0; $i < $nbGroups; ++$i) {
-            $this->viewParameters['select_groups'] .= "<option value='{$list_groups[$i]['Group_id']}'>" . utf8_encode($list_groups[$i]['Group_name']) . "</option>";
+            $this->viewParameters['select_groups'] .= "<option value='{$groups[$i]->getId()}'>{$groups[$i]->getName()}</option>";
         }
         
         $tab_users = 
@@ -344,7 +344,7 @@ class GroupController extends ActionController {
         
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/groups/display_adressbook\', \'page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/Group/displayAddressBook\', \'page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_users . $next . '</td></tr></table>';
     }

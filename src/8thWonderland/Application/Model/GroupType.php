@@ -6,7 +6,13 @@ class GroupType {
     /** @var int **/
     protected $id;
     /** @var string **/
-    protected $description;
+    protected $label;
+    
+    public function setId($id) {
+        $this->id = $id;
+        
+        return $this;
+    }
     
     /**
      * @return int
@@ -16,11 +22,11 @@ class GroupType {
     }
     
     /**
-     * @param string $description
+     * @param string $label
      * @return \Wonderland\Application\Model\GroupType
      */
-    public function setDescription($description) {
-        $this->description = $description;
+    public function setLabel($label) {
+        $this->label = $label;
         
         return $this;
     }
@@ -28,7 +34,7 @@ class GroupType {
     /**
      * @return string
      */
-    public function getDescription() {
-        return $this->description;
+    public function getLabel() {
+        return $this->label;
     }
 }
