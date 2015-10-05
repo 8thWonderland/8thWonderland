@@ -184,7 +184,7 @@ class GroupController extends ActionController {
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
         }
-        $datas = $paginator->getCurrentItems();
+        $groups = $paginator->getCurrentItems();
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
         $translate = $this->application->get('translator');
@@ -199,14 +199,16 @@ class GroupController extends ActionController {
             '<td>' . $translate->translate('group_nbmembers') . '</td></tr>'
         ;
         
-        foreach($datas as $key => $row) {
-            $tab_groups .= "<tr style='height:25px'>";
-            foreach($row as $key => $value) {
-                if ($key !== 'Group_id' && $key !== 'Longitude' && $key !== 'Latitude') {
-                    $tab_groups .= "<td>{$this->filterGroups($key, $value)}</td>";
-                }
-            }
-            $tab_groups .= "<td align='center'>{$groupManager->countMembers($row['Group_id'])}</td></tr>";
+        foreach($groups as $group) {
+            $tab_groups .= 
+                "<tr style='height:25px'>" .
+                "<td>{$group->getName()}</td>" .
+                "<td>{$group->getDescription()}</td>" .
+                "<td>{$group->getContact()->getIdentity()}</td>" .
+                "<td>{$group->getCreatedAt()->format('d/m/Y H:i:s')}</td>" .
+                "<td>{$group->getType()->getLabel()}</td>" .
+                "<td align='center'>{$groupManager->countMembers($group->getId())}</td></tr>"
+            ;
         }
         
         // numéros des items
@@ -347,27 +349,6 @@ class GroupController extends ActionController {
             $next = '<a onclick="Clic(\'/Group/displayAddressBook\', \'page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_users . $next . '</td></tr></table>';
-    }
-    
-    /**
-     * @param string $key
-     * @param string $value
-     * @return string
-     */
-    protected function filterGroups($key, $value) {
-        switch(strtolower($key)) {
-            case 'group_name':
-                return utf8_encode($value);
-                
-            case 'description':
-                return html_entity_decode($value);
-            
-            case 'group_type_description':
-                return utf8_encode(html_entity_decode($value));
-                
-            default:
-                return $value;
-        }
     }
     
     /**

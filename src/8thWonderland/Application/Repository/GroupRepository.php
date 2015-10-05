@@ -30,7 +30,7 @@ class GroupRepository extends AbstractRepository {
     public function countGroupMembers($groupId) {
         return $this->connection->query(
             "SELECT COUNT(*) FROM citizen_groups WHERE group_id = $groupId"
-        )->fetch()['COUNT'];
+        )->fetch_assoc()['COUNT'];
     }
     
     public function findGroupMembers($groupId) {
