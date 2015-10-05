@@ -272,9 +272,9 @@ class MemberManager {
     public function findByGroup($groupId) {
         $statement = $this->connection->query(
             'SELECT u.id, u.identity, u.last_connected_at ' .
-            'FROM Citizen_Groups cg ' .
-            'INNER JOIN users u ON cg.Citizen_id = u.id ' .
-            "WHERE cg.Group_id = $groupId " .
+            'FROM citizen_groups cg ' .
+            'INNER JOIN users u ON cg.citizen_id = u.id ' .
+            "WHERE cg.group_id = $groupId " .
             'ORDER BY u.identity ASC'
         );
         $members = [];
