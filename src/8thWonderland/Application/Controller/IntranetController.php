@@ -21,7 +21,9 @@ class IntranetController extends ActionController {
 
         // Teste si le code country du membre est valide
         // =============================================
-        $country_ok = $db->count('country', " WHERE code='{$member->getCountry()}'");
+        $country_ok = $db->query(
+            "SELECT COUNT(*) AS count FROM country WHERE code='{$member->getCountry()}'"
+        )->fetch()['count'];
         if ($country_ok === 0) {
             $select_geo = true;
         } else {

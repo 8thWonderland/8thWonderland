@@ -2,16 +2,16 @@
 
 namespace Wonderland\Application\Repository;
 
-use Wonderland\Library\Database\Mysqli;
+use Wonderland\Library\Database\PdoDriver;
 
 abstract class AbstractRepository {
-    /** @var \Wonderland\Library\Database\Mysqli **/
+    /** @var \Wonderland\Library\Database\PdoDriver **/
     protected $connection;
     
     /**
-     * @param \Wonderland\Library\Database\Mysqli $connection
+     * @param \Wonderland\Library\Database\PdoDriver $connection
      */
-    public function __construct(Mysqli $connection) {
+    public function __construct(PdoDriver $connection) {
         $this->connection = $connection;
     }
 }

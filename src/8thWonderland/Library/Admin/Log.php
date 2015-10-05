@@ -2,7 +2,7 @@
 
 namespace Wonderland\Library\Admin;
 
-use Wonderland\Library\Database\Mysqli;
+use Wonderland\Library\Database\PdoDriver;
 
 class Log {
     const EMERG   = 0;  // Emergency: system is unusable
@@ -23,7 +23,7 @@ class Log {
     protected $writer;
     
     /**
-     * @param \Wonderland\Library\Database\Mysqli $connection
+     * @param \Wonderland\Library\Database\PdoDriver $connection
      */
     public function __construct(Mysqli $connection) {
         $this->connection = $connection;

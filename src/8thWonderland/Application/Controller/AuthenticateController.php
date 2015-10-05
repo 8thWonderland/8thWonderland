@@ -17,8 +17,10 @@ class AuthenticateController extends ActionController {
         if (($member = $memberManager->getMemberByLoginAndPassword($_POST['login'], hash('sha512', $_POST['password']))) !== null) {
             $db = $this->application->get('database_connection');
             // Enregistrement de la date et heure de la connexion         
-            $db->query("UPDATE users SET last_connected_at = NOW() WHERE id = {$member->getId()}");
-            if ($db->affected_rows === 0)    {
+            $statement = $db->prepare(
+                'UPDATE users SET last_connected_at = NOW() WHERE id = :id'
+            );
+            if ($statement->execute(['id' => $member->getId()]) === false)    {
                 // log d'échec de mise à jour
                 $logger = $this->application->get('logger');
                 $logger->setWriter('db');

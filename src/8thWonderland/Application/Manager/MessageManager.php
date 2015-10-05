@@ -2,7 +2,7 @@
 
 namespace Wonderland\Application\Manager;
 
-use Wonderland\Library\Database\Mysqli;
+use Wonderland\Library\Database\PdoDriver;
 use Wonderland\Application\Manager\MemberManager;
 use Wonderland\Application\Repository\MessageRepository;
 
@@ -10,7 +10,7 @@ use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Message;
 
 class MessageManager {
-    /** @var \Wonderland\Library\Database\Mysqli **/
+    /** @var \Wonderland\Library\Database\PdoDriver **/
     protected $connection;
     /** @var \Wonderland\Application\Manager\MemberManager **/
     protected $memberManager;
@@ -18,11 +18,11 @@ class MessageManager {
     protected $repository;
     
     /**
-     * @param \Wonderland\Library\Database\Mysqli $connection
+     * @param \Wonderland\Library\Database\PdoDriver $connection
      * @param \Wonderland\Application\Manager\MemberManager $memberManager
      * @param \Wonderland\Application\Repository\MessageRepository $repository
      */
-    public function __construct(Mysqli $connection, MemberManager $memberManager, MessageRepository $repository) {
+    public function __construct(PdoDriver $connection, MemberManager $memberManager, MessageRepository $repository) {
         $this->connection = $connection;
         $this->memberManager = $memberManager;
         $this->repository = $repository;
