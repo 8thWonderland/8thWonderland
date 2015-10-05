@@ -90,7 +90,7 @@ class MemberManager {
      * @return \Wonderland\Application\Model\Member
      */
     public function formatMemberData($rawData) {
-        if(($data = $rawData->fetch_assoc()) === false) {
+        if(($data = $rawData->fetch_assoc()) === null) {
             return null;
         }
         $member =
