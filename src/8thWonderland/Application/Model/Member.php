@@ -38,6 +38,10 @@ class Member {
     /** @var array **/
     protected $groups;
     
+    public function __construct() {
+        $this->groups = [];
+    }
+    
     /**
      * @param int $id
      * @return \Wonderland\Application\Model\Member

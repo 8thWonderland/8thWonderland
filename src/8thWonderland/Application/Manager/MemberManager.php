@@ -206,7 +206,7 @@ class MemberManager {
     public function isMemberInGroup(Member $member, $groupId) {
         return $this
             ->connection
-            ->count('Citizen_Groups', "WHERE Citizen_id = {$member->getId()} AND Group_id = $groupId")
+            ->count('citizen_groups', "WHERE citizen_id = {$member->getId()} AND group_id = $groupId")
         ;
     }
     
@@ -218,8 +218,8 @@ class MemberManager {
     public function isContact(Member $member, $groupId = null) {
         return
             (!isset($groupId))
-            ? $this->connection->count('Groups', " WHERE contact_id = {$member->getId()}")
-            : $this->connection->count('Groups', " WHERE contact_id = {$member->getId()} AND id = $groupId")
+            ? $this->connection->count('groups', " WHERE contact_id = {$member->getId()}")
+            : $this->connection->count('groups', " WHERE contact_id = {$member->getId()} AND id = $groupId")
         ;
     }
 

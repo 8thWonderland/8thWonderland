@@ -54,7 +54,7 @@ class GroupManager {
      * @return array
      */
     public function getRegionalGroups() {
-        $rows = $this->repository->findRegionalGroups();
+        return $this->repository->findRegionalGroups();
     }
     
     /**

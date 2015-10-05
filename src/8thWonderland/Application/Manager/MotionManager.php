@@ -31,7 +31,7 @@ class MotionManager {
     public function displayActiveMotions(Member $member) {
         $motions = $this->connection->query(
             'SELECT motion_id, title_key, date_fin_vote ' .
-            'FROM Motions ' .
+            'FROM motions ' .
             'WHERE Date_fin_vote >  NOW() ' .
             'ORDER BY date_fin_vote DESC '
         );
@@ -61,8 +61,8 @@ class MotionManager {
     public function displayMotions() {
         return $this->connection->select(
             'SELECT Motion_id, Title_key, Label_key, Submission_date, Date_fin_vote, Citizen_id ' .
-            'FROM Motions, Motions_Themes ' .
-            'WHERE Date_fin_vote < NOW() AND Motions.Theme_id=Motions_Themes.Theme_id ' .
+            'FROM motions, motions_themes ' .
+            'WHERE Date_fin_vote < NOW() AND motions.Theme_id = motions_themes.Theme_id ' .
             'ORDER BY motion_id DESC'
         );
     }
@@ -76,8 +76,8 @@ class MotionManager {
     public function displayMotionDetails($id) {
         $motion = $this->connection->select(
             'SELECT motion_id, title_key, label_key, description, moyens, submission_date, date_fin_vote ' .
-            'FROM Motions, Motions_Themes ' .
-            "WHERE motion_id = $id AND Motions.theme_id=Motions_Themes.Theme_id"
+            'FROM motions, motions_themes ' .
+            "WHERE motion_id = $id AND motions.theme_id = motions_themes.Theme_id"
         );
         $motion[0]['vote'] = $this->getVotes($id);
         return $motion;
@@ -88,7 +88,7 @@ class MotionManager {
      */
     public function getMotionThemes() {
         return $this->connection->query(
-            'SELECT theme_id, label_key FROM Motions_Themes ORDER BY label_key ASC'
+            'SELECT theme_id, label_key FROM motions_themes ORDER BY label_key ASC'
         );
     }
     
@@ -98,8 +98,8 @@ class MotionManager {
      */
     public function getVotes($motionId) {
         return [
-            $this->connection->count('Motions_Votes', " WHERE Motion_id = $motionId AND Choix = 1"),
-            $this->connection->count('Motions_Votes', " WHERE Motion_id = $motionId AND Choix = 2")
+            $this->connection->count('motions_votes', " WHERE Motion_id = $motionId AND Choix = 1"),
+            $this->connection->count('motions_votes', " WHERE Motion_id = $motionId AND Choix = 2")
         ];
     }
     
@@ -113,13 +113,13 @@ class MotionManager {
      */
     public function validateMotion(Member $member, $title, $theme, $description, $means) {
         return $this->connection->query(
-            'INSERT INTO Motions ' .
+            'INSERT INTO motions ' .
             "(Theme_id, Title_key, Description, Moyens, Submission_date, Date_fin_vote, Citizen_id) " .
             "values ('" . htmlentities(utf8_decode($theme), ENT_QUOTES) . "', " . 
             "'" . htmlentities(utf8_decode($title), ENT_QUOTES) . "', " .
             "'" . nl2br(htmlentities($description)) . "', '" . nl2br(htmlentities($means)) . "',  NOW(), " .
             'DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM Motions_Themes ' .
-            "WHERE Motions_Themes.Theme_id = $theme) DAY), {$member->getId()})"
+            "WHERE motions_themes.Theme_id = $theme) DAY), {$member->getId()})"
         );
     }
     
@@ -140,7 +140,7 @@ class MotionManager {
         ;
         
         $this->connection->query(
-            'INSERT INTO Motions_Votes_Jetons ' .
+            'INSERT INTO motions_votes_jetons ' .
             '(Motion_id, Citizen_id, Date, Ip) ' .
             "VALUES ($id, {$member->getId()}, '$date', '$ip')"
         );
@@ -152,7 +152,7 @@ class MotionManager {
         
         $hash = hash('sha512', "{$this->connection->insert_id}#$id#$member#$choice#$date#$ip");
         $this->connection->query(
-            'INSERT INTO Motions_Votes ' .
+            'INSERT INTO motions_votes ' .
             '(Motion_id, Choix, Hash) ' .
             "VALUES ($id, '$choice', '$hash')"
         );
@@ -167,7 +167,7 @@ class MotionManager {
     protected function hasAlreadyVoted($motionId, $memberId) {
         return $this
             ->connection
-            ->count("Motions_Votes_Jetons", " WHERE Motion_id = $motionId AND Citizen_id = $memberId")
+            ->count("motions_votes_jetons", " WHERE Motion_id = $motionId AND Citizen_id = $memberId")
         ;
     }
     

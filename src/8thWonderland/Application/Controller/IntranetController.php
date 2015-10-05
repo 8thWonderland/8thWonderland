@@ -89,7 +89,7 @@ class IntranetController extends ActionController {
             $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions($member);
 
             // affichage des groupes du membre
-            $this->viewParameters['list_groups'] = $this->application->get('group_manager')->getMemberGroups($member->getId());
+            $this->viewParameters['list_groups'] = $member->getGroups();
             $this->viewParameters['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('/Group/displayGroupsMembers', '', 'milieu_droite');</script>";
 
         }
