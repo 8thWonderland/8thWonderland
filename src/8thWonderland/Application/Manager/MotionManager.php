@@ -118,7 +118,7 @@ class MotionManager {
             "values ('" . htmlentities(utf8_decode($theme), ENT_QUOTES) . "', " . 
             "'" . htmlentities(utf8_decode($title), ENT_QUOTES) . "', " .
             "'" . nl2br(htmlentities($description)) . "', '" . nl2br(htmlentities($means)) . "',  NOW(), " .
-            'DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM Motions_Themes ' .
+            'DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM motions_themes ' .
             "WHERE motions_themes.Theme_id = $theme) DAY), {$member->getId()})"
         );
     }
@@ -150,7 +150,7 @@ class MotionManager {
         
         $choice = ($vote === 'approved') ? 1 : 2;
         
-        $hash = hash('sha512', "{$this->connection->insert_id}#$id#$member#$choice#$date#$ip");
+        $hash = hash('sha512', "{$this->connection->insert_id}#$id#{$member->getIdentity()}#$choice#$date#$ip");
         $this->connection->query(
             'INSERT INTO motions_votes ' .
             '(Motion_id, Choix, Hash) ' .
