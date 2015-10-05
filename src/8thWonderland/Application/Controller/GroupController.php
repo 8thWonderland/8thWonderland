@@ -198,7 +198,6 @@ class GroupController extends ActionController {
             '<td>' . $translate->translate('group_type') . '</td>' .
             '<td>' . $translate->translate('group_nbmembers') . '</td></tr>'
         ;
-        
         foreach($groups as $group) {
             $tab_groups .= 
                 "<tr style='height:25px'>" .
@@ -433,10 +432,11 @@ class GroupController extends ActionController {
                 ];
         */
         $render = '';
-        $regionalGroups = $this->application->get('group_manager')->getRegionalGroups();
+        $groupManager = $this->application->get('group_manager');
+        $regionalGroups = $groupManager->getRegionalGroups();
         foreach($regionalGroups as $row) {
             if(!empty($row['Longitude']) && !empty($row['Latitude'])) {
-                $render .= '["'.htmlentities($row['Group_name'], ENT_QUOTES).'", '.$row['Longitude'].", ".$row['Latitude'].", ". ManageGroups::NbMembers($row['Group_id'])."],\n";
+                $render .= '["'.htmlentities($row['Group_name'], ENT_QUOTES).'", '.$row['Longitude'].", ".$row['Latitude'].", ". $groupManager->countMembers($row['Group_id'])."],\n";
             }
         }
         return 'var regions = ['.substr($render, 0, -2).'];';
