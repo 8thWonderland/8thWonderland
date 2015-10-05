@@ -46,7 +46,7 @@ class Log {
     public function log($message, $priority) {       
         if ($this->writer === 'DB') {
             $this->connection->query(
-                "INSERT INTO logs (level, msg) VALUES ($priority, '{$db->real_escape_string($message)}')"
+                "INSERT INTO logs (level, msg) VALUES ($priority, '{$this->connection->real_escape_string($message)}')"
             );
         }
     }
