@@ -117,7 +117,7 @@ class Group {
      * @return \DateTime
      */
     public function getCreatedAt() {
-        return $this->getCreatedAt();
+        return $this->createdAt;
     }
     
     /**
