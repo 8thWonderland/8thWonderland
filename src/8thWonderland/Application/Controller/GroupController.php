@@ -267,7 +267,7 @@ class GroupController extends ActionController {
         if (!empty($_POST['page'])) {
             $paginator->setCurrentPage($_POST['page']);
         }
-        $datas = $paginator->getCurrentItems();
+        $members = $paginator->getCurrentItems();
         $CurPage = $paginator->getCurrentPage();
         $MaxPage = $paginator->getNumPage();
         $translate = $this->application->get('translator');
@@ -292,19 +292,20 @@ class GroupController extends ActionController {
             '<td width="150px">' . $translate->translate('subscription') . '</td></tr>'
         ;
         
-        foreach($datas as $key => $row) {
-            $tab_users .= "<tr style='height:25px'>";
-            foreach($row as $key => $value) {
-                if($key === 'id') {
-                    continue;
-                }
-                $tab_users .= 
-                    ($key !== 'identity')
-                    ? "<td>{$this->filterUsers($key, $value)}</td>"
-                    : "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message=" . $row['id'] . "', 'milieu_milieu')\">" . utf8_encode($row['identity']) . "</a></td>"
-                ;
-            }
-            $tab_users .= "</tr>";
+        foreach($members as $member) {
+            $tab_users .= 
+                '<tr style="height:25px">' .
+                "<td><img src='{$member['avatar']}' width='48px' height='48px' alt='avatar'/></td>" .
+                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message='{$member['id']}', 'milieu_milieu')\">{$member['identity']}</a></td>" .
+                "<td>{$member['gender']}</td>" .
+                "<td>{$member['email']}</td>" .
+                "<td>{$member['language']}</td>" .
+                "<td>{$member['country']}</td>" .
+                "<td>{$member['region']}</td>" .
+                "<td>{$member['last_connected_at']}</td>" .
+                "<td>{$member['created_at']}</td>" .
+                '</tr>'
+            ;
         }
         
         // numéros des items
@@ -436,7 +437,7 @@ class GroupController extends ActionController {
         $regionalGroups = $groupManager->getRegionalGroups();
         foreach($regionalGroups as $row) {
             if(!empty($row['Longitude']) && !empty($row['Latitude'])) {
-                $render .= '["'.htmlentities($row['Group_name'], ENT_QUOTES).'", '.$row['Longitude'].", ".$row['Latitude'].", ". $groupManager->countMembers($row['Group_id'])."],\n";
+                $render .= '["'.htmlentities($row['name'], ENT_QUOTES).'", '.$row['Longitude'].", ".$row['Latitude'].", ". $groupManager->countMembers($row['id'])."],\n";
             }
         }
         return 'var regions = ['.substr($render, 0, -2).'];';
