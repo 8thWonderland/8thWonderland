@@ -134,7 +134,7 @@ class GroupController extends ActionController {
         $session = $this->application->get('session');
         $session->delete('desktop');
         $session->delete('search_users');
-        $this->redirect('intranet/index');
+        $this->redirect('Intranet/index');
     }
     
     public function changeContactGroupsAction() {
