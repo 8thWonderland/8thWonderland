@@ -29,7 +29,7 @@ class GroupController extends ActionController {
         foreach ($groups as $group) {
             $response .=
                 "<tr><td>" . utf8_encode($group->getName()) . "</td>" .
-                "<td><div class='bouton' style='margin:3px;'><a onclick=\"Clic('/intranet/index', 'group_id={$group->getId()}', 'body'); return false;\">" .
+                "<td><div class='bouton' style='margin:3px;'><a onclick=\"Clic('/Intranet/index', 'group_id={$group->getId()}', 'body'); return false;\">" .
                 "<span style='color: #dfdfdf;'>{$translate->translate('btn_enterdesktop')}</span></a></div></td></tr>"
             ;
         }
