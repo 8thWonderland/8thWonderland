@@ -1,7 +1,7 @@
 {
     "services": {
         "database_connection" : {
-            "class" : "Wonderland\\Library\\Database\\Mysqli",
+            "class" : "Wonderland\\Library\\Database\\PdoDriver",
             "arguments" : [
                 "%database_host%",
                 "%database_username%",

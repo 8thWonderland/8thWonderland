@@ -82,16 +82,15 @@ class AdminController extends ActionController {
         
         if (isset($desktop) && $desktop == 1)   {
             $lang = $this->getUser()->getLanguage();
-            $regionUnknown = $db->select("SELECT $lang, country FROM users, country WHERE region = -1 AND country = code");
+            $statement = $db->query("SELECT $lang, country FROM users, country WHERE region = -1 AND country = code");
             $this->viewParameters['stats_regions_other'] = "<table><tr><td>" . $translate->translate('stats_region_unknown') . "</td></tr>";
-            $nbRegions = count($regionUnknown);
-            for ($i = 0; $i < $nbRegions; ++$i) {
-                $this->viewParameters['stats_regions_other'] .= "<tr><td>- " . $regionUnknown[$i][$lang] . " (" . $regionUnknown[$i]['Pays'] . ")</td></tr>";
+            while ($regionUnknown = $statement->fetch()) {
+                $this->viewParameters['stats_regions_other'] .= "<tr><td>- " . $regionUnknown[$lang] . " (" . $regionUnknown['Pays'] . ")</td></tr>";
             }
             $this->viewParameters['stats_regions_other'] .= "</table>";
             $this->viewParameters['desktop'] = 1;
         }
-        $regions_ok = $db->count('users', ' WHERE region > 0');
+        $regions_ok = $db->query('SELECT COUNT(*) AS count FROM users WHERE region > 0')->fetch()['count'];
         
         $memberManager = $this->application->get('member_manager');
         $this->viewParameters['stats_members'] = $memberManager->countMembers();
@@ -216,7 +215,7 @@ class AdminController extends ActionController {
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/admin/display_server\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'/Admin/displayServer\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_crons .= '<td colspan="4" style="padding-right:15px;" align="right">' . $previous . ' | ';
         $pageRange = $paginator->getPageRange();
@@ -232,7 +231,7 @@ class AdminController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_crons .=
                 ($page != $CurPage)
-                ? '<a onclick="Clic(\'/admin/display_server\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'/Admin/displayServer\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : $tab_crons .= '<b>' . $page . '</b> | '
             ;
         }
@@ -240,12 +239,12 @@ class AdminController extends ActionController {
         
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/admin/display_server\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/Admin/displayServer\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         return 
             $tab_crons . $next . '</td></tr></table>' .
-            "<div class='bouton' style='width:120px;'><a onclick=\"Clic('/admin/display_createcron', '', 'milieu_milieu'); return false;\">" .
+            "<div class='bouton' style='width:120px;'><a onclick=\"Clic('/Admin/displayCreateCron', '', 'milieu_milieu'); return false;\">" .
             "<span style='color: #dfdfdf;'>" . $translate->translate('btn_addcron') . "</span></a></div>"
         ;
     }

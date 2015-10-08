@@ -4,20 +4,20 @@ namespace Wonderland\Application\Manager;
 
 use Wonderland\Application\Model\Member;
 
-use Wonderland\Library\Database\Mysqli;
+use Wonderland\Library\Database\PdoDriver;
 use Wonderland\Library\Translator;
 
 class MotionManager {
-    /** @var \Wonderland\Library\Database\Mysqli **/
+    /** @var \Wonderland\Library\Database\PdoDriver **/
     protected $connection;
     /** @var \Wonderland\Library\Translator **/
     protected $translator;
     
     /**
-     * @param \Wonderland\Library\Database\Mysqli $connection
+     * @param \Wonderland\Library\Database\PdoDriver $connection
      * @param \Wonderland\Library\Translator $translator
      */
-    public function __construct(Mysqli $connection, Translator $translator) {
+    public function __construct(PdoDriver $connection, Translator $translator) {
         $this->connection = $connection;
         $this->translator = $translator;
     }
@@ -35,11 +35,8 @@ class MotionManager {
             'WHERE Date_fin_vote >  NOW() ' .
             'ORDER BY date_fin_vote DESC '
         );
-        if ($motions->num_rows === 0) {
-            return "<tr><td>{$this->translator->translate('no_result')}</td></tr>";
-        }
         $response = '';
-        while ($motion = $motions->fetch_assoc()) {
+        while ($motion = $motions->fetch(\PDO::FETCH_ASSOC)) {
             $response .=
                 "<tr><td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['title_key']}</a></td>" .
                 "<td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['date_fin_vote']}</a></td>"
@@ -52,19 +49,24 @@ class MotionManager {
             }
             $response .= '</tr>';
         }
-        return $response;
+        if(!empty($response)) {
+            return $response;
+        }
+        return "<tr><td>{$this->translator->translate('no_result')}</td></tr>";
     }
     
     /**
      * @return array
      */
     public function displayMotions() {
-        return $this->connection->select(
-            'SELECT Motion_id, Title_key, Label_key, Submission_date, Date_fin_vote, Citizen_id ' .
-            'FROM motions, motions_themes ' .
-            'WHERE Date_fin_vote < NOW() AND motions.Theme_id = motions_themes.Theme_id ' .
-            'ORDER BY motion_id DESC'
-        );
+        return $this->connection->query(
+            'SELECT m.Motion_id, m.Title_key, mt.Label_key, m.Submission_date, m.Date_fin_vote, u.identity ' .
+            'FROM motions m ' .
+            'INNER JOIN motions_themes mt ON m.Theme_id = mt.Theme_id ' .
+            'LEFT JOIN users u ON u.id = m.Citizen_id ' .
+            'WHERE m.Date_fin_vote < NOW() ' .
+            'ORDER BY m.motion_id DESC'
+        )->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /**
@@ -74,11 +76,11 @@ class MotionManager {
      * @return array
      */
     public function displayMotionDetails($id) {
-        $motion = $this->connection->select(
+        $motion = $this->connection->query(
             'SELECT motion_id, title_key, label_key, description, moyens, submission_date, date_fin_vote ' .
             'FROM motions, motions_themes ' .
             "WHERE motion_id = $id AND motions.theme_id = motions_themes.Theme_id"
-        );
+        )->fetchAll(\PDO::FETCH_ASSOC);
         $motion[0]['vote'] = $this->getVotes($id);
         return $motion;
     }
@@ -98,8 +100,12 @@ class MotionManager {
      */
     public function getVotes($motionId) {
         return [
-            $this->connection->count('motions_votes', " WHERE Motion_id = $motionId AND Choix = 1"),
-            $this->connection->count('motions_votes', " WHERE Motion_id = $motionId AND Choix = 2")
+            $this->connection->query(
+                "SELECT COUNT(*) AS count FROM motions_votes WHERE Motion_id = $motionId AND Choix = 1"
+            )->fetch(\PDO::FETCH_ASSOC)['count'],
+            $this->connection->query(
+                "SELECT COUNT(*) AS count FROM motions_votes WHERE Motion_id = $motionId AND Choix = 2"
+            )->fetch(\PDO::FETCH_ASSOC)['count']
         ];
     }
     
@@ -112,15 +118,19 @@ class MotionManager {
      * @return \mysqli_result
      */
     public function validateMotion(Member $member, $title, $theme, $description, $means) {
-        return $this->connection->query(
+        return $this->connection->prepareStatement(
             'INSERT INTO motions ' .
-            "(Theme_id, Title_key, Description, Moyens, Submission_date, Date_fin_vote, Citizen_id) " .
-            "values ('" . htmlentities(utf8_decode($theme), ENT_QUOTES) . "', " . 
-            "'" . htmlentities(utf8_decode($title), ENT_QUOTES) . "', " .
-            "'" . nl2br(htmlentities($description)) . "', '" . nl2br(htmlentities($means)) . "',  NOW(), " .
+            '(Theme_id, Title_key, Description, Moyens, Submission_date, Date_fin_vote, Citizen_id) ' .
+            'values (:theme_id, :title, :description, :means,  NOW(), ' .
             'DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM motions_themes ' .
-            "WHERE motions_themes.Theme_id = $theme) DAY), {$member->getId()})"
-        );
+            'WHERE motions_themes.Theme_id = :theme_id) DAY), :citizen_id)'
+        , [
+            'theme_id' => $theme,
+            'title' => $title,
+            'description' => $description,
+            'means' => $means,
+            'citizen_id' => $member->getId()
+        ]);
     }
     
     /**
@@ -138,25 +148,30 @@ class MotionManager {
             ? $_SERVER['REMOTE_ADDR']
             : 'inconnue'
         ;
-        
-        $this->connection->query(
-            'INSERT INTO motions_votes_jetons ' .
-            '(Motion_id, Citizen_id, Date, Ip) ' .
-            "VALUES ($id, {$member->getId()}, '$date', '$ip')"
-        );
-        if ($this->connection->affected_rows == 0) {
-            return $this->connection->affected_rows;
+        $statement = $this->connection->prepareStatement(
+            'INSERT INTO motions_votes_jetons (Motion_id, Citizen_id, Date, Ip) ' .
+            'VALUES (:motion_id, :citizen_id, :date, :ip)'
+        , [
+            'motion_id' => $id,
+            'citizen_id' => $member->getId(),
+            'date' => $date,
+            'ip' => $ip
+        ]);
+        if ($statement->rowCount() === 0) {
+            return 0;
         }
         
         $choice = ($vote === 'approved') ? 1 : 2;
         
-        $hash = hash('sha512', "{$this->connection->insert_id}#$id#{$member->getIdentity()}#$choice#$date#$ip");
-        $this->connection->query(
-            'INSERT INTO motions_votes ' .
-            '(Motion_id, Choix, Hash) ' .
-            "VALUES ($id, '$choice', '$hash')"
-        );
-        return $this->connection->affected_rows;
+        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$id#{$member->getIdentity()}#$choice#$date#$ip");
+        $statement = $this->connection->prepareStatement(
+            'INSERT INTO motions_votes(Motion_id, Choix, Hash)  VALUES (:id, :choice, :hash)'
+        , [
+            'id' => $id,
+            'choice' => $choice,
+            'hash' => $hash
+        ]);
+        return $statement->rowCount();
     }
     
     /**
@@ -165,10 +180,9 @@ class MotionManager {
      * @return int
      */
     protected function hasAlreadyVoted($motionId, $memberId) {
-        return $this
-            ->connection
-            ->count("motions_votes_jetons", " WHERE Motion_id = $motionId AND Citizen_id = $memberId")
-        ;
+        return $this->connection->query(
+            "SELECT COUNT(*) AS count FROM motions_votes_jetons WHERE Motion_id = $motionId AND Citizen_id = $memberId"
+        )->fetch(\PDO::FETCH_ASSOC)['count'];
     }
     
     public function checkMotion(){

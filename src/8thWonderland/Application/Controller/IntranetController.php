@@ -21,7 +21,9 @@ class IntranetController extends ActionController {
 
         // Teste si le code country du membre est valide
         // =============================================
-        $country_ok = $db->count('country', " WHERE code='{$member->getCountry()}'");
+        $country_ok = $db->query(
+            "SELECT COUNT(*) AS count FROM country WHERE code='{$member->getCountry()}'"
+        )->fetch()['count'];
         if ($country_ok === 0) {
             $select_geo = true;
         } else {
@@ -42,11 +44,11 @@ class IntranetController extends ActionController {
      * @param \Wonderland\Application\Model\Member $member
      */
     protected function displaySelectCountry(Member $member) {
-        $countries = $this->application->get('member_manager')->getCountries($member->getLanguage());
+        $language = $member->getLanguage();
+        $statement = $this->application->get('member_manager')->getCountries($language);
         $this->viewParameters['select_country'] = '<option></option>';
-        $nbCountries = count($countries);
-        for ($i = 0; $i < $nbCountries; ++$i) {
-            $this->viewParameters['select_country'] .= "<option value='{$countries[$i]['Code']}'>{$countries[$i][$member->getLanguage()]}</option>";
+        while($country = $statement->fetch()) {
+            $this->viewParameters['select_country'] .= "<option value='{$country['Code']}'>{$country[$language]}</option>";
         }
         $this->viewParameters['msg'] = '';
         $this->viewParameters['default_view'] = 'members/select_country.view';
@@ -108,10 +110,13 @@ class IntranetController extends ActionController {
         
         if (!empty($_POST['country']) && isset($_POST['region']) && $_POST['region'] !== 0) {
             $db = $this->application->get('database_connection');
-            
-            $db->query(
-                "UPDATE Utilisateurs SET Pays='{$_POST['country']}', Region={$_POST['region']} WHERE IDUser={$member->getId()}"
-            );
+            $db->prepareStatement(
+                'UPDATE users SET country = :country, region = :region WHERE id = :id'
+            , [
+                'country' => $_POST['country'],
+                'region' => $_POST['region'],
+                'id' => $member->getId()
+            ]);
             
             if ($_POST['region'] !== -1) {
                 $logger = $this->application->get('logger');
@@ -120,26 +125,35 @@ class IntranetController extends ActionController {
                 // ===================================================
                 $echec_createGroup = false;
                 $groupId = 0;
-                $group_name = $db->select("SELECT Name FROM regions WHERE Region_id={$_POST['region']}");
-                if ($db->count('Groups', " WHERE Group_name='{$db->real_escape_string($group_name[0]['Name'])}'") == 0) {
-                    $db->query("INSERT INTO Groups (Group_Type, Description, Group_name, ID_Contact) VALUES (1, 'Groupe regional', '{$db->real_escape_string($group_name[0]['Name'])}', 5)");
-                    if ($db->affected_rows == 0) {
+                $groupName = $db->prepareStatement(
+                    'SELECT Name FROM regions WHERE Region_id = :region_id'
+                , ['region_id' => $_POST['region']])->fetch()['Name'];
+                if ($db->prepareStatement('SELECT COUNT(*) AS count FROM groups WHERE name = :name', ['name' => $groupName])->fetch()['count'] === 0) {
+                    $statement = $db->prepareStatement(
+                        'INSERT INTO groups (type_id, description, name, contact_id) VALUES (:type_id, :description, :name, :contact_id)', [
+                            'type_id' => 1,
+                            'description' => 'Groupe regional',
+                            'name' => $groupName,
+                            'contact_id' => 1
+                        ]);
+                    if ($statement->rowCount() === 0) {
                         $echec_createGroup = true;
-                        // Journal de log
-                        $logger->log("Création du groupe régional " . $group_name[0]['Name'] . " par l'utilisateur " . $member->getIdentity(), Log::ERR);
                     } else {
-                        $groupId = $db->insert_id;
+                        // Journal de log
+                        $logger->log("Création du groupe régional $groupName par l'utilisateur " . $member->getIdentity(), Log::ERR);
+                        $groupId = $db->lastInsertId();
                     }
                 } else {
-                    $group = $db->select("SELECT Group_id FROM Groups WHERE Group_name='{$db->real_escape_string($group_name[0]['Name'])}'");
-                    $groupId = $group[0]['Group_id'];
+                    $groupId = $db->query("SELECT id FROM groups WHERE name = '$groupName'")->fetch()['id'];
                 }
 
                 if (!$echec_createGroup) {
-                    $db->query("INSERT INTO Citizen_Groups (Citizen_id, Group_id) VALUES ({$auth->getIdentity()}, $groupId)");
-                    if ($db->affected_rows === 0) {
+                    $statement = $db->prepareStatement(
+                        'INSERT INTO citizen_groups (citizen_id, group_id) VALUES (:citizen_id, :group_id)'
+                    , ['citizen_id' => $member->getId(), 'group_id' => $groupId]);
+                    if ($statement->rowCount() === 1) {
                         // Journal de log
-                        $logger->log("Ajout de l'utilisateur {$member->identite} dans le groupe {$group_name[0]['Name']}", Log::ERR);
+                        $logger->log("Ajout de l'utilisateur {$member->getIdentity()} dans le groupe {$groupName}", Log::ERR);
                     }
                 }
             
@@ -147,11 +161,11 @@ class IntranetController extends ActionController {
                 // Si la region choisie est 'other' alors Brennan Waco reçoit un mail
                 // ==================================================================
                 $mail = new Mailer();
-                $mail->addRecipient('waco.brennan@gmail.com','');
+                $mail->addRecipient('kern046@gmail.com','');
                 $mail->addFrom('developpeurs@8thwonderland.com','');
                 $mail->addSubject('regions inconnues','');
                 $mail->html = 
-                    "<table><tr><td>ID User : {$auth->getIdentity()} :<br/>====================</td></tr>" .
+                    "<table><tr><td>ID User : {$member->getIdentity()} :<br/>====================</td></tr>" .
                     "<tr><td>{$_POST['country']}<br/></td></tr>" .
                     '<tr><td>Message :<br/>====================</td></tr></table>'
                 ;
@@ -169,24 +183,21 @@ class IntranetController extends ActionController {
         }
     }
     
-    public function list_regionsAction() {
+    public function listRegionsAction() {
         $res = '<option></option>';
         if (!empty($_POST['country'])) {
-            $regions = $this
-                ->application
-                ->get('mysqli')
-                ->select("SELECT Region_id, Name FROM regions WHERE Country='{$_POST['country']}' ORDER BY Name ASC")
-            ;
-            $nbRegions = count($regions);
-            if ($nbRegions > 0) {
-                for($i = 0; $i < $nbRegions; ++$i) {
-                    $res .= "<option value='{$regions[$i]['Region_id']}'>" . htmlentities($regions[$i]['Name']) . "</option>";
-                }
-            } else {
-                $res .= "<option value='-1'>Other</option>";
+            $statement = $this->application->get('database_connection')->prepareStatement(
+                'SELECT Region_id, Name FROM regions WHERE Country = :country ORDER BY Name ASC'
+            , ['country' => $_POST['country']]);
+            $regions= '';
+            while($region = $statement->fetch()) {
+                $regions .= "<option value='{$region['Region_id']}'>" . htmlentities($region['Name']) . "</option>";
+            }
+            if(empty($regions)) {
+                $regions .= "<option value='-1'>Other</option>";
             }
         }
-        $this->display($res);
+        $this->display($res . $regions);
     }
 
     public function infosAction() {
@@ -222,19 +233,18 @@ class IntranetController extends ActionController {
     }
     
     public function consoleAction() {
-        if (($id = $this->application->get('session')->get('__id__')) === null) {
+        if (($member = $this->getUser()) === null) {
             $this->redirect('Index/index');
         }
-        if (!$memberManager->isMemberInGroup($id, 1)) {
+        $memberManager = $this->application->get('member_manager');
+        if (!$memberManager->isMemberInGroup($member->getId(), 1)) {
             $this->redirect('Intranet/index');
         }
-        
-        $member = $memberManager->getMember($id);
         $logger = $this->application->get('logger');
         $logger->setWriter('db');
-        $logger->log($member->getIdentity() . " entre dans la console d'administration.", Log::INFO);
+        $logger->log("{$member->getIdentity()} entre dans la console d'administration.", Log::INFO);
         
         $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->redirect('Admin/display_console');
+        $this->redirect('Admin/displayConsole');
     }
 }

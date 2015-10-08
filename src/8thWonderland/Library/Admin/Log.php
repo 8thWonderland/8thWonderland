@@ -2,7 +2,7 @@
 
 namespace Wonderland\Library\Admin;
 
-use Wonderland\Library\Database\Mysqli;
+use Wonderland\Library\Database\PdoDriver;
 
 class Log {
     const EMERG   = 0;  // Emergency: system is unusable
@@ -23,9 +23,9 @@ class Log {
     protected $writer;
     
     /**
-     * @param \Wonderland\Library\Database\Mysqli $connection
+     * @param \Wonderland\Library\Database\PdoDriver $connection
      */
-    public function __construct(Mysqli $connection) {
+    public function __construct(PdoDriver $connection) {
         $this->connection = $connection;
     }
     
@@ -45,8 +45,8 @@ class Log {
      */
     public function log($message, $priority) {       
         if ($this->writer === 'DB') {
-            $this->connection->query(
-                "INSERT INTO logs (level, msg) VALUES ($priority, '{$this->connection->real_escape_string($message)}')"
+            $this->connection->exec(
+                "INSERT INTO logs (level, msg) VALUES ($priority, '$message')"
             );
         }
     }
@@ -55,8 +55,8 @@ class Log {
      * @return array
      */
     public static function displayDbLogs() {
-        return $this->connection->select(
+        return $this->connection->query(
             'SELECT level, timelogs, msg FROM logs ORDER BY timelogs DESC'
-        );
+        )->fetchAll();
     }
 }

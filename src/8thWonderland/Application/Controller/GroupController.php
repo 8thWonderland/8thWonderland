@@ -103,11 +103,11 @@ class GroupController extends ActionController {
     public function displayManageGroupsAction() {
         $this->viewParameters['translate'] = $this->application->get('translator');
 
-        $membersList = $this->application->get('group_manager')->getGroupMembers($this->application->get('session')->get('desktop'));
+        $membersList = $this->application->get('member_manager')->findByGroup($this->application->get('session')->get('desktop'));
         $select = '<option></option>';
         $nbMembers = count($membersList);
         for ($i = 0; $i < $nbMembers; ++$i) {
-            $select .= "<option value='{$membersList[$i]['id']}'>{$membersList[$i]['identity']}</option>";
+            $select .= "<option value='{$membersList[$i]->getId()}'>{$membersList[$i]->getIdentity()}</option>";
         }
         $this->viewParameters['select_contactsgroup'] = $select;
         $this->render('groups/manage_groups');
@@ -118,7 +118,7 @@ class GroupController extends ActionController {
         $this->render('admin/dev_inprogress');
     }
     
-    public function displayAddressbookAction() {
+    public function displayAddressBookAction() {
         $this->viewParameters['list_users'] = $this->renderUsers();
         $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('members/list_users');
@@ -142,7 +142,8 @@ class GroupController extends ActionController {
         $dbLogger = $this->application->get('logger');
         $dbLogger->setWriter('db');
         $session = $this->application->get('session');
-        $member = $this->application->get('member_manager')->getMember($session->get('__id__'));
+        $memberManager = $this->application->get('member_manager');
+        $member = $memberManager->getMember($session->get('__id__'));
         
         if (!isset($_POST['sel_contactgroups']) || intval($_POST['sel_contactgroups']) === 0) {
             $this->display(
@@ -155,7 +156,24 @@ class GroupController extends ActionController {
             $dbLogger->log("Echec du changement de CG par {$member->getIdentity()} (id_user inconnu : {$_POST['sel_contactgroups']})", Log::ERR);
         } else {
             $desktop = $session->get('desktop');
-            $res = $this->application->get('group_manager')->updateContact($desktop, $_POST['sel_contactgroups']);
+            $groupManager = $this->application->get('group_manager');
+            if(($group = $groupManager->getGroup($desktop)) === null) {
+                return $this->display(
+                    '<div class="error" style="height:25px;"><table><tr>' .
+                    '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
+                    '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
+                    '</tr></table></div>'
+                );
+            }
+            if(($newContact = $memberManager->getMember($_POST['sel_contactgroups'])) === null) {
+                return $this->display(
+                    '<div class="error" style="height:25px;"><table><tr>' .
+                    '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
+                    '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
+                    '</tr></table></div>'
+                );
+            }
+            $res = $groupManager->updateContact($group, $newContact);
             if ($res === 0) {
                 $this->display('<div class="error" style="height:25px;"><table><tr>' .
                           '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
