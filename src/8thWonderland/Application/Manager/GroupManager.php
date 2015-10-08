@@ -19,6 +19,22 @@ class GroupManager {
         $this->repository = $groupRepository;
     }
     
+    public function getGroup($id) {
+        if(($data = $this->repository->find($id)) === false) {
+            return null;
+        }
+        return
+            (new Group())
+            ->setId($id)
+            ->setName($data['name'])
+            ->setDescription($data['description'])
+            ->setType((new GroupType())->setLabel($data['label']))
+            ->setContact((new Member())->setId($data['contact_id']))
+            ->setCreatedAt(new \DateTime($data['created_at']))
+            ->setUpdatedAt(new \DateTime($data['updated_at']))
+        ;
+    }
+    
     /**
      * @return array
      */
@@ -34,15 +50,9 @@ class GroupManager {
                 (new Group())
                 ->setId($data['id'])
                 ->setName($data['name'])
-                ->setType(
-                    (new GroupType())
-                    ->setLabel($data['label'])
-                )
+                ->setType((new GroupType())->setLabel($data['label']))
                 ->setDescription($data['description'])
-                ->setContact(
-                    (new Member())
-                    ->setIdentity($data['identity'])
-                )
+                ->setContact((new Member())->setIdentity($data['identity']))
                 ->setCreatedAt((new \DateTime($data['created_at'])))
                 ->setUpdatedAt(new \DateTime($data['updated_at']))
             ;
@@ -68,12 +78,12 @@ class GroupManager {
     /**
      * Update Group's contact
      * 
-     * @param int $groupId
-     * @param int $contactId
+     * @param \Wonderland\Application\Model\Group $group
+     * @param \Wonderland\Application\Model\Member $member
      * @return int
      */
-    public function updateContact($groupId, $contactId) {
-        $this->connection->query("UPDATE groups SET contact_id = $contactId WHERE id = $groupId");
-        return $this->connection->affected_rows;
+    public function updateContact(Group $group, Member $member) {
+        $group->setContact($member);
+        return $this->repository->update($group)->rowCount();
     }
 }

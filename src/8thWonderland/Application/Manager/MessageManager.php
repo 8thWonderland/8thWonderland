@@ -58,7 +58,7 @@ class MessageManager {
         
         $messages = [];
         
-        while($data = $statement->fetch_assoc()) {
+        while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $author = $this->memberManager->getMember($data['author_id']);
             $messages[] =
                 (new Message())
@@ -82,7 +82,7 @@ class MessageManager {
         
         $messages = [];
         
-        while($data = $statement->fetch_assoc()) {
+        while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $recipient = $this->memberManager->getMember($data['recipient_id']);
             $messages[] =
                 (new Message())
@@ -121,9 +121,9 @@ class MessageManager {
     /**
      * @param int $id
      * @param int $box
-     * @return \mysqli_result
+     * @return int
      */
     public function deleteMessage($id, $box) {
-        return $this->repository->delete($id, $box);
+        return $this->repository->delete($id, $box)->rowCount();
     }
 }

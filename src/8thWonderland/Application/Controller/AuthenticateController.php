@@ -5,6 +5,7 @@ namespace Wonderland\Application\Controller;
 use Wonderland\Library\Controller\ActionController;
 
 use Wonderland\Application\Model\Mailer;
+use Wonderland\Application\Model\Member;
 
 use Wonderland\Library\Admin\Log;
 
@@ -60,7 +61,10 @@ class AuthenticateController extends ActionController {
         } else {
             // Controle de l'identite
             if ($memberManager->validateIdentity($_POST['identity'])) {
-                if ($db->count('users', " WHERE identity='{$_POST['identity']}'") > 0) {
+                $statement = $db->prepareStatement(
+                    'SELECT COUNT(*) AS count FROM users WHERE identity = :identity'
+                , ['identity' => $_POST['identity']]);
+                if ($statement->fetch(\PDO::FETCH_ASSOC)['count'] > 0) {
                     $err_msg .= $translate->translate('identity_exist') . "<br/>";
                 }
             } else {
@@ -81,14 +85,27 @@ class AuthenticateController extends ActionController {
                 '</tr></table></div>'
             );
         } else {
-            // Enregistrement des infos du membre
-            // ==================================
-            $db->query(
-                "INSERT INTO users (login, password, identity, gender, email, language, region, created_at) " .
-                "VALUES ('" . $_POST['login'] . "', '" . hash('sha512', $_POST['password']) . "', '" . $_POST['identity'] . "', " . 
-                ($_POST['gender']-1) . ", '" . $_POST['mail'] . "', '" . $_POST['lang'] . "', -2, NOW())");
-            if ($db->affected_rows === 0) {
-                $err_msg .= $translate->translate('error') . "<br/>";
+            $result = $memberManager->create(
+                (new Member())
+                ->setLogin($_POST['login'])
+                ->setPassword(hash('sha512', $_POST['password']))
+                ->setSalt('salt')
+                ->setIdentity($_POST['identity'])
+                ->setGender(--$_POST['gender'])
+                ->setEmail($_POST['mail'])
+                ->setAvatar('default')
+                ->setCountry('unknown')
+                ->setLanguage($_POST['lang'])
+                ->setRegion(-2)
+                ->setCreatedAt(new \DateTime())
+                ->setLastConnectedAt(new \DateTime())
+                ->setIsEnabled(true)
+                ->setIsBanned(0)
+                ->setTheme('Rouge_Noir')
+            );
+            if($result !== true) {
+                // PDOStatement error info
+                $err_msg .= $result[2];
             }
             if (empty($err_msg)) {
                 $err_msg = $translate->translate('subscribe_ok');
@@ -113,7 +130,9 @@ class AuthenticateController extends ActionController {
         if (empty($_POST['login'])) {
             $err_msg = $translate->translate('fields_empty');
         } else {
-            $email = $this->application->get('database_connection')->select("SELECT email FROM Utilisateurs WHERE login='{$_POST['login']}'");
+            $email = $this->application->get('database_connection')->prepareStatement(
+                "SELECT email FROM users WHERE login = :login"
+            , ['login' => $_POST['login']])->fetch(\PDO::FETCH_ASSOC)['email'];
             if (count($email) === 0) {
                 $err_msg = $translate->translate('no_result');
             } else {

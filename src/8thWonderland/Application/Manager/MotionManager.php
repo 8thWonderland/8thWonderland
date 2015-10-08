@@ -36,7 +36,7 @@ class MotionManager {
             'ORDER BY date_fin_vote DESC '
         );
         $response = '';
-        while ($motion = $motions->fetch()) {
+        while ($motion = $motions->fetch(\PDO::FETCH_ASSOC)) {
             $response .=
                 "<tr><td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['title_key']}</a></td>" .
                 "<td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['date_fin_vote']}</a></td>"
@@ -60,11 +60,13 @@ class MotionManager {
      */
     public function displayMotions() {
         return $this->connection->query(
-            'SELECT Motion_id, Title_key, Label_key, Submission_date, Date_fin_vote, Citizen_id ' .
-            'FROM motions, motions_themes ' .
-            'WHERE Date_fin_vote < NOW() AND motions.Theme_id = motions_themes.Theme_id ' .
-            'ORDER BY motion_id DESC'
-        )->fetchAll();
+            'SELECT m.Motion_id, m.Title_key, mt.Label_key, m.Submission_date, m.Date_fin_vote, u.identity ' .
+            'FROM motions m ' .
+            'INNER JOIN motions_themes mt ON m.Theme_id = mt.Theme_id ' .
+            'LEFT JOIN users u ON u.id = m.Citizen_id ' .
+            'WHERE m.Date_fin_vote < NOW() ' .
+            'ORDER BY m.motion_id DESC'
+        )->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /**
@@ -78,7 +80,7 @@ class MotionManager {
             'SELECT motion_id, title_key, label_key, description, moyens, submission_date, date_fin_vote ' .
             'FROM motions, motions_themes ' .
             "WHERE motion_id = $id AND motions.theme_id = motions_themes.Theme_id"
-        )->fetchAll();
+        )->fetchAll(\PDO::FETCH_ASSOC);
         $motion[0]['vote'] = $this->getVotes($id);
         return $motion;
     }
@@ -100,10 +102,10 @@ class MotionManager {
         return [
             $this->connection->query(
                 "SELECT COUNT(*) AS count FROM motions_votes WHERE Motion_id = $motionId AND Choix = 1"
-            )->fetch()['count'],
+            )->fetch(\PDO::FETCH_ASSOC)['count'],
             $this->connection->query(
                 "SELECT COUNT(*) AS count FROM motions_votes WHERE Motion_id = $motionId AND Choix = 2"
-            )->fetch()['count']
+            )->fetch(\PDO::FETCH_ASSOC)['count']
         ];
     }
     
@@ -118,10 +120,10 @@ class MotionManager {
     public function validateMotion(Member $member, $title, $theme, $description, $means) {
         return $this->connection->prepareStatement(
             'INSERT INTO motions ' .
-            "(Theme_id, Title_key, Description, Moyens, Submission_date, Date_fin_vote, Citizen_id) " .
-            "values (':theme_id', ':title', :description, :means,  NOW(), " .
+            '(Theme_id, Title_key, Description, Moyens, Submission_date, Date_fin_vote, Citizen_id) ' .
+            'values (:theme_id, :title, :description, :means,  NOW(), ' .
             'DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM motions_themes ' .
-            "WHERE motions_themes.Theme_id = :theme_id) DAY), :citizen_id)"
+            'WHERE motions_themes.Theme_id = :theme_id) DAY), :citizen_id)'
         , [
             'theme_id' => $theme,
             'title' => $title,
@@ -146,7 +148,7 @@ class MotionManager {
             ? $_SERVER['REMOTE_ADDR']
             : 'inconnue'
         ;
-        $statement = $this->connection->query(
+        $statement = $this->connection->prepareStatement(
             'INSERT INTO motions_votes_jetons (Motion_id, Citizen_id, Date, Ip) ' .
             'VALUES (:motion_id, :citizen_id, :date, :ip)'
         , [
@@ -178,12 +180,9 @@ class MotionManager {
      * @return int
      */
     protected function hasAlreadyVoted($motionId, $memberId) {
-        return $this
-            ->connection
-            ->query(
-                "SELECT COUNT(*) AS count FROM motions_votes_jetons WHERE Motion_id = $motionId AND Citizen_id = $memberId"
-            )
-        ;
+        return $this->connection->query(
+            "SELECT COUNT(*) AS count FROM motions_votes_jetons WHERE Motion_id = $motionId AND Citizen_id = $memberId"
+        )->fetch(\PDO::FETCH_ASSOC)['count'];
     }
     
     public function checkMotion(){

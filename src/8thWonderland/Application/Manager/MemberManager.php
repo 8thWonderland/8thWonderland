@@ -36,7 +36,8 @@ class MemberManager {
             'LEFT JOIN groups g ON g.id = cg.group_id OR g.contact_id = u.id ' .
             'LEFT JOIN group_types gt ON gt.id = g.type_id ' .
             'LEFT JOIN users u2 ON u2.id = g.contact_id ' .
-            "WHERE u.id = :id"
+            'WHERE u.id = :id ' .
+            'GROUP BY g.id'
         , ['id' => $id]));
     }
     
@@ -57,7 +58,8 @@ class MemberManager {
             'LEFT JOIN groups g ON g.id = cg.group_id OR g.contact_id = u.id ' .
             'LEFT JOIN group_types gt ON gt.id = g.type_id ' .
             'LEFT JOIN users u2 ON u2.id = g.contact_id ' .
-            "WHERE u.identity = :identity"
+            'WHERE u.identity = :identity ' .
+            'GROUP BY g.id'
         , ['identity' => $identity]));
     }
     
@@ -79,7 +81,8 @@ class MemberManager {
             'LEFT JOIN groups g ON g.id = cg.group_id OR g.contact_id = u.id ' .
             'LEFT JOIN group_types gt ON gt.id = g.type_id ' .
             'LEFT JOIN users u2 ON u2.id = g.contact_id ' .
-            'WHERE u.login = :login AND u.password = :password'
+            'WHERE u.login = :login AND u.password = :password ' .
+            'GROUP BY g.id'
         , ['login' => $login, 'password' => $password]));
     }
     
@@ -90,12 +93,12 @@ class MemberManager {
      * @return \Wonderland\Application\Model\Member
      */
     public function formatMemberData($rawData) {
-        if(($data = $rawData->fetch()) === false) {
+        if(($data = $rawData->fetch(\PDO::FETCH_ASSOC)) === false) {
             return null;
         }
         $member =
             (new Member())
-            ->setId($data['id'])
+            ->setId((int) $data['id'])
             ->setLogin($data['login'])
             ->setIdentity($data['identity'])
             ->setPassword($data['password'])
@@ -103,16 +106,36 @@ class MemberManager {
             ->setAvatar($data['avatar'])
             ->setGender($data['gender'])
             ->setLanguage($data['language'])
-            ->setCountry($data['country'])
-            ->setRegion($data['region'])
+            ->setCountry((int) $data['country'])
+            ->setRegion((int) $data['region'])
             ->setCreatedAt(new \DateTime($data['created_at']))
             ->setLastConnectedAt(new \DateTime($data['last_connected_at']))
-            ->setIsEnabled($data['is_enabled'])
-            ->setIsBanned($data['is_banned'])
+            ->setIsEnabled((bool) $data['is_enabled'])
+            ->setIsBanned((bool) $data['is_banned'])
             ->setTheme($data['theme'])
         ;
+        if(isset($data['group_id'])) {
+            $member->addGroup(
+                (new Group())
+                ->setId($data['group_id'])
+                ->setName($data['name'])
+                ->setDescription($data['description'])
+                ->setType(
+                    (new GroupType())
+                    ->setId($data['group_type_id'])
+                    ->setLabel($data['label'])
+                )
+                ->setContact(
+                    (new Member())
+                    ->setId($data['contact_id'])
+                    ->setIdentity($data['contact_identity'])
+                )
+                ->setCreatedAt(new \DateTime($data['group_created_at']))
+                ->setUpdatedAt(new \DateTime($data['group_updated_at']))
+            );
+        }
         // Currently, the next rows are containing the user's groups
-        while($data = $rawData->fetch()) {
+        while($data = $rawData->fetch(\PDO::FETCH_ASSOC)) {
             $member->addGroup(
                 (new Group())
                 ->setId($data['group_id'])
@@ -138,15 +161,13 @@ class MemberManager {
     /**
      * @param \Wonderland\Application\Model\Member $member
      */
-    public function createMember(Member $member) {
-        $this->connection->prepareStatement(
+    public function create(Member $member) {
+        $statement = $this->connection->prepareStatement(
             'INSERT INTO users(login, password, salt, identity, gender, ' .
             'email, avatar, language, country, region, last_connected_at, created_at, is_enabled, is_banned, theme) ' .
-            "VALUES(login = :login, password = :password, salt = :salt, ' .
-            'identity = :identity, gender = :gender, email = :email, avatar = :avatar, ' .
-            'language = :language, country = :country, region = :region, ' .
-            'last_connected_at = :last_connected_at, created_at = :created_at, ' .
-            'is_enabled = :is_enabled, is_banned = :is_banned, theme = :theme)"
+            'VALUES(:login, :password, :salt, :identity, :gender, :email, :avatar, ' .
+            ':language, :country, :region, :last_connected_at, :created_at, ' .
+            ':is_enabled, :is_banned, :theme)'
         , [
             'login' => $member->getLogin(),
             'password' => $member->getPassword(),
@@ -155,21 +176,25 @@ class MemberManager {
             'gender' => $member->getGender(),
             'email' => $member->getEmail(),
             'avatar' => $member->getAvatar(),
+            'language' => $member->getLanguage(),
             'country' => $member->getCountry(),
             'region' => $member->getRegion(),
             'last_connected_at' => $member->getLastConnectedAt()->format('c'),
             'created_at' => $member->getCreatedAt()->format('c'),
-            'is_enabled' => $member->getIsEnabled(),
-            'is_banned' => $member->getIsBanned(),
-            'theme' => $member->getTheme(),
-            'id' => $member->getId()
+            'is_enabled' => (int) $member->getIsEnabled(),
+            'is_banned' => (int) $member->getIsBanned(),
+            'theme' => $member->getTheme()
         ]);
+        if($statement->rowCount() === 0) {
+            return $statement->errorInfo();
+        }
+        return true;
     }
     
     /**
      * @param \Wonderland\Application\Model\Member $member
      */
-    public function updateMember(Member $member) {
+    public function update(Member $member) {
         $this->connection->prepareStatement(
             'UPDATE users SET login = :login, password = :password, salt = :salt, ' .
             'identity = :identity, gender = :gender, email = :email, avatar = :avatar, ' .
@@ -184,12 +209,13 @@ class MemberManager {
             'gender' => $member->getGender(),
             'email' => $member->getEmail(),
             'avatar' => $member->getAvatar(),
+            'language' => $member->getLanguage(),
             'country' => $member->getCountry(),
             'region' => $member->getRegion(),
             'last_connected_at' => $member->getLastConnectedAt()->format('c'),
             'created_at' => $member->getCreatedAt()->format('c'),
-            'is_enabled' => $member->getIsEnabled(),
-            'is_banned' => $member->getIsBanned(),
+            'is_enabled' => (int) $member->getIsEnabled(),
+            'is_banned' => (int) $member->getIsBanned(),
             'theme' => $member->getTheme(),
             'id' => $member->getId()
         ]);
@@ -264,7 +290,7 @@ class MemberManager {
      * @return int
      */
     public function countMembers() {
-        return $this->connection->query('SELECT COUNT(*) AS count FROM users')->fetch()['count'];
+        return $this->connection->query('SELECT COUNT(*) AS count FROM users')->fetch(\PDO::FETCH_ASSOC)['count'];
     }
     
     /**
@@ -273,7 +299,7 @@ class MemberManager {
     public function countActiveMembers() {
         return $this->connection->query(
             'SELECT COUNT(*) AS count FROM users WHERE DATEDIFF(CURDATE(), last_connected_at) < 21'
-        )->fetch()['count'];
+        )->fetch(\PDO::FETCH_ASSOC)['count'];
     }
     
     /**
@@ -287,7 +313,7 @@ class MemberManager {
         if ($this->connection->columnExists($language, 'country') === false) {
             $language = 'en';
         }
-        return $this->connection->query("SELECT Code, '$language' FROM country")->fetchAll();
+        return $this->connection->query("SELECT Code, $language FROM country");
     }
     
     /**
@@ -298,14 +324,13 @@ class MemberManager {
         $search = '';
         $table = 'users u';
         if (!empty($params['sel_groups'])) {
-            $table = 'citizen_groups, users u';
-            $search = " WHERE citizen_id = id AND group_id = {$params['sel_groups']} ";
+            $table = 'citizen_groups cg, users u';
+            $search = " WHERE cg.citizen_id = u.id AND cg.group_id = {$params['sel_groups']} ";
         }
-        
-        return $this->connection->prepareStatement(
-            'SELECT u.id, avatar, identity, gender, email, language, country, region, last_connected_at, u.created_at ' .
-            'FROM :table :search ORDER BY identity ASC'
-        , ['table' => $table, 'search' => $search])->fetchAll();
+        return $this->connection->query(
+            'SELECT u.id, u.avatar, u.identity, u.gender, u.email, u.language, u.country, u.region, u.last_connected_at, u.created_at ' .
+            "FROM $table $search ORDER BY u.identity ASC"
+        )->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     public function findByGroup($groupId) {
@@ -317,7 +342,7 @@ class MemberManager {
             'ORDER BY u.identity ASC'
         , ['group_id' => $groupId]);
         $members = [];
-        while($data = $statement->fetch()) {
+        while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $members[] =
                 (new Member())
                 ->setId($data['id'])
@@ -337,6 +362,6 @@ class MemberManager {
             'FROM users u ' .
             'INNER JOIN groups g ON g.contact_id = u.id ' .
             'ORDER BY g.name ASC'
-        )->fetchAll();
+        )->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

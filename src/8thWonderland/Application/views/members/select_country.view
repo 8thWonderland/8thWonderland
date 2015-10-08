@@ -12,7 +12,7 @@
                     $("#region").empty();
                     $(data).appendTo($("#region"));
                 }, // Si tout marche bien
-		data: "controller=intranet&action=list_regions&country=" + $("#country").val(), 
+		data: "controller=Intranet&action=listRegions&country=" + $("#country").val(), 
 		error: function(data, texte, erreur)
                 {
                    var obj = '<div id="error" class="error" style="position: absolute; left:35%; bottom:150px; width:30%;"><table><tr>';
@@ -42,7 +42,7 @@
         <td id="milieu_milieu" valign="top">
             <!-- selection geographique -->
             <div id="select_zonegeo" class="encadre">
-                <form id="form_updateGeo" name="form_updateGeo" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/intranet/zone_geo", "form_updateGeo", "select_region", "json"); return false;' action="" method="post">
+                <form id="form_updateGeo" name="form_updateGeo" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/Intranet/zoneGeo", "form_updateGeo", "select_region", "json"); return false;' action="" method="post">
                 <table width=70%>
                     <tr align="center">
                         <td colspan="4" style="height:100px">
