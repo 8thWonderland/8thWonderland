@@ -28,7 +28,7 @@ class GroupController extends ActionController {
         }
         foreach ($groups as $group) {
             $response .=
-                "<tr><td>" . utf8_encode($group->getName()) . "</td>" .
+                "<tr><td>{$group->getName()}</td>" .
                 "<td><div class='bouton' style='margin:3px;'><a onclick=\"Clic('/Intranet/index', 'group_id={$group->getId()}', 'body'); return false;\">" .
                 "<span style='color: #dfdfdf;'>{$translate->translate('btn_enterdesktop')}</span></a></div></td></tr>"
             ;
@@ -367,50 +367,6 @@ class GroupController extends ActionController {
             $next = '<a onclick="Clic(\'/Group/displayAddressBook\', \'page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_users . $next . '</td></tr></table>';
-    }
-    
-    /**
-     * @param string $key
-     * @param string $value
-     * @return string
-     */
-    protected function filterUsers($key, $value) {
-        switch(strtolower($key)) {
-            case 'avatar':
-                return '<img width="50" alt="Avatar" src="' . $value . '">';
-            
-            case 'identity':
-                return utf8_encode($value);
-            
-            case 'gender':
-                return ($value === '2') ? 'M' : 'F';
-            
-            case 'country':
-                $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
-                $lang = $member->getLanguage();
-                $res = $this->application->get('database_connection')->select("SELECT $lang FROM country WHERE code = '$value' LIMIT 1");
-                return
-                    (count($res) > 0)
-                    ? $res[0][$lang]
-                    : $this->application->get('translator')->translate("unknown")
-                ;
-            
-            case 'region':
-                $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
-                $lang = $member->getLanguage();
-                $res = $this->application->get('database_connection')->select("SELECT Name FROM regions WHERE Region_id = $value LIMIT 1");
-                return
-                    (count($res) > 0 && $value > 0)
-                    ? utf8_encode($res[0]['Name'])
-                    : $this->application->get('translator')->translate('unknown')
-                ;
-            
-            case 'last_connected_at':
-                return substr($value, 0, strlen($value)-3);
-            
-            default:
-                return $value;
-        }
     }
     
     protected function renderMapCoord() {

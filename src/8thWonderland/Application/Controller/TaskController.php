@@ -114,16 +114,16 @@ class TaskController extends ActionController {
         $reponse = '';
         
         if ($list_tasks->num_rows > 0) {
-            while ($task = $list_tasks->fetch_assoc()) {
+            while ($task = $list_tasks->fetch(\PDO::FETCH_ASSOC)) {
                 $date_fin = $task['date'];
                 if ($date_fin === '0000-00-00 00:00:00') {
                     $date_fin = '';
                 }
                 $reponse .=
-                    "<tr><td>" . utf8_encode($task['description']) . "</td>" .
+                    "<tr><td>{$task['description']}</td>" .
                     "<td>$date_fin</td>" .
-                    "<td>" . utf8_encode($task['identite']) . "</td>" .
-                    "<td><div class='bouton'><a onclick=\"Clic('/tasks/display_detailstask', 'task_id={$task['idtask']}&id_group=" . $_POST['id_group'] . "', 'milieu_milieu'); return false;\">" .
+                    "<td>{$task['identity']}</td>" .
+                    "<td><div class='bouton'><a onclick=\"Clic('/tasks/display_detailstask', 'task_id={$task['idtask']}&id_group={$_POST['id_group']}', 'milieu_milieu'); return false;\">" .
                     "<span style='color: #dfdfdf;'>{$translate->translate('btn_detailstask')}</span></a></div></td></tr>"
                 ;
             }

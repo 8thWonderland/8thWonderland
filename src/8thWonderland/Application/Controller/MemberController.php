@@ -148,9 +148,9 @@ class MemberController extends ActionController {
 
         foreach($datas as $row) {
             $tabmini_contactsgroups .=
-                "<tr style='height:25px'><td>" . utf8_encode($row['name']) . "</td>" .
-                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message={$row['id']}', 'milieu_milieu')\">" . utf8_encode($row['identity']) . "</a></td>" .
-                "</tr>"
+                "<tr style='height:25px'><td>{$row['name']}</td>" .
+                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message={$row['id']}', 'milieu_milieu')\">{$row['identity']}</a></td>" .
+                '</tr>'
             ;
         }
         // numéros des items
