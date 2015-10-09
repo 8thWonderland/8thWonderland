@@ -108,7 +108,7 @@ class MemberController extends ActionController {
         if (!empty($_POST['lang']) && $member->setLanguage($_POST['lang']) === 0) {
             $err_msg .= "{$translate->translate("error")}<br/>";
         }
-        $memberManager->updateMember($member);
+        $memberManager->update($member);
         if (empty($err_msg)) {
             $this->redirect('Intranet/index');
         } else {
