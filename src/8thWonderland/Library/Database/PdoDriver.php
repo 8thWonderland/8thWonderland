@@ -10,7 +10,7 @@ class PdoDriver extends \PDO {
      * @param string $dbname
      */
     public function __construct($host, $username, $passwd, $dbname) {
-        parent::__construct("mysql:host=$host;dbname=$dbname", $username, $passwd);
+        parent::__construct("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $passwd);
     }
     
     /**
