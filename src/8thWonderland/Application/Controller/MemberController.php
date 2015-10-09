@@ -171,7 +171,7 @@ class MemberController extends ActionController {
         // Bouton suivant
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/member/displayContactsGroups\', \'&page=' . ($CurPage + 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'/Member/displayContactsGroups\', \'&page=' . ($CurPage + 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         $tabmini_contactsgroups .= $next . '</td></tr></table>';
         
