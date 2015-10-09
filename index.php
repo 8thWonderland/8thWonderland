@@ -10,7 +10,9 @@ $rootPath =
     : $_SERVER['REQUEST_URI']
 ;
 
-
+if($rootPath === '//') {
+    $rootPath = '/';
+}
 
 define ('CSS_PATH', "{$rootPath}src/8thWonderland/public/css/");
 define ('IMG_PATH', "{$rootPath}src/8thWonderland/public/images/");
