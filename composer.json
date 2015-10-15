@@ -10,7 +10,8 @@
         }
     ],
     "require" : {
-        "pimple/pimple" : "~3.0"
+        "pimple/pimple" : "~3.0",
+        "dannyvankooten/php-router" : "dev-master"
     },
     "autoload" : {
         "psr-4" : {
