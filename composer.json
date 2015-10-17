@@ -11,7 +11,7 @@
     ],
     "require" : {
         "pimple/pimple" : "~3.0",
-        "dannyvankooten/php-router" : "dev-master"
+        "altorouter/altorouter": "1.1.0"
     },
     "autoload" : {
         "psr-4" : {
