@@ -42,10 +42,10 @@ class MessagingController extends ActionController {
         for($i = 0; $i < $nbData; ++$i) {
             $tab_receivedmsg .=
                 "<tr style='height:25px'>" .
-                "<td><a onclick=\"Clic('/Messaging/displayContentMessage', 'id_msg={$data[$i]->getId()}&box=0', 'volet_visualisation'); return false;\">{$data[$i]->getTitle()}</a></td> " .
+                "<td><a onclick=\"Clic('Messaging/displayContentMessage', 'id_msg={$data[$i]->getId()}&box=0', 'volet_visualisation'); return false;\">{$data[$i]->getTitle()}</a></td> " .
                 "<td>{$data[$i]->getAuthor()->getIdentity()}</td>" .
                 "<td>{$data[$i]->getCreatedAt()->format('d/m/Y H:i:s')}</td>" .
-                "<td><a onclick=\"Clic('/Messaging/deleteMessage', 'id_msg={$data[$i]->getId()}&box=0', 'volet_visualisation'); return false;\">" .
+                "<td><a onclick=\"Clic('Messaging/deleteMessage', 'id_msg={$data[$i]->getId()}&box=0', 'volet_visualisation'); return false;\">" .
                 "<img height=24 alt='{$translate->translate('btn_delete')}' src='" . ICO_PATH . "32x32/delete.png' />" .
                 '</a></td></tr>'
             ;
@@ -66,7 +66,7 @@ class MessagingController extends ActionController {
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/Messaging/displayReceivedMessages\', \'&page=' . ($CurPage-1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Messaging/displayReceivedMessages\', \'&page=' . ($CurPage-1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_receivedmsg .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         
@@ -83,14 +83,14 @@ class MessagingController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_receivedmsg .=
                 ($page !== $CurPage)
-                ? '<a onclick="Clic(\'/Messaging/displayReceivedMessages\', \'&page=' . $page . '\', \'volet_visualisation\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'Messaging/displayReceivedMessages\', \'&page=' . $page . '\', \'volet_visualisation\'); return false;">' . $page . '</a> | '
                 : "<b>$page</b> | "
             ;
         }
         // Bouton suivant
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/Messaging/displayReceivedMessages\', \'&page=' . ($CurPage + 1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Messaging/displayReceivedMessages\', \'&page=' . ($CurPage + 1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $tab_receivedmsg .= $next . '</td></tr></table>';
@@ -129,10 +129,10 @@ class MessagingController extends ActionController {
         for($i = 0; $i < $nbData; ++$i) {
             $tab_receivedmsg .= 
                 "<tr style='height:25px'>" .
-                "<td><a onclick=\"Clic('/Messaging/displayContentMessage', 'id_msg={$data[$i]->getId()}&box=1', 'volet_visualisation'); return false;\">{$data[$i]->getTitle()}</a></td>" .
+                "<td><a onclick=\"Clic('Messaging/displayContentMessage', 'id_msg={$data[$i]->getId()}&box=1', 'volet_visualisation'); return false;\">{$data[$i]->getTitle()}</a></td>" .
                 "<td>{$data[$i]->getRecipient()->getIdentity()}</td>" .
                 "<td>{$data[$i]->getCreatedAt()->format('d/m/y H:i:s')}</td>" .
-                "<td><a onclick=\"Clic('/Messaging/deleteMessage', 'id_msg={$data[$i]->getId()}&box=1', 'volet_visualisation'); return false;\">" .
+                "<td><a onclick=\"Clic('Messaging/deleteMessage', 'id_msg={$data[$i]->getId()}&box=1', 'volet_visualisation'); return false;\">" .
                 "<img height=24 alt='{$translate->translate('btn_delete')}' src='" . ICO_PATH . "32x32/delete.png' />" .
                 "</a></td></tr>"
             ;
@@ -153,7 +153,7 @@ class MessagingController extends ActionController {
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/Messaging/displayReceivedMessages\', \'&page=' . ($CurPage-1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Messaging/displayReceivedMessages\', \'&page=' . ($CurPage-1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_receivedmsg .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         
@@ -169,14 +169,14 @@ class MessagingController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_receivedmsg .=
                 ($page !== $CurPage)
-                ? '<a onclick="Clic(\'/Messaging/displayReceivedMessages\', \'&page=' . $page . '\', \'volet_visualisation\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'Messaging/displayReceivedMessages\', \'&page=' . $page . '\', \'volet_visualisation\'); return false;">' . $page . '</a> | '
                 : "<b>$page</b> | "
             ;
         }
         // Bouton suivant
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/Messaging/displayReceivedMessages\', \'&page=' . ($CurPage + 1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Messaging/displayReceivedMessages\', \'&page=' . ($CurPage + 1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $this->viewParameters['list_receivedmessages'] = $tab_receivedmsg . $next . '</td></tr></table>';

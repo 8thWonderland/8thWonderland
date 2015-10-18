@@ -26,7 +26,7 @@ class TaskController extends ActionController {
                     '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
                     '<td><span style="font-size: 15px;">' . $translate->translate('create_task_ok') . '</span></td>' .
                     '</tr></table></div>' .
-                    '<script type="text/javascript">Clic("/tasks/display_tasksinprogress", "id_group=' . $_POST['id_group'] . '", "milieu_gauche");</script>'
+                    '<script type="text/javascript">Clic("Task/displayTasksInProgress", "id_group=' . $_POST['id_group'] . '", "milieu_gauche");</script>'
                 );
                 break;
             
@@ -58,7 +58,7 @@ class TaskController extends ActionController {
                 '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
                 '<td><span style="font-size: 15px;">' . $translate->translate('delete_task_ok') . '</span></td>' .
                 '</tr></table></div>' .
-                '<script type="text/javascript">Clic("/tasks/display_tasksinprogress", "id_group=' . $_POST['id_group'] . '", "milieu_gauche");</script>'
+                '<script type="text/javascript">Clic("Task/displayTasksInProgress", "id_group=' . $_POST['id_group'] . '", "milieu_gauche");</script>'
             );
         } else {
             $this->display(
@@ -100,8 +100,8 @@ class TaskController extends ActionController {
         
         $this->viewParameters['translate'] = $this->application->get('translator');
         $this->viewParameters['details'] = $details[0];
-        $this->viewParameters['cmd_delete'] = "Clic('/tasks/delete_task', 'task_id=" . $_POST['task_id'] . "&id_group=" . $_POST['id_group'] . "', 'task_resultaction'); return false;";
-        $this->viewParameters['cmd_edit'] = "Clic('/tasks/edit_task', 'task_id=" . $_POST['task_id'] . "', 'milieu_milieu'); return false;";
+        $this->viewParameters['cmd_delete'] = "Clic('Task/deleteTask', 'task_id=" . $_POST['task_id'] . "&id_group=" . $_POST['id_group'] . "', 'task_resultaction'); return false;";
+        $this->viewParameters['cmd_edit'] = "Clic('Task/editTask', 'task_id=" . $_POST['task_id'] . "', 'milieu_milieu'); return false;";
         $this->render('tasks/task_details');
     }
     
@@ -123,7 +123,7 @@ class TaskController extends ActionController {
                     "<tr><td>{$task['description']}</td>" .
                     "<td>$date_fin</td>" .
                     "<td>{$task['identity']}</td>" .
-                    "<td><div class='bouton'><a onclick=\"Clic('/tasks/display_detailstask', 'task_id={$task['idtask']}&id_group={$_POST['id_group']}', 'milieu_milieu'); return false;\">" .
+                    "<td><div class='bouton'><a onclick=\"Clic('Task/displayDetailsTask', 'task_id={$task['idtask']}&id_group={$_POST['id_group']}', 'milieu_milieu'); return false;\">" .
                     "<span style='color: #dfdfdf;'>{$translate->translate('btn_detailstask')}</span></a></div></td></tr>"
                 ;
             }

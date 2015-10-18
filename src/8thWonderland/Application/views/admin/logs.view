@@ -1,7 +1,7 @@
 <!-- Module des logs -->
 <div id="motions" class="encadre">
     <table width=90%>
-        <caption><?php echo $this->_view['translate']->msg('admin_logs'); ?></caption>
-        <tr><td><?php echo $this->_view['list_logs']; ?></td></tr>
+        <caption><?php echo $this->viewParameters['translate']->translate('admin_logs'); ?></caption>
+        <tr><td><?php echo $this->viewParameters['list_logs']; ?></td></tr>
     </table>
 </div>

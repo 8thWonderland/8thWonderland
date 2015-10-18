@@ -29,7 +29,7 @@ class GroupController extends ActionController {
         foreach ($groups as $group) {
             $response .=
                 "<tr><td>{$group->getName()}</td>" .
-                "<td><div class='bouton' style='margin:3px;'><a onclick=\"Clic('/Intranet/index', 'group_id={$group->getId()}', 'body'); return false;\">" .
+                "<td><div class='bouton' style='margin:3px;'><a onclick=\"Clic('Intranet/index', 'group_id={$group->getId()}', 'body'); return false;\">" .
                 "<span style='color: #dfdfdf;'>{$translate->translate('btn_enterdesktop')}</span></a></div></td></tr>"
             ;
         }
@@ -67,7 +67,7 @@ class GroupController extends ActionController {
         foreach($datas as $member) {
             $tabmini_usersgroup .=
                 "<tr style='height:25px'>".
-                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message={$member->getId()}', 'milieu_milieu')\">{$member->getIdentity()}</a></td>" .
+                "<td><a onclick=\"Clic('Messaging/composeMessage', 'recipient_message={$member->getId()}', 'milieu_milieu')\">{$member->getIdentity()}</a></td>" .
                 "<td>{$member->getLastConnectedAt()->format('d/m/Y H:i:s')}</td></tr>"
             ;
         }
@@ -86,13 +86,13 @@ class GroupController extends ActionController {
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/Group/displayMembers\', \'&page=' . ($CurPage-1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Group/displayMembers\', \'&page=' . ($CurPage-1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tabmini_usersgroup .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         // Bouton suivant
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/Group/displayMembers\', \'&page=' . ($CurPage + 1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Group/displayMembers\', \'&page=' . ($CurPage + 1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         $this->viewParameters['list_membersgroup'] = $tabmini_usersgroup . $next . '</td></tr></table>';
@@ -182,7 +182,7 @@ class GroupController extends ActionController {
                 
                 $dbLogger->log("Echec du changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::ERR);
             } else {
-                $this->display("<script type='text/javascript'>window.onload=Clic('/Intranet/index', '$desktop', 'body');</script>");
+                $this->display("<script type='text/javascript'>window.onload=Clic('Intranet/index', '$desktop', 'body');</script>");
                 
                 $dbLogger->log("Changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::INFO);
             }
@@ -239,7 +239,7 @@ class GroupController extends ActionController {
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/Group/displayGroups\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Group/displayGroups\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_groups .= '<td colspan="3" style="padding-right:15px;" align="right">' . $previous . ' | ';
         $start = $CurPage - $paginator->getPageRange();
@@ -254,7 +254,7 @@ class GroupController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_groups .=
                 ($page != $CurPage)
-                ? '<a onclick="Clic(\'/Group/displayGroups\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'Group/displayGroups\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : "<b>$page</b> | "
             ;
         }
@@ -262,7 +262,7 @@ class GroupController extends ActionController {
         
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/Group/displayGroups\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Group/displayGroups\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_groups . $next . '</td></tr></table>';
     }
@@ -314,7 +314,7 @@ class GroupController extends ActionController {
             $tab_users .= 
                 '<tr style="height:25px">' .
                 "<td><img src='{$member['avatar']}' width='48px' height='48px' alt='avatar'/></td>" .
-                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message='{$member['id']}', 'milieu_milieu')\">{$member['identity']}</a></td>" .
+                "<td><a onclick=\"Clic('Messaging/composeMessage', 'recipient_message='{$member['id']}', 'milieu_milieu')\">{$member['identity']}</a></td>" .
                 "<td>{$member['gender']}</td>" .
                 "<td>{$member['email']}</td>" .
                 "<td>{$member['language']}</td>" .
@@ -339,7 +339,7 @@ class GroupController extends ActionController {
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/Group/displayAddressBook\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Group/displayAddressBook\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_users .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         
@@ -356,7 +356,7 @@ class GroupController extends ActionController {
         for ($page=$start; $page < $end + 1; ++$page) {
             $tab_users .= 
                 ($page != $CurPage)
-                ? '<a onclick="Clic(\'/Group/displayAddressBook\', \'page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'Group/displayAddressBook\', \'page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : '<b>' . $page . '</b> | '
             ;
         }
@@ -364,7 +364,7 @@ class GroupController extends ActionController {
         
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/Group/displayAddressBook\', \'page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Group/displayAddressBook\', \'page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_users . $next . '</td></tr></table>';
     }

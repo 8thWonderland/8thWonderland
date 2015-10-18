@@ -81,7 +81,7 @@ class MotionController extends ActionController {
         
         foreach($motions as $motion) {
             $tab_motions .=
-                "<tr style=\"height:25px\" onclick=\"Clic('/Motion/displayMotion', " .
+                "<tr style=\"height:25px\" onclick=\"Clic('Motion/displayMotion', " .
                 "'motion_id={$motion['Motion_id']}', 'milieu_milieu'); return false;\">" .
                 "<td>{$motion['Title_key']}</td>" .
                 "<td>{$translator->translate($motion['Label_key'])}</td>" .
@@ -119,7 +119,7 @@ class MotionController extends ActionController {
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translator->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/Motion/displayMotions\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translator->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Motion/displayMotions\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translator->translate('page_previous') . '</a>';
         }
         $tab_motions .= '<td colspan="5" style="padding-right:15px;" align="right">' . $previous . ' | ';
         $start = $CurPage - $paginator->getPageRange();
@@ -130,7 +130,7 @@ class MotionController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_motions .=
                 ($page !== $CurPage)
-                ? '<a onclick="Clic(\'/Motion/displayMotions\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'Motion/displayMotions\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : '<b>' . $page . '</b> | '
             ;
         }
@@ -138,7 +138,7 @@ class MotionController extends ActionController {
 
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/Motion/displayMotions\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translator->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Motion/displayMotions\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translator->translate('page_next') . '</a>';
         }
         return $tab_motions . $next . '</td></tr></table>';
     }

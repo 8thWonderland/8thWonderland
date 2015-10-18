@@ -2,7 +2,6 @@
 
 namespace Wonderland\Library;
 
-use Wonderland\Library\Controller\FrontController;
 use Wonderland\Library\Config;
 
 use Pimple\Container;
@@ -146,7 +145,40 @@ class Application {
      * Démarrage de l'application
      */
     public function run() {
-        $front = new FrontController($this);
-        $front->dispatch();
+        $router = new \AltoRouter();
+        $router->setBasePath(dirname($_SERVER['PHP_SELF']));
+        $router->map(
+            'GET',
+            '/',
+            function() {
+                $this->startControllerAction('Index', 'index');
+            },
+            'home'
+        );
+        $router->map(
+            'GET|POST|PATCH|PUT|DELETE',
+            '/[a:controller]/[a:action]',
+            function($controller, $action) {
+                $this->startControllerAction(ucfirst($controller), $action);
+            },
+            'action'
+        );
+        if(($match = $router->match()) !== false) {
+            call_user_func_array($match['target'], $match['params']); 
+        } else {
+            header("{$_SERVER['SERVER_PROTOCOL']} 404 Not Found");
+        }
+    }
+    
+    public function startControllerAction($controllerName, $actionName) {
+        $controller = "Wonderland\\Application\\Controller\\{$controllerName}Controller";
+        $action = "{$actionName}Action";
+        if (!class_exists($controller)) {
+            throw new \Exception("The ActionController '$controller' does not exist !");
+        }
+        if (!method_exists($controller, $action)) {
+            throw new \Exception("The Action '$action' does not exist !");
+        }
+        (new $controller($this))->$action();
     }
 }

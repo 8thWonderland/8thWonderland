@@ -159,7 +159,7 @@ class AuthenticateController extends ActionController {
         } else {
             $this->display(
                 '<form id="form_forgetpwdCode" name="form_forgetpwdCode" enctype="application/x-www-form-urlencoded" action="" method="post" ' .
-                'onSubmit=\'Envoi_form("/authenticate/valid_codeforgetpwd", "form_forgetpwdCode", "reponse_forgetpwdcode"); return false;\' >' .
+                'onSubmit=\'sendForm("/authenticate/valid_codeforgetpwd", "form_forgetpwdCode", "reponse_forgetpwdcode"); return false;\' >' .
                 '<table><tr><td>' . $translate->translate("code_forgetpwd") . '</td>' .
                 '<td><input type="text" name="code" id="code" style="width:70%" /></td>' .
                 '<tr><td colspan="2" align="center"><input type="submit" name="btn_forgetpwdcode" id="btn_forgetpwdcode" value="' . $translate->translate('btn_codeforgetpwd') . '"></td>' .

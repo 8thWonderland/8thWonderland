@@ -12,13 +12,13 @@
     function Display_Regions() {
         $.ajax({
 		type: "POST", // Requete POST
-		url: "index.php", 
+		url: "Intranet/listRegions", 
 		dataType: "html", // Format du retour de l'url
 		success : function(data) {
                     $("#region").empty();
                     $(data).appendTo($("#region"));
-                }, // Si tout marche bien
-		data: "controller=intranet&action=list_regions&country=" + $("#country").val(), 
+                },
+		data: "country=" + $("#country").val(), 
 		error: function(data, texte, erreur)
                 {
                    var obj = '<div id="error" class="error" style="position: absolute; left:35%; bottom:150px; width:30%;"><table><tr>';
@@ -36,7 +36,7 @@
         <caption><?php echo $this->viewParameters['translate']->translate('update_profile'); ?></caption>
         <tr>
             <td>
-                <form id="form_upprofile" name="form_upprofile" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/Member/validProfile", "form_upprofile", "reponse_up_profile", "json"); return false;' action="" method="post">
+                <form id="form_upprofile" name="form_upprofile" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Member/validProfile", "form_upprofile", "reponse_up_profile", "json"); return false;' action="" method="post">
                     <table>
                         <tr>
                             <td style="height:50px; width: 150px;"><?php echo $this->viewParameters['translate']->translate("avatar"); ?></td>

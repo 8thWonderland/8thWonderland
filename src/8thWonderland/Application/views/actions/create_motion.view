@@ -17,7 +17,7 @@
             </td>
         </tr>
         <tr>
-            <td><form id="form_createmotion" name="form_createmotion" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/Motion/createMotion", "form_createmotion", "milieu_milieu"); return false;' action="" method="post">
+            <td><form id="form_createmotion" name="form_createmotion" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Motion/createMotion", "form_createmotion", "milieu_milieu"); return false;' action="" method="post">
                     <table>
                         <tr style="padding: 5px;">
                             <td><?php echo $this->viewParameters['translate']->translate("title_motion"); ?></td>

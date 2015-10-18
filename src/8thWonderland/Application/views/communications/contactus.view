@@ -3,7 +3,7 @@
     <caption><?php echo $this->viewParameters['translate']->translate('contact-us'); ?></caption>
     <tr>
         <td>
-            <form id="form_contact" onSubmit='Envoi_form("/Mail/envoi", "form_contact", "milieu_milieu"); return false;' action="" method="post">
+            <form id="form_contact" onSubmit='sendForm("Mail/envoi", "form_contact", "milieu_milieu"); return false;' action="" method="post">
                 <table  id="contact_form" style="width: 100%" align="center">
                     <tr align="center">
                         <td style="height:50px;">
