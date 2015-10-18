@@ -77,22 +77,22 @@ class IntranetController extends ActionController {
 
             $this->viewParameters['milieu_droite'] = 
                 "<table>" .
-                "<tr><td id='md_section1'><script type='text/javascript'>window.onload=Clic('/Admin/displayStatsCountry', '', 'md_section1');</script></td></tr>" .
-                "<tr><td id='md_section2'><script type='text/javascript'>window.onload=Clic('/Group/displayMembers', '', 'md_section2');</script></td></tr>" .
+                "<tr><td id='md_section1'><script type='text/javascript'>window.onload=Clic('Admin/displayStatsCountry', '', 'md_section1');</script></td></tr>" .
+                "<tr><td id='md_section2'><script type='text/javascript'>window.onload=Clic('Group/displayMembers', '', 'md_section2');</script></td></tr>" .
                 "</table>"
             ;
             $this->viewParameters['milieu_milieu'] = "";
-            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/Member/displayContactsGroups', '', 'milieu_gauche');</script>";
+            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('Member/displayContactsGroups', '', 'milieu_gauche');</script>";
         } else {
             $this->viewParameters['haut_milieu'] = VIEWS_PATH . 'members/menu.view';
             $this->viewParameters['milieu_droite'] = '';
-            $this->viewParameters['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('/Intranet/communicate', '', 'milieu_milieu');</script>";
-            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('/Motion/displayMotionsInProgress', '', 'milieu_gauche');</script>";
+            $this->viewParameters['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('Intranet/communicate', '', 'milieu_milieu');</script>";
+            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('Motion/displayMotionsInProgress', '', 'milieu_gauche');</script>";
             $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions($member);
 
             // affichage des groupes du membre
             $this->viewParameters['list_groups'] = $member->getGroups();
-            $this->viewParameters['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('/Group/displayGroupsMembers', '', 'milieu_droite');</script>";
+            $this->viewParameters['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('Group/displayGroupsMembers', '', 'milieu_droite');</script>";
 
         }
         if ($this->is_Ajax()) {

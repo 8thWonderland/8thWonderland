@@ -149,7 +149,7 @@ class MemberController extends ActionController {
         foreach($datas as $row) {
             $tabmini_contactsgroups .=
                 "<tr style='height:25px'><td>{$row['name']}</td>" .
-                "<td><a onclick=\"Clic('/Messaging/composeMessage', 'recipient_message={$row['id']}', 'milieu_milieu')\">{$row['identity']}</a></td>" .
+                "<td><a onclick=\"Clic('Messaging/composeMessage', 'recipient_message={$row['id']}', 'milieu_milieu')\">{$row['identity']}</a></td>" .
                 '</tr>'
             ;
         }
@@ -165,13 +165,13 @@ class MemberController extends ActionController {
         // boutons precedent
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/Member/displayContactsGroups\', \'&page=' . ($CurPage - 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Member/displayContactsGroups\', \'&page=' . ($CurPage - 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tabmini_contactsgroups .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         // Bouton suivant
         $next = '<span class="disabled">' . $translate->translate('page_next') . '</span>';
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/Member/displayContactsGroups\', \'&page=' . ($CurPage + 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Member/displayContactsGroups\', \'&page=' . ($CurPage + 1) . '\', \'milieu_gauche\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         $tabmini_contactsgroups .= $next . '</td></tr></table>';
         

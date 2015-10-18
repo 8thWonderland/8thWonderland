@@ -8,20 +8,20 @@
     <table>
         <tr>
             <td>
-                <form id="form_createtask" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/tasks/valid_task", "form_createtask", "result_createtask"); return false;' method="post" action="">
+                <form id="form_createtask" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Task/validTask", "form_createtask", "result_createtask"); return false;' method="post" action="">
                     <table id="ajouttache_form" style="width: 70%" align="center">
                         <tr>
-                            <td style="height:50px;"><?php echo $this->_view['translate']->msg('description_task'); ?></td>
+                            <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate('description_task'); ?></td>
                             <td><input type="text" name="description_task" id="description_task" size="30" /></td>
                         </tr>
                         <tr>
-                            <td style="height:50px;"><?php echo $this->_view['translate']->msg('date_task'); ?></td>
+                            <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate('date_task'); ?></td>
                             <td><input name="datepicker_task" id="datepicker_task" type="text"></td>
                         </tr>
                         <tr align="center">
-                            <td><input type="hidden" id="id_group" name="id_group" value="<?php echo $this->_view['id_group']; ?>"/></td>
+                            <td><input type="hidden" id="id_group" name="id_group" value="<?php echo $this->viewParameters['id_group']; ?>"/></td>
                             <td style="height:50px;">
-                                <input type="submit" name="btn_createtask" id="btn_createtask" value="<?php echo $this->_view['translate']->msg('btn_createtask'); ?>" />
+                                <input type="submit" name="btn_createtask" id="btn_createtask" value="<?php echo $this->viewParameters['translate']->translate('btn_createtask'); ?>" />
                             </td>
                         </tr>
                         <tr>

@@ -3,7 +3,7 @@
 <script type="text/javascript" src="public/js/plugins_editor/jquery.cleditor.advancedtable.js"></script>
 
 <div id="compose_message">
-    <form id="form_composemessage" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/Messaging/validateMessage", "form_composemessage", "result_composemessage"); return false;' method="post" action="">
+    <form id="form_composemessage" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Messaging/validateMessage", "form_composemessage", "result_composemessage"); return false;' method="post" action="">
         <table style="width: 70%" align="center">
             <tr>
                 <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate('recipient_message'); ?></td>

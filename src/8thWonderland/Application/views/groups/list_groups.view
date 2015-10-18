@@ -8,7 +8,7 @@
     <table>
         <tr>
             <td>
-                <div class="bouton"><a onclick="Clic('/Group/displayGroups', '', 'milieu_milieu'); return false;">
+                <div class="bouton"><a onclick="Clic('Group/displayGroups', '', 'milieu_milieu'); return false;">
                     <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('discover_groups'); ?></span>
                 </a></div>
             </td>

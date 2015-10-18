@@ -5,7 +5,7 @@
     }); 
 </script>-->
 <div id="search_members">
-    <form id="form_searchusers" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/Group/displayAddressBook", "form_searchusers", "milieu_milieu"); return false;' method="post" action="">
+    <form id="form_searchusers" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Group/displayAddressBook", "form_searchusers", "milieu_milieu"); return false;' method="post" action="">
         <table>
             <tr>
                 <td width="150px"><?php echo $this->viewParameters['translate']->translate('title_groups'); ?></td>

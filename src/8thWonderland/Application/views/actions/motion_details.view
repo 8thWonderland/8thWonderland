@@ -57,7 +57,7 @@
             <td align="center">
                 <br/>
                 <div class="bouton" style="width:150px;">
-                    <a onclick="Clic('/Motion/displayMotions', '&page=1', 'milieu_milieu'); return false;"><?php echo $this->viewParameters['translate']->translate('back'); ?></a>
+                    <a onclick="Clic('Motion/displayMotions', '&page=1', 'milieu_milieu'); return false;"><?php echo $this->viewParameters['translate']->translate('back'); ?></a>
                 </div>
             </td>
         </tr>

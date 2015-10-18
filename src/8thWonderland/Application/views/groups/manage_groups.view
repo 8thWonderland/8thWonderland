@@ -4,7 +4,7 @@
         <caption><?php echo $this->viewParameters['translate']->translate('manager_group'); ?></caption>
         <tr>
             <td>
-                <form id="form_changecontactgroup" enctype="application/x-www-form-urlencoded" onSubmit='Envoi_form("/Group/changeContactGroups", "form_changecontactgroup", "result_changecontact"); return false;' method="post" action="">
+                <form id="form_changecontactgroup" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Group/changeContactGroups", "form_changecontactgroup", "result_changecontact"); return false;' method="post" action="">
                     <table>
                         <tr>
                             <td width="150px"><?php echo $this->viewParameters['translate']->translate('group_contact'); ?></td>

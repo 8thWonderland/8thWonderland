@@ -130,7 +130,7 @@ class AdminController extends ActionController {
                           '<td><span style="font-size: 15px;">' . $err_msg . '</span></td>' .
                           '</tr></table></div>');
         } else {
-            $this->display("<script type='text/javascript'>window.onload=Clic('/admin/display_server', '', 'milieu_milieu');</script>");
+            $this->display("<script type='text/javascript'>window.onload=Clic('Admin/displayServer', '', 'milieu_milieu');</script>");
         }
     }
     
@@ -144,7 +144,7 @@ class AdminController extends ActionController {
                               '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
                               '</tr></table></div>');
             } else {
-                $this->display("<script type='text/javascript'>window.onload=Clic('/admin/display_server', '', 'milieu_milieu');</script>");
+                $this->display("<script type='text/javascript'>window.onload=Clic('Admin/displayServer', '', 'milieu_milieu');</script>");
             }
         } else {
             $this->display('<div class="error" style="height:25px;"><table><tr>' .
@@ -195,9 +195,9 @@ class AdminController extends ActionController {
             }
             $array = get_object_vars($row);
             $tab_crons .=
-                "<td><a onclick=\"Clic('/admin/edit_cron', 'idcron=" . $array['id'] . "', 'server_infoaction'); return false;\">" .
+                "<td><a onclick=\"Clic('Admin/editCron', 'idcron=" . $array['id'] . "', 'server_infoaction'); return false;\">" .
                 "<img width='24' src='" . ICO_PATH . "32x32/edit.png'/></a>" .
-                "<a onclick=\"Clic('/admin/delete_cron', 'cronid=" . $array['id'] . "&crondesc=" . $array['desc'] . "', 'server_infoaction'); return false;\">" .
+                "<a onclick=\"Clic('Admin/deleteCron', 'cronid=" . $array['id'] . "&crondesc=" . $array['desc'] . "', 'server_infoaction'); return false;\">" .
                 "<img width='24' src='" . ICO_PATH . "32x32/delete.png'/></a></td></tr>"
             ;
         }
@@ -215,7 +215,7 @@ class AdminController extends ActionController {
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/Admin/displayServer\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Admin/displayServer\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_crons .= '<td colspan="4" style="padding-right:15px;" align="right">' . $previous . ' | ';
         $pageRange = $paginator->getPageRange();
@@ -231,7 +231,7 @@ class AdminController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_crons .=
                 ($page != $CurPage)
-                ? '<a onclick="Clic(\'/Admin/displayServer\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'Admin/displayServer\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : $tab_crons .= '<b>' . $page . '</b> | '
             ;
         }
@@ -239,12 +239,12 @@ class AdminController extends ActionController {
         
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/Admin/displayServer\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Admin/displayServer\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         
         return 
             $tab_crons . $next . '</td></tr></table>' .
-            "<div class='bouton' style='width:120px;'><a onclick=\"Clic('/Admin/displayCreateCron', '', 'milieu_milieu'); return false;\">" .
+            "<div class='bouton' style='width:120px;'><a onclick=\"Clic('Admin/displayCreateCron', '', 'milieu_milieu'); return false;\">" .
             "<span style='color: #dfdfdf;'>" . $translate->translate('btn_addcron') . "</span></a></div>"
         ;
     }
@@ -297,7 +297,7 @@ class AdminController extends ActionController {
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1)
         {
-            $previous = '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Admin/displayLogs\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_logs .= '<td style="padding-right:15px;" align="right">' . $previous . ' | ';
         
@@ -315,7 +315,7 @@ class AdminController extends ActionController {
         for ($page = $start; $page<$end + 1; ++$page) {
             $tab_logs .=
                 ($page !== $CurPage)
-                ? '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'Admin/displayLogs\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : '<b>' . $page . '</b> | '
             ;
         }
@@ -323,7 +323,7 @@ class AdminController extends ActionController {
         
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/admin/display_logs\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Admin/displayLogs\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_logs . $next . '</td></tr></table>';
     }
@@ -382,7 +382,7 @@ class AdminController extends ActionController {
         // boutons precedent, suivant et numéros des pages
         $previous = '<span class="disabled">' . $translate->translate('page_previous') . '</span>';
         if ($CurPage > 1) {
-            $previous = '<a onclick="Clic(\'/admin/display_users\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
+            $previous = '<a onclick="Clic(\'Admin/displayUsers\', \'&page=' . ($CurPage-1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_previous') . '</a>';
         }
         $tab_users .= '<td style="padding-right:15px;" align="right" colspan="3">' . $previous . ' | ';
         
@@ -400,7 +400,7 @@ class AdminController extends ActionController {
         for ($page = $start; $page < $end + 1; ++$page) {
             $tab_users .=
                 ($page !== $CurPage)
-                ? '<a onclick="Clic(\'/admin/display_users\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
+                ? '<a onclick="Clic(\'Admin/displayUsers\', \'&page=' . $page . '\', \'milieu_milieu\'); return false;">' . $page . '</a> | '
                 : $tab_users .= '<b>' . $page . '</b> | '
             ;
         }
@@ -408,7 +408,7 @@ class AdminController extends ActionController {
         
         // Bouton suivant
         if ($CurPage < $MaxPage) {
-            $next = '<a onclick="Clic(\'/admin/display_users\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
+            $next = '<a onclick="Clic(\'Admin/displayUsers\', \'&page=' . ($CurPage+1) . '\', \'milieu_milieu\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
         return $tab_users . $next . '</td></tr></table>';
     }

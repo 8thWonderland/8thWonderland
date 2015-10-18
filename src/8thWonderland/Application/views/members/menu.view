@@ -3,15 +3,15 @@
     <table>
         <tr>
             <td align="center">
-                <a onclick="Clic('/Intranet/infos', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/World-Info.png"/><br/>
+                <a onclick="Clic('Intranet/infos', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/World-Info.png"/><br/>
                     <?php echo $this->viewParameters['translate']->translate('inform'); ?></a>
             </td>
             <td align="center">
-                <a onclick="Clic('/Intranet/share', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Share.png"/><br/>
+                <a onclick="Clic('Intranet/share', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Share.png"/><br/>
                     <?php echo $this->viewParameters['translate']->translate('share'); ?></a>
             </td>
             <td align="center">
-                <a href='/Intranet/forums'><img border="0" width="32" src="<?php echo ICO_PATH; ?>Forum-32.png"/><br/>
+                <a href='Intranet/forums'><img border="0" width="32" src="<?php echo ICO_PATH; ?>Forum-32.png"/><br/>
                     <?php echo $this->viewParameters['translate']->translate('forum'); ?></a>
             </td>
             <td align="center">
@@ -19,7 +19,7 @@
                     <?php echo $this->viewParameters['translate']->translate('communicate'); ?></a>
             </td>
             <td align="center">
-                <a onclick="Clic('/Intranet/finance', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Money.png"/><br/>
+                <a onclick="Clic('Intranet/finance', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Money.png"/><br/>
                     <?php echo $this->viewParameters['translate']->translate('finance'); ?></a>
             </td>
         </tr>

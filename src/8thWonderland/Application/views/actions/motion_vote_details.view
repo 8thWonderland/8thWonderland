@@ -29,7 +29,7 @@
                                 <tr>
                                     <td align="center">
                                         <form id="form_approvemotion" name="form_approvemotion" enctype="application/x-www-form-urlencoded" 
-                                            onSubmit='Envoi_form("/Motion/voteMotion", "form_approvemotion", "action_motion"); return false;' action="" method="post">
+                                            onSubmit='sendForm("Motion/voteMotion", "form_approvemotion", "action_motion"); return false;' action="" method="post">
                                             <input type="hidden" name="motion_id" value="<?php echo $this->viewParameters['details']['motion_id']; ?>"/>
                                             <input type="hidden" name="vote" value="approved"/>
                                             <input type="submit" name="btn_approvemotion" id="btn_approvemotion" value="<?php echo $this->viewParameters['translate']->translate('vote_approved'); ?>"/>
@@ -37,7 +37,7 @@
                                     </td>
                                     <td align="center">
                                         <form id="form_refusemotion" name="form_refusemotion" enctype="application/x-www-form-urlencoded" 
-                                            onSubmit='Envoi_form("/Motion/voteMotion", "form_refusemotion", "action_motion"); return false;' action="" method="post">
+                                            onSubmit='sendForm("Motion/voteMotion", "form_refusemotion", "action_motion"); return false;' action="" method="post">
                                             <input type="hidden" name="motion_id" value="<?php echo $this->viewParameters['details']['motion_id']; ?>"/>
                                             <input type="hidden" name="vote" value="refused"/>
                                             <input type="submit" name="btn_refusemotion" id="btn_refusemotion" value="<?php echo $this->viewParameters['translate']->translate('vote_refused'); ?>"/>
