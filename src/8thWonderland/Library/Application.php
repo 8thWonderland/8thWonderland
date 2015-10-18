@@ -2,7 +2,6 @@
 
 namespace Wonderland\Library;
 
-use Wonderland\Library\Controller\FrontController;
 use Wonderland\Library\Config;
 
 use Pimple\Container;
@@ -160,7 +159,7 @@ class Application {
             'GET|POST|PATCH|PUT|DELETE',
             '/[a:controller]/[a:action]',
             function($controller, $action) {
-                $this->startControllerAction($controller, $action);
+                $this->startControllerAction(ucfirst($controller), $action);
             },
             'action'
         );

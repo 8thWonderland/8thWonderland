@@ -65,7 +65,7 @@ abstract class ActionController {
         if ($this->is_Ajax()) {
             echo json_encode([
                 'status' => 1,
-                'reponse' => $url
+                'response' => $url
             ]);
         } else {
             $params = $this->_formatURL($url);
@@ -117,7 +117,7 @@ abstract class ActionController {
             throw new \Exception("The ActionController '$controller' does not exist !");
         }
         // Vérification si l'action existe
-    if (!in_array("{$action}Action", get_class_methods($controller))) {
+        if (!in_array("{$action}Action", get_class_methods($controller))) {
             throw new \Exception("The Action '$action' does not exist !");
         }
         return [$controller, $action];
