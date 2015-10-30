@@ -38,6 +38,11 @@
                 <button class="menu-button" id="open-button">Open Menu</button>
                 <div class="content-wrap">
                         <div class="content">
+                            <div id="notifications">
+                                <ul>
+                                    
+                                </ul>
+                            </div>
                             <div id="username-form-container">
                                 <div id="username-form">
                                     <form onsubmit="authenticate();return false;">

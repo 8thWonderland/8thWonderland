@@ -40,6 +40,7 @@ function authenticate() {
         },
         data: "username=" + user.username,
         success: function(data) {
+            addNotification("success", data.message);
             $("#profile-username").text(user.username);
             user.token = data.token;
             sessionStorage.setItem('chatroom-token', user.token);
@@ -138,6 +139,7 @@ function connectWebsocket() {
     if (window["WebSocket"]) {
         conn = new WebSocket("ws://" + server.host + ":" + server.port + "/main");
         conn.onclose = function(evt) {
+            addNotification("error", "The connection was closed");
             appendLog($("<div><b>Connection closed.</b></div>"))
         };
         conn.onmessage = function(evt) {
@@ -148,9 +150,33 @@ function connectWebsocket() {
     }
 }
 
-function connectionError(status, message) {
+function connectionError(status, data) {
     if(status === 401) {
         user.token = null;
+        addNotification("error", data.message);
         displayUsernameForm();
     }
+}
+
+function addNotification(type, message) {
+    var backgroundColor, textColor;
+    switch(type) {
+        case "error":
+            backgroundColor = "#F09A90";
+            textColor = "#600A00";
+            break;
+        case "success":
+            backgroundColor = "#9AF090";
+            textColor = "#0A6000";
+            break;
+        case "info":
+            backgroundColor = "#9A90F0";
+            textColor = "#0A0060";
+            break;
+    }
+    $("#notifications ul").append(
+        "<li class='notification' style='background-color:" + backgroundColor + ";color:" + textColor + "'>" + message + "</li>"
+    ).children().last().delay(5000).fadeTo("slow", 0, function() {
+        $(this).remove();
+    });
 }
