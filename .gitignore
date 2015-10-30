@@ -2,3 +2,4 @@
 /vendor/
 composer.lock
 /dump/
+/src/8thWonderland/Application/config/config.json

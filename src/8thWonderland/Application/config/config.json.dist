@@ -80,7 +80,7 @@
     "parameters" : {
         "database_host": "localhost",
         "database_username": "root",
-        "database_password": "",
+        "database_password": "vagrant",
         "database_name": "thwonderbdd",
         "language_options": {
             "path": "langs/",
@@ -90,6 +90,10 @@
                 "es": "es.php"
             },
             "default": "fr"
+        },
+        "chatrooms": {
+            "server_host": "127.0.0.1",
+            "server_port": 5515
         }
     }
 }
