@@ -4,7 +4,11 @@ require_once 'vendor/autoload.php';
 
 ini_set('display_errors', 1);
 
-$rootPath = dirname($_SERVER['PHP_SELF']) . '/';
+$rootPath = 
+    ($_SERVER['HTTP_HOST'] !== '127.0.0.1')
+    ? '/'
+    : dirname($_SERVER['PHP_SELF']) . '/'
+;
 
 define ('CSS_PATH', "{$rootPath}src/8thWonderland/public/css/");
 define ('IMG_PATH', "{$rootPath}src/8thWonderland/public/images/");

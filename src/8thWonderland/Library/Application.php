@@ -6,11 +6,6 @@ use Wonderland\Library\Config;
 
 use Pimple\Container;
 
-/**
- * Description of application
- *
- * @author Brennan
- */
 class Application {
     /** @var string **/
     protected $rootPath;
@@ -19,6 +14,10 @@ class Application {
     /** @var Pimple\Container **/
     protected $container;
     
+    /**
+     * @param string $environment
+     * @param array $options
+     */
     public function init($environment = 'production', $options = []) {
         $this->setRootPath();
         $this->setContainer();
@@ -37,6 +36,9 @@ class Application {
         $this->setParameters(array_merge($containerData['parameters'], ['root_path' => $this->rootPath]));
     }
     
+    /**
+     * @param array $services
+     */
     public function setServices($services) {
         reset($services);
         
@@ -53,6 +55,7 @@ class Application {
     }
     
     /**
+     * @param Pimple\Container
      * @param array $service
      * @return array
      */
@@ -77,6 +80,9 @@ class Application {
         return $arguments;
     }
     
+    /**
+     * @param array $parameters
+     */
     public function setParameters($parameters) {
         reset($parameters);
         
@@ -146,7 +152,9 @@ class Application {
      */
     public function run() {
         $router = new \AltoRouter();
-        $router->setBasePath(dirname($_SERVER['PHP_SELF']));
+        if($_SERVER['HTTP_HOST'] === '127.0.0.1') {
+            $router->setBasePath(dirname($_SERVER['PHP_SELF']));
+        }
         $router->map(
             'GET',
             '/',
