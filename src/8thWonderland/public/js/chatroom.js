@@ -16,10 +16,11 @@ window.onload = function(e) {
         return;
     }
     var username = $("input[name=username]").val();
-    if(username !== 'guest') {
-        user.username = username;
-    }
     $("input[name=final-username]").val(username);
+    if(username !== 'guest') {
+        authenticate();
+        return;
+    }
     displayUsernameForm();
 };
 
