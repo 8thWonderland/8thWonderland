@@ -199,7 +199,7 @@ $array = array(
     
     // textes et descriptions
     "open_register"         => "Les inscriptions sont à nouveau ouvertes !! Cliquez sur 'Rejoindre la Communauté' et remplissez le formulaire.",
-    "open_chat"             => "Venez discuter avec nous. <a style='font-weight:bold; font-size: 15px; color:#e14f1c;' href='/external/chat/' target='_blank'>Cliquez ici</a> pour ouvrir le chat ...",
+    "open_chat"             => "Venez discuter avec nous. <a style='font-weight:bold; font-size: 15px; color:#e14f1c;' href='/Intranet/openChatroom' target='_blank'>Cliquez ici</a> pour ouvrir le chat ...",
     "txt_profileaccess"     => "Attention ! Ces informations servent lors de la connexion sur ce site.",
     "page_previous"         => "Précédente",
     "page_next"             => "Suivante",
