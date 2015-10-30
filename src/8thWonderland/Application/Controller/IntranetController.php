@@ -103,6 +103,18 @@ class IntranetController extends ActionController {
         }
     }
     
+    public function openChatroomAction() {
+        if(($member = $this->getUser()) !== null) {
+            $this->viewParameters['username'] = $member->getIdentity();
+            $this->viewParameters['avatar'] = $member->getAvatar();
+        } else {
+            $this->viewParameters['username'] = 'guest';
+            $this->viewParameters['avatar'] = ICO_PATH . 'user-48.png';
+        }
+        $this->viewParameters['chatrooms'] = $this->application->get('chatrooms');
+        $this->render('communications/chatroom');
+    }
+    
     public function zoneGeoAction() {
         if (($member = $this->getUser()) === null) {
             $this->redirect('Index/index');
