@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>8th Wonderland - Chat</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta http-equiv="Pragma" content="no-cache"/>
+        <meta http-equiv="Expires" content="0"/>
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>chatroom.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>chatroom_layout.css" type="text/css" media="all" />
+        <link rel="shortcut icon" type="image/png" href="<?php echo IMG_PATH; ?>icone.png" />
+    </head>
+    <body>
+        <div class="container">
+                <div class="menu-wrap">
+                    <nav class="menu-top">
+                        <div class="profile">
+                            <span>
+                                <img src="<?php echo $this->viewParameters['avatar']; ?>" alt=""/>
+                                <span id="profile-username"><?php echo $this->viewParameters['username']; ?></span>
+                            </span>
+                        </div>
+                        <div class="icon-list">
+                            <a href="/"><img src="<?php echo ICO_PATH . '48x48/exit.png' ?>"/></a>
+                        </div>
+                    </nav>
+                    <nav class="menu-side">
+                        <ul>
+                            <li>
+                                <h3>Chatrooms</h3>
+                            </li>
+                            <li>
+                                <a href="#">Main</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <button class="menu-button" id="open-button">Open Menu</button>
+                <div class="content-wrap">
+                        <div class="content">
+                            <div id="username-form-container">
+                                <div id="username-form">
+                                    <form onsubmit="authenticate();return false;">
+                                        <input type="text" name="final-username"/>
+                                        <button type="submit">Se connecter</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="chatroom-container">
+                                <div id="chatroom">
+                                    <div id="messages">
+
+                                    </div>
+                                    <div id="message-composer">
+                                        <form id="form">
+                                            <textarea id="message-writer"></textarea>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div id="user-list">
+
+                                </div>
+                            </div>
+                            <input type="hidden" name="username" value="<?php echo $this->viewParameters['username']; ?>"/>
+                            <input type="hidden" name="server_host" value="<?php echo $this->viewParameters['chatrooms']['server_host']; ?>"/>
+                            <input type="hidden" name="server_port" value="<?php echo $this->viewParameters['chatrooms']['server_port']; ?>"/>
+                        </div>
+                </div><!-- /content-wrap -->
+        </div><!-- /container -->
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>chatroom.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>chatroom_classie.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>chatroom_main.js"></script>
+    </body>
+</html>

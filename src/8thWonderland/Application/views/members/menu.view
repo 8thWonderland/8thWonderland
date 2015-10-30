@@ -11,11 +11,7 @@
                     <?php echo $this->viewParameters['translate']->translate('share'); ?></a>
             </td>
             <td align="center">
-                <a href='Intranet/forums'><img border="0" width="32" src="<?php echo ICO_PATH; ?>Forum-32.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('forum'); ?></a>
-            </td>
-            <td align="center">
-                <a href='/external/chat/' target='_blank'><img width="32" src="<?php echo ICO_PATH; ?>64x64/Communication.png"/><br/>
+                <a href="Intranet/openChatroom" target="_blank"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Communication.png"/><br/>
                     <?php echo $this->viewParameters['translate']->translate('communicate'); ?></a>
             </td>
             <td align="center">
