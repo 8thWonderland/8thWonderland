@@ -24,6 +24,12 @@ window.onload = function(e) {
     displayUsernameForm();
 };
 
+window.onbeforeunload = function(e) {
+    sessionStorage.removeItem('chatroom-name');
+    sessionStorage.removeItem('chatroom-username');
+    sessionStorage.removeItem('chatroom-token');
+}
+
 function authenticate() {
     user.username = $("input[name=final-username]").val();
     if(user.username === "") {
@@ -138,6 +144,14 @@ function connectWebsocket() {
     });
     if (window["WebSocket"]) {
         conn = new WebSocket("ws://" + server.host + ":" + server.port + "/main");
+        conn.onopen = function() {
+            conn.send(JSON.stringify({
+                type: "authentication",
+                chatroom: "main",
+                author: user.username,
+                token: user.token
+            }));
+        };
         conn.onclose = function(evt) {
             addNotification("error", "The connection was closed");
             appendLog($("<div><b>Connection closed.</b></div>"))
