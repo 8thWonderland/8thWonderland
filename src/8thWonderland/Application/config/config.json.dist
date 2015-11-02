@@ -31,8 +31,8 @@
         "member_manager" : {
             "class" : "Wonderland\\Application\\Manager\\MemberManager",
             "arguments" : [
-                "@database_connection",
-                "@member_repository"
+                "@member_repository",
+                "@database_connection"
             ]
         },
         "member_repository" : {
