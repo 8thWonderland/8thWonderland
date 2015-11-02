@@ -44,13 +44,23 @@ class GroupRepository extends AbstractRepository {
     }
     
     public function findGroupMembers($groupId) {
-        return $this->connection->prepareStatement(
+        $statement = $this->connection->prepareStatement(
             'SELECT u.id, u.identity, u.last_connected_at ' .
             'FROM citizen_groups cg ' .
             'INNER JOIN users u ON cg.citizen_id = u.id ' .
             'WHERE cg.group_id = :group_id ' .
             'ORDER BY u.identity ASC'
-        , ['group_id' => $groupId])->fetchAll(\PDO::FETCH_ASSOC);
+        , ['group_id' => $groupId]);
+        $members = [];
+        while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $members[] =
+                (new Member())
+                ->setId($data['id'])
+                ->setIdentity($data['identity'])
+                ->setLastConnectedAt(new \DateTime($data['last_connected_at']))
+            ;
+        }
+        return $members;
     }
     
     public function update(Group $group) {

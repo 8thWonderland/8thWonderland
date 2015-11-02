@@ -74,6 +74,14 @@ class GroupManager {
     public function countMembers($groupId) {
         return $this->repository->countGroupMembers($groupId);
     }
+    
+    /**
+     * @param int $groupId
+     * @return array
+     */
+    public function getGroupMembers($groupId) {
+        return $this->repository->findGroupMembers($groupId);
+    }
 
     /**
      * Update Group's contact
