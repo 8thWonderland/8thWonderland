@@ -21,9 +21,11 @@ Go in your project folder and execute the following command :
 
 ```shell
 git clone git@github.com:Kern046/8thWonderlandV4.git 8thwonderland
+# your sources will be here
+cd 8thwonderland
+# install project dependencies
+composer install
 ```
-
-Then, all the project files will be located in the ``8thwonderland`` folder.
 
 In the folder ``8thwonderland/src/Application/config/``, you must copy the file ``config.json.dist`` and name it ``config.json``.
 
