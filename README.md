@@ -29,6 +29,8 @@ In the folder ``8thwonderland/src/Application/config/``, you must copy the file 
 
 Then, replace the configuration values at the bottom of the file with the right values.
 
+In the ``8thwonderland/dump/`` folder, you will find two dump files. These files will initialize the database structure and minimal data to make the application work.
+
 Contribute
 ----------
 
