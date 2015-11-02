@@ -152,8 +152,8 @@ class Application {
      */
     public function run() {
         $router = new \AltoRouter();
-        if($_SERVER['HTTP_HOST'] === '127.0.0.1') {
-            $router->setBasePath(dirname($_SERVER['PHP_SELF']));
+        if(isset($_SERVER['BASE'])) {
+            $router->setBasePath($_SERVER['BASE']);
         }
         $router->map(
             'GET',
