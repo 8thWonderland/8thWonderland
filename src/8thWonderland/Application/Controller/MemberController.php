@@ -9,7 +9,7 @@ class MemberController extends ActionController {
         $translate = $this->application->get('translator');
         $this->viewParameters['translate'] = $translate;
 
-        $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
+        $member = $this->getUser();
         // Affichage du genre
         $this->viewParameters['gender'] = 
             ($member->getGender() === 0)

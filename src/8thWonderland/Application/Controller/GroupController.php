@@ -43,8 +43,8 @@ class GroupController extends ActionController {
         $paginator = $this->application->get('paginator');
         $paginator->setData($this
             ->application
-            ->get('member_manager')
-            ->findByGroup(
+            ->get('group_manager')
+            ->getGroupMembers(
                 $this->application->get('session')->get('desktop')
             )
         );
