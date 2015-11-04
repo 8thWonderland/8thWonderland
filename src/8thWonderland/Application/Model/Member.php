@@ -319,17 +319,17 @@ class Member {
      * @return \Wonderland\Application\Model\Member
      */
     public function addGroup(Group $group) {
-        $this->groups[] = $group;
+        $this->groups[$group->getId()] = $group;
         
         return $this;
     }
     
     /**
-     * @param \Wonderland\Application\Model\Group $group
+     * @param int $groupId
      * @return \Wonderland\Application\Model\Member
      */
-    public function removeGroup(Group $group) {
-        unset($this->groups[array_search($group, $this->groups)]);
+    public function removeGroup($groupId) {
+        unset($this->groups[$groupId]);
         
         return $this;
     }

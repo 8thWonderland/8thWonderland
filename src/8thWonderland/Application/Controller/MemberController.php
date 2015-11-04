@@ -56,7 +56,7 @@ class MemberController extends ActionController {
         $this->viewParameters['identity'] = $member->getIdentity();
         $this->viewParameters['mail'] = $member->getEmail();
         $this->viewParameters['avatar'] = $member->getAvatar();
-        if ($member->getIdentity() === 'Brennan Waco') {
+        if ($this->application->get('member_manager')->isMemberInGroup($member, 1)) {
             $this->viewParameters['admin'] = true;
         }
         $this->render('members/update_profile');

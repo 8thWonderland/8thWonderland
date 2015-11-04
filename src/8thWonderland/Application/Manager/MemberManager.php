@@ -103,9 +103,7 @@ class MemberManager {
      * @return int
      */
     public function isMemberInGroup(Member $member, $groupId) {
-        return $this->connection->prepareStatement(
-            'SELECT COUNT(*) FROM citizen_groups WHERE citizen_id = :id AND group_id = :group_id'
-        , ['id' => $member->getId(), 'group_id' => $groupId]);
+        return isset($member->getGroups()[$groupId]);
     }
     
     /**
