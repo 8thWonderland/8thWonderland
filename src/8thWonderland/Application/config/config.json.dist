@@ -22,7 +22,8 @@
         "templating": {
             "class" : "Wonderland\\Library\\Templating\\Renderer",
             "arguments" : [
-                "%root_path%"
+                "%root_path%",
+                "@translator"
             ]
         },
         "paginator" : {
