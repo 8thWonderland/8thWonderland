@@ -8,8 +8,6 @@ abstract class ActionController {
     /** @var \Wonderland\Library\Application **/
     protected $application;
     /** @var string **/
-    protected $viewsDirectory = 'src/8thWonderland/Application/views';
-    /** @var string **/
     protected $controllersDirectory = 'src/8thWonderland/Application/Controller';
     /** @var array **/
     protected $viewParameters = [];
@@ -18,21 +16,19 @@ abstract class ActionController {
     /** @var \Wonderland\Application\Model\Member **/
     protected $user;
     
+    /**
+     * @param Application $application
+     */
     public function __construct(Application $application) {
         $this->application = $application;
     }
     
     /**
-     * @param string $action
-     * @throws \Exception
+     * @param string $view
+     * @param array $parameters
      */
-    public function render($action)
-    {
-        $filename = "{$this->viewsDirectory}/{$action}{$this->suffix}";
-        if (!file_exists($filename)) {
-            throw new \Exception("The view '$filename' not found !");
-        }
-        include $filename;
+    public function render($view, $parameters) {
+        $this->application->get('templating')->render($view, $parameters);
     }
     
     /**
