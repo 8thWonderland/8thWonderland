@@ -9,8 +9,6 @@ abstract class ActionController {
     protected $application;
     /** @var string **/
     protected $controllersDirectory = 'src/8thWonderland/Application/Controller';
-    /** @var array **/
-    protected $viewParameters = [];
     /** @var string **/
     protected $suffix = '.view';
     /** @var \Wonderland\Application\Model\Member **/
