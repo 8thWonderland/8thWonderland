@@ -2,6 +2,8 @@
 
 namespace Wonderland\Library\Templating;
 
+use Wonderland\Library\Translator;
+
 class Renderer {
     /** @var array **/
     protected $parameters = [];
