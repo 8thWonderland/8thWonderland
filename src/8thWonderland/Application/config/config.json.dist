@@ -19,6 +19,12 @@
                 "%language_options%"
             ]
         },
+        "templating": {
+            "class" : "Wonderland\\Library\\Templating\\Renderer",
+            "arguments" : [
+                "%root_path%"
+            ]
+        },
         "paginator" : {
             "class" : "Wonderland\\Library\\Plugin\\Paginator"
         },
