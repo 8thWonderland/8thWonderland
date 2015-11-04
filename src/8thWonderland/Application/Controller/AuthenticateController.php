@@ -44,6 +44,7 @@ class AuthenticateController extends ActionController {
 
     public function logoutAction() {
         $this->application->get('session')->delete('__id__');
+        header('Location: ' . $_SERVER['PHP_SELF']);
     }
     
     public function subscribeAction() {

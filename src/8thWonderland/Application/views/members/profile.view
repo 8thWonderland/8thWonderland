@@ -4,14 +4,48 @@
         <tr>
             <td style="padding-left:15px; padding-bottom:15px;">
                 <table>
-                    <tr><td><?php echo $this->viewParameters['identity']; ?>.</td></tr>
-                    <tr><td>
-                         <div class="button"><a onclick="Clic('Member/displayProfile', '', 'milieu_milieu'); return false;"><?php echo $this->viewParameters['translate']->translate('update_profile'); ?></a></div><br/>
-                     </td></tr>
-                    <tr><td>
-                         <div class="button"><a onclick="Clic('Messaging/displayReception', '', 'milieu_milieu'); return false;"><?php echo $this->viewParameters['translate']->translate('read_mails'); ?></a></div></td></tr>
-                    <tr><td>
-                         <div class="button"><a onclick="Clic('Group/displayGroups', '', 'milieu_milieu'); return false;"><?php echo $this->viewParameters['translate']->translate('discover_groups'); ?></a></div></td></tr>
+                    <tr>
+                        <td>
+                            <?php echo $this->viewParameters['identity']; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="button">
+                                <a onclick="Clic('Member/displayProfile', '', 'milieu_milieu'); return false;">
+                                    <?php echo $this->viewParameters['translate']->translate('update_profile'); ?>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="button">
+                                <a href="authenticate/logout">
+                                    <?php echo $this->viewParameters['translate']->translate('logout'); ?>
+                                </a>
+                            </div>
+                            <br/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="button">
+                                <a onclick="Clic('Messaging/displayReception', '', 'milieu_milieu'); return false;">
+                                    <?php echo $this->viewParameters['translate']->translate('read_mails'); ?>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="button">
+                                <a onclick="Clic('Group/displayGroups', '', 'milieu_milieu'); return false;">
+                                    <?php echo $this->viewParameters['translate']->translate('discover_groups'); ?>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
                 </table>
             </td>
             <td>
