@@ -9,8 +9,6 @@ abstract class ActionController {
     protected $application;
     /** @var string **/
     protected $controllersDirectory = 'src/8thWonderland/Application/Controller';
-    /** @var string **/
-    protected $suffix = '.view';
     /** @var \Wonderland\Application\Model\Member **/
     protected $user;
     
@@ -25,7 +23,7 @@ abstract class ActionController {
      * @param string $view
      * @param array $parameters
      */
-    public function render($view, $parameters) {
+    public function render($view, $parameters = []) {
         $this->application->get('templating')->render($view, $parameters);
     }
     
