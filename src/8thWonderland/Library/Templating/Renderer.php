@@ -9,6 +9,8 @@ class Renderer {
     protected $parameters = [];
     /** @var string **/
     protected $rootPath;
+    /** @var \Wonderland\Library\Translator **/
+    protected $translator;
     
     /**
      * @param string $rootPath
@@ -16,7 +18,7 @@ class Renderer {
      */
     public function __construct($rootPath, Translator $translator) {
         $this->rootPath = $rootPath;
-        $this->parameters['translator'] = $translator;
+        $this->translator = $translator;
     }
     
     /**
@@ -50,5 +52,12 @@ class Renderer {
             $this->addParameters($parameters);
         }
         require("{$this->rootPath}/Application/views/$view.view");
+    }
+    
+    /**
+     * @param string $key
+     */
+    public function translate($key) {
+        echo $this->translator->translate($key);
     }
 }
