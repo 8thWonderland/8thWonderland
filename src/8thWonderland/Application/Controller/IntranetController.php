@@ -14,7 +14,6 @@ class IntranetController extends ActionController {
         if (($member = $this->getUser()) === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translator');
         
         $select_geo = false;
         $db = $this->application->get('database_connection');
@@ -46,73 +45,83 @@ class IntranetController extends ActionController {
     protected function displaySelectCountry(Member $member) {
         $language = $member->getLanguage();
         $statement = $this->application->get('member_manager')->getCountries($language);
-        $this->viewParameters['select_country'] = '<option></option>';
+        $selectCountry = '<option></option>';
         while($country = $statement->fetch()) {
-            $this->viewParameters['select_country'] .= "<option value='{$country['Code']}'>{$country[$language]}</option>";
+            $selectCountry .= "<option value='{$country['Code']}'>{$country[$language]}</option>";
         }
-        $this->viewParameters['msg'] = '';
-        $this->viewParameters['default_view'] = 'members/select_country.view';
-        $this->render('connected');
+        $this->render('connected', [
+            'msg' => '',
+            'select_country' => $selectCountry,
+            'default_view' => 'members/select_country.view'
+        ]);
     }
     
     protected function displayIntranet(Member $member) {
         $session = $this->application->get('session');
+        $templating = $this->application->get('templating');
         if (!empty($_POST['group_id'])) {
             $session->set('desktop', $_POST['group_id']);
         }
         $memberManager = $this->application->get('member_manager');
         // affichage du profil
-        $this->viewParameters['identity'] = $member->getIdentity();
-        $this->viewParameters['avatar'] = $member->getAvatar();
-        $this->viewParameters['admin'] = $memberManager->isMemberInGroup($member, 1);
-
+        $templating->addParameters([
+            'identity' => $member->getIdentity(),
+            'avatar' => $member->getAvatar(),
+            'admin' => $memberManager->isMemberInGroup($member, 1)
+        ]);
         $desktop = $session->get('desktop');
         if (isset($desktop)) {
-            $this->viewParameters['Contact_Group'] = $memberManager->isContact($member, $desktop);
-            $this->viewParameters['haut_milieu'] =
-                ($desktop === 1)
-                ? VIEWS_PATH . 'admin/menu_admin.view'
-                : VIEWS_PATH . 'groups/menu_groups.view'
-            ;
-
-            $this->viewParameters['milieu_droite'] = 
-                "<table>" .
-                "<tr><td id='md_section1'><script type='text/javascript'>window.onload=Clic('Admin/displayStatsCountry', '', 'md_section1');</script></td></tr>" .
-                "<tr><td id='md_section2'><script type='text/javascript'>window.onload=Clic('Group/displayMembers', '', 'md_section2');</script></td></tr>" .
-                "</table>"
-            ;
-            $this->viewParameters['milieu_milieu'] = "";
-            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('Member/displayContactsGroups', '', 'milieu_gauche');</script>";
+            $templating->addParameters([
+                'Contact_Group' => $memberManager->isContact($member, $desktop),
+                'haut_milieu' => 
+                    ($desktop === 1)
+                    ? VIEWS_PATH . 'admin/menu_admin.view'
+                    : VIEWS_PATH . 'groups/menu_groups.view'
+                ,
+                'milieu_droite' => 
+                    "<table>" .
+                    "<tr><td id='md_section1'><script type='text/javascript'>window.onload=Clic('Admin/displayStatsCountry', '', 'md_section1');</script></td></tr>" .
+                    "<tr><td id='md_section2'><script type='text/javascript'>window.onload=Clic('Group/displayMembers', '', 'md_section2');</script></td></tr>" .
+                    "</table>"
+                ,
+                'milieu_milieu' => '',
+                'milieu_gauche' => "<script type='text/javascript'>window.onload=Clic('Member/displayContactsGroups', '', 'milieu_gauche');</script>"
+            ]);
         } else {
-            $this->viewParameters['haut_milieu'] = VIEWS_PATH . 'members/menu.view';
-            $this->viewParameters['milieu_droite'] = '';
-            $this->viewParameters['milieu_milieu'] = "<script type='text/javascript'>window.onload=Clic('Intranet/communicate', '', 'milieu_milieu');</script>";
-            $this->viewParameters['milieu_gauche'] = "<script type='text/javascript'>window.onload=Clic('Motion/displayMotionsInProgress', '', 'milieu_gauche');</script>";
-            $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions($member);
-
-            // affichage des groupes du membre
-            $this->viewParameters['list_groups'] = $member->getGroups();
-            $this->viewParameters['milieu_droite'] = "<script type='text/javascript'>window.onload=Clic('Group/displayGroupsMembers', '', 'milieu_droite');</script>";
-
+            $templating->addParameters([
+                'haut_milieu' => VIEWS_PATH . 'members/menu.view',
+                'milieu_droite' => '',
+                'milieu_milieu' => "<script type='text/javascript'>window.onload=Clic('Intranet/communicate', '', 'milieu_milieu');</script>",
+                'milieu_gauche' => "<script type='text/javascript'>window.onload=Clic('Motion/displayMotionsInProgress', '', 'milieu_gauche');</script>",
+                'list_motions' => $this->application->get('motion_manager')->displayActiveMotions($member),
+                'list_groups' => $member->getGroups(),
+                'milieu_droite' => "<script type='text/javascript'>window.onload=Clic('Group/displayGroupsMembers', '', 'milieu_droite');</script>"
+            ]);
         }
         if ($this->is_Ajax()) {
             $this->render('members/intranet');
         } else {
-            $this->viewParameters['default_view'] = 'members/intranet.view';
-            $this->render('connected');
+            $this->render('connected', [
+                'default_view' => 'members/intranet.view'
+            ]);
         }
     }
     
     public function openChatroomAction() {
         if(($member = $this->getUser()) !== null) {
-            $this->viewParameters['username'] = $member->getIdentity();
-            $this->viewParameters['avatar'] = $member->getAvatar();
+            $this->application->get('templating')->addParameters([
+                'username' => $member->getIdentity(),
+                'avatar' => $member->getAvatar()
+            ]);
         } else {
-            $this->viewParameters['username'] = 'guest';
-            $this->viewParameters['avatar'] = ICO_PATH . 'user-48.png';
+            $this->application->get('templating')->addParameters([
+                'username' => 'guest',
+                'avatar' => ICO_PATH . 'user-48.png'
+            ]);
         }
-        $this->viewParameters['chatrooms'] = $this->application->get('chatrooms');
-        $this->render('communications/chatroom');
+        $this->render('communications/chatroom', [
+            'chatrooms' => $this->application->get('chatrooms')
+        ]);
     }
     
     public function zoneGeoAction() {
@@ -185,12 +194,9 @@ class IntranetController extends ActionController {
             }
             $this->redirect('Intranet/index');
         } else {
-            $translate = $this->application->get('translator');
-            $this->viewParameters['translate'] = $translate;
-            $this->viewParameters['msg'] = $translate->translate('fields_empty');
             $this->display(json_encode([
                 'status' => 2,
-                'reponse' => $translate->translate('fields_empty')
+                'reponse' => $this->application->get('translator')->translate('fields_empty')
             ]));
         }
     }
@@ -213,34 +219,30 @@ class IntranetController extends ActionController {
     }
 
     public function infosAction() {
-        if (($id = $this->application->get('session')->get('__id__')) === null) {
+        if ($this->getUser() === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('informations/public_news');
     }
 
     public function shareAction() {
-        if (($id = $this->application->get('session')->get('__id__')) === null) {
+        if ($this->getUser() === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
 
     public function communicateAction() {
-        if (($id = $this->application->get('session')->get('__id__')) === null) {
+        if ($this->getUser() === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('informations/public_news');
     }
 
     public function financeAction() {
-        if (($id = $this->application->get('session')->get('__id__')) === null) {
+        if ($this->getUser() === null) {
             $this->redirect('Index/index');
         }
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
@@ -256,7 +258,6 @@ class IntranetController extends ActionController {
         $logger->setWriter('db');
         $logger->log("{$member->getIdentity()} entre dans la console d'administration.", Log::INFO);
         
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->redirect('Admin/displayConsole');
     }
 }

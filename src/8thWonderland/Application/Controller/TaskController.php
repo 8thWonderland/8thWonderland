@@ -11,9 +11,9 @@ use Wonderland\Library\Admin\Log;
 
 class TaskController extends ActionController {
     public function displayCreateTaskAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->viewParameters['id_group'] = $_POST['id_group'];
-        $this->render('tasks/create_task');
+        $this->render('tasks/create_task', [
+            'id_group' => $_POST['id_group']
+        ]);
     }
     
     public function validTaskAction() {
@@ -76,33 +76,28 @@ class TaskController extends ActionController {
     }
     
     public function editTaskAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
     
     public function displayTasksAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
-    
     public function displayTasksInProgressAction() {
-        $this->viewParameters['list_tasks'] = $this->renderTasksInProgress();
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->viewParameters['id_group'] = $_POST['id_group'];
-        $this->render('tasks/tasks_inprogress');
+        $this->render('tasks/tasks_inprogress', [
+            'list_tasks' => $this->renderTasksInProgress(),
+            'id_group' => $_POST['id_group']
+        ]);
     }
     
     
     public function displayDetailsTaskAction() {
-        $details = ManageTasks::display_detailstask($_POST['task_id']);
-        
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->viewParameters['details'] = $details[0];
-        $this->viewParameters['cmd_delete'] = "Clic('Task/deleteTask', 'task_id=" . $_POST['task_id'] . "&id_group=" . $_POST['id_group'] . "', 'task_resultaction'); return false;";
-        $this->viewParameters['cmd_edit'] = "Clic('Task/editTask', 'task_id=" . $_POST['task_id'] . "', 'milieu_milieu'); return false;";
-        $this->render('tasks/task_details');
+        $this->render('tasks/task_details', [
+            'details' => ManageTasks::display_detailstask($_POST['task_id'])[0],
+            'cms_delete' => "Clic('Task/deleteTask', 'task_id=" . $_POST['task_id'] . "&id_group=" . $_POST['id_group'] . "', 'task_resultaction'); return false;",
+            'cms_edit' => "Clic('Task/editTask', 'task_id=" . $_POST['task_id'] . "', 'milieu_milieu'); return false;"
+        ]);
     }
     
     /**
