@@ -21,11 +21,11 @@
                         <td><?php $this->translate('result'); ?></td>
                         <td><?php if($approve>50.0)
                                   {
-                                    echo "<strong class='motion_approved'>".$this->parameters['translate']->translate('approved').$approve."%</strong>";
+                                    echo "<strong class='motion_approved'>".$this->translate('approved').$approve."%</strong>";
                                   }
                                   else
                                   {
-                                    echo "<strong class='motion_refused'>".$this->parameters['translate']->translate('refused').$refuse."%</strong>";
+                                    echo "<strong class='motion_refused'>".$this->translate('refused').$refuse."%</strong>";
                                   } ?><br/></td>
                     </tr>
                     <tr>
