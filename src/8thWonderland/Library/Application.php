@@ -2,26 +2,17 @@
 
 namespace Wonderland\Library;
 
-use Wonderland\Library\Config;
-
 use Pimple\Container;
 
 class Application {
     /** @var string **/
     protected $rootPath;
-    /** @var Config **/
-    protected $config;
     /** @var Pimple\Container **/
     protected $container;
     
-    /**
-     * @param string $environment
-     * @param array $options
-     */
-    public function init($environment = 'production', $options = []) {
+    public function init() {
         $this->setRootPath();
         $this->setContainer();
-        $this->setConfig($environment, $options);
     }
     
     /**
@@ -127,25 +118,6 @@ class Application {
      */
     public function getRootPath() {
         return $this->rootPath;
-    }
-    
-    /**
-     * @param string $environment
-     * @param array $options
-     */
-    public function setConfig($environment, $options = []) {
-        $this->config =
-            (new Config($this))
-            ->setEnvironment($environment)
-            ->setOptions($options)
-        ;
-    }
-    
-    /**
-     * @return Config
-     */
-    public function getConfig() {
-        return $this->config;
     }
     
     /**
