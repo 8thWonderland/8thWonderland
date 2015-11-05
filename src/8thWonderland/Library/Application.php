@@ -2,26 +2,17 @@
 
 namespace Wonderland\Library;
 
-use Wonderland\Library\Config;
-
 use Pimple\Container;
 
 class Application {
     /** @var string **/
     protected $rootPath;
-    /** @var Config **/
-    protected $config;
     /** @var Pimple\Container **/
     protected $container;
     
-    /**
-     * @param string $environment
-     * @param array $options
-     */
-    public function init($environment = 'production', $options = []) {
+    public function init() {
         $this->setRootPath();
         $this->setContainer();
-        $this->setConfig($environment, $options);
     }
     
     /**
@@ -30,10 +21,11 @@ class Application {
     public function setContainer() {
         $this->container = new Container();
         
-        $containerData = json_decode(file_get_contents($this->rootPath.'Application/config/config.json'), true);
+        $services = json_decode(file_get_contents($this->rootPath.'Application/config/services.json'), true);
+        $parameters = json_decode(file_get_contents($this->rootPath.'Application/config/config.json'), true);
         
-        $this->setServices($containerData['services']);
-        $this->setParameters(array_merge($containerData['parameters'], ['root_path' => $this->rootPath]));
+        $this->setServices($services);
+        $this->setParameters(array_merge($parameters, ['root_path' => $this->rootPath]));
     }
     
     /**
@@ -126,25 +118,6 @@ class Application {
      */
     public function getRootPath() {
         return $this->rootPath;
-    }
-    
-    /**
-     * @param string $environment
-     * @param array $options
-     */
-    public function setConfig($environment, $options = []) {
-        $this->config =
-            (new Config($this))
-            ->setEnvironment($environment)
-            ->setOptions($options)
-        ;
-    }
-    
-    /**
-     * @return Config
-     */
-    public function getConfig() {
-        return $this->config;
     }
     
     /**

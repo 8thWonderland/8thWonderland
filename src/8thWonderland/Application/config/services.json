@@ -1,0 +1,92 @@
+{
+    "database_connection" : {
+        "class" : "Wonderland\\Library\\Database\\PdoDriver",
+        "arguments" : [
+            "%database_host%",
+            "%database_username%",
+            "%database_password%",
+            "%database_name%"
+        ]
+    },
+    "session" : {
+        "class" : "Wonderland\\Library\\Memory\\Session"
+    },
+    "translator" : {
+        "class" : "Wonderland\\Library\\Translator",
+        "arguments" : [
+            "%root_path%",
+            "%language_options%"
+        ]
+    },
+    "templating": {
+        "class" : "Wonderland\\Library\\Templating\\Renderer",
+        "arguments" : [
+            "%root_path%",
+            "@translator"
+        ]
+    },
+    "paginator" : {
+        "class" : "Wonderland\\Library\\Plugin\\Paginator"
+    },
+    "logger" : {
+        "class" : "Wonderland\\Library\\Admin\\Log",
+        "arguments" : [
+            "@database_connection"
+        ]
+    },
+    "member_manager" : {
+        "class" : "Wonderland\\Application\\Manager\\MemberManager",
+        "arguments" : [
+            "@member_repository",
+            "@database_connection"
+        ]
+    },
+    "member_repository" : {
+        "class" : "Wonderland\\Application\\Repository\\MemberRepository",
+        "arguments" : [
+            "@database_connection"
+        ]
+    },
+    "group_manager" : {
+        "class" : "Wonderland\\Application\\Manager\\GroupManager",
+        "arguments" : [
+            "@group_repository"
+        ]
+    },
+    "mail_manager" : {
+        "class" : "Wonderland\\Application\\Manager\\MailManager"
+    },
+    "ovh_manager" : {
+        "class" : "Wonderland\\Application\\Manager\\OvhManager",
+        "arguments": [
+            "@logger"
+        ]
+    },
+    "motion_manager" : {
+        "class" : "Wonderland\\Application\\Manager\\MotionManager",
+        "arguments" : [
+            "@database_connection",
+            "@translator"
+        ]
+    },
+    "message_manager" : {
+        "class" : "Wonderland\\Application\\Manager\\MessageManager",
+        "arguments" : [
+            "@database_connection",
+            "@member_manager",
+            "@message_repository"
+        ]
+    },
+    "message_repository" : {
+        "class" : "Wonderland\\Application\\Repository\\MessageRepository",
+        "arguments" : [
+            "@database_connection"
+        ]
+    },
+    "group_repository" : {
+        "class" : "Wonderland\\Application\\Repository\\GroupRepository",
+        "arguments" : [
+            "@database_connection"
+        ]
+    }
+}
