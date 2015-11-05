@@ -11,7 +11,6 @@ use Wonderland\Library\Admin\Log;
 
 class AuthenticateController extends ActionController {
     public function connectAction() {
-        $this->viewParameters['appli_status'] = 1;
         $memberManager = $this->application->get('member_manager');
         $translate = $this->application->get('translator');
         
@@ -34,7 +33,6 @@ class AuthenticateController extends ActionController {
             $translate->setUserLang($member->getLanguage());
             $this->redirect('Intranet/index');
         } else {
-            $this->viewParameters['translate'] = $translate;
             $this->display(json_encode([
                 'status' => 0,
                 'reponse' => '<span style="color: red;">' . $translate->translate('connexion_nok') . '</span>'
@@ -121,7 +119,6 @@ class AuthenticateController extends ActionController {
     }
     
     public function displayForgetPasswordAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('members/forget_password');
     }
     

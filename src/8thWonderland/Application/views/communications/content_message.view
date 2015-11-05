@@ -5,22 +5,22 @@
             <td>
                 <table>
                     <tr>
-                        <td align="center"><h2><?php echo $this->viewParameters['title_message']; ?></h2></td>
-                        <td style="width:150px;" align="right"><h4><?php echo $this->viewParameters['date_msg']; ?></h4></td>
+                        <td align="center"><h2><?php echo $this->parameters['title_message']; ?></h2></td>
+                        <td style="width:150px;" align="right"><h4><?php echo $this->parameters['date_msg']; ?></h4></td>
                     </tr>
                 </table>
             </td>
         </tr>
         <tr>
-            <td class="conteneur_message"><?php echo $this->viewParameters['content_message']; ?></td>
+            <td class="conteneur_message"><?php echo $this->parameters['content_message']; ?></td>
         </tr>
         <tr>
-            <td><?php echo $this->viewParameters['translate']->translate('recipient_message') . ": " . $this->viewParameters['recipients_message']; ?></td>
+            <td><?php $this->translate('recipient_message') . ": " . $this->parameters['recipients_message']; ?></td>
         </tr>
         <tr align="center">
             <td style="height:50px;">
                 <div class="bouton" style="width:150px;">
-                    <a onclick="Clic('Messaging/<?php echo $this->viewParameters['back']; ?>', '', 'volet_visualisation'); return false;"><?php echo $this->viewParameters['translate']->translate('back'); ?></a>
+                    <a onclick="Clic('Messaging/<?php echo $this->parameters['back']; ?>', '', 'volet_visualisation'); return false;"><?php $this->translate('back'); ?></a>
                 </div>
             </td>
         </tr>

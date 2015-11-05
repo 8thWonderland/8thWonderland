@@ -1,36 +1,36 @@
 <!-- Module messagerie interne -->
 <div id="messaging" class="encadre">
     <table>
-        <caption><?php echo $this->viewParameters['translate']->translate('messaging'); ?></caption>
+        <caption><?php $this->translate('messaging'); ?></caption>
         <tr>
             <td style="width:25%; vertical-align:top;" align="center">
                 <table style="height:30%;">
-                    <tr><td class="categories"><?php echo $this->viewParameters['translate']->translate('received_messages'); ?></td></tr>
+                    <tr><td class="categories"><?php $this->translate('received_messages'); ?></td></tr>
                     <tr>
                         <td align="center">
                             <div class="bouton_rollover" style="width:150px;"><a onclick="Clic('Messaging/displayReceivedMessages', '', 'volet_visualisation'); return false;">
-                                <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('box_receive'); ?></span>
+                                <span style="color: #dfdfdf;"><?php $this->translate('box_receive'); ?></span>
                             </a></div>
                         </td>
                     </tr>
                     <tr><td style="height:30px;"></td></tr>
-                    <tr><td class="categories"><?php echo $this->viewParameters['translate']->translate('sent_messages'); ?></td></tr>
+                    <tr><td class="categories"><?php $this->translate('sent_messages'); ?></td></tr>
                     <tr>
                         <td align="center">
                             <div class="bouton_rollover" style="width:150px;"><a onclick="Clic('Messaging/composeMessageToUnknown', '', 'volet_visualisation'); return false;">
-                                <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('compose_message'); ?></span>
+                                <span style="color: #dfdfdf;"><?php $this->translate('compose_message'); ?></span>
                             </a></div>
                             <div class="bouton_rollover" style="width:150px;"><a onclick="Clic('Messaging/displaySentMessages', '', 'volet_visualisation'); return false;">
-                                <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('box_send'); ?></span>
+                                <span style="color: #dfdfdf;"><?php $this->translate('box_send'); ?></span>
                             </a></div>
                         </td>
                     </tr>
                     <tr><td style="height:30px;"></td></tr>
-                    <tr><td class="categories"><?php echo $this->viewParameters['translate']->translate('manager_contacts'); ?></td></tr>
+                    <tr><td class="categories"><?php $this->translate('manager_contacts'); ?></td></tr>
                     <tr>
                         <td align="center">
                             <div class="bouton_rollover" style="width:150px;"><a onclick="Clic('Messaging/createGroup', '', 'volet_visualisation'); return false;">
-                                <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('create_group'); ?></span>
+                                <span style="color: #dfdfdf;"><?php $this->translate('create_group'); ?></span>
                             </a></div>
                         </td>
                     </tr>

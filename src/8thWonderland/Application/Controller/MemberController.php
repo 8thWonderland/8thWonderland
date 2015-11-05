@@ -6,17 +6,8 @@ use Wonderland\Library\Controller\ActionController;
 
 class MemberController extends ActionController {
     public function displayProfileAction() {
-        $translate = $this->application->get('translator');
-        $this->viewParameters['translate'] = $translate;
-
         $member = $this->getUser();
-        // Affichage du genre
-        $this->viewParameters['gender'] = 
-            ($member->getGender() === 0)
-            ? '<option value=1 selected="selected">' . $translate->translate('female') . '</option><option value=2>' . $translate->translate('male') . '</option>'
-            : '<option value=1>' . $translate->translate('female') . '</option><option value=2 selected="selected">' . $translate->translate('male') . '</option>'
-        ;
-
+        $translate = $this->application->get('translator');
         // Affichage des langues
         $langs = $translate->getList();
         $lang_user = $member->getLanguage();
@@ -51,21 +42,25 @@ class MemberController extends ActionController {
 
 
         //$this->_view['select_region'] = "<option value='" . $region_user . "' selected='selected'>" . utf8_encode($region_name[0]['Name']) . "</option>";
-        $this->viewParameters['langs'] = $sel_lang;
-        $this->viewParameters['login'] = $member->getLogin();
-        $this->viewParameters['identity'] = $member->getIdentity();
-        $this->viewParameters['mail'] = $member->getEmail();
-        $this->viewParameters['avatar'] = $member->getAvatar();
-        if ($member->getIdentity() === 'Brennan Waco') {
-            $this->viewParameters['admin'] = true;
+        if ($this->application->get('member_manager')->isMemberInGroup($member, 1)) {
+            $this->application->get('templating')->addParameter('admin', true);
         }
-        $this->render('members/update_profile');
+        $this->render('members/update_profile', [
+            'langs' => $sel_lang,
+            'login' => $member->getLogin(),
+            'identity' => $member->getIdentity(),
+            'mail' => $member->getEmail(),
+            'avatar' => $member->getAvatar(),
+            'gender' => 
+                ($member->getGender() === 0)
+                ? '<option value=1 selected="selected">' . $translate->translate('female') . '</option><option value=2>' . $translate->translate('male') . '</option>'
+                : '<option value=1>' . $translate->translate('female') . '</option><option value=2 selected="selected">' . $translate->translate('male') . '</option>'
+        ]);
     }
     
     public function validProfileAction() {
         $translate = $this->application->get('translator');
-        $memberManager = $this->application->get('member_manager');
-        $member = $memberManager->getMember($this->application->get('session')->get('__id__'));
+        $member = $this->getUser();
         $err_msg = '';
         
         if (!empty($_POST['avatar'])) {
@@ -108,7 +103,7 @@ class MemberController extends ActionController {
         if (!empty($_POST['lang']) && $member->setLanguage($_POST['lang']) === 0) {
             $err_msg .= "{$translate->translate("error")}<br/>";
         }
-        $memberManager->update($member);
+        $this->application->get('member_manager')->update($member);
         if (empty($err_msg)) {
             $this->redirect('Intranet/index');
         } else {
@@ -175,8 +170,8 @@ class MemberController extends ActionController {
         }
         $tabmini_contactsgroups .= $next . '</td></tr></table>';
         
-        $this->viewParameters['list_contactsgroups'] = $tabmini_contactsgroups;
-        $this->viewParameters['translate'] = $translate;
-        $this->render('groups/list_contactsgroups');
+        $this->render('groups/list_contactsgroups', [
+            'list_contactsgroups' => $tabmini_contactsgroups
+        ]);
     }
 }

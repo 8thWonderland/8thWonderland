@@ -8,10 +8,10 @@ use Wonderland\Library\Admin\Log;
 
 class GroupController extends ActionController {
     public function displayGroupsAction() {
-        $this->viewParameters['list_Allgroups'] = $this->renderGroups();
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->viewParameters['map_coord'] = $this->renderMapCoord();
-        $this->render('groups/list_allgroups');
+        $this->render('groups/list_allgroups', [
+            'list_Allgroups' => $this->renderGroups(),
+            'map_coord' => $this->renderMapCoord()
+        ]);
     }
     
     public function displayGroupsMembersAction() {
@@ -21,22 +21,21 @@ class GroupController extends ActionController {
         
         $translate = $this->application->get('translator');
         $groups = $member->getGroups();
-        $response = '';
+        $groupsList = '';
 
         if (count($groups) === 0) {
-            $response = "<tr><td>{$translate->translate('no_result')}</td></tr>";
+            $groupsList = "<tr><td>{$translate->translate('no_result')}</td></tr>";
         }
         foreach ($groups as $group) {
-            $response .=
+            $groupsList .=
                 "<tr><td>{$group->getName()}</td>" .
                 "<td><div class='bouton' style='margin:3px;'><a onclick=\"Clic('Intranet/index', 'group_id={$group->getId()}', 'body'); return false;\">" .
                 "<span style='color: #dfdfdf;'>{$translate->translate('btn_enterdesktop')}</span></a></div></td></tr>"
             ;
         }
-
-        $this->viewParameters['list_groups'] = $response;
-        $this->viewParameters['translate'] = $translate;
-        $this->render('groups/list_groups');
+        $this->render('groups/list_groups', [
+            'list_groups' => $groupsList
+        ]);
     }
     
     public function displayMembersAction() {
@@ -94,41 +93,36 @@ class GroupController extends ActionController {
         if ($CurPage < $MaxPage) {
             $next = '<a onclick="Clic(\'Group/displayMembers\', \'&page=' . ($CurPage + 1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
-        
-        $this->viewParameters['list_membersgroup'] = $tabmini_usersgroup . $next . '</td></tr></table>';
-        $this->viewParameters['translate'] = $translate;
-        $this->render('groups/list_membersgroup');
+        $this->render('groups/list_membersgroup', [
+            'list_membersgroup' => $tabmini_usersgroup . $next . '</td></tr></table>'
+        ]);
     }
     
     public function displayManageGroupsAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
-
-        $membersList = $this->application->get('member_manager')->findByGroup($this->application->get('session')->get('desktop'));
+        $membersList = $this->application->get('group_manager')->getGroupMembers($this->application->get('session')->get('desktop'));
         $select = '<option></option>';
         $nbMembers = count($membersList);
         for ($i = 0; $i < $nbMembers; ++$i) {
             $select .= "<option value='{$membersList[$i]->getId()}'>{$membersList[$i]->getIdentity()}</option>";
         }
-        $this->viewParameters['select_contactsgroup'] = $select;
-        $this->render('groups/manage_groups');
+        $this->render('groups/manage_groups', [
+            'select_contactsgroup' => $select
+        ]);
     }
     
     public function displayCalendarAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
     public function displayAddressBookAction() {
-        $this->viewParameters['list_users'] = $this->renderUsers();
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->render('members/list_users');
+        $this->render('members/list_users', [
+            'list_users' => $this->renderUsers()
+        ]);
     }
     
     public function displayBookmarkAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
-    
     
     public function quitDesktopAction() {
         $session = $this->application->get('session');
@@ -141,9 +135,7 @@ class GroupController extends ActionController {
         $translate = $this->application->get('translator');
         $dbLogger = $this->application->get('logger');
         $dbLogger->setWriter('db');
-        $session = $this->application->get('session');
-        $memberManager = $this->application->get('member_manager');
-        $member = $memberManager->getMember($session->get('__id__'));
+        $member = $this->getUser();
         
         if (!isset($_POST['sel_contactgroups']) || intval($_POST['sel_contactgroups']) === 0) {
             $this->display(
@@ -155,7 +147,7 @@ class GroupController extends ActionController {
             
             $dbLogger->log("Echec du changement de CG par {$member->getIdentity()} (id_user inconnu : {$_POST['sel_contactgroups']})", Log::ERR);
         } else {
-            $desktop = $session->get('desktop');
+            $desktop = $this->application->get('session')->get('desktop');
             $groupManager = $this->application->get('group_manager');
             if(($group = $groupManager->getGroup($desktop)) === null) {
                 return $this->display(
@@ -165,7 +157,7 @@ class GroupController extends ActionController {
                     '</tr></table></div>'
                 );
             }
-            if(($newContact = $memberManager->getMember($_POST['sel_contactgroups'])) === null) {
+            if(($newContact = $this->application->get('member_manager')->getMember($_POST['sel_contactgroups'])) === null) {
                 return $this->display(
                     '<div class="error" style="height:25px;"><table><tr>' .
                     '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
@@ -187,8 +179,6 @@ class GroupController extends ActionController {
                 $dbLogger->log("Changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::INFO);
             }
         }
-        
-        $this->viewParameters['translate'] = $translate;
     }
     
     /**

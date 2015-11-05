@@ -11,46 +11,47 @@ class MotionController extends ActionController {
         $translate = $this->application->get('translator');
         $motionThemes = $this->application->get('motion_manager')->getMotionThemes();
         
-        $this->viewParameters['translate'] = $translate;
-        $this->viewParameters['msg'] = '';
-        $this->viewParameters['select_theme'] = '<option></options>';
+        $selectTheme = '<option></options>';
         
         while ($theme = $motionThemes->fetch(\PDO::FETCH_ASSOC)) {
-            $this->viewParameters['select_theme'] .= "<option value='{$theme['theme_id']}'>{$translate->translate($theme['label_key'])}</option>";
+            $selectTheme .= "<option value='{$theme['theme_id']}'>{$translate->translate($theme['label_key'])}</option>";
         }
-        $this->render('actions/create_motion');
+        $this->render('actions/create_motion', [
+            'msg' => '',
+            'select_theme' => $selectTheme
+        ]);
     }
     
     public function displayMotionsInProgressAction() {
-        $this->viewParameters['list_motions'] = $this->application->get('motion_manager')->displayActiveMotions($this->getUser());
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->render('actions/motions_inprogress');
+        $this->render('actions/motions_inprogress', [
+            'list_motions' => $this->application->get('motion_manager')->displayActiveMotions($this->getUser())
+        ]);
     }
     
     public function displayMotionsAction() {
-        $this->viewParameters['list_motions'] = $this->renderMotions();
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->render('actions/motions');
+        $this->render('actions/motions', [
+            'list_motions' => $this->renderMotions()
+        ]);
     }
     
     public function displayVoteAction() {
         $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->viewParameters['details'] = $details[0];
-        $this->viewParameters['description'] = str_replace('&gt;', '>', str_replace('&lt;', '<', $details[0]['description']));
-        $this->viewParameters['means'] = html_entity_decode($details[0]['moyens']);
-        $this->render('actions/motion_vote_details');
+        $this->render('actions/motion_vote_details', [
+            'details' => $details[0],
+            'description' => str_replace('&gt;', '>', str_replace('&lt;', '<', $details[0]['description'])),
+            'means' => html_entity_decode($details[0]['moyens'])
+        ]);
     }
     
     public function displayMotionAction() {
         $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->viewParameters['details'] = $details[0];
-        $this->viewParameters['description'] = str_replace('&gt;', '>', str_replace('&lt;', '<', $details[0]['description']));
-        $this->viewParameters['means'] = html_entity_decode($details[0]['moyens']);
-        $this->render('actions/motion_details');
+        $this->render('actions/motion_details', [
+            'details' => $details[0],
+            'description' => str_replace('&gt;', '>', str_replace('&lt;', '<', $details[0]['description'])),
+            'means' => html_entity_decode($details[0]['moyens'])
+        ]);
     }
     
     /**
@@ -149,10 +150,9 @@ class MotionController extends ActionController {
         $logger->setWriter('db');
         $motionManager = $this->application->get('motion_manager');
         $motionThemes = $motionManager->getMotionThemes();
-        $this->viewParameters['translate'] = $translate;
-        $this->viewParameters['select_theme'] = '<option></options>';
+        $selectTheme = '<option></options>';
         while ($theme = $motionThemes->fetch(\PDO::FETCH_ASSOC)) {
-            $this->viewParameters['select_theme'] .= "<option value='{$theme['theme_id']}'>{$translate->translate($theme['label_key'])}</option>";
+            $selectTheme .= "<option value='{$theme['theme_id']}'>{$translate->translate($theme['label_key'])}</option>";
         }
         
         if(
@@ -160,14 +160,14 @@ class MotionController extends ActionController {
             !empty($_POST['description_motion'])&& !empty($_POST['means_motion'])
         ) {
             if ($motionManager->validateMotion($this->getUser(), $_POST['title_motion'], $_POST['theme'], $_POST['description_motion'], $_POST['means_motion'])) {
-                $this->viewParameters['msg'] =
+                $msg =
                     '<div class="info" style="height:50px;"><table><tr>' .
                     '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
                     '<td><span style="font-size: 15px;">' . $translate->translate('depot_motion_ok') . '</span></td>' .
                     '</tr></table></div>'
                 ;
             } else {
-                $this->viewParameters['msg'] = 
+                $msg = 
                     '<div class="error" style="height:50px;"><table><tr>' .
                     '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
                     '<td><span style="font-size: 15px;">' . $translate->translate('depot_motion_nok') . '</span></td>' .
@@ -177,7 +177,7 @@ class MotionController extends ActionController {
                 $logger->log("Echec du dépot de motion par l'utilisateur {$this->getUser()->getIdentity()}", Log::WARN);
             }
         } else {
-            $this->viewParameters['msg'] = 
+            $msg = 
                 '<div class="error" style="height:50px;"><table><tr>' .
                 '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
                 '<td><span style="font-size: 15px;">' . $translate->translate('fields_empty') . '</span></td>' .
@@ -185,12 +185,13 @@ class MotionController extends ActionController {
             ;
             $logger->log("Echec du dépot de motion par l'utilisateur {$this->getUser()->getIdentity()} (champs vides)", Log::WARN);
         }
-        $this->render('actions/create_motion');
+        $this->render('actions/create_motion', [
+            'msg' => $msg
+        ]);
     }
     
     public function voteMotionAction() {
         $translate = $this->application->get('translator');
-        $this->viewParameters['translate'] = $translate;
         if (!empty($_POST['motion_id']) && !empty($_POST['vote'])) {
             if ($this->application->get('motion_manager')->voteMotion($this->getUser(), $_POST['motion_id'], $_POST['vote']) === 1) {
                 $this->display(

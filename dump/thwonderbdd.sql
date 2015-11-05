@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `description` varchar(250) NOT NULL,
   `name` varchar(65) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `contact_id` int(11) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Creation` (`created_at`)

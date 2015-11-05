@@ -1,8 +1,8 @@
 <!-- Module des groups -->
 <div id="groups" class="encadre">
     <table width=90%>
-        <caption><?php echo $this->viewParameters['translate']->translate('title_groups'); ?></caption>
-        <tr><td><?php echo $this->viewParameters['list_Allgroups']; ?></td></tr>
+        <caption><?php $this->translate('title_groups'); ?></caption>
+        <tr><td><?php echo $this->parameters['list_Allgroups']; ?></td></tr>
     </table>
 </div>
 <br/>

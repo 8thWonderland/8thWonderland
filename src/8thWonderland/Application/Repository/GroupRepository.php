@@ -3,6 +3,7 @@
 namespace Wonderland\Application\Repository;
 
 use Wonderland\Application\Model\Group;
+use Wonderland\Application\Model\Member;
 
 class GroupRepository extends AbstractRepository {
     public function find($id) {
@@ -10,7 +11,7 @@ class GroupRepository extends AbstractRepository {
             'SELECT g.id, g.name, g.description, g.contact_id, u.identity, g.created_at, g.updated_at, gt.label ' .
             'FROM groups g ' .
             'INNER JOIN group_types gt ON gt.id = g.type_id ' .
-            'INNER JOIN users u ON u.id = g.contact_id ' .
+            'LEFT JOIN users u ON u.id = g.contact_id ' .
             'WHERE g.id = :id'
         , ['id' => $id])->fetch(\PDO::FETCH_ASSOC);
     }
@@ -20,7 +21,7 @@ class GroupRepository extends AbstractRepository {
             'SELECT g.id, g.name, g.description, u.identity, g.created_at, g.updated_at, gt.label ' .
             'FROM groups g ' .
             'INNER JOIN group_types gt ON gt.id = g.type_id ' .
-            'INNER JOIN users u ON u.id = g.contact_id ' .
+            'LEFT JOIN users u ON u.id = g.contact_id ' .
             'ORDER BY g.name ASC'
         )->fetchAll(\PDO::FETCH_ASSOC);
     }

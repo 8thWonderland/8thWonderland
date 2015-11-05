@@ -43,7 +43,7 @@
                                                 <table>
                                                     <tr>
                                                         <td><img alt="info" src="<?php echo ICO_PATH;?>64x64/Info.png" style="width:48px;"/></td>
-                                                        <td><span style="font-size: 15px;"><?php echo $this->viewParameters['translate']->translate('open_chat'); ?></span></td>
+                                                        <td><span style="font-size: 15px;"><?php $this->translate('open_chat'); ?></span></td>
                                                     </tr>
                                                 </table>
                                             </div>

@@ -1,15 +1,15 @@
 <!-- Module d'accès aux espaces privés des groupes -->
 <div id="list_groups" class="encadre">
     <table width=90%>
-        <caption><?php echo $this->viewParameters['translate']->translate('title_groupsmembers'); ?></caption>
-        <?php echo $this->viewParameters['list_groups']; ?>
+        <caption><?php $this->translate('title_groupsmembers'); ?></caption>
+        <?php echo $this->parameters['list_groups']; ?>
     </table>
     <div id="separator" style="height:20px; border-bottom: 2px dotted #dfdfdf; margin-bottom:10px;"></div>
     <table>
         <tr>
             <td>
                 <div class="bouton"><a onclick="Clic('Group/displayGroups', '', 'milieu_milieu'); return false;">
-                    <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('discover_groups'); ?></span>
+                    <span style="color: #dfdfdf;"><?php $this->translate('discover_groups'); ?></span>
                 </a></div>
             </td>
         </tr>

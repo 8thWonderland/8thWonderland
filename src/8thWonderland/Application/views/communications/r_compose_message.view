@@ -6,21 +6,21 @@
     <form id="form_composemessage" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Messaging/validateMessage", "form_composemessage", "result_composemessage"); return false;' method="post" action="">
         <table style="width: 70%" align="center">
             <tr>
-                <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate('recipient_message'); ?></td>
+                <td style="height:50px;"><?php $this->translate('recipient_message'); ?></td>
                 <td><input type="text" name="recipient_message" id="recipient_message"></td>
             </tr>
             <tr>
-                <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate('title_message'); ?></td>
+                <td style="height:50px;"><?php $this->translate('title_message'); ?></td>
                 <td><input type="text" name="title_message" id="title_message" size="30" /></td>
             </tr>
             <tr>
-                <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate('content_message'); ?></td>
+                <td style="height:50px;"><?php $this->translate('content_message'); ?></td>
                 <td><textarea name="content_message" id="content_message"></textarea>
                 <script type="text/javascript">$("#content_message").cleditor({height:180, width:"100%", useCSS:true})[0].focus();</script></td>
             </tr>
             <tr align="center">
                 <td style="height:50px;" colspan="2">
-                    <input type="submit" name="btn_composemessage" id="btn_composemessage" value="<?php echo $this->viewParameters['translate']->translate('contact_send'); ?>" />
+                    <input type="submit" name="btn_composemessage" id="btn_composemessage" value="<?php $this->translate('contact_send'); ?>" />
                 </td>
             </tr>
             <tr>

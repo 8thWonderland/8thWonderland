@@ -17,10 +17,10 @@ class AdminController extends ActionController {
     public function displayConsoleAction() {
         // affichage du profil
         $member = $this->getUser();
-        $this->viewParameters['identity'] = $member->getIdentity();
-        $this->viewParameters['avatar'] = $member->getAvatar();
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->render('admin/console');
+        $this->render('admin/console', [
+            'identity' => $member->getIdentity(),
+            'avatar' => $member->getAvatar()
+        ]);
     }
     
     public function quitConsoleAction() {
@@ -34,21 +34,20 @@ class AdminController extends ActionController {
     }
     
     public function displayLogsAction() {
-        $this->viewParameters['list_logs'] = $this->renderLogs();
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->render('admin/logs');
+        $this->render('admin/logs', [
+            'list_logs' => $this->renderLogs()
+        ]);
     }
         
     
     public function displayUsersAction() {
-        $this->viewParameters['list_users'] = $this->renderUsers();
-        $this->viewParameters['translate'] = $this->application->get('translator');
-        $this->render('admin/users');
+        $this->render('admin/users', [
+            'list_users' => $this->renderUsers()
+        ]);
     }
             
     
     public function displayGroupsAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
                 
@@ -56,22 +55,20 @@ class AdminController extends ActionController {
     public function displayServerAction() {
         $translate = $this->application->get('translator');
         $cronsList = $this->application->get('ovh_manager')->getCrons($this->getUser());
-        $this->viewParameters['crons'] = 
-            (isset($cronsList))
-            ? $this->renderCrons($cronsList)
-            : 
-                '<div class="error" style="height:50px;"><table><tr>' .
-                '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
-                '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
-                '</tr></table></div>'
-        ;
-        $this->viewParameters['translate'] = $translate;
-        $this->render('admin/console_ovh');
+        $this->render('admin/console_ovh', [
+            'crons' =>
+                (isset($cronsList))
+                ? $this->renderCrons($cronsList)
+                : 
+                    '<div class="error" style="height:50px;"><table><tr>' .
+                    '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
+                    '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
+                    '</tr></table></div>'
+        ]);
     }
     
     
     public function displayCreateCronAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/create_cron');
     }
     
@@ -79,26 +76,30 @@ class AdminController extends ActionController {
         $db = $this->application->get('database_connection');
         $translate = $this->application->get('translator');
         $desktop = $this->application->get('session')->get('desktop');
+        $templating = $this->application->get('templating');
         
         if (isset($desktop) && $desktop == 1)   {
             $lang = $this->getUser()->getLanguage();
             $statement = $db->query("SELECT $lang, country FROM users, country WHERE region = -1 AND country = code");
-            $this->viewParameters['stats_regions_other'] = "<table><tr><td>" . $translate->translate('stats_region_unknown') . "</td></tr>";
+            $statsOtherRegions = "<table><tr><td>" . $translate->translate('stats_region_unknown') . "</td></tr>";
             while ($regionUnknown = $statement->fetch()) {
-                $this->viewParameters['stats_regions_other'] .= "<tr><td>- " . $regionUnknown[$lang] . " (" . $regionUnknown['Pays'] . ")</td></tr>";
+                $statsOtherRegions .= "<tr><td>- " . $regionUnknown[$lang] . " (" . $regionUnknown['Pays'] . ")</td></tr>";
             }
-            $this->viewParameters['stats_regions_other'] .= "</table>";
-            $this->viewParameters['desktop'] = 1;
+            $statsOtherRegions .= "</table>";
+            $templating->addParameters([
+                'stats_regions_other' => $statsOtherRegions,
+                'desktop' => 1
+            ]);
         }
         $regions_ok = $db->query('SELECT COUNT(*) AS count FROM users WHERE region > 0')->fetch()['count'];
         
         $memberManager = $this->application->get('member_manager');
-        $this->viewParameters['stats_members'] = $memberManager->countMembers();
-        $this->viewParameters['stats_members_actives'] = $memberManager->countActiveMembers();
-        $this->viewParameters['translate'] = $translate;
-        $this->viewParameters['stats_regions_ok'] = $regions_ok;
         
-        $this->render('informations/stats_country');
+        $this->render('informations/stats_country', [
+            'stats_members' => $memberManager->countMembers(),
+            'stats_members_actives' => $memberManager->countActiveMembers(),
+            'stats_regions_ok' => $regions_ok
+        ]);
     }
     
     public function addCronAction() {
@@ -152,12 +153,9 @@ class AdminController extends ActionController {
                           '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
                           '</tr></table></div>');
         }
-
-        $this->viewParameters['translate'] = $translate;
     }
     
     public function editCronAction() {
-        $this->viewParameters['translate'] = $this->application->get('translator');
         $this->render('admin/dev_inprogress');
     }
     
@@ -423,50 +421,41 @@ class AdminController extends ActionController {
         return $value;
     }
             
-    
-    // Affichage du filtre de données si il existe
-    // ===========================================
+    /**
+     * @param string $key
+     * @param string $value
+     * @return string
+     */
     protected function filterUsers($key, $value) {
-        $key = strtolower($key);
-        switch($key) {
+        switch(strtolower($key)) {
             case 'avatar':
-                $value = '<img width="50" alt="Avatar" src="' . $value . '">';
-                break;
+                return '<img width="50" alt="Avatar" src="' . $value . '">';
             
             case 'identite':
-                $value = utf8_encode($value);
-                break;
+                return utf8_encode($value);
             
             case 'sexe':
-                $value = ($value==1?'M':'F');
-                break;
+                return ($value==1?'M':'F');
             
             case 'pays':
-                $db = $this->application->get('database_connection');
-                $member = Member::getInstance();
-                $lang = $member->langue;
-                $res = $db->select("SELECT $lang FROM country WHERE code = '$value' LIMIT 1");
-                $value =
+                $lang = $this->getUser()->getLanguage();
+                $res = $this->application->get('database_connection')->select("SELECT $lang FROM country WHERE code = '$value' LIMIT 1");
+                return
                     (count($res) > 0)
                     ? $res[0][$lang]
                     : $this->application->get('translator')->translate('unknown')
                 ;
-                break;
             
             case 'region':
-                $db = $this->application->get('db');
-                $member = Member::getInstance();
-                $lang = $member->langue;
-                $res = $db->select("SELECT Name FROM regions WHERE Region_id = $value LIMIT 1");
-                $value =
+                $res = $this->application->get('db')->select("SELECT Name FROM regions WHERE Region_id = $value LIMIT 1");
+                return
                     (count($res) >0 && $value >0)
                     ? utf8_encode($res[0]['Name'])
                     : $this->application->get('translator')->translate('unknown')
                 ;
-                break;
+            default:
+                return $value;
         }
-        
-        return $value;
     }
     
     /**
@@ -484,6 +473,8 @@ class AdminController extends ActionController {
                     ? '<img width="16" alt="active" src="' . ICO_PATH . '32x32/valid.png">'
                     : '<img width="16" alt="inactive" src="' . ICO_PATH . '32x32/echec.png">'
                 ;
+            default:
+                return $value;
         }
     }
 }

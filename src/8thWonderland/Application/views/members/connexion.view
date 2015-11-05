@@ -6,18 +6,18 @@
             <td><form id="form_login" name="form_login" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Authenticate/connect", "form_login", "login_error", "json"); return false;' action="" method="post">
                     <table>
                         <tr>
-                            <td style="padding: 5px;"><?php echo $this->viewParameters['translate']->translate("login"); ?></td>
+                            <td style="padding: 5px;"><?php $this->translate("login"); ?></td>
                             <td style="padding: 5px;"><input type="text" name="login" id="login" value=""></td>
-                            <td style="padding: 15px;"><?php echo $this->viewParameters['translate']->translate('password'); ?></td>
+                            <td style="padding: 15px;"><?php $this->translate('password'); ?></td>
                             <td style="padding: 15px;"><input type="password" name="password" id="password" value=""></td>
-                            <?php if ($this->viewParameters['appli_status'] == 1) { ?>
-                            <td><input type="submit" name="btn_connexion" id="btn_connexion" value="<?php echo $this->viewParameters['translate']->translate('connexion'); ?>"></td>
+                            <?php if ($this->parameters['appli_status'] == 1) { ?>
+                            <td><input type="submit" name="btn_connexion" id="btn_connexion" value="<?php $this->translate('connexion'); ?>"></td>
                             <?php } ?>
                         </tr>
                         <tr>
                             <td colspan="5" align="center">
                                 <a onclick="Clic('Authenticate/displayForgetPassword', '', 'milieu_milieu'); return false;">
-                                    <?php echo $this->viewParameters['translate']->translate('forget_pwd'); ?></a>
+                                    <?php $this->translate('forget_pwd'); ?></a>
                             </td>
                         </tr>
                     </table>

@@ -1,7 +1,7 @@
 <!-- Présentation de la communauté -->
 <div class="encadre" style="max-width:400px;">
     <table>
-        <tr><td id="presentation" style="height:400px; width: 97%" valign="top"><?php require_once $this->default_file; ?></td></tr>
+        <tr><td id="presentation" style="height:400px; width: 97%" valign="top"><?php require_once 'presentation.view'; ?></td></tr>
         <tr><td>
                 <div id="menu" style="width:100%;">
                     <table width="100%">
@@ -9,23 +9,23 @@
                             <tr>
                                 <td style="width:20%">
                                     <a onclick="Clic('Index/presentation', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Presentation.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('presentation'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php $this->translate('presentation'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
                                     <a onclick="Clic('Index/subscribe', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Subscribe.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('subscribe'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php $this->translate('subscribe'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
                                     <a onclick="Clic('Index/partners', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Network.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('partners'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php $this->translate('partners'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
                                     <a onclick="Clic('Index/news', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Events.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('news'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php $this->translate('news'); ?></span></a>
                                 </td>
                                 <td style="width:20%">
                                     <a onclick="Clic('Index/contact', '', 'presentation'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Contact.png"><br/>
-                                        <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('contact-us'); ?></span></a>
+                                        <span style="color: #dfdfdf;"><?php $this->translate('contact-us'); ?></span></a>
                                 </td>
                             </tr>
                         </tbody>

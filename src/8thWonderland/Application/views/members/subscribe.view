@@ -1,48 +1,48 @@
 <!-- Module d'inscription -->
 <table width=100%>
-    <caption><?php echo $this->viewParameters['translate']->translate('subscribe'); ?></caption>
+    <caption><?php $this->translate('subscribe'); ?></caption>
     <tr>
         <td>
             <form id="form_subscribe" name="form_subscribe" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Authenticate/subscribe", "form_subscribe", "reponse_subscribe"); return false;' action="" method="post">
                 <table>
                     <tr style="padding: 5px;">
-                        <td style="height:40px"><?php echo $this->viewParameters['translate']->translate("login"); ?></td>
+                        <td style="height:40px"><?php $this->translate("login"); ?></td>
                         <td><input type='text' name='login' id='login'/></td>
                     </tr>
                     <tr style="padding: 5px;">
-                        <td style="height:40px"><?php echo $this->viewParameters['translate']->translate("password"); ?></td>
+                        <td style="height:40px"><?php $this->translate("password"); ?></td>
                         <td><input type='password' name='password' id='password'/></td>
                     </tr>
                     <tr style="padding: 5px;">
-                        <td style="height:40px"><?php echo $this->viewParameters['translate']->translate("identity"); ?></td>
+                        <td style="height:40px"><?php $this->translate("identity"); ?></td>
                         <td><input type='text' name='identity' id='identity'/></td>
                     </tr>
                     <tr style="padding: 5px;">
-                        <td style="height:40px"><?php echo $this->viewParameters['translate']->translate("gender"); ?></td>
+                        <td style="height:40px"><?php $this->translate("gender"); ?></td>
                         <td>
                             <select id="gender" name="gender">
                                 <option></option>
-                                <option value=1><?php echo $this->viewParameters['translate']->translate("female"); ?></option>
-                                <option value=2><?php echo $this->viewParameters['translate']->translate("male"); ?></option>
+                                <option value=1><?php $this->translate("female"); ?></option>
+                                <option value=2><?php $this->translate("male"); ?></option>
                             </select>
                         </td>
                     </tr>
                     <tr style="padding: 5px;">
-                        <td style="height:40px"><?php echo $this->viewParameters['translate']->translate("mail"); ?></td>
+                        <td style="height:40px"><?php $this->translate("mail"); ?></td>
                         <td><input type='text' name='mail' id='mail'/></td>
                     </tr>
                     <tr style="padding: 5px;">
-                        <td style="height:40px"><?php echo $this->viewParameters['translate']->translate("lang"); ?></td>
+                        <td style="height:40px"><?php $this->translate("lang"); ?></td>
                         <td>
                             <select id="lang" name="lang">
                                 <option></option>
-                                <?php echo $this->viewParameters['langs']; ?>
+                                <?php echo $this->parameters['langs']; ?>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td style="height:40px" colspan="2" align="center">
-                            <input type="submit" name="btn_subscribe" id="btn_subscribe" value="<?php echo $this->viewParameters['translate']->translate('btn_subscribe'); ?>">
+                            <input type="submit" name="btn_subscribe" id="btn_subscribe" value="<?php $this->translate('btn_subscribe'); ?>">
                         </td>
                     </tr>
                     <tr>

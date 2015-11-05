@@ -4,23 +4,23 @@
         <tr>
             <td align="center">
                 <a onclick="Clic('Admin/displayLogs', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Logs-viewer.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('admin_logs'); ?></a>
+                    <?php $this->translate('admin_logs'); ?></a>
             </td>
             <td align="center">
                 <a onclick="Clic('/Group/displayAddressBook', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Users.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('adressbook'); ?></a>
+                    <?php $this->translate('adressbook'); ?></a>
             </td>
             <td align="center">
                 <a onclick="Clic('/Admin/displayGroups', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('admin_groups'); ?></a>
+                    <?php $this->translate('admin_groups'); ?></a>
             </td>
             <td align="center">
                 <a onclick="Clic('/Admin/displayServer', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Server.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('admin_server'); ?></a>
+                    <?php $this->translate('admin_server'); ?></a>
             </td>
             <td align="center">
                 <a onclick="Clic('/Admin/quitConsole', '', 'milieu_milieu', 'json'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Exit.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('quit_console'); ?></a>
+                    <?php $this->translate('quit_console'); ?></a>
             </td>
         </tr>
     </table>
