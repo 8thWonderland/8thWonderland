@@ -17,7 +17,6 @@ class MailController extends ActionController {
         $this->contactStatus = $translate->translate('mail_ok');
         $this->process();
 
-        $this->viewParameters['translate'] = $translate;
         $this->defaultFile = APPLICATION_PATH . 'views/communications/contactus.view';
         $this->render('informations/menu_presentation');
     }

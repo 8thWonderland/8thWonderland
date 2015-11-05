@@ -281,11 +281,12 @@ class GroupController extends ActionController {
         $translate = $this->application->get('translator');
         
         $groups = $this->application->get('group_manager')->getGroups();
-        $this->viewParameters['select_groups'] = '<option></options>';
+        $groupsSelect = '<option></options>';
         $nbGroups = count($groups);
         for ($i = 0; $i < $nbGroups; ++$i) {
-            $this->viewParameters['select_groups'] .= "<option value='{$groups[$i]->getId()}'>{$groups[$i]->getName()}</option>";
+            $groupsSelect .= "<option value='{$groups[$i]->getId()}'>{$groups[$i]->getName()}</option>";
         }
+        $this->application->get('templating')->addParameter('select_groups', $groupsSelect);
         
         $tab_users = 
             '<table id="pagination_users" class="pagination"><tr class="entete">' .
