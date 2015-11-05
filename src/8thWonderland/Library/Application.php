@@ -30,10 +30,11 @@ class Application {
     public function setContainer() {
         $this->container = new Container();
         
-        $containerData = json_decode(file_get_contents($this->rootPath.'Application/config/config.json'), true);
+        $services = json_decode(file_get_contents($this->rootPath.'Application/config/services.json'), true);
+        $parameters = json_decode(file_get_contents($this->rootPath.'Application/config/config.json'), true);
         
-        $this->setServices($containerData['services']);
-        $this->setParameters(array_merge($containerData['parameters'], ['root_path' => $this->rootPath]));
+        $this->setServices($services);
+        $this->setParameters(array_merge($parameters, ['root_path' => $this->rootPath]));
     }
     
     /**
