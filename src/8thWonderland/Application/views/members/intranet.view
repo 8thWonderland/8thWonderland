@@ -2,7 +2,7 @@
     <tr style="height:150px">
         <td id="logo" width="200px;"><img height="150" alt="Logo 8th" src="<?php echo IMG_PATH;?>Mainscreen2-G.gif" title="8th Wonderland"/></td>
         <td id="haut_milieu" valign="top" align="center">
-                <?php include $this->viewParameters['haut_milieu']; ?>
+                <?php include $this->parameters['haut_milieu']; ?>
         </td>
         <td id="haut_droite" width="200px" valign="top" align="right" style="padding-right:10px;">
             <?php include VIEWS_PATH . "members/profile.view"; ?>
@@ -10,13 +10,13 @@
     </tr>
     <tr>
         <td id="milieu_gauche" style="width:350px;" valign="top">
-            <?php echo $this->viewParameters["milieu_gauche"]; ?>
+            <?php echo $this->parameters["milieu_gauche"]; ?>
         </td>
         <td id="milieu_milieu" valign="top">
-            <?php echo $this->viewParameters["milieu_milieu"]; ?>
+            <?php echo $this->parameters["milieu_milieu"]; ?>
         </td>
         <td id="milieu_droite" valign="top">
-            <?php echo $this->viewParameters["milieu_droite"]; ?>
+            <?php echo $this->parameters["milieu_droite"]; ?>
         </td>
     </tr>
 </table>

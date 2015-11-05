@@ -1,4 +1,4 @@
 <!-- Module affichage des messages reçus -->
 <table width=90% style="height:100%">
-    <tr><td><?php echo $this->viewParameters['list_receivedmessages']; ?></td></tr>
+    <tr><td><?php echo $this->parameters['list_receivedmessages']; ?></td></tr>
 </table>

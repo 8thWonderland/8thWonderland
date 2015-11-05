@@ -1,11 +1,11 @@
 <!-- Module statistiques du pays -->
 <div id="stats_country" class="encadre">
     <table width=90%>
-        <caption><?php echo $this->viewParameters['translate']->translate('stats_country'); ?></caption>
-        <tr><td><?php echo $this->viewParameters['translate']->translate('stats_members'); ?></td><td><?php echo $this->viewParameters['stats_members']; ?></td></tr>
-        <tr><td><?php echo $this->viewParameters['translate']->translate('stats_members_actives'); ?></td><td><?php echo $this->viewParameters['stats_regions_ok']; ?></td></tr>
-        <?php if (isset($this->viewParameters['desktop']) && $this->viewParameters['desktop'] == 1) { ?>
-        <tr><td colspan="2"><?php echo $this->viewParameters['stats_regions_other']; ?></td></tr>
+        <caption><?php $this->translate('stats_country'); ?></caption>
+        <tr><td><?php $this->translate('stats_members'); ?></td><td><?php echo $this->parameters['stats_members']; ?></td></tr>
+        <tr><td><?php $this->translate('stats_members_actives'); ?></td><td><?php echo $this->parameters['stats_regions_ok']; ?></td></tr>
+        <?php if (isset($this->parameters['desktop']) && $this->parameters['desktop'] == 1) { ?>
+        <tr><td colspan="2"><?php echo $this->parameters['stats_regions_other']; ?></td></tr>
         <?php } ?>
     </table>
 </div>

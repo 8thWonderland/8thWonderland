@@ -5,42 +5,42 @@
             <td align="center">
                 <table>
                     <tr>
-                        <td colspan="2" align="center"><h2><?php echo $this->viewParameters['details']['title_key']; ?></h2></td>
+                        <td colspan="2" align="center"><h2><?php echo $this->parameters['details']['title_key']; ?></h2></td>
                     </tr>
                     <tr>
-                        <td style="width: 80px;"><?php echo $this->viewParameters['translate']->translate("theme_motion"); ?></td>
-                        <td><?php echo $this->viewParameters['details']['label_key']; ?></td>
-                    </tr>
-                    <tr><td colspan='2'><hr/></td></tr>
-                    <tr>
-                        <td style="width: 80px; padding-top: 25px;"><?php echo $this->viewParameters['translate']->translate('description_motion'); ?></td>
-                        <td style="padding-top: 25px;"><?php echo $this->viewParameters['description']; ?></td>
+                        <td style="width: 80px;"><?php $this->translate("theme_motion"); ?></td>
+                        <td><?php echo $this->parameters['details']['label_key']; ?></td>
                     </tr>
                     <tr><td colspan='2'><hr/></td></tr>
                     <tr>
-                        <td style="width: 80px; padding-top: 25px;"><?php echo $this->viewParameters['translate']->translate('means_motion'); ?></td>
-                        <td style="padding-top: 25px;"><?php echo $this->viewParameters['means']; ?></td>
+                        <td style="width: 80px; padding-top: 25px;"><?php $this->translate('description_motion'); ?></td>
+                        <td style="padding-top: 25px;"><?php echo $this->parameters['description']; ?></td>
+                    </tr>
+                    <tr><td colspan='2'><hr/></td></tr>
+                    <tr>
+                        <td style="width: 80px; padding-top: 25px;"><?php $this->translate('means_motion'); ?></td>
+                        <td style="padding-top: 25px;"><?php echo $this->parameters['means']; ?></td>
                     </tr>
                     <tr><td colspan='2'><hr/></td></tr>
                     <tr>
                         <td id="action_motion" colspan="2" style="padding-top: 25px;">
                             <table>
-                                <tr><td colspan="2"><input type="hidden" name="motion_id" value="<?php echo $this->viewParameters['details']['motion_id']; ?>"/></td></tr>
+                                <tr><td colspan="2"><input type="hidden" name="motion_id" value="<?php echo $this->parameters['details']['motion_id']; ?>"/></td></tr>
                                 <tr>
                                     <td align="center">
                                         <form id="form_approvemotion" name="form_approvemotion" enctype="application/x-www-form-urlencoded" 
                                             onSubmit='sendForm("Motion/voteMotion", "form_approvemotion", "action_motion"); return false;' action="" method="post">
-                                            <input type="hidden" name="motion_id" value="<?php echo $this->viewParameters['details']['motion_id']; ?>"/>
+                                            <input type="hidden" name="motion_id" value="<?php echo $this->parameters['details']['motion_id']; ?>"/>
                                             <input type="hidden" name="vote" value="approved"/>
-                                            <input type="submit" name="btn_approvemotion" id="btn_approvemotion" value="<?php echo $this->viewParameters['translate']->translate('vote_approved'); ?>"/>
+                                            <input type="submit" name="btn_approvemotion" id="btn_approvemotion" value="<?php $this->translate('vote_approved'); ?>"/>
                                         </form>
                                     </td>
                                     <td align="center">
                                         <form id="form_refusemotion" name="form_refusemotion" enctype="application/x-www-form-urlencoded" 
                                             onSubmit='sendForm("Motion/voteMotion", "form_refusemotion", "action_motion"); return false;' action="" method="post">
-                                            <input type="hidden" name="motion_id" value="<?php echo $this->viewParameters['details']['motion_id']; ?>"/>
+                                            <input type="hidden" name="motion_id" value="<?php echo $this->parameters['details']['motion_id']; ?>"/>
                                             <input type="hidden" name="vote" value="refused"/>
-                                            <input type="submit" name="btn_refusemotion" id="btn_refusemotion" value="<?php echo $this->viewParameters['translate']->translate('vote_refused'); ?>"/>
+                                            <input type="submit" name="btn_refusemotion" id="btn_refusemotion" value="<?php $this->translate('vote_refused'); ?>"/>
                                         </form>
                                     </td>
                                 </tr>

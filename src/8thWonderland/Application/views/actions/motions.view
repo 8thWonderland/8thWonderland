@@ -1,7 +1,7 @@
 <!-- Module motions -->
 <div id="motions" class="encadre">
     <table width=90%>
-        <caption><?php echo $this->viewParameters['translate']->translate('motions_archives'); ?></caption>
-        <tr><td><?php echo $this->viewParameters['list_motions']; ?></td></tr>
+        <caption><?php $this->translate('motions_archives'); ?></caption>
+        <tr><td><?php echo $this->parameters['list_motions']; ?></td></tr>
     </table>
 </div>

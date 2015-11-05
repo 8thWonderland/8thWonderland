@@ -1,4 +1,4 @@
 <!-- Présentation de la communauté -->
 <?php
 
-    echo $this->viewParameters['translate']->translate('decouvrir_8th');
+    $this->translate('decouvrir_8th');

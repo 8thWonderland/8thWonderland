@@ -43,31 +43,31 @@
             <td><form id="form_createcron" name="form_createcron" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Admin/addCron", "form_createcron", "result_createcron"); return false;' action="" method="post">
                     <table>
                         <tr style="padding: 5px;">
-                            <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate("cron_file"); ?></td>
+                            <td style="height:50px;"><?php $this->translate("cron_file"); ?></td>
                             <td><input type='text' name='cron_file' id='cron_file'/></td>
                         </tr>
                         <tr style="padding: 5px;">
-                            <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate("cron_description"); ?></td>
+                            <td style="height:50px;"><?php $this->translate("cron_description"); ?></td>
                             <td><input type='text' name='cron_desc' id='cron_desc'/></td>
                         </tr>
                         <tr>
-                            <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate("periodicity_days"); ?></td>
+                            <td style="height:50px;"><?php $this->translate("periodicity_days"); ?></td>
                             <td>
                                 <select name="cron_day" style="width:100px;">
                                     <option value=""></option>
-                                    <option value="all_days"><?php echo $this->viewParameters['translate']->translate("all_days"); ?></option>
-                                    <option value="monday"><?php echo $this->viewParameters['translate']->translate("monday"); ?></option>
-                                    <option value="tuesday"><?php echo $this->viewParameters['translate']->translate("tuesday"); ?></option>
-                                    <option value="wednesday"><?php echo $this->viewParameters['translate']->translate("wednesday"); ?></option>
-                                    <option value="thursday"><?php echo $this->viewParameters['translate']->translate("thursday"); ?></option>
-                                    <option value="friday"><?php echo $this->viewParameters['translate']->translate("friday"); ?></option>
-                                    <option value="saturday"><?php echo $this->viewParameters['translate']->translate("saturday"); ?></option>
-                                    <option value="sunday"><?php echo $this->viewParameters['translate']->translate("sunday"); ?></option>
+                                    <option value="all_days"><?php $this->translate("all_days"); ?></option>
+                                    <option value="monday"><?php $this->translate("monday"); ?></option>
+                                    <option value="tuesday"><?php $this->translate("tuesday"); ?></option>
+                                    <option value="wednesday"><?php $this->translate("wednesday"); ?></option>
+                                    <option value="thursday"><?php $this->translate("thursday"); ?></option>
+                                    <option value="friday"><?php $this->translate("friday"); ?></option>
+                                    <option value="saturday"><?php $this->translate("saturday"); ?></option>
+                                    <option value="sunday"><?php $this->translate("sunday"); ?></option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td style="height:50px;"><?php echo $this->viewParameters['translate']->translate("periodicity_hours"); ?></td>
+                            <td style="height:50px;"><?php $this->translate("periodicity_hours"); ?></td>
                             <td>
                                 <table>
                                     <tr>
@@ -102,14 +102,14 @@
                                         <td><input type="checkbox" name="dayHour_22"> 22h</td>
                                         <td><input type="checkbox" name="dayHour_23"> 23h</td>
                                         <td><input type="hidden" name="dayHour_all"/></td>
-                                        <td colspan="3"><input type="button" style="cursor:pointer;" onClick="selectAllHours();" value="<?php echo $this->viewParameters['translate']->translate('all_hours'); ?>" /></td>
+                                        <td colspan="3"><input type="button" style="cursor:pointer;" onClick="selectAllHours();" value="<?php $this->translate('all_hours'); ?>" /></td>
                                     </tr>
                                 </table>
                             </td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td><input type="submit" name="btn_createcron" id="btn_createcron" value="<?php echo $this->viewParameters['translate']->translate('btn_add'); ?>"></td>
+                            <td><input type="submit" name="btn_createcron" id="btn_createcron" value="<?php $this->translate('btn_add'); ?>"></td>
                         </tr>
                         <tr>
                             <td id="result_createcron" align="center" colspan="2"></td>

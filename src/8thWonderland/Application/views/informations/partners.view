@@ -1,6 +1,6 @@
 <!-- Module partenaires -->
 <table width="100%">
-    <caption><?php echo $this->viewParameters['translate']->translate('friend_groups'); ?></caption>
+    <caption><?php $this->translate('friend_groups'); ?></caption>
 
     <tr><td width="24"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/></td><td><a href="http://occupyfrance.org/" target="_blank">Les Indignés</a></td></tr>
     <tr><td><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/></td><td><a href="http://www.le-militant.org/Militant/Accueil.html" target="_blank">Le Militant</a></td></tr>

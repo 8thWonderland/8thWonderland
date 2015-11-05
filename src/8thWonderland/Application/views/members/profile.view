@@ -6,14 +6,14 @@
                 <table>
                     <tr>
                         <td>
-                            <?php echo $this->viewParameters['identity']; ?>
+                            <?php echo $this->parameters['identity']; ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <div class="button">
                                 <a onclick="Clic('Member/displayProfile', '', 'milieu_milieu'); return false;">
-                                    <?php echo $this->viewParameters['translate']->translate('update_profile'); ?>
+                                    <?php $this->translate('update_profile'); ?>
                                 </a>
                             </div>
                         </td>
@@ -22,7 +22,7 @@
                         <td>
                             <div class="button">
                                 <a href="authenticate/logout">
-                                    <?php echo $this->viewParameters['translate']->translate('logout'); ?>
+                                    <?php $this->translate('logout'); ?>
                                 </a>
                             </div>
                             <br/>
@@ -32,7 +32,7 @@
                         <td>
                             <div class="button">
                                 <a onclick="Clic('Messaging/displayReception', '', 'milieu_milieu'); return false;">
-                                    <?php echo $this->viewParameters['translate']->translate('read_mails'); ?>
+                                    <?php $this->translate('read_mails'); ?>
                                 </a>
                             </div>
                         </td>
@@ -41,7 +41,7 @@
                         <td>
                             <div class="button">
                                 <a onclick="Clic('Group/displayGroups', '', 'milieu_milieu'); return false;">
-                                    <?php echo $this->viewParameters['translate']->translate('discover_groups'); ?>
+                                    <?php $this->translate('discover_groups'); ?>
                                 </a>
                             </div>
                         </td>
@@ -49,7 +49,7 @@
                 </table>
             </td>
             <td>
-                <img width="80" alt="Avatar" src="<?php echo $this->viewParameters['avatar']; ?>"/>
+                <img width="80" alt="Avatar" src="<?php echo $this->parameters['avatar']; ?>"/>
             </td>
         </tr>
     </table>

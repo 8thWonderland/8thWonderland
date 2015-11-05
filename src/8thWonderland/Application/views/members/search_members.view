@@ -8,18 +8,18 @@
     <form id="form_searchusers" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Group/displayAddressBook", "form_searchusers", "milieu_milieu"); return false;' method="post" action="">
         <table>
             <tr>
-                <td width="150px"><?php echo $this->viewParameters['translate']->translate('title_groups'); ?></td>
-                <td width="200px"><select id="sel_groups" name="sel_groups"><?php echo $this->viewParameters['select_groups']; ?></select></td>
+                <td width="150px"><?php $this->translate('title_groups'); ?></td>
+                <td width="200px"><select id="sel_groups" name="sel_groups"><?php echo $this->parameters['select_groups']; ?></select></td>
                 <td></td>
             </tr>
             <!--<tr>
-                <td><?php echo $this->viewParameters['translate']->translate('group_members'); ?></td>
+                <td><?php $this->translate('group_members'); ?></td>
                 <td><input type="text" id="ac_members" /><div id="list_members" style="display: none;"></div></td>
                 <td></td>
             </tr>-->
             <tr>
                 <td style="height:50px;" colspan="2" align="center">
-                    <input type="submit" name="btn_searchusers" id="btn_searchusers" value="<?php echo $this->viewParameters['translate']->translate('btn_search'); ?>" />
+                    <input type="submit" name="btn_searchusers" id="btn_searchusers" value="<?php $this->translate('btn_search'); ?>" />
                 </td>
                 <td></td>
             </tr>

@@ -1,7 +1,7 @@
 <!-- Module des membres -->
 <div id="members" class="encadre">
     <table width=90%>
-        <caption><?php echo $this->viewParameters['translate']->translate('admin_users'); ?></caption>
-        <tr><td><?php echo $this->viewParameters['list_users']; ?></td></tr>
+        <caption><?php $this->translate('admin_users'); ?></caption>
+        <tr><td><?php echo $this->parameters['list_users']; ?></td></tr>
     </table>
 </div>

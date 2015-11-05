@@ -16,8 +16,8 @@
                     <nav class="menu-top">
                         <div class="profile">
                             <span>
-                                <img src="<?php echo $this->viewParameters['avatar']; ?>" alt=""/>
-                                <span id="profile-username"><?php echo $this->viewParameters['username']; ?></span>
+                                <img src="<?php echo $this->parameters['avatar']; ?>" alt=""/>
+                                <span id="profile-username"><?php echo $this->parameters['username']; ?></span>
                             </span>
                         </div>
                         <div class="icon-list">
@@ -66,9 +66,9 @@
 
                                 </div>
                             </div>
-                            <input type="hidden" name="username" value="<?php echo $this->viewParameters['username']; ?>"/>
-                            <input type="hidden" name="server_host" value="<?php echo $this->viewParameters['chatrooms']['server_host']; ?>"/>
-                            <input type="hidden" name="server_port" value="<?php echo $this->viewParameters['chatrooms']['server_port']; ?>"/>
+                            <input type="hidden" name="username" value="<?php echo $this->parameters['username']; ?>"/>
+                            <input type="hidden" name="server_host" value="<?php echo $this->parameters['chatrooms']['server_host']; ?>"/>
+                            <input type="hidden" name="server_port" value="<?php echo $this->parameters['chatrooms']['server_port']; ?>"/>
                         </div>
                 </div><!-- /content-wrap -->
         </div><!-- /container -->

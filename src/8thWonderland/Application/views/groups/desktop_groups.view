@@ -15,6 +15,6 @@
         <td id="milieu_milieu" valign="top">
 
         </td>
-        <td id="milieu_droite" valign="top"><?php echo $this->viewParameters['section_droite']; ?></td>
+        <td id="milieu_droite" valign="top"><?php echo $this->parameters['section_droite']; ?></td>
     </tr>
 </table>

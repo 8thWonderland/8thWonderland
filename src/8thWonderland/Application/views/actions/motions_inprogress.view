@@ -1,20 +1,20 @@
 <!-- Module motions -->
 <div id="motions" class="encadre">
     <table width=90%>
-        <caption><?php echo $this->viewParameters['translate']->translate('motions_inprogress'); ?></caption>
-        <?php echo $this->viewParameters['list_motions']; ?>
+        <caption><?php $this->translate('motions_inprogress'); ?></caption>
+        <?php echo $this->parameters['list_motions']; ?>
     </table>
     <div id="separator" style="height:20px; border-bottom: 2px dotted #dfdfdf; margin-bottom:10px;"></div>
     <table>
         <tr>
             <td>
                 <div class="bouton"><a onclick="Clic('Motion/displayCreateMotion', '', 'milieu_milieu'); return false;">
-                    <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('create_motion'); ?></span>
+                    <span style="color: #dfdfdf;"><?php $this->translate('create_motion'); ?></span>
                 </a></div>
             </td>
             <td>
                 <div class="bouton"><a onclick="Clic('Motion/displayMotions', '&page=1', 'milieu_milieu'); return false;">
-                    <span style="color: #dfdfdf;"><?php echo $this->viewParameters['translate']->translate('display_archives'); ?></span>
+                    <span style="color: #dfdfdf;"><?php $this->translate('display_archives'); ?></span>
                 </a></div>
             </td>
         </tr>

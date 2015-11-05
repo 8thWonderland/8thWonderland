@@ -4,25 +4,25 @@
         <tr>
             <td align="center">
                 <a onclick="Clic('Group/displayCalendar', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Calendar.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('calendar'); ?></a>
+                    <?php $this->translate('calendar'); ?></a>
             </td>
             <td align="center">
                 <a onclick="Clic('Group/displayAddressBook', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Users.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('adressbook'); ?></a>
+                    <?php $this->translate('adressbook'); ?></a>
             </td>
-            <?php if ($this->viewParameters['Contact_Group']) { ?>
+            <?php if ($this->parameters['Contact_Group']) { ?>
             <td align="center">
                 <a onclick="Clic('Group/displayManageGroups', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('admin_groups'); ?></a>
+                    <?php $this->translate('admin_groups'); ?></a>
             </td>
             <?php } ?>
             <td align="center">
                 <a onclick="Clic('Group/displayBookmark', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Bookmark.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('bookmark'); ?></a>
+                    <?php $this->translate('bookmark'); ?></a>
             </td>
             <td align="center">
                 <a onclick="Clic('Group/quitDesktop', '', 'milieu_milieu', 'json'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>48x48/Exit.png"/><br/>
-                    <?php echo $this->viewParameters['translate']->translate('quit_desktop'); ?></a>
+                    <?php $this->translate('quit_desktop'); ?></a>
             </td>
         </tr>
     </table>

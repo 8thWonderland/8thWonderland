@@ -1,18 +1,18 @@
 <!-- Module de gestion des groupes -->
 <div id="manager_groups" class="encadre">
     <table width=90%>
-        <caption><?php echo $this->viewParameters['translate']->translate('manager_group'); ?></caption>
+        <caption><?php $this->translate('manager_group'); ?></caption>
         <tr>
             <td>
                 <form id="form_changecontactgroup" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Group/changeContactGroups", "form_changecontactgroup", "result_changecontact"); return false;' method="post" action="">
                     <table>
                         <tr>
-                            <td width="150px"><?php echo $this->viewParameters['translate']->translate('group_contact'); ?></td>
-                            <td><select id="sel_contactgroups" name="sel_contactgroups" style="width:200px;"><?php echo $this->viewParameters['select_contactsgroup']; ?></select></td>
+                            <td width="150px"><?php $this->translate('group_contact'); ?></td>
+                            <td><select id="sel_contactgroups" name="sel_contactgroups" style="width:200px;"><?php echo $this->parameters['select_contactsgroup']; ?></select></td>
                         </tr>
                         <tr>
                             <td style="height:50px;" colspan="2" align="center">
-                                <input type="submit" name="btn_selcontactgroup" id="btn_selcontactgroup" value="<?php echo $this->viewParameters['translate']->translate('btn_modify'); ?>" />
+                                <input type="submit" name="btn_selcontactgroup" id="btn_selcontactgroup" value="<?php $this->translate('btn_modify'); ?>" />
                             </td>
                         </tr>
                     </table>
