@@ -1,4 +1,8 @@
 {
+    "facebook_api_url" : "https://graph.facebook.com/v2.5",
+    "facebook_app_id" : "",
+    "facebook_app_secret" : "",
+    "facebook_page_id" : "",
     "database_host": "localhost",
     "database_username": "root",
     "database_password": "vagrant",
