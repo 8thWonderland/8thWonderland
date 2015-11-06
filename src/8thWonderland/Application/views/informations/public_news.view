@@ -1,6 +1,7 @@
 <!-- news publiques -->
 <div id="public_news">
-    <div id="facebook-page-header" style="background-image: url('<?php echo $this->parameters['facebook_page']['cover']['source'] ?>')">
+    <div id="facebook-page-banner" style="background-image: url('<?php echo $this->parameters['facebook_page']['cover']['source'] ?>')"></div>
+    <div id="facebook-page-informations">
         <h2><?php echo $this->parameters['facebook_page']['name']; ?></h2>
         <h3><?php echo $this->parameters['facebook_page']['description']; ?></h3>
     </div>
@@ -8,7 +9,12 @@
         <ul>
             <?php
                 foreach($this->parameters['facebook_feed']['data'] as $post) {
-                    echo("<li><img src='{$this->parameters['facebook_picture']['data']['url']}' alt='facebook_picture'/>{$post['message']}</li>");
+                    $status =
+                        (isset($post['message']))
+                        ? $post['message']
+                        : $post['story']
+                    ;
+                    echo("<li><img src='{$this->parameters['facebook_picture']['data']['url']}' alt='facebook_picture'/>$status</li>");
                 }
             ?>
         </ul>

@@ -3,32 +3,38 @@
     <div id="widget-content">
         <?php require_once 'presentation.view'; ?>
     </div>
-    <div id="menu" style="width:100%;">
-        <table width="100%">
-            <tbody>
-                <tr>
-                    <td style="width:20%">
-                        <a onclick="Clic('Index/presentation', '', 'widget-content'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Presentation.png"><br/>
-                            <span style="color: #dfdfdf;"><?php $this->translate('presentation'); ?></span></a>
-                    </td>
-                    <td style="width:20%">
-                        <a onclick="Clic('Index/subscribe', '', 'widget-content'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Subscribe.png"><br/>
-                            <span style="color: #dfdfdf;"><?php $this->translate('subscribe'); ?></span></a>
-                    </td>
-                    <td style="width:20%">
-                        <a onclick="Clic('Index/partners', '', 'widget-content'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Network.png"><br/>
-                            <span style="color: #dfdfdf;"><?php $this->translate('partners'); ?></span></a>
-                    </td>
-                    <td style="width:20%">
-                        <a onclick="Clic('Index/news', '', 'widget-content'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Events.png"><br/>
-                            <span style="color: #dfdfdf;"><?php $this->translate('news'); ?></span></a>
-                    </td>
-                    <td style="width:20%">
-                        <a onclick="Clic('Index/contact', '', 'widget-content'); return false;"><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Contact.png"><br/>
-                            <span style="color: #dfdfdf;"><?php $this->translate('contact-us'); ?></span></a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div id="widget-menu">
+        <ul>
+            <li>
+                <a onclick="Clic('Index/presentation', '', 'widget-content'); return false;">
+                    <img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Presentation.png">
+                    <?php $this->translate('presentation'); ?>
+                </a>
+            </li>
+            <li>
+                <a onclick="Clic('Index/subscribe', '', 'widget-content'); return false;">
+                    <img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Subscribe.png">
+                    <?php $this->translate('subscribe'); ?>
+                </a>
+            </li>
+            <li>
+                <a onclick="Clic('Index/partners', '', 'widget-content'); return false;">
+                    <img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Network.png">
+                    <?php $this->translate('partners'); ?>
+                </a>
+            </li>
+            <li>
+                <a onclick="Clic('Index/news', '', 'widget-content'); return false;">
+                    <img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Events.png">
+                    <?php $this->translate('news'); ?>
+                </a>
+            </li>
+            <li>
+                <a onclick="Clic('Index/contact', '', 'widget-content'); return false;">
+                    <img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Contact.png">
+                    <?php $this->translate('contact-us'); ?>
+                </a>
+            </li>
+        </ul>
     </div>
 </div>
