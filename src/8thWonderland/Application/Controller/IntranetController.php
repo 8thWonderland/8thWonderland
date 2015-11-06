@@ -222,7 +222,12 @@ class IntranetController extends ActionController {
         if ($this->getUser() === null) {
             $this->redirect('Index/index');
         }
-        $this->render('informations/public_news');
+        $facebookManager = $this->application->get('facebook_manager');
+        $this->render('informations/public_news', [
+            'facebook_feed' => $facebookManager->getPageFeed(3),
+            'facebook_picture' => $facebookManager->getPagePicture(),
+            'facebook_page' => $facebookManager->getPageInformations()
+        ]);
     }
 
     public function shareAction() {
@@ -236,7 +241,12 @@ class IntranetController extends ActionController {
         if ($this->getUser() === null) {
             $this->redirect('Index/index');
         }
-        $this->render('informations/public_news');
+        $facebookManager = $this->application->get('facebook_manager');
+        $this->render('informations/public_news', [
+            'facebook_feed' => $facebookManager->getPageFeed(3),
+            'facebook_picture' => $facebookManager->getPagePicture(),
+            'facebook_page' => $facebookManager->getPageInformations()
+        ]);
     }
 
     public function financeAction() {

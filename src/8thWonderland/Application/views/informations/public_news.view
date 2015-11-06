@@ -1,50 +1,22 @@
 <!-- news publiques -->
-<div id="public_news" class="encadre">
-    <table>
-        <caption><?php $this->translate('what_new'); ?></caption>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <td><img alt="Calendar" src="<?php echo ICO_PATH; ?>48x48/Calendar.png" style="width:48px;"/><br/>11/03/2012</td>
-                        <td>Les Espaces Privés (EPs) sont ouverts à tous les membres de la communauté. Ces espaces sont des lieux de travail dédiés aux groupes
-                        régionaux et thématiques. Ils sont encore en construction et peuvent être améliorés mais c'est une base. N'hésitez pas à faire des retours 
-                        à vos Contacts de groupes pour améliorer cet outil.</td>
-                        <td align="center"><img width="64" height="64" src="http://cecileparaccident.files.wordpress.com/2010/04/morpheus-toffre-une-friandise1.jpg"><br/>
-                            Brennan Waco
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><img alt="Calendar" src="<?php echo ICO_PATH; ?>48x48/Calendar.png" style="width:48px;"/><br/>21/02/2012</td>
-                        <td>Vous avez dorénavant la possibilité de modifier votre profil en cliquant sur "Modifier votre profil" en haut à droite de l'écran.</td>
-                        <td align="center"><img width="64" height="64" src="http://cecileparaccident.files.wordpress.com/2010/04/morpheus-toffre-une-friandise1.jpg"><br/>
-                            Brennan Waco
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><img alt="Calendar" src="<?php echo ICO_PATH; ?>48x48/Calendar.png" style="width:48px;"/><br/>19/02/2012</td>
-                        <td>Suite à une grave erreur de code, l'affichage des votes s'était trouvé erroné ( Affichage à 100% partout ).<br/>Nous venons tout juste de corriger cette erreur.</td>
-                        <td align="center"><img width="64" height="64" src="http://www.8thwonderland.com/Oros/8th-64.png"><br/>
-                            Oros
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><img alt="Calendar" src="<?php echo ICO_PATH; ?>48x48/Calendar.png" style="width:48px;"/><br/>13/02/2012</td>
-                        <td>Le chat est opérationnel et accessible en cliquant sur l'icone 'Communiquer' dans le menu du haut.</td>
-                        <td align="center"><img width="64" height="64" src="http://cecileparaccident.files.wordpress.com/2010/04/morpheus-toffre-une-friandise1.jpg"><br/>
-                            Brennan Waco
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><img alt="Calendar" src="<?php echo ICO_PATH; ?>48x48/Calendar.png" style="width:48px;"/><br/>07/02/2012</td>
-                        <td>Nous sommes à la recherche de traducteurs pour les langues suivantes :<br/>
-                        Portugais, Espagnol, Hollandais, Allemand, Italien.<br/><br/>Il suffit de connaitre l'une de ces langues et le français alors contactez moi.</td>
-                        <td align="center"><img width="64" height="64" src="http://cecileparaccident.files.wordpress.com/2010/04/morpheus-toffre-une-friandise1.jpg"><br/>
-                            Brennan Waco
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+<div id="public_news">
+    <div id="facebook-page-banner" style="background-image: url('<?php echo $this->parameters['facebook_page']['cover']['source'] ?>')"></div>
+    <div id="facebook-page-informations">
+        <h2><?php echo $this->parameters['facebook_page']['name']; ?></h2>
+        <h3><?php echo $this->parameters['facebook_page']['description']; ?></h3>
+    </div>
+    <div id="facebook-page-feed">
+        <ul>
+            <?php
+                foreach($this->parameters['facebook_feed']['data'] as $post) {
+                    $status =
+                        (isset($post['message']))
+                        ? $post['message']
+                        : $post['story']
+                    ;
+                    echo("<li><img src='{$this->parameters['facebook_picture']['data']['url']}' alt='facebook_picture'/>$status</li>");
+                }
+            ?>
+        </ul>
+    </div>
 </div>

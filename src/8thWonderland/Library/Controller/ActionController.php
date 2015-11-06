@@ -22,9 +22,10 @@ abstract class ActionController {
     /**
      * @param string $view
      * @param array $parameters
+     * @param array $headers
      */
-    public function render($view, $parameters = []) {
-        $this->application->get('templating')->render($view, $parameters);
+    public function render($view, $parameters = [], $headers = []) {
+        $this->application->get('templating')->render($view, $parameters, $headers);
     }
     
     /**
