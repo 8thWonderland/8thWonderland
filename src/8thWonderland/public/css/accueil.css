@@ -78,3 +78,12 @@ hr {color:#e14f1c; }
 .bouton_rollover:hover {background: #e14f1c; cursor:pointer;}
 .bouton_transparent {text-decoration: none; padding: 3px;}
 .bouton_transparent:hover{cursor:pointer;}
+
+#home-widget {
+    width:400px;
+}
+
+#facebook-page-header {
+    background: no-repeat;
+    background-size: 100% 100%;
+}
