@@ -56,6 +56,15 @@
     "mail_manager" : {
         "class" : "Wonderland\\Application\\Manager\\MailManager"
     },
+    "facebook_manager" : {
+        "class" : "Wonderland\\Application\\Manager\\FacebookManager",
+        "arguments": [
+            "%facebook_api_url%",
+            "%facebook_app_id%",
+            "%facebook_app_secret%",
+            "%facebook_page_id%"
+        ]
+    },
     "ovh_manager" : {
         "class" : "Wonderland\\Application\\Manager\\OvhManager",
         "arguments": [
