@@ -1,10 +1,12 @@
-## unreleased
+## 0.1.1 - 2015-07-11
 ### Added
+- Facebook App manager
 - New renderer
 - Logout action
 
 ### Changed
 - Separate services configuration and parameters in two distinct files
+- Replace the old informations module with the feed from the association's Facebook page
 
 ### Removed
 - Old configuration file application.ini and Config class
