@@ -1,3 +1,7 @@
+## Unreleased
+### Changed
+- Update the partners widget
+
 ## 0.1.1 - 2015-07-11
 ### Added
 - Facebook App manager
