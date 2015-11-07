@@ -1,4 +1,7 @@
 ## Unreleased
+### Added
+- Connected users list in the chat module
+
 ### Changed
 - Update the partners widget
 
