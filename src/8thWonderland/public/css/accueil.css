@@ -157,9 +157,35 @@ hr {color:#e14f1c; }
     margin-right:20px;
 }
 
-#milieu_milieu #public_news {
+#milieu_milieu > #public_news {
     width:80%;
     margin:auto;
     background: #252525;
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.6);
+}
+
+#partners h3 {
+    text-align:center;
+    font-size:1.6em;
+}
+
+#partners ul {
+    list-style-type: none;
+}
+
+#partners li {
+    display:flex;
+    align-items: center;
+    font-size:1.2em;
+}
+
+#partners img {
+    width:60px;
+    height:60px;
+    margin-right:20px;
+    border-radius:35px;
+    background :#E0E0E0;
+    padding:2px;
+    border:2px solid #000;
     box-shadow: 0px 0px 15px rgba(0,0,0,0.6);
 }

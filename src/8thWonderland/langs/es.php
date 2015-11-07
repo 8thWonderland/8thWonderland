@@ -46,6 +46,8 @@ $array = array(
     "news"                  => "Noticias",
     "contact-us"            => "Contactarnos",
         
+    // partners
+    'citadel_knights'       => 'Les Chevaliers de la Citadelle',
     
     // Menu groupes
     "calendar"              => "Calendario",
