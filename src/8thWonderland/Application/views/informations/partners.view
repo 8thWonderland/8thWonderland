@@ -1,9 +1,12 @@
 <!-- Module partenaires -->
-<table width="100%">
-    <caption><?php $this->translate('friend_groups'); ?></caption>
-
-    <tr><td width="24"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/></td><td><a href="http://occupyfrance.org/" target="_blank">Les Indignés</a></td></tr>
-    <tr><td><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/></td><td><a href="http://www.le-militant.org/Militant/Accueil.html" target="_blank">Le Militant</a></td></tr>
-    <tr><td><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/></td><td><a href="http://www.rezocitoyen.fr/" target="_blank">RezoCitoyen</a></td></tr>
-    <tr><td><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/></td><td><a href="http://blog.8thwonderland.com/" target="_blank">Blog de 8thWonderland</a></td></tr>
-</table>
+<div id="partners">
+    <h3>
+        <?php $this->translate('partners') ?>
+    </h3>
+    <ul>
+        <li>
+            <img src="<?php echo IMG_PATH . '/citadel_seal.svg' ?>"/>
+            <?php $this->translate('citadel_knights'); ?>
+        </li>
+    </ul>
+</div>
