@@ -154,7 +154,10 @@ hr {color:#e14f1c; }
 }
 
 #facebook-page-feed img {
+    width:64px;
+    height:64px;
     margin-right:20px;
+    align-self:center;
 }
 
 #milieu_milieu > #public_news {
