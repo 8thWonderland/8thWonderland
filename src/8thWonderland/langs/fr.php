@@ -41,10 +41,9 @@ $array = array(
     // Menu présentation
     "presentation"          => "Présentation",
     "subscribe"             => "Rejoindre la communauté",
-    "partners"              => "Notre réseau",
+    "partners"              => "Nos Soutiens",
     "news"                  => "Evènements",
     "contact-us"            => "Contact",
-    
     
     // Menu groupes
     "calendar"              => "Calendrier",
