@@ -37,39 +37,45 @@
                 </div>
                 <button class="menu-button" id="open-button">Open Menu</button>
                 <div class="content-wrap">
-                        <div class="content">
-                            <div id="notifications">
-                                <ul>
-                                    
-                                </ul>
+                    <div class="content">
+                        <div id="username-form-container">
+                            <div id="username-form">
+                                <form onsubmit="authenticate();return false;">
+                                    <input type="text" name="final-username"/>
+                                    <button type="submit">Se connecter</button>
+                                </form>
                             </div>
-                            <div id="username-form-container">
-                                <div id="username-form">
-                                    <form onsubmit="authenticate();return false;">
-                                        <input type="text" name="final-username"/>
-                                        <button type="submit">Se connecter</button>
+                        </div>
+                        <div id="chatroom-container">
+                            <div id="chatroom">
+                                <div id="messages">
+
+                                </div>
+                                <div id="message-composer">
+                                    <form id="form">
+                                        <textarea id="message-writer"></textarea>
                                     </form>
                                 </div>
                             </div>
-                            <div id="chatroom-container">
-                                <div id="chatroom">
-                                    <div id="messages">
 
-                                    </div>
-                                    <div id="message-composer">
-                                        <form id="form">
-                                            <textarea id="message-writer"></textarea>
-                                        </form>
-                                    </div>
+                            <div id="right-container">
+                                <div id="notifications">
+                                    <ul>
+                                        
+                                    </ul>
                                 </div>
-                                <div id="user-list">
-
+                                <div id="users-list">
+                                    <h3>Utilisateurs</h3>
+                                    <ul>
+                                        
+                                    </ul>
                                 </div>
                             </div>
-                            <input type="hidden" name="username" value="<?php echo $this->parameters['username']; ?>"/>
-                            <input type="hidden" name="server_host" value="<?php echo $this->parameters['chatrooms']['server_host']; ?>"/>
-                            <input type="hidden" name="server_port" value="<?php echo $this->parameters['chatrooms']['server_port']; ?>"/>
                         </div>
+                        <input type="hidden" name="username" value="<?php echo $this->parameters['username']; ?>"/>
+                        <input type="hidden" name="server_host" value="<?php echo $this->parameters['chatrooms']['server_host']; ?>"/>
+                        <input type="hidden" name="server_port" value="<?php echo $this->parameters['chatrooms']['server_port']; ?>"/>
+                    </div>
                 </div><!-- /content-wrap -->
         </div><!-- /container -->
         <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
