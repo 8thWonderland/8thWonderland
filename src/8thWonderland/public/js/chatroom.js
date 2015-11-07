@@ -79,6 +79,7 @@ function startChatroom() {
         },
         success: function(data) {
             addMessages(data.chatroom.messages);
+            addUsers(data.chatroom.users);
             sessionStorage.setItem('chatroom-name', data.chatroom.name);
             removeUsernameForm();
             connectWebsocket();
@@ -153,11 +154,18 @@ function connectWebsocket() {
             }));
         };
         conn.onclose = function(evt) {
+            removeUsers();
             addNotification("error", "The connection was closed");
             appendLog($("<div><b>Connection closed.</b></div>"))
         };
         conn.onmessage = function(evt) {
-            addMessage(JSON.parse(evt.data));
+            var data = JSON.parse(evt.data);
+            if(data.type === "message") {
+                addMessage(data);
+            }
+            else if(data.type === "notification") {
+                handleNotification(data);
+            }
         };
     } else {
         appendLog($("<div><b>Your browser does not support WebSockets.</b></div>"));
@@ -189,8 +197,47 @@ function addNotification(type, message) {
             break;
     }
     $("#notifications ul").append(
-        "<li class='notification' style='background-color:" + backgroundColor + ";color:" + textColor + "'>" + message + "</li>"
+        "<li style='background-color:" + backgroundColor + ";color:" + textColor + "'>" + message + "</li>"
     ).children().last().delay(5000).fadeTo("slow", 0, function() {
+        $(this).remove();
+    });
+}
+
+function handleNotification(data) {
+    var type;
+    switch(data.extra_data.notification_type) {
+        case "connection":
+            type = "info";
+            addUser(data.author);
+            break;
+        case "disconnection":
+            type = "info";
+            removeUser(data.author);
+            break;
+    }
+    addNotification(type, data.content);
+}
+
+function addUsers(users) {
+    $.each(users, function(i, user) {
+        addUser(user.username);
+    });
+}
+
+function addUser(username) {
+    if(document.getElementById("user-" + user.username) === null) {
+        $("#users-list ul").append("<li id='user-" + username + "'>" + username + "</li>");
+    }
+}
+
+function removeUser(username) {
+    $("#user-" + username).slideUp("normal", function(){
+        $(this).remove();
+    });
+}
+
+function removeUsers() {
+    $("#users-list li").slideUp("normal", function() {
         $(this).remove();
     });
 }
