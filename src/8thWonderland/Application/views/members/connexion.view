@@ -1,9 +1,10 @@
 <!-- Module de connexion -->
-<div id="connexion" class="encadre-member" style="width:650px;">
-    <table>
-        <tr>
-            <td><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Auth.png"></td>
-            <td><form id="form_login" name="form_login" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Authenticate/connect", "form_login", "login_error", "json"); return false;' action="" method="post">
+<div id="connexion" class="encadre-member">
+    <h2>Connexion</h2>
+    <div class="icones">
+        <img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Auth.png">
+    </div>
+                <form id="form_login" name="form_login" enctype="application/x-www-form-urlencoded" onSubmit='sendForm("Authenticate/connect", "form_login", "login_error", "json"); return false;' action="" method="post">
                     <table>
                         <tr>
                             <td style="padding: 5px;"><?php $this->translate("login"); ?></td>
@@ -22,9 +23,6 @@
                         </tr>
                     </table>
                 </form>
-            </td>
-        </tr>
-    </table>
     
     <div id="login_error"></div>
 </div>

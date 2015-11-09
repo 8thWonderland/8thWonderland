@@ -16,45 +16,22 @@
     </head>
     
     <body>
-        <table style="height:100%">
-            <tr style="height:150px">
-                <td><img height="150" alt="Logo 8th" src="<?php echo IMG_PATH;?>Mainscreen2-G.gif" title="8th Wonderland"/></td>
-                <td id="haut_milieu" valign="top" align="center">
+                <div>
+                    <img id="logo" alt="Logo 8th" src="<?php echo IMG_PATH;?>logo8thw.jpg" title="8th Wonderland"/>
+                </div>
+                <div id="haut_milieu" valign="top" align="center">
                         <?php include "members/connexion.view"; ?>
-                </td>
-            </tr>
-            <tr>
-                <td id="milieu_gauche" style="width:260px;">
-
-                </td>
-                <td id="milieu_milieu">
-                    <table>
-                        <tr>
-                            <td>
-                                <div style="width: 97%; max-width: 400px;">
-                                    <?php include "informations/menu_presentation.view"; ?>
-                                </div>
-                            </td>
-                            <td valign="top">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <div id="info_chat" class="info" style="margin:20%">
-                                                <table>
-                                                    <tr>
-                                                        <td><img alt="info" src="<?php echo ICO_PATH;?>64x64/Info.png" style="width:48px;"/></td>
-                                                        <td><span style="font-size: 15px;"><?php $this->translate('open_chat'); ?></span></td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+                </div>
+                <div id="blocInfos">
+                     <?php include "informations/menu_presentation.view"; ?>
+                </div>         
+                <div id="info_chat" class="info">                            
+                    <div class="icones">
+                        <img alt="info" src="<?php echo ICO_PATH;?>64x64/Info.png" style="width:48px;"/>
+                    </div>
+                    <div>
+                        <span style="font-size: 15px;"><?php $this->translate('open_chat'); ?></span>
+                    </div>                                
+                </div>
     </body>
 </html>

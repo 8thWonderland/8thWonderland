@@ -9,7 +9,10 @@ body {
 }
 
 #logo{
-    
+    display: block;
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* différents encadrements                */
@@ -35,7 +38,6 @@ body {
 }
 
 .encadre-top {
-    margin-top: 500px;
     padding: 5px; 
     color: #000000;
     border-bottom: 1px solid #ff0000;
@@ -44,6 +46,7 @@ body {
 .encadre-member {
     border: 2px #000000 solid; 
     padding: 5px; 
+    width:600px;
     color: #000000;
     border-radius: 10px 10px 10px 10px; 
     -webkit-border-radius: 10px 10px 10px 10px;
@@ -102,18 +105,36 @@ a, a:visited {
     font: 12px Arial, Helvetica, Sans-Serif;
 }
 
-table {
-    width: 100%; 
-    border-spacing: 0px; 
-    border-collapse: collapse;
-}
-
 img {
     border:0;
 }
 
+.icones{
+    float: left;
+}
+
 hr {
     color:#e14f1c; 
+}
+
+#blocInfos{
+    float: left;
+    margin-left: 350px;
+    margin-top: 30px;
+}
+
+.info {
+    float: right;
+    width: 250px;
+    padding: 10px;
+    border: 1px solid #cd0a0a; 
+    margin-right: 350px;
+    margin-top: 230px;
+    color: #dc2832; 
+    -moz-border-radius: 5px; 
+    border-radius: 5px; 
+    -khtml-border-radius: 5px; 
+    -webkit-border-radius: 5px;
 }
 
 
@@ -123,16 +144,6 @@ hr {
     border: 1px solid #cd0a0a; 
     background: #e14f1c url(../images/fond_error.png) 50% top repeat-x; 
     color: #ffffff; 
-    -moz-border-radius: 5px; 
-    border-radius: 5px; 
-    -khtml-border-radius: 5px; 
-    -webkit-border-radius: 5px;
-}
-
-.info {
-    border: 1px solid #cd0a0a; 
-    background: url(../images/fond_info.png) 50% top repeat-x; 
-    color: #dc2832; 
     -moz-border-radius: 5px; 
     border-radius: 5px; 
     -khtml-border-radius: 5px; 
