@@ -1,5 +1,5 @@
 <!-- Module de connexion -->
-<div id="connexion" class="encadre-top" style="width:650px;">
+<div id="connexion" class="encadre-member" style="width:650px;">
     <table>
         <tr>
             <td><img border="0" width="32" src="<?php echo ICO_PATH; ?>48x48/Auth.png"></td>

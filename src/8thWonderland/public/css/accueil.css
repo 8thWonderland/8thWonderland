@@ -2,43 +2,53 @@ body {
     margin: auto; 
     padding: 0; 
     font: 12px Arial, Helvetica, Sans-Serif; 
-    color: #dfdfdf; 
+    color: #000000; 
     width:100%; 
     height:95%; 
-    background-image:url("../images/fond.jpg");
-    background-repeat: repeat-x;
+    background-color: #ffffff;
 }
 
+#logo{
+    
+}
 
 /* différents encadrements                */
 /* ====================================== */
 .encadre {
-    border: 2px #dc2832 solid; 
+    width: 750px;
     padding: 10px; 
-    color: #dfdfdf; 
+    color: #ffffff; 
     font: 12px Arial, Helvetica, Sans-Serif;
-    border-radius: 50px 50px 10px 10px; 
-    -webkit-border-radius: 50px 50px 10px 10px;
-    -moz-border-radius:50px 50px 10px 10px; 
-    -khtml-border-radius:50px 50px 10px 10px;
-    box-shadow: 0 0 20px rgba(255,0,0,0.8);
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px 10px 10px 10px; 
+    -webkit-border-radius: 10px 10px 10px 10px;
+    -moz-border-radius:10px 10px 10px 10px; 
+    -khtml-border-radius:10px 10px 10px 10px;
 }
 
 .encadre caption, .encadre-top caption {
     font-size:14px; 
     font-variant: small-caps; 
-    color:red; height:25px; 
+    color:#ffffff; 
+    height:25px; 
     border-bottom: 2px dotted #dfdfdf;
 }
 
 .encadre-top {
-    border: 2px #dc2832 solid; 
-    padding: 5px; color: #dfdfdf;
-    border-radius: 10px 10px 50px 50px; 
-    -webkit-border-radius: 10px 10px 50px 50px;
-    -moz-border-radius:10px 10px 50px 50px; 
-    -khtml-border-radius:10px 10px 50px 50px;
-    box-shadow: 0 0 20px rgba(255,0,0,0.8);
+    margin-top: 500px;
+    padding: 5px; 
+    color: #000000;
+    border-bottom: 1px solid #ff0000;
+}
+
+.encadre-member {
+    border: 2px #000000 solid; 
+    padding: 5px; 
+    color: #000000;
+    border-radius: 10px 10px 10px 10px; 
+    -webkit-border-radius: 10px 10px 10px 10px;
+    -moz-border-radius:10px 10px 10px 10px; 
+    -khtml-border-radius:10px 10px 10px 10px;
 }
 
 .conteneur_message {
@@ -88,7 +98,7 @@ textarea {
 a, a:visited {
     text-decoration:none; 
     cursor: pointer; 
-    color: #dfdfdf; 
+    color: #000000; 
     font: 12px Arial, Helvetica, Sans-Serif;
 }
 
