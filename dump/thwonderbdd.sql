@@ -49,16 +49,15 @@ CREATE TABLE IF NOT EXISTS `citizen_groups` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `country`
+-- Structure de la table `countries`
 --
 
-CREATE TABLE IF NOT EXISTS `country` (
-  `rowid` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `countries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(2) NOT NULL,
-  `fr` varchar(255) NOT NULL,
-  `en` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`rowid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=239 ;
+  `label` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=239 ;
 
 -- --------------------------------------------------------
 
@@ -1548,14 +1547,21 @@ CREATE TABLE IF NOT EXISTS `recovery` (
 --
 
 CREATE TABLE IF NOT EXISTS `regions` (
-  `Region_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Country` varchar(4) NOT NULL DEFAULT 'FR',
-  `Name` tinytext NOT NULL,
-  `Longitude` decimal(10,7) DEFAULT NULL,
-  `Latitude` decimal(10,7) DEFAULT NULL,
-  `Creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`Region_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=371 ;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `country_id` int(4) NOT NULL,
+  `name` varchar(180) NOT NULL,
+  `longitude` decimal(10,7) DEFAULT NULL,
+  `latitude` decimal(10,7) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `country_index` (`country_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=371 ;
+
+--
+-- Contraintes pour la table `regions`
+--
+ALTER TABLE `regions`
+  ADD CONSTRAINT `country_foreign_key` FOREIGN KEY (`country_id`) REFERENCES `countries` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- --------------------------------------------------------
 
