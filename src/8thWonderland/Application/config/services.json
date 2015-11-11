@@ -47,6 +47,18 @@
             "@database_connection"
         ]
     },
+    "country_manager" : {
+        "class" : "Wonderland\\Application\\Manager\\CountryManager",
+        "arguments" : [
+            "@country_repository"
+        ]
+    },
+    "country_repository" : {
+        "class" : "Wonderland\\Application\\Repository\\CountryRepository",
+        "arguments" : [
+            "@database_connection"
+        ]
+    },
     "group_manager" : {
         "class" : "Wonderland\\Application\\Manager\\GroupManager",
         "arguments" : [
