@@ -49,16 +49,15 @@ CREATE TABLE IF NOT EXISTS `citizen_groups` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `country`
+-- Structure de la table `countries`
 --
 
-CREATE TABLE IF NOT EXISTS `country` (
-  `rowid` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `countries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(2) NOT NULL,
-  `fr` varchar(255) NOT NULL,
-  `en` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`rowid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=239 ;
+  `label` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=239 ;
 
 -- --------------------------------------------------------
 
