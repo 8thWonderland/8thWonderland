@@ -5,6 +5,18 @@ namespace Wonderland\Application\Controller;
 use Wonderland\Library\Controller\ActionController;
 
 class MemberController extends ActionController {
+    public function getMemberAction() {
+        if($this->getUser() === null) {
+            $this->redirect('index/index');
+        }
+        if(!isset($_GET['member_id'])) {
+            $this->redirect('intranet/index');
+        }
+        $this->render('members/details', [
+            'member' => $this->application->get('member_manager')->getMember($_GET['member_id'], true)
+        ]);
+    }
+    
     public function displayProfileAction() {
         $member = $this->getUser();
         $translate = $this->application->get('translator');
