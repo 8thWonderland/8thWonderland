@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>8th Wonderland - <?php echo $this->parameters['member']['identity']; ?></title>
+        <link rel="stylesheet" href="<?php echo CSS_PATH . 'members.css'; ?>" />
+    </head>
+    <body>
+        <?php
+            $this->render('menu');
+        ?>
+        Hello world
+    </body>
+</html>
