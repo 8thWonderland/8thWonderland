@@ -23,6 +23,56 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `abac_policy_rules`
+--
+DROP TABLE IF EXISTS `abac_policy_rules`;
+CREATE TABLE IF NOT EXISTS `abac_policy_rules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `abac_attributes`
+--
+
+DROP TABLE IF EXISTS `abac_attributes`;
+CREATE TABLE IF NOT EXISTS `abac_attributes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `table_name` varchar(65) COLLATE utf8_unicode_ci NOT NULL,
+  `column_name` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `criteria_column` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `abac_policy_rules_attributes`
+--
+
+DROP TABLE IF EXISTS `abac_policy_rules_attributes`;
+CREATE TABLE IF NOT EXISTS `abac_policy_rules_attributes` (
+  `policy_rule_id` int(11) NOT NULL,
+  `attribute_id` int(11) NOT NULL,
+  `type` VARCHAR(10) COLLATE utf8_unicode_ci NOT NULL,
+  `comparison_type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `comparison` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
+  `value` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  KEY `policy_rule_id` (`policy_rule_id`,`attribute_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `associations`
 --
 
