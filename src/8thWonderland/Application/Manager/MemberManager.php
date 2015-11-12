@@ -22,11 +22,15 @@ class MemberManager {
     }
     
     /**
+     * If $raw is set to true, the result will be an array
+     * Otherwise it will be a member object or null
+     * 
      * @param int $id
-     * @return \Wonderland\Application\Model\Member
+     * @param boolean $raw
+     * @return \Wonderland\Application\Model\Member|array|null
      */
-    public function getMember($id) {
-        return $this->repository->findOneBy(['id' => $id]);
+    public function getMember($id, $raw = false) {
+        return $this->repository->findOneBy(['id' => $id], $raw);
     }
     
     /**

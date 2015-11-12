@@ -76,7 +76,12 @@ class MemberRepository extends AbstractRepository {
         return true;
     }
     
-    public function findOneBy($criterias) {
+    /**
+     * @param array $criterias
+     * @param boolean $raw
+     * @return \Wonderland\Application\Model\Member|array
+     */
+    public function findOneBy($criterias, $raw = false) {
         $whereClause = 
             (count($criterias) > 0)
             ? 'WHERE '
@@ -88,7 +93,7 @@ class MemberRepository extends AbstractRepository {
             $arguments[":$column"] = $value;
         }
         
-        return $this->formatMemberData($this->connection->prepareStatement(
+        $statement = $this->connection->prepareStatement(
             'SELECT u.id, u.login, u.password, u.salt, u.identity, u.gender,' .
             'u.email, u.avatar, u.language, u.country, u.region, u.last_connected_at, ' .
             'u.created_at, u.is_enabled, u.is_banned, u.theme, ' .
@@ -103,17 +108,22 @@ class MemberRepository extends AbstractRepository {
             // substr remove the last "AND " string
             substr($whereClause, 0, -4) .
             'GROUP BY g.id'
-        , $arguments));
+        , $arguments);
+        return
+            ($raw)
+            ? $this->formatArray($statement)
+            : $this->formatObject($statement)
+        ;
     }
     
     /**
-     * Turn raw data into Member object
+     * Turn statement containing one member into Member object
      * 
-     * @param array $rawData
+     * @param \PDOStatement $statement
      * @return \Wonderland\Application\Model\Member
      */
-    public function formatMemberData($rawData) {
-        if(($data = $rawData->fetch(\PDO::FETCH_ASSOC)) === false) {
+    public function formatObject($statement) {
+        if(($data = $statement->fetch(\PDO::FETCH_ASSOC)) === false) {
             return null;
         }
         $member =
@@ -155,7 +165,7 @@ class MemberRepository extends AbstractRepository {
             );
         }
         // Currently, the next rows are containing the user's groups
-        while($data = $rawData->fetch(\PDO::FETCH_ASSOC)) {
+        while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $member->addGroup(
                 (new Group())
                 ->setId($data['group_id'])
@@ -174,6 +184,71 @@ class MemberRepository extends AbstractRepository {
                 ->setCreatedAt(new \DateTime($data['group_created_at']))
                 ->setUpdatedAt(new \DateTime($data['group_updated_at']))
             );
+        }
+        return $member;
+    }
+    
+    /**
+     * Turn statement containing one member into Member data array
+     * 
+     * @param \PDOStatement $statement
+     * @return array
+     */
+    public function formatArray($statement) {
+        if(($data = $statement->fetch(\PDO::FETCH_ASSOC)) === false) {
+            return null;
+        }
+        $member = [
+            'id' => $data['id'],
+            'login' => $data['login'],
+            'identity' => $data['identity'],
+            'password' => $data['password'],
+            'email' => $data['email'],
+            'avatar' => $data['avatar'],
+            'gender' => $data['gender'],
+            'language' => $data['language'],
+            'country' => (int) $data['country'],
+            'region' => (int) $data['region'],
+            'created_at' => $data['created_at'],
+            'last_connected_at' => $data['last_connected_at'],
+            'is_enabled' => (bool) $data['is_enabled'],
+            'is_banned' => (bool) $data['is_banned'],
+            'theme' => $data['theme']
+        ];
+        if(isset($data['group_id'])) {
+            $member['groups'][] = [
+                'id' => $data['group_id'],
+                'name' => $data['name'],
+                'description' => $data['description'],
+                'type' => [
+                    'id' => $data['group_type_id'],
+                    'label' => $data['label'],
+                ],
+                'contact' => [
+                    'id' => $data['contact_id'],
+                    'identity' => $data['contact_identity']
+                ],
+                'created_at' => $data['group_created_at'],
+                'updated_at' => $data['group_updated_at']
+            ];
+        }
+        // Currently, the next rows are containing the user's groups
+        while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $member['groups'][] = [
+                'id' => $data['group_id'],
+                'name' => $data['name'],
+                'description' => $data['description'],
+                'type' => [
+                    'id' => $data['group_type_id'],
+                    'label' => $data['label'],
+                ],
+                'contact' => [
+                    'id' => $data['contact_id'],
+                    'identity' => $data['contact_identity']
+                ],
+                'created_at' => $data['group_created_at'],
+                'updated_at' => $data['group_updated_at']
+            ];
         }
         return $member;
     }
