@@ -12,11 +12,18 @@
     "require" : {
         "pimple/pimple" : "~3.0",
         "altorouter/altorouter": "1.1.0",
-        "guzzlehttp/guzzle" : "~6.0"
+        "guzzlehttp/guzzle" : "~6.0",
+        "kilix/php-abac": "dev-master"
     },
     "autoload" : {
         "psr-4" : {
             "Wonderland\\": "src/8thWonderland/"
         }
-    }
+    },
+    "repositories": [
+        {
+            "url": "https://gitlab.kilix.net/avenet/php-abac.git",
+            "type": "git"
+        }
+    ]
 }
