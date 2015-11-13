@@ -4,7 +4,7 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Library\Admin\Log;
+use Wonderland\Library\Exception\ForbiddenException;
 
 class GroupController extends ActionController {
     public function displayGroupsAction() {
@@ -99,7 +99,9 @@ class GroupController extends ActionController {
     }
     
     public function displayManageGroupsAction() {
-        $membersList = $this->application->get('group_manager')->getGroupMembers($this->application->get('session')->get('desktop'));
+        $desktop = $this->application->get('session')->get('desktop');
+        $this->checkAccess('group-management', $desktop, ['group-owner' => $this->getUser()->getId()]);
+        $membersList = $this->application->get('group_manager')->getGroupMembers($desktop);
         $select = '<option></option>';
         $nbMembers = count($membersList);
         for ($i = 0; $i < $nbMembers; ++$i) {
