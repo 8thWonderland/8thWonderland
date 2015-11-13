@@ -129,7 +129,7 @@ abstract class ActionController {
     public function checkAccess($rule, $objectId = null, $dynamicAttributes = []) {
         if(($user = $this->getUser()) === null ) {
             throw new AccessDeniedException();
-}
+        }
         if(($check = $this->application->get('abac')->enforce($rule, $user->getId(), $objectId, $dynamicAttributes)) !== true) {
             throw new ForbiddenException($check);
         }

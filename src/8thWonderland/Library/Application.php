@@ -13,6 +13,7 @@ class Application {
     public function init() {
         $this->setRootPath();
         $this->setContainer();
+        $this->setErrorHandler();
     }
     
     /**
@@ -118,6 +119,11 @@ class Application {
      */
     public function getRootPath() {
         return $this->rootPath;
+    }
+    
+    public function setErrorHandler() {
+        set_error_handler([$this->container['error_handler'], 'handleError']);
+        set_exception_handler([$this->container['error_handler'], 'handleException']);
     }
     
     /**
