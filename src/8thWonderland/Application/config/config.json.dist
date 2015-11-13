@@ -1,4 +1,5 @@
 {
+    "error_reporting": true,
     "facebook_api_url" : "https://graph.facebook.com/v2.5",
     "facebook_app_id" : "",
     "facebook_app_secret" : "",

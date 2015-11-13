@@ -11,6 +11,14 @@
     "session" : {
         "class" : "Wonderland\\Library\\Memory\\Session"
     },
+    "error_handler" : {
+        "class" : "Wonderland\\Library\\Security\\ErrorHandler",
+        "arguments" : [
+            "@database_logger",
+            "@file_logger",
+            "%error_reporting%"
+        ]
+    },
     "translator" : {
         "class" : "Wonderland\\Library\\Translator",
         "arguments" : [
@@ -28,10 +36,16 @@
     "paginator" : {
         "class" : "Wonderland\\Library\\Plugin\\Paginator"
     },
-    "logger" : {
-        "class" : "Wonderland\\Library\\Admin\\Log",
+    "database_logger" : {
+        "class" : "Wonderland\\Library\\Logger\\DatabaseLogger",
         "arguments" : [
             "@database_connection"
+        ]
+    },
+    "file_logger" : {
+        "class" : "Wonderland\\Library\\Logger\\FileLogger",
+        "arguments" : [
+            "%root_path%"
         ]
     },
     "member_manager" : {
