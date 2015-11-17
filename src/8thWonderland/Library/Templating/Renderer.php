@@ -4,6 +4,8 @@ namespace Wonderland\Library\Templating;
 
 use Wonderland\Library\Translator;
 
+use PhpAbac\Abac;
+
 class Renderer {
     /** @var array **/
     protected $parameters = [];
@@ -11,14 +13,17 @@ class Renderer {
     protected $rootPath;
     /** @var \Wonderland\Library\Translator **/
     protected $translator;
+    /** @var \PhpAbac\Abac **/
+    protected $abac;
     
     /**
      * @param string $rootPath
      * @param \Wonderland\Library\Templating\Translator $translator
      */
-    public function __construct($rootPath, Translator $translator) {
+    public function __construct($rootPath, Translator $translator, Abac $abac) {
         $this->rootPath = $rootPath;
         $this->translator = $translator;
+        $this->abac = $abac;
     }
     
     /**
@@ -63,5 +68,16 @@ class Renderer {
      */
     public function translate($key) {
         echo $this->translator->translate($key);
+    }
+    
+    /**
+     * @param string $rule
+     * @param int $userId
+     * @param int $objectId
+     * @param array $dynamicAttributes
+     * @return boolean
+     */
+    public function isEnforced($rule, $userId, $objectId = null, $dynamicAttributes = []) {
+        return $this->abac->enforce($rule, $userId, $objectId, $dynamicAttributes) === true;
     }
 }

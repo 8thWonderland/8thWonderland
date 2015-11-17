@@ -30,7 +30,8 @@
         "class" : "Wonderland\\Library\\Templating\\Renderer",
         "arguments" : [
             "%root_path%",
-            "@translator"
+            "@translator",
+            "@abac"
         ]
     },
     "paginator" : {
