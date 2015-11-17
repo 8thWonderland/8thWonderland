@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 -- Base de données :  `thwonderbdd`
 --
 
+-- --------------------------------------------------------
+
 --
 -- Structure de la table `abac_attributes`
 --
@@ -60,6 +62,18 @@ CREATE TABLE IF NOT EXISTS `abac_attributes_data` (
 
 INSERT INTO `abac_attributes_data` (`id`, `created_at`, `updated_at`, `name`, `slug`) VALUES
 (1, '2015-11-12 00:00:00', '2015-11-12 00:00:00', 'Group Owner', 'group-owner');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `abac_environment_attributes`
+--
+
+CREATE TABLE IF NOT EXISTS `abac_environment_attributes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `variable_name` varchar(65) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -116,6 +130,12 @@ INSERT INTO `abac_policy_rules_attributes` (`policy_rule_id`, `attribute_id`, `t
 --
 ALTER TABLE `abac_attributes`
   ADD CONSTRAINT `attributes_data` FOREIGN KEY (`id`) REFERENCES `abac_attributes_data` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `abac_environment_attributes`
+--
+ALTER TABLE `abac_environment_attributes`
+  ADD CONSTRAINT `environment_attributes_data` FOREIGN KEY (`id`) REFERENCES `abac_attributes_data` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `abac_policy_rules_attributes`
