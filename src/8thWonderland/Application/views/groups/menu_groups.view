@@ -10,7 +10,7 @@
                 <a onclick="Clic('Group/displayAddressBook', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Users.png"/><br/>
                     <?php $this->translate('adressbook'); ?></a>
             </td>
-            <?php if ($this->parameters['Contact_Group']) { ?>
+            <?php if ($this->isEnforced('group-management', $this->parameters['user_id'], $this->parameters['group_id'], ['group-owner' => $this->parameters['user_id']])) { ?>
             <td align="center">
                 <a onclick="Clic('Group/displayManageGroups', '', 'milieu_milieu'); return false;"><img width="32" src="<?php echo ICO_PATH; ?>64x64/Groups.png"/><br/>
                     <?php $this->translate('admin_groups'); ?></a>

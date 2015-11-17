@@ -1,8 +1,13 @@
 ## Unreleased
 ### Added
+- PHP-ABAC library to manage access-control
+- Error handler
+- Exceptions for denied accesses and forbidden statements
+- Add filesystem logs
 - Connected users list in the chat module
 
 ### Changed
+- Database logs have been updated
 - Update the partners widget
 
 ## 0.1.1 - 2015-07-11

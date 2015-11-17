@@ -4,6 +4,9 @@ namespace Wonderland\Library\Controller;
 
 use Wonderland\Library\Application;
 
+use Wonderland\Library\Exception\AccessDeniedException;
+use Wonderland\Library\Exception\ForbiddenException;
+
 abstract class ActionController {
     /** @var \Wonderland\Library\Application **/
     protected $application;
@@ -114,5 +117,21 @@ abstract class ActionController {
             throw new \Exception("The Action '$action' does not exist !");
         }
         return [$controller, $action];
+    }
+    
+    /**
+     * @param string $rule
+     * @param int $objectId
+     * @param array $dynamicAttributes
+     * @throws \Wonderland\Library\Exception\AccessDeniedException
+     * @throws ForbiddenException
+     */
+    public function checkAccess($rule, $objectId = null, $dynamicAttributes = []) {
+        if(($user = $this->getUser()) === null ) {
+            throw new AccessDeniedException();
+        }
+        if(($check = $this->application->get('abac')->enforce($rule, $user->getId(), $objectId, $dynamicAttributes)) !== true) {
+            throw new ForbiddenException($check);
+        }
     }
 }

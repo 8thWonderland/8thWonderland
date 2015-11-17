@@ -85,7 +85,9 @@ class IntranetController extends ActionController {
                     "</table>"
                 ,
                 'milieu_milieu' => '',
-                'milieu_gauche' => "<script type='text/javascript'>window.onload=Clic('Member/displayContactsGroups', '', 'milieu_gauche');</script>"
+                'milieu_gauche' => "<script type='text/javascript'>window.onload=Clic('Member/displayContactsGroups', '', 'milieu_gauche');</script>",
+                'user_id' => $member->getId(),
+                'group_id' => $desktop
             ]);
         } else {
             $templating->addParameters([
@@ -102,7 +104,7 @@ class IntranetController extends ActionController {
             $this->render('members/intranet');
         } else {
             $this->render('connected', [
-                'default_view' => 'members/intranet.view'
+                'default_view' => 'members/intranet.view',
             ]);
         }
     }

@@ -4,7 +4,7 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Library\Admin\Log;
+use Wonderland\Library\Exception\ForbiddenException;
 
 class GroupController extends ActionController {
     public function displayGroupsAction() {
@@ -99,7 +99,9 @@ class GroupController extends ActionController {
     }
     
     public function displayManageGroupsAction() {
-        $membersList = $this->application->get('group_manager')->getGroupMembers($this->application->get('session')->get('desktop'));
+        $desktop = $this->application->get('session')->get('desktop');
+        $this->checkAccess('group-management', $desktop, ['group-owner' => $this->getUser()->getId()]);
+        $membersList = $this->application->get('group_manager')->getGroupMembers($desktop);
         $select = '<option></option>';
         $nbMembers = count($membersList);
         for ($i = 0; $i < $nbMembers; ++$i) {
@@ -136,6 +138,8 @@ class GroupController extends ActionController {
         $dbLogger = $this->application->get('logger');
         $dbLogger->setWriter('db');
         $member = $this->getUser();
+        $desktop = $this->application->get('session')->get('desktop');
+        $this->checkAccess('group-management', $desktop, ['group-owner' => $member->getId()]);
         
         if (!isset($_POST['sel_contactgroups']) || intval($_POST['sel_contactgroups']) === 0) {
             $this->display(
@@ -147,7 +151,6 @@ class GroupController extends ActionController {
             
             $dbLogger->log("Echec du changement de CG par {$member->getIdentity()} (id_user inconnu : {$_POST['sel_contactgroups']})", Log::ERR);
         } else {
-            $desktop = $this->application->get('session')->get('desktop');
             $groupManager = $this->application->get('group_manager');
             if(($group = $groupManager->getGroup($desktop)) === null) {
                 return $this->display(
