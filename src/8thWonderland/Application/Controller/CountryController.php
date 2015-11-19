@@ -4,6 +4,8 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
+use Wonderland\Library\Exception\BadRequestException;
+
 class CountryController extends ActionController {
     public function allAction() {
         header('Content-Type: application/json');
@@ -13,7 +15,7 @@ class CountryController extends ActionController {
     
     public function regionsAction() {
         if(!isset($_GET['country_id'])) {
-            throw new \InvalidArgumentException(
+            throw new BadRequestException(
                 $this->application->get('translator')->translate('regions.missing_country_argument')
             );
         }
