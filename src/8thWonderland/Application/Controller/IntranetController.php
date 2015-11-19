@@ -4,7 +4,6 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Mailer;
 
 use Wonderland\Library\Admin\Log;
@@ -12,51 +11,8 @@ use Wonderland\Library\Admin\Log;
 class IntranetController extends ActionController {
     public function indexAction() {
         if (($member = $this->getUser()) === null) {
-            $this->redirect('Index/index');
+            $this->redirect('index/index');
         }
-        
-        $select_geo = false;
-        $db = $this->application->get('database_connection');
-
-        // Teste si le code country du membre est valide
-        // =============================================
-        $country_ok = $db->query(
-            "SELECT COUNT(*) AS count FROM country WHERE code='{$member->getCountry()}'"
-        )->fetch()['count'];
-        if ($country_ok === 0) {
-            $select_geo = true;
-        } else {
-            $region_member = $member->getRegion();
-            if (!isset($region_member) || $region_member === -2) {
-                $select_geo = true;
-            }
-        }
-
-        if ($select_geo) {
-            $this->displaySelectCountry($member);
-        } else {
-            $this->displayIntranet($member);
-        }
-    }
-    
-    /**
-     * @param \Wonderland\Application\Model\Member $member
-     */
-    protected function displaySelectCountry(Member $member) {
-        $language = $member->getLanguage();
-        $statement = $this->application->get('member_manager')->getCountries($language);
-        $selectCountry = '<option></option>';
-        while($country = $statement->fetch()) {
-            $selectCountry .= "<option value='{$country['Code']}'>{$country[$language]}</option>";
-        }
-        $this->render('connected', [
-            'msg' => '',
-            'select_country' => $selectCountry,
-            'default_view' => 'members/select_country.view'
-        ]);
-    }
-    
-    protected function displayIntranet(Member $member) {
         $session = $this->application->get('session');
         $templating = $this->application->get('templating');
         if (!empty($_POST['group_id'])) {
@@ -100,13 +56,9 @@ class IntranetController extends ActionController {
                 'milieu_droite' => "<script type='text/javascript'>window.onload=Clic('Group/displayGroupsMembers', '', 'milieu_droite');</script>"
             ]);
         }
-        if ($this->is_Ajax()) {
-            $this->render('members/intranet');
-        } else {
-            $this->render('connected', [
-                'default_view' => 'members/intranet.view',
-            ]);
-        }
+        $this->render('connected', [
+            'default_view' => 'members/intranet.view',
+        ]);
     }
     
     public function openChatroomAction() {
