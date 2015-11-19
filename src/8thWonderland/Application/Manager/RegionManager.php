@@ -16,7 +16,7 @@ class RegionManager {
     }
     
     /**
-     * @param int $country
+     * @param int $countryId
      * @return array
      */
     public function getRegionsByCountry($countryId) {
