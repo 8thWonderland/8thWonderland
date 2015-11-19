@@ -11,10 +11,11 @@ use Wonderland\Library\Admin\Log;
 
 class AuthenticateController extends ActionController {
     public function connectAction() {
+        $request = $this->getJsonRequest();
         $memberManager = $this->application->get('member_manager');
         $translate = $this->application->get('translator');
         
-        if (($member = $memberManager->getMemberByLoginAndPassword($_POST['login'], hash('sha512', $_POST['password']))) !== null) {
+        if (($member = $memberManager->getMemberByLoginAndPassword($request['login'], hash('sha512', $request['password']))) !== null) {
             $db = $this->application->get('database_connection');
             // Enregistrement de la date et heure de la connexion         
             $statement = $db->prepare(
@@ -26,12 +27,9 @@ class AuthenticateController extends ActionController {
                 $logger->setWriter('db');
                 $logger->log("Echec de l'update de la connexion ({$member->getIdentity()})", Log::ERR);
             }
-            
-            $session = $this->application->get('session');
-            $session->set('__login__', $member->getIdentity()); // indipensable pour l'identification au forum
-            $session->set('__id__', $member->getId());
+            $this->application->get('session')->set('__id__', $member->getId());
             $translate->setUserLang($member->getLanguage());
-            $this->redirect('Intranet/index');
+            $this->redirect('intranet/index');
         } else {
             $this->display(json_encode([
                 'status' => 0,
