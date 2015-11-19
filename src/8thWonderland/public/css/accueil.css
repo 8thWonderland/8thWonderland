@@ -58,6 +58,17 @@ body {
     color: #717171;
     font-size:1.6em;
     text-align:center;
+    transition: color 0.4s ease-out, font-size 0.4s ease-out;
+}
+
+#account-forms div:first-child h3 {
+    color: #444444;
+    font-size:1.8em;
+    cursor: default;
+}
+
+#account-forms div:last-child h3 {
+    cursor:pointer;
 }
 
 #account-forms form {
