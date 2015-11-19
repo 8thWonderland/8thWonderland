@@ -1,4 +1,5 @@
 body {
+    background: url('../images/background.png');
     margin: auto; 
     padding: 0; 
     font: 12px Arial, Helvetica, Sans-Serif; 
@@ -8,11 +9,106 @@ body {
     background-color: #ffffff;
 }
 
+#header {
+    display:flex;
+}
+
+#header-left {
+    flex-grow:1;
+    width:20%;
+}
+
+#menu-handler {
+    width:20%;
+    text-align:right;
+    flex-grow:1;
+    color: #D01010;
+    padding-top:10px;
+}
+
+#menu-handler .fa{
+    margin-right:15px;
+    cursor: pointer;
+    font-size:5em;
+}
+
 #logo{
-    display: block;
-    margin-bottom: 10px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-top:-50px;
+    flex-grow:2;
+    text-align:center;
+}
+
+#logo h1 {
+    margin:0px;
+}
+
+#logo img {
+    width:600px;
+    height:400px;
+}
+
+#account-forms {
+    width:600px;
+    margin:auto;
+    margin-top:0px;
+}
+
+#account-forms h3 {
+    margin-top:10px;
+    color: #717171;
+    font-size:1.6em;
+    text-align:center;
+}
+
+#account-forms form {
+    text-align:center;
+    padding-top:10px;
+    padding-bottom:20px;
+    border-top: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
+}
+
+#account-forms input,
+#account-forms select {
+    margin-top:20px;
+    width:400px;
+    padding: 10px;
+    text-align:center;
+    font-size:16px;
+    font-weight:bold;
+    font-variant:small-caps;
+    color: #969696;
+    border: 1px solid #717171;
+    background-color: #FFF !important;
+    -ms-box-sizing:content-box;
+    -moz-box-sizing:content-box;
+    -webkit-box-sizing:content-box; 
+    box-sizing:content-box;
+}
+
+#account-forms button {
+    display:block;
+    margin:auto;
+    margin-top:20px;
+    font-size:16px;
+    color: #FFF;
+    padding:10px;
+    border: 1px solid #717171;
+    background-color: #D01010;
+    cursor:pointer;
+    transition: background-color 0.4s ease-out;
+}
+
+#account-forms button:hover {
+    background-color: #950000;
+}
+
+#account-forms button:disabled {
+    background-color: #969696;
+}
+
+#registration-form form {
+    display:none;
 }
 
 /* différents encadrements                */
@@ -67,32 +163,6 @@ body {
 
 /* composants HTML                        */
 /* ====================================== */
-input[type=text], input[type=password], textarea, select {
-    width: 100%; 
-    color: #FF0000; 
-    padding: 2px; 
-    font: 11px Arial, Helvetica, Sans-Serif;
-    -moz-border-radius: 5px; 
-    border-radius: 5px; 
-    -khtml-border-radius: 5px; 
-    -webkit-border-radius: 5px;
-}
-
-input[type=submit], input[type=button] {
-    color:white; 
-    text-decoration: none; 
-    text-align:center; 
-    background: #e14f1c; 
-    padding: 3px;
-    -moz-border-radius: 10px; 
-    border-radius: 10px; 
-    -khtml-border-radius: 10px; 
-    -webkit-border-radius: 10px;
-}
-
-input[type=submit]:hover, input[type=button]:hover {
-    cursor:pointer;
-}
 
 textarea {
     resize:none;
