@@ -13,6 +13,7 @@ $array = array(
     // Connexion / Perte de mot de passe
     "login"                 => "Identifiant",
     "password"              => "Mot de passe",
+    "confirmation_password" => "Confirmation du mot de passe",
     "connexion"             => "Entrer",
     "process_forgetpwd"     => "Etape 1 : Saisissez votre login puis cliquez sur le bouton 'Envoyer'. Un code sera envoyé à l'adresse électronique correspondante.<br/>" .
                                "Etape 2 : Consultez votre boite aux lettres et saisissez le code indiqué dans le mail.<br/>" .
@@ -28,6 +29,9 @@ $array = array(
     "btn_codeforgetpwd"     => "Valider",
     "logout"                => "Se déconnecter",
     
+    'welcome'               => 'Bienvenue',
+    'login_form_title'      => 'Se Connecter',
+    'registration_form_title' => 'Rejoignez-nous',
     
     // Menu citoyen
     "inform"                => "S'informer",
@@ -257,7 +261,7 @@ $array = array(
                                "Elle est modifiable uniquement par le vote de l'ensemble des citoyens.<br/><br/></td></tr></tbody>" .
                                "<tfoot><tr><td style='text-align:center;'><span style='color:red;'>B</span>ienvenue !</td></tr></tfoot></table>",
     
-    "select_country"        => "Conformément à la motion du 16/01/2012, vous devez dorénavant indiquer votre pays et votre région d'habitation afin d'être intégré " .
-                               "au groupe régional correspondant.",
-)
-?>
+    'regions.missing_country_argument'  => 'Le pays doit être indiqué',
+    
+    'countries.france'      => 'France' 
+);

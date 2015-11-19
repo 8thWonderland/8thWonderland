@@ -14,6 +14,7 @@ $array = array(
     // Connexion / Perte de mot de passe
     "login"                 => "Usuario",
     "password"              => "Contraseña",
+    "confirmation_password" => "Contraseña",
     "connexion"             => "Entrar",
     "process_forgetpwd"     => "Etapa 1 : Coja su login y haga clic sobre 'Enviar'. Un código será enviado al correo electrónico correspondiente.<br/>" .
                                "Etapa 2 : Consulte vuestro e-mail y coja el código indicado en el e-mail.<br/>" .
@@ -29,6 +30,9 @@ $array = array(
     "btn_codeforgetpwd"     => "Validar",
     "logout"                => "Salir",
     
+    'welcome'               => 'Bienvenida',
+    'login_form_title'      => 'Conectarse',
+    'registration_form_title' => 'Únete a nosotros',
     
     // Menu citoyen
     "inform"                => "Informarse",
@@ -256,7 +260,7 @@ $array = array(
                                "Ella es modificable sólo por el voto del conjunto de los ciudadanos.<br/><br/></td></tr></tbody>" .
                                "<tfoot><tr><td style='text-align:center;'><span style='color:red;'>B</span>ienvenue !</td></tr></tfoot></table>",
     
-    "select_country"        => "Conforme a la moción del 16/01/2012, debe en adelante indicar vuestro país y vuestra región de vivienda para ser integrado " .
-                               "al grupo regional correspondiente.",
-)
-?>
+    'regions.missing_country_argument'  => 'País debe ser Espectáculos',
+    
+    'countries.france'      => 'France' 
+);

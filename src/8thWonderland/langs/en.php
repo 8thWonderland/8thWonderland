@@ -14,6 +14,7 @@ $array = array(
     // Connexion / Perte de mot de passe
     "login"                 => "Login",
     "password"              => "Password",
+    "confirmation_password" => "Confirm Password",
     "connexion"             => "Enter",
     "process_forgetpwd"     => "Step 1 : Type your login and click 'Send'. A code will be sent to the mail adress.<br/>" .
                                "Step 2 : Read yours mails and type the code indicated in the e-mail.<br/>" .
@@ -29,6 +30,9 @@ $array = array(
     "btn_codeforgetpwd"     => "Valid",
     "logout"                => "Se déconnecter",
     
+    'welcome'               => 'Welcome',
+    'login_form_title'      => 'Log in',
+    'registration_form_title' => 'Join us',
     
     // Menu citoyen
     "inform"                => "Inform me",
@@ -255,7 +259,7 @@ $array = array(
                                "Constitution is 8th Wonderland's code, filled with all rules and principles. It can be modified only trough citizen's vote.<br/><br/></td></tr></tbody>" .
                                "<tfoot><tr><td style='text-align:center;'><span style='color:red;'>W</span>elcome !</td></tr></tfoot></table>",
     
-    "select_country"        => "According to the motion of 2012-01-16, you need to indicate your country and your region to be joined " .
-                               "into the regional group.",
-)
-?>
+    'regions.missing_country_argument'  => 'The country ID must be set',
+    
+    'countries.france'      => 'France' 
+);
