@@ -80,7 +80,7 @@
         </div><!-- /container -->
         <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>chatroom.js"></script>
-        <script type="text/javascript" src="<?php echo JS_PATH; ?>chatroom_classie.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>classie.js"></script>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>chatroom_main.js"></script>
     </body>
 </html>
