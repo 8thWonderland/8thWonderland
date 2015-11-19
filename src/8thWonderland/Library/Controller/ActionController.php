@@ -5,6 +5,7 @@ namespace Wonderland\Library\Controller;
 use Wonderland\Library\Application;
 
 use Wonderland\Library\Exception\AccessDeniedException;
+use Wonderland\Library\Exception\BadRequestException;
 use Wonderland\Library\Exception\ForbiddenException;
 
 abstract class ActionController {
@@ -45,6 +46,16 @@ abstract class ActionController {
         return $this->user;
     }
     
+    /**
+     * @return array
+     */
+    public function getJsonRequest() {
+        if(!isset($_SERVER['CONTENT_TYPE']) || $_SERVER['CONTENT_TYPE'] !== 'application/json') {
+            throw new BadRequestException('JSON data is expected');
+        }
+        return json_decode(file_get_contents('php://input'), true);
+    }
+    
     // Affichage d'un texte directement
     // SHAME
     // @ToRemove !!!
@@ -56,22 +67,26 @@ abstract class ActionController {
     /**
      * @param string $url
      */
-    public function redirect($url)
-    {   
+    public function redirect($url) {   
         if ($this->is_Ajax()) {
+            $rootPath = 
+                (!isset($_SERVER['BASE']))
+                ? '/'
+                : $_SERVER['BASE'] . '/'
+            ;
             echo json_encode([
-                'status' => 1,
-                'response' => $url
+                'command' => 'redirect',
+                'location' => $rootPath . $url
             ]);
-        } else {
-            $params = $this->_formatURL($url);
-
-            // route vers le controleur et l'action demandée
-            $ctrl = new $params[0]($this->application);
-            $action = $params[1] . "Action";
-
-            $ctrl->$action();
+            exit;
         }
+        $params = $this->_formatURL($url);
+
+        // route vers le controleur et l'action demandée
+        $ctrl = new $params[0]($this->application);
+        $action = $params[1] . "Action";
+
+        $ctrl->$action();
         exit();
     }
     
@@ -102,13 +117,14 @@ abstract class ActionController {
         if (count($params) < 2) {
             throw new \InvalidArgumentException('The url is invalid !');
         }
-        $controller = "Wonderland\\Application\\Controller\\{$params[1]}Controller";
+        $controllerName = ucfirst($params[1]) . 'Controller';
+        $controller = "Wonderland\\Application\\Controller\\$controllerName";
         if (isset($params[2])) {
             $action = $params[2];
         }
         
         // Vérification si le controleur existe
-        $filename = "{$this->controllersDirectory}/{$params[1]}Controller.php";
+        $filename = "{$this->controllersDirectory}/$controllerName.php";
         if (!file_exists($filename)) {
             throw new \Exception("The ActionController '$controller' does not exist !");
         }
