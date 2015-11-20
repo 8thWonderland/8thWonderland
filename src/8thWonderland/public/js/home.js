@@ -47,9 +47,9 @@ function authenticate() {
             window.location.href = '.';
         },
         data: JSON.stringify(authentication), 
-        error: function(error)
+        error: function(data)
         {
-            console.log(error);
+            displayFormErrors('login', JSON.parse(data.responseText));
         }
     });
 }
