@@ -8,7 +8,9 @@ class BadRequestException extends AbstractException {
         header('Content-Type: application/json');
         
         echo json_encode([
-            'message' => $this->getMessage()
+            'errors' => [
+                $this->getMessage()
+            ]
         ]);
     }
 }

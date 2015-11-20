@@ -39,6 +39,13 @@ class ErrorHandler {
      * @param array $context
      */
     public function handleError($id, $message, $file = null, $line = null, $context = []) {
+        if($file !== null) {
+            $message .= " at file $file";
+        }
+        if($line !== null) {
+            $message .= " at line $line";
+        }
+        
         $this->logError('error', $message);
     }
     
