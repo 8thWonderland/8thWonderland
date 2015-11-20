@@ -1,0 +1,34 @@
+html, body {
+    width:100%;
+    height:100%;
+    margin:0px;
+    overflow:hidden;
+}
+
+#menu {
+    display:flex;
+    background : #242424;
+    padding-top:15px;
+    padding-bottom:15px;
+}
+
+#menu ul{
+    color: #EFEFEF;
+    margin:0px;
+    padding-left:0px;
+}
+
+#menu li {
+    font-weight:1.5em;
+    display:inline-block;
+}
+
+#personal-area {
+    flex-grow:1;
+    display:flex;
+    justify-content: flex-end;
+}
+
+#personal-area ul {
+    margin-right:20px;
+}
