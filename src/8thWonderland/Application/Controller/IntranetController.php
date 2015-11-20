@@ -13,51 +13,37 @@ class IntranetController extends ActionController {
         if (($member = $this->getUser()) === null) {
             $this->redirect('index/index');
         }
-        $session = $this->application->get('session');
-        $templating = $this->application->get('templating');
-        if (!empty($_POST['group_id'])) {
-            $session->set('desktop', $_POST['group_id']);
-        }
-        $memberManager = $this->application->get('member_manager');
-        // affichage du profil
-        $templating->addParameters([
+        $this->render('intranet', [
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
-            'admin' => $memberManager->isMemberInGroup($member, 1)
+            'admin' => $this->application->get('member_manager')->isMemberInGroup($member, 1),
+            'motions' => $this->application->get('motion_manager')->getActiveMotions($member),
+            'groups' => $member->getGroups()
         ]);
-        $desktop = $session->get('desktop');
-        if (isset($desktop)) {
-            $templating->addParameters([
-                'Contact_Group' => $memberManager->isContact($member, $desktop),
-                'haut_milieu' => 
-                    ($desktop === 1)
-                    ? VIEWS_PATH . 'admin/menu_admin.view'
-                    : VIEWS_PATH . 'groups/menu_groups.view'
-                ,
-                'milieu_droite' => 
-                    "<table>" .
-                    "<tr><td id='md_section1'><script type='text/javascript'>window.onload=Clic('Admin/displayStatsCountry', '', 'md_section1');</script></td></tr>" .
-                    "<tr><td id='md_section2'><script type='text/javascript'>window.onload=Clic('Group/displayMembers', '', 'md_section2');</script></td></tr>" .
-                    "</table>"
-                ,
-                'milieu_milieu' => '',
-                'milieu_gauche' => "<script type='text/javascript'>window.onload=Clic('Member/displayContactsGroups', '', 'milieu_gauche');</script>",
-                'user_id' => $member->getId(),
-                'group_id' => $desktop
-            ]);
-        } else {
-            $templating->addParameters([
-                'haut_milieu' => VIEWS_PATH . 'members/menu.view',
-                'milieu_droite' => '',
-                'milieu_milieu' => "<script type='text/javascript'>window.onload=Clic('Intranet/communicate', '', 'milieu_milieu');</script>",
-                'milieu_gauche' => "<script type='text/javascript'>window.onload=Clic('Motion/displayMotionsInProgress', '', 'milieu_gauche');</script>",
-                'list_motions' => $this->application->get('motion_manager')->displayActiveMotions($member),
-                'list_groups' => $member->getGroups(),
-                'milieu_droite' => "<script type='text/javascript'>window.onload=Clic('Group/displayGroupsMembers', '', 'milieu_droite');</script>"
-            ]);
+    }
+    
+    public function groupAction() {
+        if (($member = $this->getUser()) === null) {
+            $this->redirect('index/index');
         }
-        $this->render('connected', [
-            'default_view' => 'members/intranet.view',
+        $desktop = $session->get('desktop');
+        $templating->addParameters([
+            'Contact_Group' => $memberManager->isContact($member, $desktop),
+            'haut_milieu' => 
+                ($desktop === 1)
+                ? VIEWS_PATH . 'admin/menu_admin.view'
+                : VIEWS_PATH . 'groups/menu_groups.view'
+            ,
+            'milieu_droite' => 
+                "<table>" .
+                "<tr><td id='md_section1'><script type='text/javascript'>window.onload=Clic('Admin/displayStatsCountry', '', 'md_section1');</script></td></tr>" .
+                "<tr><td id='md_section2'><script type='text/javascript'>window.onload=Clic('Group/displayMembers', '', 'md_section2');</script></td></tr>" .
+                "</table>"
+            ,
+            'milieu_milieu' => '',
+            'milieu_gauche' => "<script type='text/javascript'>window.onload=Clic('Member/displayContactsGroups', '', 'milieu_gauche');</script>",
+            'user_id' => $member->getId(),
+            'group_id' => $desktop
         ]);
     }
     

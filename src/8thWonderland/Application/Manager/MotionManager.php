@@ -5,6 +5,9 @@ namespace Wonderland\Application\Manager;
 use Wonderland\Application\Model\Member;
 
 use Wonderland\Library\Database\PdoDriver;
+
+use Wonderland\Application\Repository\MotionRepository;
+
 use Wonderland\Library\Translator;
 
 class MotionManager {
@@ -12,14 +15,25 @@ class MotionManager {
     protected $connection;
     /** @var \Wonderland\Library\Translator **/
     protected $translator;
+    /** @var \Wonderland\Application\Repository\MotionRepository **/
+    protected $repository;
     
     /**
      * @param \Wonderland\Library\Database\PdoDriver $connection
      * @param \Wonderland\Library\Translator $translator
      */
-    public function __construct(PdoDriver $connection, Translator $translator) {
+    public function __construct(PdoDriver $connection, Translator $translator, MotionRepository $repository) {
         $this->connection = $connection;
         $this->translator = $translator;
+        $this->repository = $repository;
+    }
+    
+    /**
+     * @param Member $member
+     * @return array
+     */
+    public function getActiveMotions(Member $member) {
+        return $this->repository->getActiveMotions($member);
     }
     
     /**

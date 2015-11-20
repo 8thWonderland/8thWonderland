@@ -27,6 +27,16 @@ class Motion {
     protected $score;
     
     /**
+     * @param int $id
+     * @return \Wonderland\Application\Model\Motion
+     */
+    public function setId($id) {
+        $this->id = $id;
+        
+        return $this;
+    }
+    
+    /**
      * @return int
      */
     public function getId() {
