@@ -56,28 +56,27 @@ function authenticate() {
 
 function register() {
     var registration = {
-        login: $("#login-form input[name=login]").val(),
-        email: $("#login-form input[name=email]").val(),
-        password: $("#login-form input[name=password]").val(),
-        confirmation_password: $("#login-form input[name=confirmation_password]").val(),
-        country: $("#login-form select[name=country]").val(),
-        region: $("#login-form select[name=region]").val()
+        login: $("#registration-form input[name=login]").val(),
+        email: $("#registration-form input[name=email]").val(),
+        password: $("#registration-form input[name=password]").val(),
+        confirmation_password: $("#registration-form input[name=confirmation_password]").val(),
+        country_id: $("#registration-form select[name=country]").val(),
+        region_id: $("#registration-form select[name=region]").val()
     };
     
     $.ajax({
         type: "POST",
         url: "authenticate/subscribe", 
-        dataType: "json",
+        dataType: "text",
         contentType: "application/json",
         success : function(data) {
-            console.log(data);
+            $("#login-form input[name=login]").val(registration.login);
+            $("#login-form input[name=password]").val(registration.password);
+            deployForm('login', 'registration');
         },
         data: JSON.stringify(registration), 
-        error: function(data, texte, erreur)
-        {
-            console.log(data);
-            console.log(texte);
-            console.log(erreur);
+        error: function(data) {
+            displayFormErrors('registration', JSON.parse(data.responseText));
         }
     });
 }
@@ -92,4 +91,14 @@ function deployForm(deploy, remove) {
         $(this).prependTo("#account-forms").slideDown("normal");
         $("#" + remove + "-form form").slideUp("normal");
     });
+}
+
+function displayFormErrors(formName, data) {
+    var errorsList = "<ul>";
+    for (var i = 0; i < data.errors.length; i++) {
+        errorsList += "<li>" + data.errors[i] + "</li>";
+    }
+    errorsList += "</ul>";
+    
+    $("#" + formName + "-form .form-errors").slideUp("fast").html(errorsList).slideDown("normal");
 }

@@ -264,7 +264,8 @@ html, body, .perspective {
 }
 
 .effect-moveleft .outer-nav a {
-	color: #e86a32;
+        font-size:1.3em;
+	color: #900000;
 	opacity: 0;
 	-webkit-transform: translateX(100px) translateZ(-1000px);
 	transform: translateX(100px) translateZ(-1000px);
@@ -273,7 +274,7 @@ html, body, .perspective {
 }
 
 .effect-moveleft .outer-nav a:hover {
-	color: #333;
+	color: #B00000;
 }
 
 .effect-moveleft.animate .outer-nav a {

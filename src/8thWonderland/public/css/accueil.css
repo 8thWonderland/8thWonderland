@@ -122,6 +122,30 @@ body {
     display:none;
 }
 
+#account-forms .form-errors {
+    display:none;
+    margin-top:10px;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#a30000+0,cc0000+100 */
+    background: #a30000; /* Old browsers */
+    background: -moz-linear-gradient(top,  #a30000 0%, #cc0000 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #a30000 0%,#cc0000 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #a30000 0%,#cc0000 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a30000', endColorstr='#cc0000',GradientType=0 ); /* IE6-9 */
+    padding:10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.6);
+}
+
+#account-forms .form-errors ul {
+    list-style-type: none;
+    padding-left:0px;
+}
+
+#account-forms .form-errors li {
+    font-weight:bold;
+    font-size:1.2em;
+    color :#EFEFEF;
+}
+
 /* différents encadrements                */
 /* ====================================== */
 .encadre {
