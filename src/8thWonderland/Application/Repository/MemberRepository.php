@@ -70,6 +70,17 @@ class MemberRepository extends AbstractRepository {
         }
         return true;
     }
+     
+    /**
+     * @param string $login
+     * @param string $email
+     * @return array
+     */
+    public function getExistingLoginOrEmail($login, $email) {
+        return $this->connection->prepareStatement(
+            'SELECT login, identity, email FROM users WHERE login = :login OR identity = :login OR email = :email'
+        , ['login' => $login, 'email' => $email])->fetch(\PDO::FETCH_ASSOC);
+    }
     
     public function findOneBy($criterias) {
         $whereClause = 

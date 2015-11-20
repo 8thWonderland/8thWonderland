@@ -21,7 +21,7 @@ class RegionRepository extends AbstractRepository {
      */
     public function find($id) {
         $data = $this->connection->prepareStatement(
-            'SELECT id, code, label FROM countries WHERE id = :id'
+            'SELECT id, name, longitude, latitude, created_at FROM regions WHERE id = :id'
         , ['id' => $id])->fetch(\PDO::FETCH_ASSOC);
         
         if($data !== false) {

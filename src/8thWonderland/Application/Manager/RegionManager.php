@@ -22,4 +22,12 @@ class RegionManager {
     public function getRegionsByCountry($countryId) {
         return $this->repository->findRegionsByCountry($countryId);
     }
+    
+    /**
+     * @param int $id
+     * @return \Wonderland\Application\Model\Region
+     */
+    public function get($id) {
+        return $this->repository->find($id);
+    }
 }

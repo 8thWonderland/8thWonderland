@@ -53,7 +53,10 @@
         "class" : "Wonderland\\Application\\Manager\\MemberManager",
         "arguments" : [
             "@member_repository",
-            "@database_connection"
+            "@database_connection",
+            "@country_manager",
+            "@region_manager",
+            "@translator"
         ]
     },
     "member_repository" : {
