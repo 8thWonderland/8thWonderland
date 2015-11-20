@@ -34,7 +34,7 @@
                             <form method="post" onsubmit="authenticate();return false;" class="active-form">
                                 <input type="text" placeholder="<?php $this->translate('login'); ?>" name="login"/>
                                 <input type="password" placeholder="<?php $this->translate('password'); ?>" name="password"/>
-                                <button type="submit"><?php $this->translate('welcome'); ?></button>
+                                <button type="submit"><?php $this->translate('connection'); ?></button>
                                 <div class="form-errors">
 
                                 </div>
@@ -46,6 +46,7 @@
                             </h3>
                             <form method="post" onsubmit="register();return false;">
                                 <input type="text" placeholder="<?php $this->translate('login'); ?>" name="login"/>
+                                <input type="text" placeholder="<?php $this->translate('contact_mail'); ?>" name="email"/>
                                 <input type="password" placeholder="<?php $this->translate('password'); ?>" name="password"/>
                                 <input type="password" placeholder="<?php $this->translate('confirmation_password'); ?>" name="confirmation_password"/>
                                 <select id="country" name="country" required>
@@ -69,8 +70,10 @@
                 </div>
             </div>
             <nav class="outer-nav right vertical">
-                <a href="#">Home</a>
-                <a href="#">News</a>
+                <a href="intranet/openChatroom">
+                    <i class="fa fa-comments-o"></i>
+                    <?php $this->translate('chatrooms.link'); ?>
+                </a>
             </nav>
         </div>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
