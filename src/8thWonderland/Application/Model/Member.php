@@ -16,14 +16,12 @@ class Member {
     /** @var string **/
     protected $salt;
     /** @var string **/
-    protected $gender;
-    /** @var string **/
     protected $email;
     /** @var string **/
     protected $avatar;
-    /** @var string **/
+    /** @var Country **/
     protected $country;
-    /** @var string **/
+    /** @var Region **/
     protected $region;
     /** @var \DateTime **/
     protected $createdAt;
@@ -33,8 +31,6 @@ class Member {
     protected $isEnabled;
     /** @var boolean **/
     protected $isBanned;
-    /** @var string **/
-    protected $theme;
     /** @var array **/
     protected $groups;
     
@@ -145,23 +141,6 @@ class Member {
     }
     
     /**
-     * @param string $gender
-     * @return \Wonderland\Application\Model\Member
-     */
-    public function setGender($gender) {
-        $this->gender = $gender;
-        
-        return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getGender() {
-        return $this->gender;
-    }
-    
-    /**
      * @param string $email
      * @return \Wonderland\Application\Model\Member
      */
@@ -196,34 +175,34 @@ class Member {
     }
     
     /**
-     * @param string $country
+     * @param \Wonderland\Application\Model\Country $country
      * @return \Wonderland\Application\Model\Member
      */
-    public function setCountry($country) {
+    public function setCountry(Country $country) {
         $this->country = $country;
         
         return $this;
     }
     
     /**
-     * @return string
+     * @return \Wonderland\Application\Model\Country
      */
     public function getCountry() {
         return $this->country;
     }
     
     /**
-     * @param string $region
+     * @param \Wonderland\Application\Model\Region $region
      * @return \Wonderland\Application\Model\Member
      */
-    public function setRegion($region) {
+    public function setRegion(Region $region) {
         $this->region = $region;
         
         return $this;
     }
     
     /**
-     * @return string
+     * @return \Wonderland\Application\Model\Region
      */
     public function getRegion() {
         return $this->region;
@@ -295,23 +274,6 @@ class Member {
      */
     public function getIsBanned() {
         return $this->isBanned;
-    }
-    
-    /**
-     * @param string $theme
-     * @return \Wonderland\Application\Model\Member
-     */
-    public function setTheme($theme) {
-        $this->theme = $theme;
-        
-        return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getTheme() {
-        return $this->theme;
     }
     
     /**

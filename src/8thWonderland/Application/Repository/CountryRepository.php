@@ -15,6 +15,21 @@ class CountryRepository extends AbstractRepository {
     }
     
     /**
+     * @param type $id
+     * @return \Wonderland\Application\Model\Country | null
+     */
+    public function find($id) {
+        $data = $this->connection->prepareStatement(
+            'SELECT id, code, label FROM countries WHERE id = :id'
+        , ['id' => $id])->fetch(\PDO::FETCH_ASSOC);
+        
+        if($data !== false) {
+            return $this->formatObject($data);
+        }
+        return null;
+    }
+    
+    /**
      * @param array $data
      * @return array
      */
