@@ -5,9 +5,8 @@ namespace Wonderland\Application\Controller;
 use Wonderland\Library\Controller\ActionController;
 
 use Wonderland\Application\Model\Mailer;
-use Wonderland\Application\Model\Member;
 
-use Wonderland\Library\Admin\Log;
+use Wonderland\Library\Exception\BadRequestException;
 
 class AuthenticateController extends ActionController {
     public function connectAction() {
@@ -31,10 +30,11 @@ class AuthenticateController extends ActionController {
             $translate->setUserLang($member->getLanguage());
             $this->redirect('intranet/index');
         } else {
-            $this->display(json_encode([
-                'status' => 0,
-                'reponse' => '<span style="color: red;">' . $translate->translate('connexion_nok') . '</span>'
-            ]));
+            header("{$_SERVER['SERVER_PROTOCOL']} 400 Bad Request");
+            echo json_encode([
+                'errors' => [$translate->translate('connection_failed')]
+            ]);
+            exit;
         }
     }
 
@@ -44,76 +44,34 @@ class AuthenticateController extends ActionController {
     }
     
     public function subscribeAction() {
-        $translate = $this->application->get('translator');
-        $db = $this->application->get('database_connection');
-        $memberManager = $this->application->get('member_manager');
-        $err_msg = '';
+        $request = $this->getJsonRequest();
         
         if (
-            empty($_POST['login']) || empty($_POST['password']) || 
-            empty($_POST['identity']) || empty($_POST['gender']) ||
-            empty($_POST['mail']) || empty($_POST['lang'])
+            empty($request['login']) || empty($request['password']) || 
+            empty($request['confirmation_password']) || empty($request['email']) ||
+            empty($request['country_id']) || empty($request['region_id'])
         ) {
-            $err_msg = $translate->translate('fields_empty');
-        } else {
-            // Controle de l'identite
-            if ($memberManager->validateIdentity($_POST['identity'])) {
-                $statement = $db->prepareStatement(
-                    'SELECT COUNT(*) AS count FROM users WHERE identity = :identity'
-                , ['identity' => $_POST['identity']]);
-                if ($statement->fetch(\PDO::FETCH_ASSOC)['count'] > 0) {
-                    $err_msg .= $translate->translate('identity_exist') . "<br/>";
-                }
-            } else {
-                $err_msg = $translate->translate('identity_invalid') . "<br/>";
-            }
-            
-            // Controle de l'existence du mail
-            if (!$memberManager->validateEmailAddress($_POST['mail'])) {
-                $err_msg .= $translate->translate('mail_invalid') . "<br/>";
-            }
+            throw new BadRequestException($this->application->get('translator')->translate('fields_empty'));
         }
+        header('Content-Type: application/json; charset=UTF-8');
         
-        if (!empty($err_msg)) {
-            $this->display(
-                '<div class="error" style="padding:3px"><table><tr>' .
-                '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
-                '<td><span style="font-size: 13px;">' . $err_msg . '</span></td>' .
-                '</tr></table></div>'
-            );
-        } else {
-            $result = $memberManager->create(
-                (new Member())
-                ->setLogin($_POST['login'])
-                ->setPassword(hash('sha512', $_POST['password']))
-                ->setSalt('salt')
-                ->setIdentity($_POST['identity'])
-                ->setGender(--$_POST['gender'])
-                ->setEmail($_POST['mail'])
-                ->setAvatar('default')
-                ->setCountry('unknown')
-                ->setLanguage($_POST['lang'])
-                ->setRegion(-2)
-                ->setCreatedAt(new \DateTime())
-                ->setLastConnectedAt(new \DateTime())
-                ->setIsEnabled(true)
-                ->setIsBanned(0)
-                ->setTheme('Rouge_Noir')
-            );
-            if($result !== true) {
-                // PDOStatement error info
-                $err_msg .= $result[2];
-            }
-            if (empty($err_msg)) {
-                $err_msg = $translate->translate('subscribe_ok');
-            }
-            $this->display(
-                '<div class="info" style="height:28px;"><table><tr>' .
-                '<td><img alt="info" src="' . ICO_PATH . '32x32/valid.png" style="width:24px;"/></td>' .
-                '<td><span style="font-size: 13px;">' . $err_msg . '</span></td>' .
-                '</tr></table></div>'
-            );
+        $result = $this->application->get('member_manager')->create(
+            $request['login'],
+            $request['password'],
+            $request['confirmation_password'],
+            $request['email'],
+            $request['country_id'],
+            $request['region_id']
+        );
+        // In case of errors, the manager returns an array containing it
+        if($result !== true) {
+            header("{$_SERVER['SERVER_PROTOCOL']} 400 Bad Request");
+            echo json_encode([
+                'errors' => $result
+            ]);
+            exit;
         }
+        header("{$_SERVER['SERVER_PROTOCOL']} 201 Created");
     }
     
     public function displayForgetPasswordAction() {
