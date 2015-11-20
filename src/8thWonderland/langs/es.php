@@ -15,7 +15,7 @@ $array = array(
     "login"                 => "Usuario",
     "password"              => "Contraseña",
     "confirmation_password" => "Contraseña",
-    "connexion"             => "Entrar",
+    "connection"             => "Entrar",
     "process_forgetpwd"     => "Etapa 1 : Coja su login y haga clic sobre 'Enviar'. Un código será enviado al correo electrónico correspondiente.<br/>" .
                                "Etapa 2 : Consulte vuestro e-mail y coja el código indicado en el e-mail.<br/>" .
                                "Etapa 3 : Usted recibirá un segundo e-mail que contendrá su nueva contraseña",
@@ -29,6 +29,16 @@ $array = array(
     "code_forgetpwd"        => "Código",
     "btn_codeforgetpwd"     => "Validar",
     "logout"                => "Salir",
+    
+    'chatrooms.link'        => 'Chatrooms',
+    
+    'registration.password_mismatch' => 'La confirmation du mot de passe est incorrecte',
+    'registration.invalid_login' => 'L\'identifiant indiqué est invalide',
+    'registration.existing_login' => 'L\'identifiant indiqué n\'est pas disponible',
+    'registration.invalid_mail' => 'L\'adresse électronique indiquée est invalide',
+    'registration.existing_mail' => 'L\'adresse électronique indiquée est déjà utilisée',
+    'registration.invalid_country' => 'Le pays indiqué n\'existe pas',
+    'registration.invalid_region' => 'La région indiquée n\'existe pas',
     
     'welcome'               => 'Bienvenida',
     'login_form_title'      => 'Conectarse',
