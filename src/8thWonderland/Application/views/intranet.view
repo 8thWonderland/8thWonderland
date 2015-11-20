@@ -1,23 +1,52 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<!DOCTYPE html>
+<html>
     <head>
         <title>8th Wonderland</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta http-equiv="Cache-Control" content="no-cache"/>
-        <meta http-equiv="Pragma" content="no-cache"/>
-        <meta http-equiv="Expires" content="0"/>
-        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>accueil.css" type="text/css" media="screen" />
-        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>jquery-ui-1.8.17.custom.css" type="text/css" media="screen" />
-        <link rel="stylesheet" type="text/css" href="<?php echo CSS_PATH; ?>jquery.cleditor.css" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>intranet.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="<?php echo IMG_PATH; ?>icone.png" />
-
-        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-1.7.1.min.js"></script>
-        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-ui-1.8.17.custom.min.js"></script>
-        <script type="text/javascript" src="<?php echo JS_PATH; ?>ajax.js"></script>
-        <script type="text/javascript" src="<?php echo JS_PATH; ?>roundies.js"></script>            <!-- Arrondis pour IE -->
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>bootstrap.min.css" type="text/css" media="screen" />
     </head>
 
     <body>
-        <?php include $this->parameters['default_view']; ?>
+        <div>
+            <div id="header">
+                <div id="menu">
+                    <div id="personal-area">
+                        <ul>
+                            <li>
+                                <i class="fa fa-envelope-o"></i>
+                            </li>
+                            <li>
+                                <i class="fa fa-bell-o"></i>
+                            </li>
+                            <li>
+                                <div id="profile" class="dropdown">
+                                    <div id="avatar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <?php
+                                            echo
+                                                ($this->parameters['avatar'] === null)
+                                                ? '<i class="fa fa-user"></i>'
+                                                : "<img src='{$this->parameters['avatar']}' alt='avatar'/>"
+                                            ;
+                                        ?>
+                                        <i class="fa fa-caret-down"></i>
+                                    </div>
+                                    <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                        <li>
+                                            Test
+                                        </li>
+                                    </ul>
+                                </div>
+                                    
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>
     </body>
 </html>
