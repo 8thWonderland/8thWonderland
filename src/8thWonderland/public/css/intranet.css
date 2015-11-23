@@ -5,30 +5,70 @@ html, body {
     overflow:hidden;
 }
 
-#menu {
+#header {
     display:flex;
     background : #242424;
-    padding-top:15px;
-    padding-bottom:15px;
+    padding-top:10px;
+    padding-bottom:10px;
+    color: #EFEFEF;
 }
 
-#menu ul{
+#header ul{
     color: #EFEFEF;
     margin:0px;
     padding-left:0px;
 }
 
-#menu li {
-    font-weight:1.5em;
-    display:inline-block;
+#header h1 {
+    margin:0px;
+    margin-left:20px;
+}
+
+#header h1 span {
+    color: #ff0000;
 }
 
 #personal-area {
     flex-grow:1;
     display:flex;
     justify-content: flex-end;
+    padding-right:40px;
 }
 
-#personal-area ul {
-    margin-right:20px;
+.menu-component {
+    display:flex;
+    align-items:center;
+}
+
+#messages,
+#notifications {
+    padding-left:10px;
+    padding-right:10px;
+}
+
+#messages .badge,
+#notifications .badge {
+    margin-left:10px;
+}
+
+#profile {
+    padding-left:10px;
+}
+
+#avatar {
+    color: #ff0000;
+    flex-grow:1;
+    text-align:center;
+}
+
+#profile-menu {
+    cursor:pointer;
+    flex-grow:3;
+    text-align:right;
+}
+
+#profile-menu span {
+    font-size:1.2em;
+    padding-left:50px;
+    padding-right:10px;
 }
