@@ -50,6 +50,54 @@
                     </div>
                 </div>
             </div>
+            <div id="content">
+                <section id="motions" class="module">
+                    <header>
+                        <h3>
+                            <i class="fa fa-university fa-1x"></i>
+                            <?php
+                                $this->translate('motions_inprogress');
+                            ?>
+                        </h3>
+                    </header>
+                    <section>
+                        <ul>
+                            <li>
+                                <a href="#">
+                                    Question de la motion ?
+                                    <button class="btn btn-warning">Voter</button>
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
+                    <footer>
+                        <button class="btn btn-success"><?php $this->translate('create_motion'); ?></button>
+                        <button class="btn btn-danger"><?php $this->translate('display_archives'); ?></button>
+                    </footer>
+                </section>
+                <section id="groups" class="module">
+                    <header>
+                        <h3>
+                            <i class="fa fa-users fa-1x"></i>
+                            <?php
+                                $this->translate('my_groups');
+                            ?>
+                        </h3>
+                    </header>
+                    <section>
+                        <ul>
+                            <?php
+                                foreach($this->parameters['groups'] as $group) {
+                                    echo "<li><a href='#'>{$group->getName()}</a></li>";
+                                }
+                            ?>
+                        </ul>
+                    </section>
+                    <footer>
+                        <button class="btn btn-info"><?php $this->translate('discover_groups'); ?></button>
+                    </footer>
+                </section>
+            </div>
         </div>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>

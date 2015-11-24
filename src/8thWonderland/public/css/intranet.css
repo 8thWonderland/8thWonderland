@@ -72,3 +72,44 @@ html, body {
     padding-left:50px;
     padding-right:10px;
 }
+
+.module {
+    margin-top:10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.8);
+}
+
+.module header {
+    padding: 10px;
+    background: #000;
+    color: #EFEFEF;
+}
+
+.module header h3 {
+    margin:0px;
+}
+
+.module header i {
+    color: #FF0000;
+}
+
+.module section {
+    padding: 10px;
+}
+
+.module section ul {
+    list-style-type:none;
+    padding-left:0px;
+    margin:0px;
+}
+
+.module footer {
+    border-top:1px solid #000;
+    padding:5px;
+}
+
+#content {
+    margin-left:10px;
+    margin-right:10px;
+    display:flex;
+    justify-content: space-between;
+}

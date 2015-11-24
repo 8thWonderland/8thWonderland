@@ -76,7 +76,7 @@ $array = array(
     "motions_inprogress"    => "Motions en cours",
     "motions_archives"      => "Motions archivées",
     "stats_country"         => "Statistiques du pays",
-    "title_groupsmembers"   => "Mes groupes",
+    'my_groups'             => 'Mes groupes',
     "title_groups"          => "Groupes régionaux et Groupes thématiques",
         
 
