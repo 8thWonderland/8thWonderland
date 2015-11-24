@@ -11,45 +11,9 @@
 
     <body>
         <div>
-            <div id="header">
-                <div id="logo">
-                    <h1>
-                        <span>8</span>th <span>W</span>onderland
-                    </h1>
-                </div>
-                <div id="personal-area">
-                    <div id="messages" class="menu-component">
-                        <i class="fa fa-envelope-o fa-2x"></i>
-                        <span class="badge">0</badge>
-                    </div>
-                    <div id="notifications" class="menu-component">
-                        <i class="fa fa-bell-o fa-2x"></i>
-                        <span class="badge">0</badge>
-                    </div>
-                    <div id="profile" class="dropdown menu-component">
-                        <div id="avatar">
-                            <?php
-                                echo
-                                    ($this->parameters['avatar'] === null)
-                                    ? '<i class="fa fa-user fa-3x"></i>'
-                                    : "<img src='{$this->parameters['avatar']}' alt='avatar'/>"
-                                ;
-                            ?>
-                        </div>
-                        <div id="profile-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span><?php echo $this->parameters['identity']; ?></span>
-                            <i class="fa fa-caret-down"></i>
-                        </div>
-                        <ul class="dropdown-menu" aria-labelledby="dLabel">
-                            <li>
-                                <a href="authenticate/logout">
-                                    <?php $this->translate('logout'); ?>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            <?php
+                $this->render('intranet/header');
+            ?>
             <div id="content">
                 <section id="motions" class="module">
                     <header>
