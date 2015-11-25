@@ -7,6 +7,18 @@ use Wonderland\Library\Controller\ActionController;
 use Wonderland\Library\Exception\ForbiddenException;
 
 class GroupController extends ActionController {
+    public function listAction() {
+        if(($member = $this->getUser()) === null) {
+            $this->redirect('index/index');
+        }
+        
+        $this->render('groups/list', [
+            'identity' => $member->getIdentity(),
+            'avatar' => $member->getAvatar(),
+            'groups' => $this->application->get('group_manager')->getGroups()
+        ]);
+    }
+    
     public function displayGroupsAction() {
         $this->render('groups/list_allgroups', [
             'list_Allgroups' => $this->renderGroups(),
