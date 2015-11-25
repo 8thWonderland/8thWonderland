@@ -58,7 +58,7 @@
                         </ul>
                     </section>
                     <footer>
-                        <button class="btn btn-info"><?php $this->translate('discover_groups'); ?></button>
+                        <a href="group/list" class="btn btn-info"><?php $this->translate('discover_groups'); ?></a>
                     </footer>
                 </section>
             </div>
