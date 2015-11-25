@@ -78,7 +78,7 @@ $array = array(
     "motions_archives"      => "Classified motions",
     "stats_country"         => "Statistics of the country",
     'my_groups'             => 'My groups',
-    "title_groups"          => "Regional groups and thematic groups",
+    'groups'                => 'Groups',
             
 
     // Partie 'TACHES'
