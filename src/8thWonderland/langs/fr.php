@@ -13,7 +13,8 @@ $array = array(
     // Connexion / Perte de mot de passe
     "login"                 => "Identifiant",
     "password"              => "Mot de passe",
-    "connexion"             => "Entrer",
+    "confirmation_password" => "Confirmation du mot de passe",
+    "connection"             => "Entrer",
     "process_forgetpwd"     => "Etape 1 : Saisissez votre login puis cliquez sur le bouton 'Envoyer'. Un code sera envoyé à l'adresse électronique correspondante.<br/>" .
                                "Etape 2 : Consultez votre boite aux lettres et saisissez le code indiqué dans le mail.<br/>" .
                                "Etape 3 : Vous recevrez un second mail comportant votre nouveau mot de passe.",
@@ -28,6 +29,19 @@ $array = array(
     "btn_codeforgetpwd"     => "Valider",
     "logout"                => "Se déconnecter",
     
+    'registration.password_mismatch' => 'La confirmation du mot de passe est incorrecte',
+    'registration.invalid_login' => 'L\'identifiant indiqué est invalide',
+    'registration.existing_login' => 'L\'identifiant indiqué n\'est pas disponible',
+    'registration.invalid_mail' => 'L\'adresse électronique indiquée est invalide',
+    'registration.existing_mail' => 'L\'adresse électronique indiquée est déjà utilisée',
+    'registration.invalid_country' => 'Le pays indiqué n\'existe pas',
+    'registration.invalid_region' => 'La région indiquée n\'existe pas',
+    
+    'chatrooms.link'        => 'Chat',
+    
+    'welcome'               => 'Bienvenue',
+    'login_form_title'      => 'Se Connecter',
+    'registration_form_title' => 'Rejoignez-nous',
     
     // Menu citoyen
     "inform"                => "S'informer",
@@ -62,7 +76,7 @@ $array = array(
     "motions_inprogress"    => "Motions en cours",
     "motions_archives"      => "Motions archivées",
     "stats_country"         => "Statistiques du pays",
-    "title_groupsmembers"   => "Mes groupes",
+    'my_groups'             => 'Mes groupes',
     "title_groups"          => "Groupes régionaux et Groupes thématiques",
         
 
@@ -187,7 +201,7 @@ $array = array(
     "modif_ok"              => "Vos modifications ont été faites.",
     "translate_notfound"    => "Le module de langue est introuvable !",
     "no_action"             => "L'action demandée est introuvable !",
-    "connexion_nok"         => "Connexion échouée !",
+    "connection_failed"     => "Connexion échouée !",
     "no_result"             => "Aucun résultat trouvé.",
     "no-subscription"       => "L'inscription est actuellement fermée.",
     "avatar_invalid"        => "L'avatar est invalide !",
@@ -201,7 +215,7 @@ $array = array(
     
     // textes et descriptions
     "open_register"         => "Les inscriptions sont à nouveau ouvertes !! Cliquez sur 'Rejoindre la Communauté' et remplissez le formulaire.",
-    "open_chat"             => "Venez discuter avec nous. <a style='font-weight:bold; font-size: 15px; color:#e14f1c;' href='/Intranet/openChatroom' target='_blank'>Cliquez ici</a> pour ouvrir le chat ...",
+    "open_chat"             => "Venez discuter avec nous, <a style='font-weight:bold; font-size: 15px; color:#e14f1c;' href='/Intranet/openChatroom' target='_blank'>ici</a>.",
     "txt_profileaccess"     => "Attention ! Ces informations servent lors de la connexion sur ce site.",
     "page_previous"         => "Précédente",
     "page_next"             => "Suivante",
@@ -257,7 +271,7 @@ $array = array(
                                "Elle est modifiable uniquement par le vote de l'ensemble des citoyens.<br/><br/></td></tr></tbody>" .
                                "<tfoot><tr><td style='text-align:center;'><span style='color:red;'>B</span>ienvenue !</td></tr></tfoot></table>",
     
-    "select_country"        => "Conformément à la motion du 16/01/2012, vous devez dorénavant indiquer votre pays et votre région d'habitation afin d'être intégré " .
-                               "au groupe régional correspondant.",
-)
-?>
+    'regions.missing_country_argument'  => 'Le pays doit être indiqué',
+    
+    'countries.france'      => 'France' 
+);

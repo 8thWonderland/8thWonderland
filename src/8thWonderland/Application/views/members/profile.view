@@ -1,5 +1,5 @@
 <!-- Module profil -->
-<div id="my_profile" class="encadre-top" style="width: 250px;">
+<div id="my_profile" class="encadre-member" style="width: 250px;">
     <table>
         <tr>
             <td style="padding-left:15px; padding-bottom:15px;">

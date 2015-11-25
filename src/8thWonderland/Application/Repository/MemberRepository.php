@@ -13,27 +13,24 @@ class MemberRepository extends AbstractRepository {
      */
     public function create(Member $member) {
         $statement = $this->connection->prepareStatement(
-            'INSERT INTO users(login, password, salt, identity, gender, ' .
-            'email, avatar, language, country, region, last_connected_at, created_at, is_enabled, is_banned, theme) ' .
-            'VALUES(:login, :password, :salt, :identity, :gender, :email, :avatar, ' .
-            ':language, :country, :region, :last_connected_at, :created_at, ' .
-            ':is_enabled, :is_banned, :theme)'
+            'INSERT INTO users(login, password, salt, identity, ' .
+            'email, language, country_id, region_id, last_connected_at, created_at, is_enabled, is_banned) ' .
+            'VALUES(:login, :password, :salt, :identity, :email, ' .
+            ':language, :country_id, :region_id, :last_connected_at, :created_at, ' .
+            ':is_enabled, :is_banned)'
         , [
             'login' => $member->getLogin(),
             'password' => $member->getPassword(),
             'salt' => $member->getSalt(),
             'identity' => $member->getIdentity(),
-            'gender' => $member->getGender(),
             'email' => $member->getEmail(),
-            'avatar' => $member->getAvatar(),
             'language' => $member->getLanguage(),
-            'country' => $member->getCountry(),
-            'region' => $member->getRegion(),
+            'country_id' => $member->getCountry()->getId(),
+            'region_id' => $member->getRegion()->getId(),
             'last_connected_at' => $member->getLastConnectedAt()->format('c'),
             'created_at' => $member->getCreatedAt()->format('c'),
             'is_enabled' => (int) $member->getIsEnabled(),
-            'is_banned' => (int) $member->getIsBanned(),
-            'theme' => $member->getTheme()
+            'is_banned' => (int) $member->getIsBanned()
         ]);
         if($statement->rowCount() === 0) {
             return $statement->errorInfo();
@@ -48,32 +45,41 @@ class MemberRepository extends AbstractRepository {
     public function update(Member $member) {
         $statement = $this->connection->prepareStatement(
             'UPDATE users SET login = :login, password = :password, salt = :salt, ' .
-            'identity = :identity, gender = :gender, email = :email, avatar = :avatar, ' .
-            'language = :language, country = :country, region = :region, ' .
+            'identity = :identity, email = :email, avatar = :avatar, ' .
+            'language = :language, country_id = :country_id, region_id = :region_id, ' .
             'last_connected_at = :last_connected_at, created_at = :created_at, ' .
-            'is_enabled = :is_enabled, is_banned = :is_banned, theme = :theme WHERE id = :id'
+            'is_enabled = :is_enabled, is_banned = :is_banned WHERE id = :id'
         , [
             'login' => $member->getLogin(),
             'password' => $member->getPassword(),
             'salt' => $member->getSalt(),
             'identity' => $member->getIdentity(),
-            'gender' => $member->getGender(),
             'email' => $member->getEmail(),
             'avatar' => $member->getAvatar(),
             'language' => $member->getLanguage(),
-            'country' => $member->getCountry(),
-            'region' => $member->getRegion(),
+            'country_id' => $member->getCountry()->getId(),
+            'region_id' => $member->getRegion()->getId(),
             'last_connected_at' => $member->getLastConnectedAt()->format('c'),
             'created_at' => $member->getCreatedAt()->format('c'),
             'is_enabled' => (int) $member->getIsEnabled(),
             'is_banned' => (int) $member->getIsBanned(),
-            'theme' => $member->getTheme(),
             'id' => $member->getId()
         ]);
         if($statement->rowCount() === 0) {
             return $statement->errorInfo();
         }
         return true;
+    }
+     
+    /**
+     * @param string $login
+     * @param string $email
+     * @return array
+     */
+    public function getExistingLoginOrEmail($login, $email) {
+        return $this->connection->prepareStatement(
+            'SELECT login, identity, email FROM users WHERE login = :login OR identity = :login OR email = :email'
+        , ['login' => $login, 'email' => $email])->fetch(\PDO::FETCH_ASSOC);
     }
     
     public function findOneBy($criterias) {
@@ -89,13 +95,16 @@ class MemberRepository extends AbstractRepository {
         }
         
         return $this->formatMemberData($this->connection->prepareStatement(
-            'SELECT u.id, u.login, u.password, u.salt, u.identity, u.gender,' .
-            'u.email, u.avatar, u.language, u.country, u.region, u.last_connected_at, ' .
-            'u.created_at, u.is_enabled, u.is_banned, u.theme, ' .
+            'SELECT u.id, u.login, u.password, u.salt, u.identity,' .
+            'u.email, u.avatar, u.language, u.last_connected_at, ' .
+            'u.created_at, u.is_enabled, u.is_banned, ' .
+            'c.id as country_id, c.code, c.label, ' .
             'g.id AS group_id, g.name, g.description, g.created_at AS group_created_at, ' .
             'g.updated_at AS group_updated_at, gt.id AS group_type_id, gt.label, ' .
             'u2.id AS contact_id, u2.identity AS contact_identity ' .
             'FROM users u ' .
+            'LEFT JOIN countries c ON c.id = u.country_id ' .
+            'LEFT JOIN regions r ON r.id = u.region_id ' .
             'LEFT JOIN citizen_groups cg ON citizen_id = u.id ' .
             'LEFT JOIN groups g ON g.id = cg.group_id OR g.contact_id = u.id ' .
             'LEFT JOIN group_types gt ON gt.id = g.type_id ' .
@@ -124,15 +133,13 @@ class MemberRepository extends AbstractRepository {
             ->setPassword($data['password'])
             ->setEmail($data['email'])
             ->setAvatar($data['avatar'])
-            ->setGender($data['gender'])
             ->setLanguage($data['language'])
-            ->setCountry((int) $data['country'])
-            ->setRegion((int) $data['region'])
+            ->setCountry((int) $data['country_id'])
+            ->setRegion((int) $data['region_id'])
             ->setCreatedAt(new \DateTime($data['created_at']))
             ->setLastConnectedAt(new \DateTime($data['last_connected_at']))
             ->setIsEnabled((bool) $data['is_enabled'])
             ->setIsBanned((bool) $data['is_banned'])
-            ->setTheme($data['theme'])
         ;
         if(isset($data['group_id'])) {
             $member->addGroup(

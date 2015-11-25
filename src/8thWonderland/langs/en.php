@@ -14,7 +14,8 @@ $array = array(
     // Connexion / Perte de mot de passe
     "login"                 => "Login",
     "password"              => "Password",
-    "connexion"             => "Enter",
+    "confirmation_password" => "Confirm Password",
+    "connection"             => "Enter",
     "process_forgetpwd"     => "Step 1 : Type your login and click 'Send'. A code will be sent to the mail adress.<br/>" .
                                "Step 2 : Read yours mails and type the code indicated in the e-mail.<br/>" .
                                "Step 3 : You will receive a second mail containing your new password.",
@@ -29,6 +30,19 @@ $array = array(
     "btn_codeforgetpwd"     => "Valid",
     "logout"                => "Se déconnecter",
     
+    'chatrooms.link'        => 'Chat',
+    
+    'registration.password_mismatch' => 'La confirmation du mot de passe est incorrecte',
+    'registration.invalid_login' => 'L\'identifiant indiqué est invalide',
+    'registration.existing_login' => 'L\'identifiant indiqué n\'est pas disponible',
+    'registration.invalid_mail' => 'L\'adresse électronique indiquée est invalide',
+    'registration.existing_mail' => 'L\'adresse électronique indiquée est déjà utilisée',
+    'registration.invalid_country' => 'Le pays indiqué n\'existe pas',
+    'registration.invalid_region' => 'La région indiquée n\'existe pas',
+    
+    'welcome'               => 'Welcome',
+    'login_form_title'      => 'Log in',
+    'registration_form_title' => 'Join us',
     
     // Menu citoyen
     "inform"                => "Inform me",
@@ -63,7 +77,7 @@ $array = array(
     "motions_inprogress"    => "Motions en cours",
     "motions_archives"      => "Classified motions",
     "stats_country"         => "Statistics of the country",
-    "title_groupsmembers"   => "My groups",
+    'my_groups'             => 'My groups',
     "title_groups"          => "Regional groups and thematic groups",
             
 
@@ -186,7 +200,7 @@ $array = array(
     "modif_ok"              => "Vos modifications ont été faites.",
     "translate_notfound"    => "The module of translate is not found !",
     "no_action"             => "The action is not found !",
-    "connexion_nok"         => "Connection failed !",
+    "connection_failed"     => "Connection failed !",
     "no_result"             => "No résult found.",
     "no-subscription"       => "The subscription is closed actually.",
     "avatar_invalid"        => "The avatar is invalid !",
@@ -255,7 +269,7 @@ $array = array(
                                "Constitution is 8th Wonderland's code, filled with all rules and principles. It can be modified only trough citizen's vote.<br/><br/></td></tr></tbody>" .
                                "<tfoot><tr><td style='text-align:center;'><span style='color:red;'>W</span>elcome !</td></tr></tfoot></table>",
     
-    "select_country"        => "According to the motion of 2012-01-16, you need to indicate your country and your region to be joined " .
-                               "into the regional group.",
-)
-?>
+    'regions.missing_country_argument'  => 'The country ID must be set',
+    
+    'countries.france'      => 'France' 
+);

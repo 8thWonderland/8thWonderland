@@ -8,11 +8,12 @@ class IndexController extends ActionController {
     public function indexAction() {
         // controle si l'utilisateur est déjà connecté
         if ($this->getUser() !== null) {
-            $this->redirect('Intranet/index');
+            $this->redirect('intranet/index');
         }
         $this->render('accueil', [
             'appli_status' => 1,
-            'msg' => ''
+            'msg' => '',
+            'countries' => $this->application->get('country_manager')->getCountries()
         ]);
     }
 

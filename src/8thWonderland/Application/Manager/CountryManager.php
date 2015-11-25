@@ -21,4 +21,12 @@ class CountryManager {
     public function getCountries() {
         return $this->repository->getCountries();
     }
+    
+    /**
+     * @param int $id
+     * @return \Wonderland\Application\Model\Country
+     */
+    public function get($id) {
+        return $this->repository->find($id);
+    }
 }

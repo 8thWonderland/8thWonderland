@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<!DOCTYPE html>
+<html>
     <head>
         <title>8th Wonderland</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -7,54 +7,79 @@
         <meta http-equiv="Pragma" content="no-cache"/>
         <meta http-equiv="Expires" content="0"/>
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>accueil.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>home_menu.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
         <link rel="shortcut icon" type="image/png" href="<?php echo IMG_PATH; ?>icone.png" />
-        
-        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-1.7.1.min.js"></script>
-        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-ui-1.8.17.custom.min.js"></script>
-        <script type="text/javascript" src="<?php echo JS_PATH; ?>ajax.js"></script>
-        
     </head>
-    
     <body>
-        <table style="height:100%">
-            <tr style="height:150px">
-                <td><img height="150" alt="Logo 8th" src="<?php echo IMG_PATH;?>Mainscreen2-G.gif" title="8th Wonderland"/></td>
-                <td id="haut_milieu" valign="top" align="center">
-                        <?php include "members/connexion.view"; ?>
-                </td>
-            </tr>
-            <tr>
-                <td id="milieu_gauche" style="width:260px;">
+        <div id="perspective" class="perspective effect-moveleft">
+            <div class="container">
+                <div class="wrapper">
+                    <div id="header">
+                        <div id="header-left">
+                            
+                        </div>
+                        <div id="logo">
+                            <h1><img src="<?php echo IMG_PATH;?>Logo8th-2.png" alt="8th Wonderland" /></h1>
+                        </div>
+                        <div id="menu-handler">
+                            <i id="showMenu" class="fa fa-bars"></i>
+                        </div>
+                    </div>
+                    <div id="account-forms">
+                        <div id="login-form">
+                            <h3 onclick="deployForm('login', 'registration'); return false;">
+                                - <?php $this->translate('login_form_title'); ?> -
+                            </h3>
+                            <form method="post" onsubmit="authenticate();return false;" class="active-form">
+                                <input type="text" placeholder="<?php $this->translate('login'); ?>" name="login"/>
+                                <input type="password" placeholder="<?php $this->translate('password'); ?>" name="password"/>
+                                <button type="submit"><?php $this->translate('connection'); ?></button>
+                                <div class="form-errors">
 
-                </td>
-                <td id="milieu_milieu">
-                    <table>
-                        <tr>
-                            <td>
-                                <div style="width: 97%; max-width: 400px;">
-                                    <?php include "informations/menu_presentation.view"; ?>
                                 </div>
-                            </td>
-                            <td valign="top">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <div id="info_chat" class="info" style="margin:20%">
-                                                <table>
-                                                    <tr>
-                                                        <td><img alt="info" src="<?php echo ICO_PATH;?>64x64/Info.png" style="width:48px;"/></td>
-                                                        <td><span style="font-size: 15px;"><?php $this->translate('open_chat'); ?></span></td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+                            </form>
+                        </div>
+                        <div id="registration-form">
+                            <h3 onclick="deployForm('registration', 'login'); return false;">
+                                - <?php $this->translate('registration_form_title'); ?> -
+                            </h3>
+                            <form method="post" onsubmit="register();return false;">
+                                <input type="text" placeholder="<?php $this->translate('login'); ?>" name="login"/>
+                                <input type="text" placeholder="<?php $this->translate('contact_mail'); ?>" name="email"/>
+                                <input type="password" placeholder="<?php $this->translate('password'); ?>" name="password"/>
+                                <input type="password" placeholder="<?php $this->translate('confirmation_password'); ?>" name="confirmation_password"/>
+                                <select id="country" name="country" required>
+                                    <option value="None"></option>
+                                    <?php
+                                        foreach($this->parameters['countries'] as $country) {
+                                            echo "<option value='{$country['id']}'>";
+                                            $this->translate($country['label']);
+                                            echo '</option>';
+                                        }
+                                    ?>
+                                </select>
+                                <select id="region" name="region"></select>
+                                <button type="submit"><?php $this->translate('welcome'); ?></button>
+                                <div class="form-errors">
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="outer-nav right vertical">
+                <a href="intranet/openChatroom">
+                    <i class="fa fa-comments-o"></i>
+                    <?php $this->translate('chatrooms.link'); ?>
+                </a>
+            </nav>
+        </div>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>modernizer.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>classie.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>home.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>home_menu.js"></script>
     </body>
 </html>
