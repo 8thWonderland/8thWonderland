@@ -256,6 +256,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `author_id` int(11) NOT NULL,
   `recipient_id` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
+  `opened_at` datetime,
   `deleted_by_author` tinyint(1) NOT NULL,
   `deleted_by_recipient` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
