@@ -4438,3 +4438,24 @@ CREATE TABLE IF NOT EXISTS `users` (
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+DELIMITER //
+
+CREATE PROCEDURE `read_message`(IN `message_id` INT)
+BEGIN
+	UPDATE messages SET opened_at = NOW() WHERE id = message_id;
+
+	SELECT
+		m.title,
+		m.content,
+		u.id as author_id,
+		u.identity as author_identity,
+		m.created_at,
+		m.opened_at,
+		m.deleted_by_author,
+		m.deleted_by_recipient
+	FROM messages m
+	INNER JOIN users u ON u.id = m.author_id;
+END
+
+DELIMITER ;
