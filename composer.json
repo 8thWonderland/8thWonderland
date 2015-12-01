@@ -18,7 +18,8 @@
     },
     "autoload" : {
         "psr-4" : {
-            "Wonderland\\": "src/8thWonderland/"
+            "Wonderland\\": "src/8thWonderland/",
+            "Wonderland\\Test\\": "tests/"
         }
     }
 }
