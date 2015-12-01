@@ -23,6 +23,12 @@
         <whitelist>
             <directory>./</directory>
             <exclude>
+                <file>./index.php</file>
+                <file>./Maintenance.php</file>
+                <directory>./src/8thWonderland/Ressources/</directory>
+                <directory>./src/8thWonderland/administration/</directory>
+                <directory>./src/8thWonderland/external/</directory>
+                <directory>./src/8thWonderland/langs/</directory>
                 <directory>./tests/</directory>
                 <directory>./vendor</directory>
             </exclude>
