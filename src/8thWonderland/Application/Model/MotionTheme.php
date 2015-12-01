@@ -11,6 +11,16 @@ class MotionTheme {
     protected $duration;
     
     /**
+     * @param int $id
+     * @return \Wonderland\Application\Model\MotionTheme
+     */
+    public function setId($id) {
+        $this->id = $id;
+        
+        return $this;
+    }
+    
+    /**
      * @return int
      */
     public function getId() {
