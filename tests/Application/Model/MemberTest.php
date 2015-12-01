@@ -3,6 +3,7 @@
 namespace Wonderland\Test\Application\Model;
 
 use Wonderland\Application\Model\Member;
+use Wonderland\Application\Model\Group;
 use Wonderland\Application\Model\Country;
 use Wonderland\Application\Model\Region;
 
@@ -24,6 +25,9 @@ class MemberTest extends \PHPUnit_Framework_TestCase {
             ->setIsBanned(0)
             ->setCreatedAt(new \DateTime())
             ->setLastConnectedAt(new \DateTime())
+            ->addGroup((new Group())->setId(1))
+            ->addGroup((new Group())->setId(2))
+            ->removeGroup(2)
         ;
         $this->assertEquals(1, $member->getId());
         $this->assertEquals('john_doe', $member->getLogin());
@@ -39,5 +43,6 @@ class MemberTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $member->getIsBanned());
         $this->assertInstanceOf('DateTime', $member->getCreatedAt());
         $this->assertInstanceOf('DateTime', $member->getLastConnectedAt());
+        $this->assertCount(1, $member->getGroups());
     }
 }
