@@ -2,10 +2,9 @@
     "database_connection" : {
         "class" : "Wonderland\\Library\\Database\\PdoDriver",
         "arguments" : [
-            "%database_host%",
+            "%database_dsn%",
             "%database_username%",
-            "%database_password%",
-            "%database_name%"
+            "%database_password%"
         ]
     },
     "session" : {
