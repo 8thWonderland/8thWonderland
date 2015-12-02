@@ -256,6 +256,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `author_id` int(11) NOT NULL,
   `recipient_id` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
+  `opened_at` datetime,
   `deleted_by_author` tinyint(1) NOT NULL,
   `deleted_by_recipient` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
@@ -4435,15 +4436,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+DROP PROCEDURE IF EXISTS `read_message`;
 
 DELIMITER //
 
 CREATE PROCEDURE `read_message`(IN `message_id` INT)
 BEGIN
-	UPDATE messages SET opened_at = NOW() WHERE id = message_id;
+	UPDATE messages SET opened_at = NOW() WHERE id = message_id AND opened_at IS NULL;
 
 	SELECT
 		m.title,
@@ -4456,6 +4455,10 @@ BEGIN
 		m.deleted_by_recipient
 	FROM messages m
 	INNER JOIN users u ON u.id = m.author_id;
-END
+END//
 
 DELIMITER ;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

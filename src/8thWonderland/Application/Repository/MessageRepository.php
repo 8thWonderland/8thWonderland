@@ -68,4 +68,10 @@ class MessageRepository extends AbstractRepository {
             "UPDATE messages SET $deleteField = 1 WHERE id = :id"
         , ['id' => $id]);
     }
+    
+    public function countUnreadMessages($recipientId) {
+        return (int) $this->connection->prepareStatement(
+            'SELECT COUNT(*) AS nb_unread_messages FROM messages WHERE recipient_id = :recipient_id AND opened_at IS NULL'
+        , ['recipient_id' => $recipientId])->fetch(\PDO::FETCH_ASSOC)['nb_unread_messages'];
+    }
 }

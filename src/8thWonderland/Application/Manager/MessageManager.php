@@ -126,4 +126,12 @@ class MessageManager {
     public function deleteMessage($id, $box) {
         return $this->repository->delete($id, $box)->rowCount();
     }
+    
+    /**
+     * @param int $recipientId
+     * @return int
+     */
+    public function countUnreadMessages($recipientId) {
+        return $this->repository->countUnreadMessages($recipientId);
+    }
 }

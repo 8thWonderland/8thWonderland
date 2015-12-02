@@ -5,8 +5,10 @@
 - Exceptions for denied accesses and forbidden statements
 - Add filesystem logs
 - Connected users list in the chat module
+- Unread messages counter
 
 ### Changed
+- Front-end design
 - Database logs have been updated
 - Update the partners widget
 
