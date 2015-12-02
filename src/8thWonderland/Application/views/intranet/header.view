@@ -7,11 +7,13 @@
     <div id="personal-area">
         <div id="messages" class="menu-component">
             <i class="fa fa-envelope-o fa-2x"></i>
-            <span class="badge">0</badge>
+            <span class="badge <?php if($this->parameters['nb_unread_messages'] > 0 ) echo "active"; ?>">
+                <?php echo $this->parameters['nb_unread_messages']; ?>
+            </span>
         </div>
         <div id="notifications" class="menu-component">
             <i class="fa fa-bell-o fa-2x"></i>
-            <span class="badge">0</badge>
+            <span class="badge">0</span>
         </div>
         <div id="profile" class="dropdown menu-component">
             <div id="avatar">

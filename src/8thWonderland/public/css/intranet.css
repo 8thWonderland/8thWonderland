@@ -42,8 +42,8 @@ html, body {
 
 #messages,
 #notifications {
-    padding-left:10px;
-    padding-right:10px;
+    padding-left:20px;
+    padding-right:20px;
 }
 
 #messages .badge,
@@ -51,8 +51,13 @@ html, body {
     margin-left:10px;
 }
 
+#messages .badge.active,
+#notifications .badge.active {
+    background-color: #EF0000;
+}
+
 #profile {
-    padding-left:10px;
+    padding-left:40px;
 }
 
 #avatar {
