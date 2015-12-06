@@ -19,6 +19,10 @@ class PdoDriver extends \PDO {
      */
     public function prepareStatement($query, $parameters = []) {
         $statement = $this->prepare($query);
+        if($statement === false) {
+            throw new \PDOException($this->errorInfo()[2]);
+        }
+        
         $statement->execute($parameters);
         return $statement;
     }
