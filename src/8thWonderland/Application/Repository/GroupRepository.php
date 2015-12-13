@@ -18,7 +18,7 @@ class GroupRepository extends AbstractRepository {
     
     public function findGroups() {
         return $this->connection->query(
-            'SELECT g.id, g.name, g.description, u.identity, g.created_at, g.updated_at, gt.label ' .
+            'SELECT g.id, g.name, g.description, u.identity, g.created_at, g.updated_at, gt.id as type_id, gt.label ' .
             'FROM groups g ' .
             'INNER JOIN group_types gt ON gt.id = g.type_id ' .
             'LEFT JOIN users u ON u.id = g.contact_id ' .

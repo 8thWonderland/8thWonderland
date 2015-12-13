@@ -48,9 +48,13 @@ class GroupManager {
             
             $groups[] =
                 (new Group())
-                ->setId($data['id'])
+                ->setId((int) $data['id'])
                 ->setName($data['name'])
-                ->setType((new GroupType())->setLabel($data['label']))
+                ->setType(
+                    (new GroupType())
+                    ->setId((int) $data['type_id'])
+                    ->setLabel($data['label'])
+                )
                 ->setDescription($data['description'])
                 ->setContact((new Member())->setIdentity($data['identity']))
                 ->setCreatedAt((new \DateTime($data['created_at'])))
