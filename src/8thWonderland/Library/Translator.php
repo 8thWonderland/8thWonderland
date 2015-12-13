@@ -154,6 +154,10 @@ class Translator {
                 : $this->userLanguage
             ;
         }
-        return $this->languages[$lang][$key];
+        return 
+            (isset($this->languages[$lang][$key]))
+            ? $this->languages[$lang][$key]
+            : $key
+        ;
     }
 }
