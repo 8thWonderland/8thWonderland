@@ -3,6 +3,7 @@
 namespace Wonderland\Application\Repository;
 
 use Wonderland\Application\Model\Group;
+use Wonderland\Application\Model\GroupType;
 use Wonderland\Application\Model\Member;
 
 class GroupRepository extends AbstractRepository {
@@ -16,14 +17,34 @@ class GroupRepository extends AbstractRepository {
         , ['id' => $id])->fetch(\PDO::FETCH_ASSOC);
     }
     
-    public function findGroups() {
-        return $this->connection->query(
+    /**
+     * @param int $typeId
+     * @param boolean $raw
+     * @return array|Group
+     */
+    public function findGroups($typeId = null, $raw = true) {
+        $whereClause = 
+            ($typeId !== null)
+            ? "WHERE gt.id = $typeId "
+            : ''
+        ;
+        $statement = $this->connection->query(
             'SELECT g.id, g.name, g.description, u.identity, g.created_at, g.updated_at, gt.id as type_id, gt.label ' .
             'FROM groups g ' .
             'INNER JOIN group_types gt ON gt.id = g.type_id ' .
             'LEFT JOIN users u ON u.id = g.contact_id ' .
+            $whereClause .
             'ORDER BY g.name ASC'
-        )->fetchAll(\PDO::FETCH_ASSOC);
+        );
+        $groups = [];
+        while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $groups[] =
+                ($raw)
+                ? $data
+                : $this->formatObject($data)
+            ;
+        }
+        return $groups;
     }
     
     public function findRegionalGroups() {
@@ -76,5 +97,26 @@ class GroupRepository extends AbstractRepository {
             'contact_id' => $group->getContact()->getId(),
             'updated_at' => (new \DateTime())->format('c')
         ]);
+    }
+    
+    /**
+     * @param array $data
+     * @return \Wonderland\Application\Model\Group
+     */
+    protected function formatObject($data) {
+        return
+            (new Group())
+            ->setId((int) $data['id'])
+            ->setName($data['name'])
+            ->setType(
+                (new GroupType())
+                ->setId((int) $data['type_id'])
+                ->setLabel($data['label'])
+            )
+            ->setDescription($data['description'])
+            ->setContact((new Member())->setIdentity($data['identity']))
+            ->setCreatedAt((new \DateTime($data['created_at'])))
+            ->setUpdatedAt(new \DateTime($data['updated_at']))
+        ;
     }
 }

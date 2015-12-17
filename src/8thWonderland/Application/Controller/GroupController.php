@@ -4,18 +4,23 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-use Wonderland\Library\Exception\ForbiddenException;
-
 class GroupController extends ActionController {
     public function listAction() {
         if(($member = $this->getUser()) === null) {
             $this->redirect('index/index');
         }
         
+        $typeId = (isset($_GET['type_id'])) ? $_GET['type_id']: null;
+        
+        if($this->is_Ajax()) {
+            header('Content-Type: application/json');
+            echo json_encode($this->application->get('group_manager')->getGroups($typeId));
+            return true;
+        }
         $this->render('groups/list', [
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
-            'groups' => $this->application->get('group_manager')->getGroups(),
+            'groups' => $this->application->get('group_manager')->getGroups($typeId, false),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId())
         ]);
     }
