@@ -77,7 +77,11 @@ $array = array(
     "motions_archives"      => "Motions archivées",
     "stats_country"         => "Statistiques du pays",
     'my_groups'             => 'Mes groupes',
+    
+    // Groupes
     'groups'                => 'Groupes',
+    'groups.thematic'       => 'Groupes Thématiques',
+    'groups.regional'       => 'Groupes Régionaux',
         
 
     // Partie 'TACHES'
