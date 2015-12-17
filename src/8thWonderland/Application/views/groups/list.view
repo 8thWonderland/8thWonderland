@@ -4,6 +4,7 @@
         <title>8th Wonderland - <?php $this->translate('groups') ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>intranet.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>groups.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="<?php echo IMG_PATH; ?>icone.png" />
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>bootstrap.min.css" type="text/css" media="screen" />
@@ -12,5 +13,51 @@
         <?php
             $this->render('intranet/header');
         ?>
+        <div id="content">
+            <section id="groups-list">
+                <header>
+                    <h3>
+                        <?php $this->translate('groups'); ?>
+                    </h3>
+                    <ul id="filters">
+                        <li>
+                            <a href="#" onclick="$(this).filterGroups(1); return false;">
+                                <i class="fa fa-map-o fa-2x"></i>
+                                <?php $this->translate('groups.regional'); ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="$(this).filterGroups(2); return false;">
+                                <i class="fa fa-balance-scale fa-2x"></i>
+                                <?php $this->translate('groups.thematic'); ?>
+                            </a>
+                        </li>
+                    </ul>
+                </header>
+                <section>
+                    <ul>
+                        <?php
+                            foreach($this->parameters['groups'] as $group) {
+                                echo "<li id='group-{$group->getId()}' class='group'>";
+                                echo "<a href='" . VIEW_PATH . "group/show?group_id={$group->getId()}'><span>";
+                                echo(
+                                    ($group->getType()->getId() === 1)
+                                    ?  '<i class="fa fa-map-o"></i>'
+                                    :  '<i class="fa fa-balance-scale"></i>'
+                                );
+                                echo "</span>{$group->getName()}</a></li>";
+                            }
+                        ?>
+                    </ul>
+                </section>
+            </section>
+            <section id="groups-informations">
+
+            </section>
+        </div>
+        <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>groups.js"></script>
     </body>
 </html>
