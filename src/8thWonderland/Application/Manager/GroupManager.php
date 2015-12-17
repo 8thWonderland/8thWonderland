@@ -36,28 +36,12 @@ class GroupManager {
     }
     
     /**
+     * @param int $typeId
+     * @param boolean $raw
      * @return array
      */
-    public function getGroups() {
-        $rows = $this->repository->findGroups();
-        $nbRows = count($rows);
-        
-        $groups = [];
-        for($i = 0; $i < $nbRows; ++$i) {
-            $data = $rows[$i];
-            
-            $groups[] =
-                (new Group())
-                ->setId($data['id'])
-                ->setName($data['name'])
-                ->setType((new GroupType())->setLabel($data['label']))
-                ->setDescription($data['description'])
-                ->setContact((new Member())->setIdentity($data['identity']))
-                ->setCreatedAt((new \DateTime($data['created_at'])))
-                ->setUpdatedAt(new \DateTime($data['updated_at']))
-            ;
-        }
-        return $groups;
+    public function getGroups($typeId = null, $raw = true) {
+        return $this->repository->findGroups($typeId, $raw);
     }
     
     /**

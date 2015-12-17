@@ -11,6 +11,7 @@
 - Front-end design
 - Database logs have been updated
 - Update the partners widget
+- Add a page for groups list instead of the old module
 
 ## 0.1.1 - 2015-07-11
 ### Added

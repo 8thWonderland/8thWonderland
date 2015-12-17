@@ -10,6 +10,7 @@ $rootPath =
     : $_SERVER['BASE'] . '/'
 ;
 
+define ('VIEW_PATH', $rootPath);
 define ('CSS_PATH', "{$rootPath}src/8thWonderland/public/css/");
 define ('IMG_PATH', "{$rootPath}src/8thWonderland/public/images/");
 define ('ICO_PATH', "{$rootPath}src/8thWonderland/public/icones/");

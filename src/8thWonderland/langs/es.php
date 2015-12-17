@@ -78,7 +78,7 @@ $array = array(
     "motions_archives"      => "Mociones archivadas",
     "stats_country"         => "Estadístico del país",
     'my_groups'             => 'Mis groupos',
-    "title_groups"          => "Grupos titulados",
+    'groups'                => 'Grupos',
                 
 
     // Partie 'TACHES'
