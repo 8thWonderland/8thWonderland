@@ -1,7 +1,9 @@
 8th Wonderland V4
 =========
 
+[![Build Status](https://travis-ci.org/8thWonderland/8thWonderland.svg?branch=master)](https://travis-ci.org/8thWonderland/8thWonderland)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Kern046/8thWonderlandV4/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Kern046/8thWonderlandV4/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/Kern046/8thWonderlandV4/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Kern046/8thWonderlandV4/?branch=master)
 
 Introduction
 ------------
