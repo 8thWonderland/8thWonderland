@@ -6,6 +6,9 @@
 - Add filesystem logs
 - Connected users list in the chat module
 - Unread messages counter
+- Unit testing suite
+- Travis Continuous Integration
+- Scrutinizer Continuous Integration
 
 ### Changed
 - Front-end design
