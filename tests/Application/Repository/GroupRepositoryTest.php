@@ -50,7 +50,8 @@ class GroupRepositoryTest extends WonderlandTestCase {
                 'identity' => 'John Doe',
                 'created_at' => '2015-08-22 15:30:00',
                 'updated_at' => '2015-09-01 23:54:32',
-                'label' => 'groups.thematic'
+                'label' => 'groups.thematic',
+                'type_id' => '2',
             ],[
                 'id' => '3',
                 'name' => 'Normandie',
@@ -58,7 +59,8 @@ class GroupRepositoryTest extends WonderlandTestCase {
                 'identity' => 'Alexander',
                 'created_at' => '2014-05-17 10:30:00',
                 'updated_at' => '2014-12-15 17:52:50',
-                'label' => 'groups.regional'
+                'label' => 'groups.regional',
+                'type_id' => '1',
             ], [
                 'id' => '2',
                 'name' => 'Île-de-France',
@@ -66,7 +68,8 @@ class GroupRepositoryTest extends WonderlandTestCase {
                 'identity' => 'John Doe',
                 'created_at' => '2013-10-13 14:07:00',
                 'updated_at' => '2013-10-13 14:07:00',
-                'label' => 'groups.regional'
+                'label' => 'groups.regional',
+                'type_id' => '1',
             ]
         ], $groups);
     }
