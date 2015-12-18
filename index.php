@@ -4,6 +4,11 @@ require_once 'vendor/autoload.php';
 
 ini_set('display_errors', 1);
 
+/*
+ * Set default timezone
+ */
+date_default_timezone_set('GMT');
+
 $rootPath = 
     (!isset($_SERVER['BASE']))
     ? '/'
