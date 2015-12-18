@@ -17,6 +17,16 @@ class Task {
     protected $author;
     
     /**
+     * @param int $id
+     * @return \Wonderland\Application\Model\Task
+     */
+    public function setId($id) {
+        $this->id = $id;
+        
+        return $this;
+    }
+    
+    /**
      * @return int
      */
     public function getId() {

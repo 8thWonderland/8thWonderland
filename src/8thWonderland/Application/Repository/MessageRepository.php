@@ -12,8 +12,8 @@ class MessageRepository extends AbstractRepository {
      */
     public function create(Message $message) {
         return $this->connection->prepareStatement(
-            'INSERT INTO messages (title, content, author_id, recipient_id, created_at) ' .
-            'VALUES (:title, :content, :author_id, :recipient_id, :created_at)'
+            'INSERT INTO messages (title, content, author_id, recipient_id, created_at, deleted_by_author, deleted_by_recipient) ' .
+            'VALUES (:title, :content, :author_id, :recipient_id, :created_at, 0, 0)'
         , [
             'title' => $message->getTitle(),
             'content' => $message->getContent(),

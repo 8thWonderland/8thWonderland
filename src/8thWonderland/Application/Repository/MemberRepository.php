@@ -2,6 +2,8 @@
 
 namespace Wonderland\Application\Repository;
 
+use Wonderland\Application\Model\Country;
+use Wonderland\Application\Model\Region;
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Group;
 use Wonderland\Application\Model\GroupType;
@@ -82,6 +84,10 @@ class MemberRepository extends AbstractRepository {
         , ['login' => $login, 'email' => $email])->fetch(\PDO::FETCH_ASSOC);
     }
     
+    /**
+     * @param array $criterias
+     * @return array
+     */
     public function findOneBy($criterias) {
         $whereClause = 
             (count($criterias) > 0)
@@ -98,7 +104,9 @@ class MemberRepository extends AbstractRepository {
             'SELECT u.id, u.login, u.password, u.salt, u.identity,' .
             'u.email, u.avatar, u.language, u.last_connected_at, ' .
             'u.created_at, u.is_enabled, u.is_banned, ' .
-            'c.id as country_id, c.code, c.label, ' .
+            'c.id as country_id, c.code as country_code, c.label as country_label, ' .
+            'r.id as region_id, r.name as region_name, r.latitude as region_latitude, ' .
+            'r.longitude as region_longitude, r.created_at as region_created_at, ' .
             'g.id AS group_id, g.name, g.description, g.created_at AS group_created_at, ' .
             'g.updated_at AS group_updated_at, gt.id AS group_type_id, gt.label, ' .
             'u2.id AS contact_id, u2.identity AS contact_identity ' .
@@ -125,17 +133,32 @@ class MemberRepository extends AbstractRepository {
         if(($data = $rawData->fetch(\PDO::FETCH_ASSOC)) === false) {
             return null;
         }
+        $country = 
+            (new Country())
+            ->setId((int) $data['country_id'])
+            ->setCode($data['country_code'])
+            ->setLabel($data['country_label'])
+        ;
         $member =
             (new Member())
             ->setId((int) $data['id'])
             ->setLogin($data['login'])
             ->setIdentity($data['identity'])
             ->setPassword($data['password'])
+            ->setSalt($data['salt'])
             ->setEmail($data['email'])
             ->setAvatar($data['avatar'])
             ->setLanguage($data['language'])
-            ->setCountry((int) $data['country_id'])
-            ->setRegion((int) $data['region_id'])
+            ->setCountry($country)
+            ->setRegion(
+                (new Region())
+                ->setId((int) $data['region_id'])
+                ->setName($data['region_name'])
+                ->setCountry($country)
+                ->setLatitude((float) $data['region_latitude'])
+                ->setLongitude((float) $data['region_longitude'])
+                ->setCreatedAt(new \DateTime($data['region_created_at']))
+            )
             ->setCreatedAt(new \DateTime($data['created_at']))
             ->setLastConnectedAt(new \DateTime($data['last_connected_at']))
             ->setIsEnabled((bool) $data['is_enabled'])
@@ -144,17 +167,17 @@ class MemberRepository extends AbstractRepository {
         if(isset($data['group_id'])) {
             $member->addGroup(
                 (new Group())
-                ->setId($data['group_id'])
+                ->setId((int) $data['group_id'])
                 ->setName($data['name'])
                 ->setDescription($data['description'])
                 ->setType(
                     (new GroupType())
-                    ->setId($data['group_type_id'])
+                    ->setId((int) $data['group_type_id'])
                     ->setLabel($data['label'])
                 )
                 ->setContact(
                     (new Member())
-                    ->setId($data['contact_id'])
+                    ->setId((int) $data['contact_id'])
                     ->setIdentity($data['contact_identity'])
                 )
                 ->setCreatedAt(new \DateTime($data['group_created_at']))
@@ -165,17 +188,17 @@ class MemberRepository extends AbstractRepository {
         while($data = $rawData->fetch(\PDO::FETCH_ASSOC)) {
             $member->addGroup(
                 (new Group())
-                ->setId($data['group_id'])
+                ->setId((int) $data['group_id'])
                 ->setName($data['name'])
                 ->setDescription($data['description'])
                 ->setType(
                     (new GroupType())
-                    ->setId($data['group_type_id'])
+                    ->setId((int) $data['group_type_id'])
                     ->setLabel($data['label'])
                 )
                 ->setContact(
                     (new Member())
-                    ->setId($data['contact_id'])
+                    ->setId((int) $data['contact_id'])
                     ->setIdentity($data['contact_identity'])
                 )
                 ->setCreatedAt(new \DateTime($data['group_created_at']))

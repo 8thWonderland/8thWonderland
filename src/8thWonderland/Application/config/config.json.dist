@@ -4,6 +4,7 @@
     "facebook_app_id" : "",
     "facebook_app_secret" : "",
     "facebook_page_id" : "",
+    "database_dsn": "mysql:host=localhost;dbname=thwonderbdd;charset=utf8",
     "database_host": "localhost",
     "database_username": "root",
     "database_password": "vagrant",

@@ -4,13 +4,12 @@ namespace Wonderland\Library\Database;
 
 class PdoDriver extends \PDO {
     /**
-     * @param string $host
+     * @param string $dsn
      * @param string $username
-     * @param string $passwd
-     * @param string $dbname
+     * @param string $password
      */
-    public function __construct($host, $username, $passwd, $dbname) {
-        parent::__construct("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $passwd);
+    public function __construct($dsn, $username = null, $password = null) {
+        parent::__construct($dsn, $username, $password);
     }
     
     /**
@@ -20,6 +19,10 @@ class PdoDriver extends \PDO {
      */
     public function prepareStatement($query, $parameters = []) {
         $statement = $this->prepare($query);
+        if($statement === false) {
+            throw new \PDOException($this->errorInfo()[2]);
+        }
+        
         $statement->execute($parameters);
         return $statement;
     }

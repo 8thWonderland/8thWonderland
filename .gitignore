@@ -3,3 +3,4 @@
 composer.lock
 /src/8thWonderland/Application/config/config.json
 /src/8thWonderland/logs/*.log
+/code-coverage/
