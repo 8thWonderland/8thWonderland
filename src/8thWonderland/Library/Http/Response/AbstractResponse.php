@@ -3,6 +3,10 @@
 namespace Wonderland\Library\Http\Response;
 
 abstract class AbstractResponse {
+    /** @var array **/
+    protected $primitiveHeaders = [];
+    /** @var array **/
+    protected $userHeaders = [];
     /** @var int **/
     protected $status;
     /** @var mixed **/
@@ -84,7 +88,46 @@ abstract class AbstractResponse {
         521 => 'The server is not available " for legal reasons "'
     ];
     
-    abstract public function makeHeaders();
-    
     abstract public function respond();
+    
+    public function makeHeaders() {
+        // Make status header
+        header("{$_SERVER['SERVER_PROTOCOL']} {$this->status} {$this->reasons[$this->status]}");
+        // The primitive headers modified by the user will be overridden 
+        $headers = array_merge($this->primitiveHeaders, $this->userHeaders);
+        foreach($headers as $header => $value) {
+            header("$header: $value");
+        }
+    }
+    
+    /**
+     * @param array $headers
+     */
+    public function addHeaders($headers) {
+        foreach($headers as $header => $value) {
+            $this->userHeaders[$header] = $value;
+        }
+    }
+    
+    /**
+     * @param string $header
+     * @param string $value
+     */
+    public function addHeader($header, $value) {
+        $this->userHeaders[$header] = $value;
+    }
+    
+    /**
+     * @param string $header
+     */
+    public function removeHeader($header) {
+        unset($this->userHeaders[$header]);
+    }
+    
+    /**
+     * @return array
+     */
+    public function getHeaders() {
+        return $this->userHeaders;
+    }
 }
