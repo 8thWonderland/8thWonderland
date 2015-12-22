@@ -157,6 +157,11 @@ class Application {
         }
     }
     
+    /**
+     * @param string $controllerName
+     * @param string $actionName
+     * @throws \Exception
+     */
     public function startControllerAction($controllerName, $actionName) {
         $controller = "Wonderland\\Application\\Controller\\{$controllerName}Controller";
         $action = "{$actionName}Action";
@@ -166,6 +171,8 @@ class Application {
         if (!method_exists($controller, $action)) {
             throw new \Exception("The Action '$action' does not exist !");
         }
-        (new $controller($this))->$action();
+        $response = (new $controller($this))->$action();
+        $response->makeHeaders();
+        $response->respond();
     }
 }
