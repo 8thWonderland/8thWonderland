@@ -9,6 +9,7 @@
 - Unit testing suite
 - Travis Continuous Integration
 - Scrutinizer Continuous Integration
+- Response classes for controller returns
 
 ### Changed
 - Front-end design
