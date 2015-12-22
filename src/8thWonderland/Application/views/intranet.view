@@ -12,7 +12,7 @@
     <body>
         <div>
             <?php
-                $this->render('intranet/header');
+                echo $this->render('intranet/header');
             ?>
             <div id="content">
                 <section id="motions" class="module">

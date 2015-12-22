@@ -41,16 +41,14 @@ function authenticate() {
     $.ajax({
         type: "POST",
         url: "authenticate/connect",
-        dataType: "json",
         contentType: "application/json",
-        success : function(data) {
-            window.location.href = '.';
-        },
-        data: JSON.stringify(authentication), 
+        data: JSON.stringify(authentication),
         error: function(data)
         {
             displayFormErrors('login', JSON.parse(data.responseText));
         }
+    }).done(function(data) {
+        document.write(data);
     });
 }
 
