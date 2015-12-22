@@ -64,14 +64,6 @@ abstract class ActionController {
         return json_decode(file_get_contents('php://input'), true);
     }
     
-    // Affichage d'un texte directement
-    // SHAME
-    // @ToRemove !!!
-    // ================================
-    public function display($msg) {
-        echo $msg;
-    }
-    
     /**
      * @param string $url
      * @return \Wonderland\Library\Http\Response\AbstractResponse

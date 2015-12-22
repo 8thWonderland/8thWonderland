@@ -17,6 +17,9 @@
 - Update the partners widget
 - Add a page for groups list instead of the old module
 
+### Removed
+- Old ActionController::display method
+
 ## 0.1.1 - 2015-07-11
 ### Added
 - Facebook App manager
