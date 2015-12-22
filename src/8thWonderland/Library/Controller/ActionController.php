@@ -8,12 +8,15 @@ use Wonderland\Library\Exception\AccessDeniedException;
 use Wonderland\Library\Exception\BadRequestException;
 use Wonderland\Library\Exception\ForbiddenException;
 
+use Wonderland\Library\Http\Request;
 use Wonderland\Library\Http\Response\Response;
 use Wonderland\Library\Http\Response\RedirectResponse;
 
 abstract class ActionController {
     /** @var \Wonderland\Library\Application **/
     protected $application;
+    /** @var \Wonderland\Library\Http\Request\Request **/
+    protected $request;
     /** @var string **/
     protected $controllersDirectory = 'src/8thWonderland/Application/Controller';
     /** @var \Wonderland\Application\Model\Member **/
@@ -22,8 +25,9 @@ abstract class ActionController {
     /**
      * @param Application $application
      */
-    public function __construct(Application $application) {
+    public function __construct(Application $application, Request $request) {
         $this->application = $application;
+        $this->request = $request;
     }
     
     /**

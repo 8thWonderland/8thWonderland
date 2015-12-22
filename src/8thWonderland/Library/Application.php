@@ -4,6 +4,8 @@ namespace Wonderland\Library;
 
 use Pimple\Container;
 
+use Wonderland\Library\Http\Request\Request;
+
 class Application {
     /** @var string **/
     protected $rootPath;
@@ -171,7 +173,7 @@ class Application {
         if (!method_exists($controller, $action)) {
             throw new \Exception("The Action '$action' does not exist !");
         }
-        $response = (new $controller($this))->$action();
+        $response = (new $controller($this, new Request()))->$action();
         $response->makeHeaders();
         $response->respond();
     }

@@ -10,6 +10,7 @@
 - Travis Continuous Integration
 - Scrutinizer Continuous Integration
 - Response classes for controller returns
+- Request class for controller inputs
 
 ### Changed
 - Front-end design
