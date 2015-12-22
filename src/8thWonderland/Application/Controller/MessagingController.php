@@ -10,7 +10,7 @@ use Wonderland\Library\Admin\Log;
 
 class MessagingController extends ActionController {
     public function displayReceptionAction() {
-        $this->render('communications/messaging');
+        return $this->render('communications/messaging');
     }
     
     public function displayReceivedMessagesAction() {
@@ -94,7 +94,7 @@ class MessagingController extends ActionController {
         
         $tab_receivedmsg .= $next . '</td></tr></table>';
         
-        $this->render('communications/received_messages', [
+        return $this->render('communications/received_messages', [
             'list_receivedmessages' => $tab_receivedmsg
         ]);
     }
@@ -177,7 +177,7 @@ class MessagingController extends ActionController {
         if ($CurPage < $MaxPage) {
             $next = '<a onclick="Clic(\'Messaging/displayReceivedMessages\', \'&page=' . ($CurPage + 1) . '\', \'volet_visualisation\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
-        $this->render('communications/received_messages', [
+        return $this->render('communications/received_messages', [
             'list_receivedmessages' => $tab_receivedmsg . $next . '</td></tr></table>'
         ]);
     }
@@ -185,7 +185,7 @@ class MessagingController extends ActionController {
     public function displayContentMessageAction() {
         $message = $this->application->get('message_manager')->getMessage($_POST['id_msg']);
         
-        $this->render('communications/content_message', [
+        return $this->render('communications/content_message', [
             'recipients_message' => $message->getRecipient()->getIdentity(),
             'back' => 
                 ($_POST['box'] === 1)
@@ -198,11 +198,11 @@ class MessagingController extends ActionController {
     }
     
     public function composeMessageToUnknownAction() {
-        $this->render('communications/r_compose_message');
+        return $this->render('communications/r_compose_message');
     }
     
     public function composeMessageAction() {
-        $this->render('communications/compose_message', [
+        return $this->render('communications/compose_message', [
             'recipient_message' => $_POST['recipient_message']
         ]);
     }
@@ -222,46 +222,44 @@ class MessagingController extends ActionController {
         }
         
         if (empty($err_msg)) {
-            $this->display(
+            return new Response(
                 '<div class="info" style="height:50px;"><table><tr>' .
                 '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
                 '<td><span style="font-size: 15px;">' . $translate->translate("mail_ok") . '</span></td>' .
                 '</tr></table></div>'
             );
-        } else {
-            $this->display(
-                '<div class="error" style="height:50px;"><table><tr>' .
-                '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
-                '<td><span style="font-size: 15px;">' . $err_msg . '</span></td>' .
-                '</tr></table></div>'
-            );
         }
+        return new Response(
+            '<div class="error" style="height:50px;"><table><tr>' .
+            '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
+            '<td><span style="font-size: 15px;">' . $err_msg . '</span></td>' .
+            '</tr></table></div>'
+        );
     }
     
     public function deleteMessageAction() {
-        $translate = $this->application->get('translator');
+        $translator = $this->application->get('translator');
         if ($this->application->get('message_manager')->deleteMessage($_POST['id_msg'], $_POST['box']) > 0) {
-            $this->display(
+            return new Response(
                 '<div class="info" style="height:50px;"><table><tr>' .
                 '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
-                '<td><span style="font-size: 15px;">' . $translate->translate('delete_msg_ok') . '</span></td>' .
+                '<td><span style="font-size: 15px;">' . $translator->translate('delete_msg_ok') . '</span></td>' .
                 '</tr></table></div>'
             );
-        } else {
-            $this->display(
-                '<div class="error" style="height:50px;"><table><tr>' .
-                '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
-                '<td><span style="font-size: 15px;">' . $translate->translate('delete_msg_nok') . '</span></td>' .
-                '</tr></table></div>'
-            );
-            $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
-            $logger = $this->application->get('logger');
-            $logger->setWriter('db');
-            $logger->log("Echec de la suppression du message {$_POST['id_msg']} (box={$_POST['box']}) par l'utilisateur {$member->getIdentity()}", Log::ERR);
         }
+        $member = $this->application->get('member_manager')->getMember($this->application->get('session')->get('__id__'));
+        $logger = $this->application->get('logger');
+        $logger->setWriter('db');
+        $logger->log("Echec de la suppression du message {$_POST['id_msg']} (box={$_POST['box']}) par l'utilisateur {$member->getIdentity()}", Log::ERR);
+        return new Response(
+            '<div class="error" style="height:50px;"><table><tr>' .
+            '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
+            '<td><span style="font-size: 15px;">' . $translator->translate('delete_msg_nok') . '</span></td>' .
+            '</tr></table></div>'
+        );
     }
     
     public function createGroupAction() {
-        $this->render('admin/dev_inprogress');
+        return $this->render('admin/dev_inprogress');
     }
 }

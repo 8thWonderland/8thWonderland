@@ -4,6 +4,9 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
+use Wonderland\Library\Http\Response\Response;
+use Wonderland\Library\Http\Response\JsonResponse;
+
 class MemberController extends ActionController {
     public function displayProfileAction() {
         $member = $this->getUser();
@@ -45,7 +48,7 @@ class MemberController extends ActionController {
         if ($this->application->get('member_manager')->isMemberInGroup($member, 1)) {
             $this->application->get('templating')->addParameter('admin', true);
         }
-        $this->render('members/update_profile', [
+        return $this->render('members/update_profile', [
             'langs' => $sel_lang,
             'login' => $member->getLogin(),
             'identity' => $member->getIdentity(),
@@ -105,21 +108,21 @@ class MemberController extends ActionController {
         }
         $this->application->get('member_manager')->update($member);
         if (empty($err_msg)) {
-            $this->redirect('Intranet/index');
+            return $this->redirect('Intranet/index');
         } else {
-            $this->display(json_encode([
+            return new JsonResponse([
                 'status' => 0,
                 'reponse' =>
                     '<div class="error" style="height:50px;"><table><tr>' .
                     '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
                     '<td><span style="font-size: 15px;">' . $err_msg . '</span></td>' .
                     '</tr></table></div>'
-            ]));
+            ]);
         }
     }
     
     public function searchMembersAction() {
-        $this->display('<span>toto, test, tata</span>');
+        return new Response('<span>toto, test, tata</span>');
     }
     
     public function displayContactsGroupsAction() {
@@ -170,7 +173,7 @@ class MemberController extends ActionController {
         }
         $tabmini_contactsgroups .= $next . '</td></tr></table>';
         
-        $this->render('groups/list_contactsgroups', [
+        return $this->render('groups/list_contactsgroups', [
             'list_contactsgroups' => $tabmini_contactsgroups
         ]);
     }

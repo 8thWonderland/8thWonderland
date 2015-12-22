@@ -6,6 +6,8 @@ use Wonderland\Library\Controller\ActionController;
 
 use Wonderland\Library\Admin\Log;
 
+use Wonderland\Library\Http\Response\Response;
+
 class MotionController extends ActionController {
     public function displayCreateMotionAction() {
         $translate = $this->application->get('translator');
@@ -16,20 +18,20 @@ class MotionController extends ActionController {
         while ($theme = $motionThemes->fetch(\PDO::FETCH_ASSOC)) {
             $selectTheme .= "<option value='{$theme['theme_id']}'>{$translate->translate($theme['label_key'])}</option>";
         }
-        $this->render('actions/create_motion', [
+        return $this->render('actions/create_motion', [
             'msg' => '',
             'select_theme' => $selectTheme
         ]);
     }
     
     public function displayMotionsInProgressAction() {
-        $this->render('actions/motions_inprogress', [
+        return $this->render('actions/motions_inprogress', [
             'list_motions' => $this->application->get('motion_manager')->displayActiveMotions($this->getUser())
         ]);
     }
     
     public function displayMotionsAction() {
-        $this->render('actions/motions', [
+        return $this->render('actions/motions', [
             'list_motions' => $this->renderMotions()
         ]);
     }
@@ -37,7 +39,7 @@ class MotionController extends ActionController {
     public function displayVoteAction() {
         $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
-        $this->render('actions/motion_vote_details', [
+        return $this->render('actions/motion_vote_details', [
             'details' => $details[0],
             'description' => str_replace('&gt;', '>', str_replace('&lt;', '<', $details[0]['description'])),
             'means' => html_entity_decode($details[0]['moyens'])
@@ -47,7 +49,7 @@ class MotionController extends ActionController {
     public function displayMotionAction() {
         $details = $this->application->get('motion_manager')->displayMotionDetails($_POST['motion_id']);
         
-        $this->render('actions/motion_details', [
+        return $this->render('actions/motion_details', [
             'details' => $details[0],
             'description' => str_replace('&gt;', '>', str_replace('&lt;', '<', $details[0]['description'])),
             'means' => html_entity_decode($details[0]['moyens'])
@@ -185,7 +187,7 @@ class MotionController extends ActionController {
             ;
             $logger->log("Echec du dépot de motion par l'utilisateur {$this->getUser()->getIdentity()} (champs vides)", Log::WARN);
         }
-        $this->render('actions/create_motion', [
+        return $this->render('actions/create_motion', [
             'msg' => $msg
         ]);
     }
@@ -194,25 +196,25 @@ class MotionController extends ActionController {
         $translate = $this->application->get('translator');
         if (!empty($_POST['motion_id']) && !empty($_POST['vote'])) {
             if ($this->application->get('motion_manager')->voteMotion($this->getUser(), $_POST['motion_id'], $_POST['vote']) === 1) {
-                $this->display(
+                return new Response(
                     '<div class="info" style="height:50px;"><table><tr>' .
                     '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:48px;"/></td>' .
                     '<td><span style="font-size: 15px;">' . $translate->translate('vote_motion_ok') . '</span></td>' .
                     '</tr></table></div>' .
                     '<script type="text/javascript">Clic("/Motion/displayMotionsInProgress", "", "milieu_gauche");</script>'
                 );
-            } else {
-                $this->display(
-                    '<div class="error" style="height:50px;"><table><tr>' .
-                    '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
-                    '<td><span style="font-size: 15px;">' . $translate->translate('vote_motion_nok') . '</span></td>' .
-                    '</tr></table></div>'
-                );
-                // Journal de log
-                $logger = $this->application->get('logger');
-                $logger->setWriter('db');
-                $logger->log("Echec du vote de motion par l'utilisateur {$this->getUser()->getIdentity()}", Log::WARN);
             }
+            // Journal de log
+            $logger = $this->application->get('logger');
+            $logger->setWriter('db');
+            $logger->log("Echec du vote de motion par l'utilisateur {$this->getUser()->getIdentity()}", Log::WARN);
+        
+            return new Response(
+                '<div class="error" style="height:50px;"><table><tr>' .
+                '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:48px;"/></td>' .
+                '<td><span style="font-size: 15px;">' . $translate->translate('vote_motion_nok') . '</span></td>' .
+                '</tr></table></div>'
+            );
         }
     }
     

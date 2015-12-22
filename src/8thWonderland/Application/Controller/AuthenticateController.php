@@ -8,11 +8,17 @@ use Wonderland\Application\Model\Mailer;
 
 use Wonderland\Library\Exception\BadRequestException;
 
+use Wonderland\Library\Http\Response\Response;
+use Wonderland\Library\Http\Response\JsonResponse;
+
 class AuthenticateController extends ActionController {
+    /**
+     * @return \Wonderland\Library\Http\Response\AbstractResponse
+     */
     public function connectAction() {
         $request = $this->getJsonRequest();
         $memberManager = $this->application->get('member_manager');
-        $translate = $this->application->get('translator');
+        $translator = $this->application->get('translator');
         
         if (($member = $memberManager->getMemberByLoginAndPassword($request['login'], hash('sha512', $request['password']))) !== null) {
             $db = $this->application->get('database_connection');
@@ -27,25 +33,21 @@ class AuthenticateController extends ActionController {
                 $logger->log("Echec de l'update de la connexion ({$member->getIdentity()})", Log::ERR);
             }
             $this->application->get('session')->set('__id__', $member->getId());
-            $translate->setUserLang($member->getLanguage());
-            $this->redirect('intranet/index');
-        } else {
-            header("{$_SERVER['SERVER_PROTOCOL']} 400 Bad Request");
-            echo json_encode([
-                'errors' => [$translate->translate('connection_failed')]
-            ]);
-            exit;
+            $translator->setUserLang($member->getLanguage());
+            return $this->redirect('intranet/index');
         }
+        return new JsonResponse([
+            'errors' => [$translator->translate('connection_failed')]
+        ], 400);
     }
 
     public function logoutAction() {
         $this->application->get('session')->delete('__id__');
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        return $this->redirect('index/index');
     }
     
     public function subscribeAction() {
         $request = $this->getJsonRequest();
-        
         if (
             empty($request['login']) || empty($request['password']) || 
             empty($request['confirmation_password']) || empty($request['email']) ||
@@ -53,8 +55,6 @@ class AuthenticateController extends ActionController {
         ) {
             throw new BadRequestException($this->application->get('translator')->translate('fields_empty'));
         }
-        header('Content-Type: application/json; charset=UTF-8');
-        
         $result = $this->application->get('member_manager')->create(
             $request['login'],
             $request['password'],
@@ -65,17 +65,15 @@ class AuthenticateController extends ActionController {
         );
         // In case of errors, the manager returns an array containing it
         if($result !== true) {
-            header("{$_SERVER['SERVER_PROTOCOL']} 400 Bad Request");
-            echo json_encode([
+            return new JsonResponse([
                 'errors' => $result
-            ]);
-            exit;
+            ], 400);
         }
-        header("{$_SERVER['SERVER_PROTOCOL']} 201 Created");
+        return new Response(null, 201);
     }
     
     public function displayForgetPasswordAction() {
-        $this->render('members/forget_password');
+        return $this->render('members/forget_password');
     }
     
     public function forgetPasswordAction() {
@@ -102,26 +100,24 @@ class AuthenticateController extends ActionController {
                 }
             }
         }
-        
         if (!empty($err_msg)) {
-            $this->display(
+            return new Response(
                 '<div class="error" style="padding:3px"><table style="width:70%"><tr>' .
                 '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
                 '<td><span style="font-size: 13px;">' . $err_msg . '</span></td>' .
                 '</tr></table></div>'
             );
-        } else {
-            $this->display(
-                '<form id="form_forgetpwdCode" name="form_forgetpwdCode" enctype="application/x-www-form-urlencoded" action="" method="post" ' .
-                'onSubmit=\'sendForm("/authenticate/valid_codeforgetpwd", "form_forgetpwdCode", "reponse_forgetpwdcode"); return false;\' >' .
-                '<table><tr><td>' . $translate->translate("code_forgetpwd") . '</td>' .
-                '<td><input type="text" name="code" id="code" style="width:70%" /></td>' .
-                '<tr><td colspan="2" align="center"><input type="submit" name="btn_forgetpwdcode" id="btn_forgetpwdcode" value="' . $translate->translate('btn_codeforgetpwd') . '"></td>' .
-                '</tr>' .
-                '<tr><td><input id="memo_login" name="memo_login" type="hidden" value="' . $_POST['login'] . '"/></td><td id="reponse_forgetpwdcode"></td></tr>' .
-                '</table></form>'
-            );
         }
+        return new Response(
+            '<form id="form_forgetpwdCode" name="form_forgetpwdCode" enctype="application/x-www-form-urlencoded" action="" method="post" ' .
+            'onSubmit=\'sendForm("/authenticate/valid_codeforgetpwd", "form_forgetpwdCode", "reponse_forgetpwdcode"); return false;\' >' .
+            '<table><tr><td>' . $translate->translate("code_forgetpwd") . '</td>' .
+            '<td><input type="text" name="code" id="code" style="width:70%" /></td>' .
+            '<tr><td colspan="2" align="center"><input type="submit" name="btn_forgetpwdcode" id="btn_forgetpwdcode" value="' . $translate->translate('btn_codeforgetpwd') . '"></td>' .
+            '</tr>' .
+            '<tr><td><input id="memo_login" name="memo_login" type="hidden" value="' . $_POST['login'] . '"/></td><td id="reponse_forgetpwdcode"></td></tr>' .
+            '</table></form>'
+        );
     }
     
     public function validCodeForgetPasswordAction() {
@@ -162,20 +158,19 @@ class AuthenticateController extends ActionController {
         }
         
         if (!empty($err_msg)) {
-           $this->display(
+           return new Response(
                 '<div class="error" style="padding:3px"><table style="width:70%"><tr>' .
                 '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
                 '<td><span style="font-size: 13px;">' . $err_msg . '</span></td>' .
                 '</tr></table></div>'
             );
-        } else {
-           $this->display(
-                '<div class="info" style="padding:3px"><table style="width:70%"><tr>' .
-                '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:24px;"/></td>' .
-                '<td><span style="font-size: 13px;">' . $translate->translate('reponse_newpwd') . '</span></td>' .
-                '</tr></table></div>'
-            );
         }
+        return new Response(
+            '<div class="info" style="padding:3px"><table style="width:70%"><tr>' .
+            '<td><img alt="info" src="' . ICO_PATH . '64x64/Info.png" style="width:24px;"/></td>' .
+            '<td><span style="font-size: 13px;">' . $translate->translate('reponse_newpwd') . '</span></td>' .
+            '</tr></table></div>'
+        );
     }
     
     /**

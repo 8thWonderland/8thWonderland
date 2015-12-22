@@ -8,12 +8,18 @@ use Wonderland\Application\Model\Mailer;
 
 use Wonderland\Library\Admin\Log;
 
+use Wonderland\Library\Http\Response\Response;
+use Wonderland\Library\Http\Response\JsonResponse;
+
 class IntranetController extends ActionController {
+    /**
+     * @return \Wonderland\Library\Http\Response\AbstractResponse
+     */
     public function indexAction() {
         if (($member = $this->getUser()) === null) {
-            $this->redirect('index/index');
+            return $this->redirect('index/index');
         }
-        $this->render('intranet', [
+        return $this->render('intranet', [
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
             'admin' => $this->application->get('member_manager')->isMemberInGroup($member, 1),
@@ -22,14 +28,14 @@ class IntranetController extends ActionController {
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId())
         ]);
     }
-    
+    // TO REMOVE
     public function groupAction() {
         if (($member = $this->getUser()) === null) {
-            $this->redirect('index/index');
+            return $this->redirect('index/index');
         }
-        $desktop = $session->get('desktop');
-        $templating->addParameters([
-            'Contact_Group' => $memberManager->isContact($member, $desktop),
+        $desktop = $this->application->get('session')->get('desktop');
+        $this->application->get('templating')->addParameters([
+            'Contact_Group' => $this->get('member_manager')->isContact($member, $desktop),
             'haut_milieu' => 
                 ($desktop === 1)
                 ? VIEWS_PATH . 'admin/menu_admin.view'
@@ -60,14 +66,14 @@ class IntranetController extends ActionController {
                 'avatar' => ICO_PATH . 'user-48.png'
             ]);
         }
-        $this->render('communications/chatroom', [
+        return $this->render('communications/chatroom', [
             'chatrooms' => $this->application->get('chatrooms')
         ]);
     }
     
     public function zoneGeoAction() {
         if (($member = $this->getUser()) === null) {
-            $this->redirect('Index/index');
+            return $this->redirect('Index/index');
         }
         
         if (!empty($_POST['country']) && isset($_POST['region']) && $_POST['region'] !== 0) {
@@ -133,13 +139,12 @@ class IntranetController extends ActionController {
                 ;
                 $mail->send();
             }
-            $this->redirect('Intranet/index');
-        } else {
-            $this->display(json_encode([
-                'status' => 2,
-                'reponse' => $this->application->get('translator')->translate('fields_empty')
-            ]));
+            return $this->redirect('Intranet/index');
         }
+        return new JsonResponse([
+            'status' => 2,
+            'reponse' => $this->application->get('translator')->translate('fields_empty')
+        ]);
     }
     
     public function listRegionsAction() {
@@ -156,15 +161,15 @@ class IntranetController extends ActionController {
                 $regions .= "<option value='-1'>Other</option>";
             }
         }
-        $this->display($res . $regions);
+        return new Response($res . $regions);
     }
 
     public function infosAction() {
         if ($this->getUser() === null) {
-            $this->redirect('Index/index');
+            return $this->redirect('Index/index');
         }
         $facebookManager = $this->application->get('facebook_manager');
-        $this->render('informations/public_news', [
+        return $this->render('informations/public_news', [
             'facebook_feed' => $facebookManager->getPageFeed(3),
             'facebook_picture' => $facebookManager->getPagePicture(),
             'facebook_page' => $facebookManager->getPageInformations()
@@ -173,17 +178,17 @@ class IntranetController extends ActionController {
 
     public function shareAction() {
         if ($this->getUser() === null) {
-            $this->redirect('Index/index');
+            return $this->redirect('Index/index');
         }
-        $this->render('admin/dev_inprogress');
+        return $this->render('admin/dev_inprogress');
     }
 
     public function communicateAction() {
         if ($this->getUser() === null) {
-            $this->redirect('Index/index');
+            return $this->redirect('Index/index');
         }
         $facebookManager = $this->application->get('facebook_manager');
-        $this->render('informations/public_news', [
+        return $this->render('informations/public_news', [
             'facebook_feed' => $facebookManager->getPageFeed(3),
             'facebook_picture' => $facebookManager->getPagePicture(),
             'facebook_page' => $facebookManager->getPageInformations()
@@ -192,23 +197,23 @@ class IntranetController extends ActionController {
 
     public function financeAction() {
         if ($this->getUser() === null) {
-            $this->redirect('Index/index');
+            return $this->redirect('Index/index');
         }
-        $this->render('admin/dev_inprogress');
+        return $this->render('admin/dev_inprogress');
     }
     
     public function consoleAction() {
         if (($member = $this->getUser()) === null) {
-            $this->redirect('Index/index');
+            return $this->redirect('Index/index');
         }
         $memberManager = $this->application->get('member_manager');
         if (!$memberManager->isMemberInGroup($member->getId(), 1)) {
-            $this->redirect('Intranet/index');
+            return $this->redirect('Intranet/index');
         }
         $logger = $this->application->get('logger');
         $logger->setWriter('db');
         $logger->log("{$member->getIdentity()} entre dans la console d'administration.", Log::INFO);
         
-        $this->redirect('Admin/displayConsole');
+        return $this->redirect('Admin/displayConsole');
     }
 }
