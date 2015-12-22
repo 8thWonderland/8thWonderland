@@ -14,4 +14,16 @@ abstract class AbstractRepository {
     public function __construct(PdoDriver $connection) {
         $this->connection = $connection;
     }
+    
+    /**
+     * @param int $min
+     * @param int $max
+     * @return string
+     */
+    public function getRangeStatements($min = null, $max = null) {
+        if($min === null || $max === null) {
+            return '';
+        }
+        return 'LIMIT '.($max - $min). " OFFSET $min";
+    }
 }
