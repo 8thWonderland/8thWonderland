@@ -4,7 +4,11 @@ namespace Wonderland\Library\Http\Response;
 
 class PaginatedResponse extends AbstractResponse {
     /** @var string **/
-    protected $url;
+    protected $location;
+    /** @var string **/
+    protected $rangeUnit;
+    /** @var string **/
+    protected $contentRange;
     
     /**
      * @param mixed $data
@@ -16,25 +20,48 @@ class PaginatedResponse extends AbstractResponse {
     public function __construct($data = '', $rangeUnit, $range, $maxElements, $status = 200) {
         $this->data = $data;
         $this->status = $status;
-        $this->url = "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
         
+        $this->location = "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
         $this->rangeUnit = $rangeUnit;
-        $this->range = $range;
-        $this->maxElements = $maxElements;
-    }
-    
-    public function makeHeaders() {
-        header("{$_SERVER['SERVER_PROTOCOL']} {$this->status} {$this->reasons[$this->status]}");
-        header("Accept-Ranges: {$this->rangeUnit}");
-        header("Content-Range: {$this->range}/{$this->maxElements}");
-        header("Link: {$this->getLinks()}");
-    }
-    
-    public function getLinks() {
+        $this->contentRange = "$range/$maxElements";
         
+        $this->generatePaginationHeaders();
+    }
+    
+    public function generatePaginationHeaders() {
+        $data = explode('/', $this->contentRange);
+        $ranges = explode('-', $data[0]);
+        $minRange = $ranges[0];
+        $maxRange = $ranges[1];
+        $maxItems = $data[1];
+        $limit = $maxRange - $minRange;
+
+        $links = [
+            'first' => "0-{$limit}",
+            'previous' => ($minRange - $limit).'-'.$minRange,
+            'next' => $maxRange.'-'.($maxRange + $limit),
+            'last' => $maxItems - $limit.'-'.$maxItems,
+        ];
+        // Avoid to set next link with smaller range than the min range
+        if ($minRange < $limit) {
+            $links['previous'] = $links['first'];
+        }
+        // Avoid to set next link with bigger range than the max range
+        if ($maxRange + $limit > $maxItems) {
+            $links['next'] = $links['last'];
+        }
+        $this->addHeaders([
+            'Accept-Ranges' => $this->rangeUnit,
+            'Content-Range' => $this->contentRange,
+            'Link' => "<{$this->location}>; rel=\"first\"; items=\"{$links['first']}\",".
+                "<{$this->location}>; rel=\"previous\"; items=\"{$links['previous']}\",".
+                "<{$this->location}>; rel=\"next\"; items=\"{$links['next']}\",".
+                "<{$this->location}>; rel=\"last\"; items=\"{$links['last']}\"",
+            'Access-Control-Expose-Headers' => 'Accept-Ranges, Content-Range',
+        ]);
     }
     
     public function respond() {
-        
+        echo json_encode($this->data, $this->status);
     }
 }
