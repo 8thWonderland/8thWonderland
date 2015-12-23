@@ -7,6 +7,10 @@ use Wonderland\Application\Model\GroupType;
 use Wonderland\Application\Model\Member;
 
 class GroupRepository extends AbstractRepository {
+    /**
+     * @param int $id
+     * @return array
+     */
     public function find($id) {
         return $this->connection->prepareStatement(
             'SELECT g.id, g.name, g.description, g.contact_id, u.identity, g.created_at, g.updated_at, gt.label ' .
@@ -19,10 +23,12 @@ class GroupRepository extends AbstractRepository {
     
     /**
      * @param int $typeId
+     * @param int $minRange
+     * @param int $maxRange
      * @param boolean $raw
      * @return array|Group
      */
-    public function findGroups($typeId = null, $raw = true) {
+    public function findGroups($typeId = null, $minRange = null, $maxRange = null, $raw = true) {
         $whereClause = 
             ($typeId !== null)
             ? "WHERE gt.id = $typeId "
@@ -34,7 +40,8 @@ class GroupRepository extends AbstractRepository {
             'INNER JOIN group_types gt ON gt.id = g.type_id ' .
             'LEFT JOIN users u ON u.id = g.contact_id ' .
             $whereClause .
-            'ORDER BY g.name ASC'
+            'ORDER BY g.name ASC ' .
+            $this->getRangeStatements($minRange, $maxRange)
         );
         $groups = [];
         while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
@@ -45,6 +52,17 @@ class GroupRepository extends AbstractRepository {
             ;
         }
         return $groups;
+    }
+    
+    public function countGroups($typeId = null) {
+        $whereClause = 
+            ($typeId !== null)
+            ? "WHERE g.type_id = $typeId "
+            : ''
+        ;
+        return $this->connection->query(
+            "SELECT COUNT(*) as nb_groups FROM groups g $whereClause" 
+        )->fetch(\PDO::FETCH_ASSOC)['nb_groups'];
     }
     
     public function findRegionalGroups() {

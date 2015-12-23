@@ -5,7 +5,7 @@ namespace Wonderland\Application\Controller;
 use Wonderland\Library\Controller\ActionController;
 
 use Wonderland\Library\Http\Response\Response;
-use Wonderland\Library\Http\Response\JsonResponse;
+use Wonderland\Library\Http\Response\PaginatedResponse;
 
 class GroupController extends ActionController {
     public function listAction() {
@@ -14,14 +14,22 @@ class GroupController extends ActionController {
         }
         
         $typeId = (isset($_GET['type_id'])) ? $_GET['type_id']: null;
+        $groupManager = $this->application->get('group_manager');
         
         if($this->is_Ajax()) {
-            return new JsonResponse($this->application->get('group_manager')->getGroups($typeId));
+            $range = $this->request->getRange();
+            return new PaginatedResponse(
+                $groupManager->getGroups($typeId, $range['min'], $range['max']),
+                $_SERVER['HTTP_RANGE_UNIT'],
+                $_SERVER['HTTP_RANGE'],
+                $groupManager->countGroups($typeId),
+                206
+            );
         }
         return $this->render('groups/list', [
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
-            'groups' => $this->application->get('group_manager')->getGroups($typeId, false),
+            'groups' => $groupManager->getGroups($typeId, null, null, false),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId())
         ]);
     }
