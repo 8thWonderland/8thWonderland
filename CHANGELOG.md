@@ -1,4 +1,4 @@
-## Unreleased
+## 0.1.2 - 2015-26-12
 ### Added
 - PHP-ABAC library to manage access-control
 - Error handler
@@ -11,6 +11,7 @@
 - Scrutinizer Continuous Integration
 - Response classes for controller returns
 - Request class for controller inputs
+- Paginator back-end and front-end
 
 ### Changed
 - Front-end design
