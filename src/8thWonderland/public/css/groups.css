@@ -32,12 +32,12 @@
     color: #F0EDE0;
 }
 
-#groups-list section ul {
+#groups-list section > ul {
     margin-top:0px;
     padding-left:0px;
     list-style-type: none;
     overflow-y: scroll;
-    height:600px;
+    height:500px;
 }
 
 .group {
@@ -57,4 +57,36 @@
     
 .group span {
     padding-right:10px;
+}
+
+.paginator ul {
+    list-style-type:none;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.paginator li {
+    padding-left:5px;
+    padding-right:5px;
+}
+
+.paginator li a {
+    cursor:pointer;
+    padding:5px 10px;
+    background-color: #FFD0A0;
+    color: #D08010;
+    font-size:1.1em;
+    border-radius:20px;
+    text-decoration:none;
+}
+
+.paginator li a[disabled] {
+    background-color: #FFE0C0;
+    color: #FFD0A0;
+}
+
+.paginator li a:hover,
+.paginator li a.active {
+    color:#FFD0A0;
+    background-color: #D08010;
 }

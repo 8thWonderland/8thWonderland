@@ -51,16 +51,17 @@ class Renderer {
     /**
      * @param string $view
      * @param array $parameters
-     * @param array $headers
+     * @return string
      */
-    public function render($view, $parameters = [], $headers = []) {
+    public function render($view, $parameters = []) {
         if(count($parameters) > 0) {
             $this->addParameters($parameters);
         }
-        foreach($headers as $header => $value) {
-            header("$header: $value");
-        }
+        ob_start();
         require("{$this->rootPath}/Application/views/$view.view");
+        $template = ob_get_contents();
+        ob_end_clean();
+        return $template;
     }
     
     /**

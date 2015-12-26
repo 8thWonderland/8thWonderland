@@ -8,9 +8,15 @@ use Wonderland\Library\Exception\AccessDeniedException;
 use Wonderland\Library\Exception\BadRequestException;
 use Wonderland\Library\Exception\ForbiddenException;
 
+use Wonderland\Library\Http\Request;
+use Wonderland\Library\Http\Response\Response;
+use Wonderland\Library\Http\Response\RedirectResponse;
+
 abstract class ActionController {
     /** @var \Wonderland\Library\Application **/
     protected $application;
+    /** @var \Wonderland\Library\Http\Request\Request **/
+    protected $request;
     /** @var string **/
     protected $controllersDirectory = 'src/8thWonderland/Application/Controller';
     /** @var \Wonderland\Application\Model\Member **/
@@ -19,17 +25,23 @@ abstract class ActionController {
     /**
      * @param Application $application
      */
-    public function __construct(Application $application) {
+    public function __construct(Application $application, Request $request) {
         $this->application = $application;
+        $this->request = $request;
     }
     
     /**
      * @param string $view
      * @param array $parameters
      * @param array $headers
+     * @return \Wonderland\Library\Http\Response\Response
      */
-    public function render($view, $parameters = [], $headers = []) {
-        $this->application->get('templating')->render($view, $parameters, $headers);
+    public function render($view, $parameters = [], $headers = [], $status = 200) {
+        return new Response($this
+            ->application
+            ->get('templating')
+            ->render($view, $parameters)
+        , $status);
     }
     
     /**
@@ -56,16 +68,9 @@ abstract class ActionController {
         return json_decode(file_get_contents('php://input'), true);
     }
     
-    // Affichage d'un texte directement
-    // SHAME
-    // @ToRemove !!!
-    // ================================
-    public function display($msg) {
-        echo $msg;
-    }
-    
     /**
      * @param string $url
+     * @return \Wonderland\Library\Http\Response\AbstractResponse
      */
     public function redirect($url) {   
         if ($this->is_Ajax()) {
@@ -74,20 +79,15 @@ abstract class ActionController {
                 ? '/'
                 : $_SERVER['BASE'] . '/'
             ;
-            echo json_encode([
-                'command' => 'redirect',
-                'location' => $rootPath . $url
-            ]);
-            exit;
+            return new RedirectResponse($url, 301);
         }
         $params = $this->_formatURL($url);
 
         // route vers le controleur et l'action demandée
-        $ctrl = new $params[0]($this->application);
-        $action = $params[1] . "Action";
+        $controller = new $params[0]($this->application);
+        $action = "{$params[1]}Action";
 
-        $ctrl->$action();
-        exit();
+        return $controller->$action();
     }
     
     /**

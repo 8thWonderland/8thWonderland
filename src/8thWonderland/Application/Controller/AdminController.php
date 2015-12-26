@@ -17,7 +17,7 @@ class AdminController extends ActionController {
     public function displayConsoleAction() {
         // affichage du profil
         $member = $this->getUser();
-        $this->render('admin/console', [
+        return $this->render('admin/console', [
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar()
         ]);
@@ -30,32 +30,32 @@ class AdminController extends ActionController {
         $logger = new Log("db");
         $logger->log("{$this->getUser()->getIdentity()} quitte la console d'administration.", Log::INFO);
         
-        $this->redirect('intranet/index');
+        return $this->redirect('intranet/index');
     }
     
     public function displayLogsAction() {
-        $this->render('admin/logs', [
+        return $this->render('admin/logs', [
             'list_logs' => $this->renderLogs()
         ]);
     }
         
     
     public function displayUsersAction() {
-        $this->render('admin/users', [
+        return $this->render('admin/users', [
             'list_users' => $this->renderUsers()
         ]);
     }
             
     
     public function displayGroupsAction() {
-        $this->render('admin/dev_inprogress');
+        return $this->render('admin/dev_inprogress');
     }
                 
     
     public function displayServerAction() {
         $translate = $this->application->get('translator');
         $cronsList = $this->application->get('ovh_manager')->getCrons($this->getUser());
-        $this->render('admin/console_ovh', [
+        return $this->render('admin/console_ovh', [
             'crons' =>
                 (isset($cronsList))
                 ? $this->renderCrons($cronsList)
@@ -69,7 +69,7 @@ class AdminController extends ActionController {
     
     
     public function displayCreateCronAction() {
-        $this->render('admin/create_cron');
+        return $this->render('admin/create_cron');
     }
     
     public function displayStatsCountryAction() {
@@ -95,7 +95,7 @@ class AdminController extends ActionController {
         
         $memberManager = $this->application->get('member_manager');
         
-        $this->render('informations/stats_country', [
+        return $this->render('informations/stats_country', [
             'stats_members' => $memberManager->countMembers(),
             'stats_members_actives' => $memberManager->countActiveMembers(),
             'stats_regions_ok' => $regions_ok
@@ -126,13 +126,14 @@ class AdminController extends ActionController {
         }
         
         if (!empty($err_msg)) {
-            $this->display('<div class="error" style="height:25px;"><table><tr>' .
-                          '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
-                          '<td><span style="font-size: 15px;">' . $err_msg . '</span></td>' .
-                          '</tr></table></div>');
-        } else {
-            $this->display("<script type='text/javascript'>window.onload=Clic('Admin/displayServer', '', 'milieu_milieu');</script>");
+            return new Response(
+                '<div class="error" style="height:25px;"><table><tr>' .
+                '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
+                '<td><span style="font-size: 15px;">' . $err_msg . '</span></td>' .
+                '</tr></table></div>'
+            );
         }
+        return new Response("<script type='text/javascript'>window.onload=Clic('Admin/displayServer', '', 'milieu_milieu');</script>");
     }
     
     public function deleteCronAction() {
@@ -140,23 +141,25 @@ class AdminController extends ActionController {
         $res = $this->application->get('ovh_manager')->deleteCron($_POST['cronid'], $_POST['crondesc']);
         if (isset($res)) {
             if ($res == false) {
-                $this->display('<div class="error" style="height:25px;"><table><tr>' .
-                              '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
-                              '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
-                              '</tr></table></div>');
-            } else {
-                $this->display("<script type='text/javascript'>window.onload=Clic('Admin/displayServer', '', 'milieu_milieu');</script>");
+                return new Response(
+                    '<div class="error" style="height:25px;"><table><tr>' .
+                    '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
+                    '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
+                    '</tr></table></div>'
+                );
             }
-        } else {
-            $this->display('<div class="error" style="height:25px;"><table><tr>' .
-                          '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
-                          '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
-                          '</tr></table></div>');
+            return new Response("<script type='text/javascript'>window.onload=Clic('Admin/displayServer', '', 'milieu_milieu');</script>");
         }
+        return new Response(
+            '<div class="error" style="height:25px;"><table><tr>' .
+            '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
+            '<td><span style="font-size: 15px;">' . $translate->translate('connexion_nok') . '</span></td>' .
+            '</tr></table></div>'
+        );
     }
     
     public function editCronAction() {
-        $this->render('admin/dev_inprogress');
+        return $this->render('admin/dev_inprogress');
     }
     
     /**

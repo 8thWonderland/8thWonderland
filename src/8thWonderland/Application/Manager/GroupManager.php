@@ -37,11 +37,21 @@ class GroupManager {
     
     /**
      * @param int $typeId
+     * @param int $minRange
+     * @param int $maxRange
      * @param boolean $raw
      * @return array
      */
-    public function getGroups($typeId = null, $raw = true) {
-        return $this->repository->findGroups($typeId, $raw);
+    public function getGroups($typeId = null, $minRange = null, $maxRange = null, $raw = true) {
+        return $this->repository->findGroups($typeId, $minRange, $maxRange, $raw);
+    }
+    
+    /**
+     * @param int $typeId
+     * @return int
+     */
+    public function countGroups($typeId = null) {
+        return $this->repository->countGroups($typeId);
     }
     
     /**

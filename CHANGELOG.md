@@ -1,4 +1,4 @@
-## Unreleased
+## 0.1.2 - 2015-26-12
 ### Added
 - PHP-ABAC library to manage access-control
 - Error handler
@@ -9,12 +9,18 @@
 - Unit testing suite
 - Travis Continuous Integration
 - Scrutinizer Continuous Integration
+- Response classes for controller returns
+- Request class for controller inputs
+- Paginator back-end and front-end
 
 ### Changed
 - Front-end design
 - Database logs have been updated
 - Update the partners widget
 - Add a page for groups list instead of the old module
+
+### Removed
+- Old ActionController::display method
 
 ## 0.1.1 - 2015-07-11
 ### Added

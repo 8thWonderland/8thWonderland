@@ -4,29 +4,42 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
+use Wonderland\Library\Http\Response\Response;
+use Wonderland\Library\Http\Response\PaginatedResponse;
+
 class GroupController extends ActionController {
     public function listAction() {
         if(($member = $this->getUser()) === null) {
-            $this->redirect('index/index');
+            return $this->redirect('index/index');
         }
         
         $typeId = (isset($_GET['type_id'])) ? $_GET['type_id']: null;
+        $groupManager = $this->application->get('group_manager');
         
+        $range = $this->request->getRange(10);
         if($this->is_Ajax()) {
-            header('Content-Type: application/json');
-            echo json_encode($this->application->get('group_manager')->getGroups($typeId));
-            return true;
+            return new PaginatedResponse([
+                    'groups' => $groupManager->getGroups($typeId, $range['min'], $range['max']),
+                    'total_groups' => $groupManager->countGroups($typeId)
+                ],
+                $_SERVER['HTTP_RANGE_UNIT'],
+                $_SERVER['HTTP_RANGE'],
+                $groupManager->countGroups($typeId),
+                206
+            );
         }
-        $this->render('groups/list', [
+        return $this->render('groups/list', [
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
-            'groups' => $this->application->get('group_manager')->getGroups($typeId, false),
+            'groups' => $groupManager->getGroups($typeId, $range['min'], $range['max'], false),
+            'groups_range' => $range['max'],
+            'total_groups' => $groupManager->countGroups($typeId),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId())
         ]);
     }
     
     public function displayGroupsAction() {
-        $this->render('groups/list_allgroups', [
+        return $this->render('groups/list_allgroups', [
             'list_Allgroups' => $this->renderGroups(),
             'map_coord' => $this->renderMapCoord()
         ]);
@@ -34,7 +47,7 @@ class GroupController extends ActionController {
     
     public function displayGroupsMembersAction() {
         if (($member = $this->getUser()) === null) {
-            $this->redirect('Index/index');
+            return $this->redirect('Index/index');
         }
         
         $translate = $this->application->get('translator');
@@ -51,7 +64,7 @@ class GroupController extends ActionController {
                 "<span style='color: #dfdfdf;'>{$translate->translate('btn_enterdesktop')}</span></a></div></td></tr>"
             ;
         }
-        $this->render('groups/list_groups', [
+        return $this->render('groups/list_groups', [
             'list_groups' => $groupsList
         ]);
     }
@@ -111,7 +124,7 @@ class GroupController extends ActionController {
         if ($CurPage < $MaxPage) {
             $next = '<a onclick="Clic(\'Group/displayMembers\', \'&page=' . ($CurPage + 1) . '\', \'md_section2\'); return false;">' . $translate->translate('page_next') . '</a>';
         }
-        $this->render('groups/list_membersgroup', [
+        return $this->render('groups/list_membersgroup', [
             'list_membersgroup' => $tabmini_usersgroup . $next . '</td></tr></table>'
         ]);
     }
@@ -125,30 +138,30 @@ class GroupController extends ActionController {
         for ($i = 0; $i < $nbMembers; ++$i) {
             $select .= "<option value='{$membersList[$i]->getId()}'>{$membersList[$i]->getIdentity()}</option>";
         }
-        $this->render('groups/manage_groups', [
+        return $this->render('groups/manage_groups', [
             'select_contactsgroup' => $select
         ]);
     }
     
     public function displayCalendarAction() {
-        $this->render('admin/dev_inprogress');
+        return $this->render('admin/dev_inprogress');
     }
     
     public function displayAddressBookAction() {
-        $this->render('members/list_users', [
+        return $this->render('members/list_users', [
             'list_users' => $this->renderUsers()
         ]);
     }
     
     public function displayBookmarkAction() {
-        $this->render('admin/dev_inprogress');
+        return $this->render('admin/dev_inprogress');
     }
     
     public function quitDesktopAction() {
         $session = $this->application->get('session');
         $session->delete('desktop');
         $session->delete('search_users');
-        $this->redirect('Intranet/index');
+        return $this->redirect('Intranet/index');
     }
     
     public function changeContactGroupsAction() {
@@ -160,7 +173,7 @@ class GroupController extends ActionController {
         $this->checkAccess('group-management', $desktop, ['group-owner' => $member->getId()]);
         
         if (!isset($_POST['sel_contactgroups']) || intval($_POST['sel_contactgroups']) === 0) {
-            $this->display(
+            return new Response(
                 '<div class="error" style="height:25px;"><table><tr>' .
                 '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
                 '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
@@ -171,7 +184,7 @@ class GroupController extends ActionController {
         } else {
             $groupManager = $this->application->get('group_manager');
             if(($group = $groupManager->getGroup($desktop)) === null) {
-                return $this->display(
+                return new Response(
                     '<div class="error" style="height:25px;"><table><tr>' .
                     '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
                     '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
@@ -179,7 +192,7 @@ class GroupController extends ActionController {
                 );
             }
             if(($newContact = $this->application->get('member_manager')->getMember($_POST['sel_contactgroups'])) === null) {
-                return $this->display(
+                return new Response(
                     '<div class="error" style="height:25px;"><table><tr>' .
                     '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
                     '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
@@ -188,17 +201,16 @@ class GroupController extends ActionController {
             }
             $res = $groupManager->updateContact($group, $newContact);
             if ($res === 0) {
-                $this->display('<div class="error" style="height:25px;"><table><tr>' .
-                          '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
-                          '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
-                          '</tr></table></div>');
-                
                 $dbLogger->log("Echec du changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::ERR);
-            } else {
-                $this->display("<script type='text/javascript'>window.onload=Clic('Intranet/index', '$desktop', 'body');</script>");
-                
-                $dbLogger->log("Changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::INFO);
+                return new Response(
+                    '<div class="error" style="height:25px;"><table><tr>' .
+                    '<td><img alt="error" src="' . ICO_PATH . '64x64/Error.png" style="width:24px;"/></td>' .
+                    '<td><span style="font-size: 15px;">' . $translate->translate('error') . '</span></td>' .
+                    '</tr></table></div>'
+                );
             }
+            $dbLogger->log("Changement de CG par {$member->getIdentity()} (id_user = {$_POST['sel_contactgroups']})", Log::INFO);
+            return new Response("<script type='text/javascript'>window.onload=Clic('Intranet/index', '$desktop', 'body');</script>");
         }
     }
     

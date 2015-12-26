@@ -18,7 +18,7 @@ class MailController extends ActionController {
         $this->process();
 
         $this->defaultFile = APPLICATION_PATH . 'views/communications/contactus.view';
-        $this->render('informations/menu_presentation');
+        return $this->render('informations/menu_presentation');
     }
     
     protected function process() {
