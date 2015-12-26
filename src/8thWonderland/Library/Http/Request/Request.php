@@ -34,11 +34,13 @@ class Request {
     /**
      * @return array
      */
-    public function getRange() {
+    public function getRange($defaultNbElements) {
         if(!isset($this->headers['Range'])) {
-            throw new BadRequestException('The range header must be set');
+            return [
+                'min' => 0,
+                'max' => $defaultNbElements
+            ];
         }
-        
         $range = explode('-', $this->headers['Range']);
         return [
             'min' => $range[0],
