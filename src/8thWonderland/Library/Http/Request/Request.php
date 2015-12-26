@@ -13,7 +13,15 @@ class Request {
     }
     
     public function setHeaders() {
-        $this->headers = getallheaders();
+        if(function_exists('getallheaders')) {
+            $this->headers = getallheaders();
+            return true;
+        }
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $this->headers[strtolower(str_replace('_', '-', substr($name, 5)))] = $value;
+            }
+        }
     }
     
     /**
@@ -21,7 +29,7 @@ class Request {
      * @return string
      */
     public function getHeader($header) {
-        return $this->headers[$header];
+        return $this->headers[strtolower($header)];
     }
     
     /**
@@ -35,13 +43,13 @@ class Request {
      * @return array
      */
     public function getRange($defaultNbElements) {
-        if(!isset($this->headers['Range'])) {
+        if(!isset($this->headers['range'])) {
             return [
                 'min' => 0,
                 'max' => $defaultNbElements
             ];
         }
-        $range = explode('-', $this->headers['Range']);
+        $range = explode('-', $this->headers['range']);
         return [
             'min' => $range[0],
             'max' => $range[1]

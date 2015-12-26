@@ -8,7 +8,7 @@ use Wonderland\Library\Exception\AccessDeniedException;
 use Wonderland\Library\Exception\BadRequestException;
 use Wonderland\Library\Exception\ForbiddenException;
 
-use Wonderland\Library\Http\Request;
+use Wonderland\Library\Http\Request\Request;
 use Wonderland\Library\Http\Response\Response;
 use Wonderland\Library\Http\Response\RedirectResponse;
 
