@@ -16,10 +16,12 @@ class GroupController extends ActionController {
         $typeId = (isset($_GET['type_id'])) ? $_GET['type_id']: null;
         $groupManager = $this->application->get('group_manager');
         
+        $range = $this->request->getRange(10);
         if($this->is_Ajax()) {
-            $range = $this->request->getRange();
-            return new PaginatedResponse(
-                $groupManager->getGroups($typeId, $range['min'], $range['max']),
+            return new PaginatedResponse([
+                    'groups' => $groupManager->getGroups($typeId, $range['min'], $range['max']),
+                    'total_groups' => $groupManager->countGroups($typeId)
+                ],
                 $_SERVER['HTTP_RANGE_UNIT'],
                 $_SERVER['HTTP_RANGE'],
                 $groupManager->countGroups($typeId),
@@ -29,7 +31,9 @@ class GroupController extends ActionController {
         return $this->render('groups/list', [
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
-            'groups' => $groupManager->getGroups($typeId, null, null, false),
+            'groups' => $groupManager->getGroups($typeId, $range['min'], $range['max'], false),
+            'groups_range' => $range['max'],
+            'total_groups' => $groupManager->countGroups($typeId),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId())
         ]);
     }
