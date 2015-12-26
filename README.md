@@ -2,8 +2,8 @@
 =========
 
 [![Build Status](https://travis-ci.org/8thWonderland/8thWonderland.svg?branch=master)](https://travis-ci.org/8thWonderland/8thWonderland)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Kern046/8thWonderlandV4/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Kern046/8thWonderlandV4/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Kern046/8thWonderlandV4/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Kern046/8thWonderlandV4/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/8thWonderland/8thWonderland/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/8thWonderland/8thWonderland/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/8thWonderland/8thWonderland/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/8thWonderland/8thWonderland/?branch=master)
 
 Introduction
 ------------
