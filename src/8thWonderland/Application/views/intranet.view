@@ -63,6 +63,7 @@
                 </section>
             </div>
         </div>
+        <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>
     </body>

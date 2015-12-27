@@ -4,6 +4,7 @@ $(function() {
     });
 });
 
+var website_root = $("input[name=website-root]").val();
 var deployed_panel = "login";
 
 function getRegionsList() {
@@ -15,7 +16,7 @@ function getRegionsList() {
     
     $.ajax({
         type: "GET",
-        url: "country/regions", 
+        url: website_root + "country/regions", 
         dataType: "json",
         success : function(regions) {
             var regions_list = $("select[name=region]");
@@ -40,7 +41,7 @@ function authenticate() {
     };
     $.ajax({
         type: "POST",
-        url: "authenticate/connect",
+        url: website_root + "authenticate/connect",
         contentType: "application/json",
         data: JSON.stringify(authentication),
         error: function(data)
@@ -64,7 +65,7 @@ function register() {
     
     $.ajax({
         type: "POST",
-        url: "authenticate/subscribe", 
+        url: website_root + "authenticate/subscribe", 
         dataType: "text",
         contentType: "application/json",
         success : function(data) {
