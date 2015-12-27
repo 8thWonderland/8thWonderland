@@ -33,7 +33,7 @@
             </div>
             <ul class="dropdown-menu" aria-labelledby="dLabel">
                 <li>
-                    <a href="authenticate/logout">
+                    <a href="#" onclick="log_out();return false;">
                         <?php $this->translate('logout'); ?>
                     </a>
                 </li>

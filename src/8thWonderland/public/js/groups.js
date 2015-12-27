@@ -1,5 +1,4 @@
 var filtered_group_type = '';
-var website_root = $("input[name=website-root]").val();
 
 $(".group a").animate({"margin-left":"0%"}, 800);
 
