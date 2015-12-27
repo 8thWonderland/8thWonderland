@@ -1,7 +1,9 @@
 <div id="header">
     <div id="logo">
         <h1>
-            <span>8</span>th <span>W</span>onderland
+            <a href="<?php echo VIEW_PATH; ?>">
+                <span>8</span>th <span>W</span>onderland
+            </a>
         </h1>
     </div>
     <div id="personal-area">
