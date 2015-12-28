@@ -13,36 +13,42 @@
         <?php
             echo $this->render('intranet/header');
         ?>
-        <div id="content">
+        <header>
+            <div id="actions">
+                <div>
+                    <a class="btn btn-danger" href="<?php echo VIEW_PATH; ?>group/list">
+                        <?php $this->translate('groups.back_to_list'); ?>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <section id="group-details">
             <header>
-                <div>
-
+                <div id="group-titles">
+                    <h1><?php echo $this->parameters['group']->getName(); ?></h1>
+                    <h3><?php echo $this->parameters['group']->getType()->getLabel(); ?></h3>
                 </div>
-                <div>
+                <div id="group-infos">
+                    <ul>
+                        <li>
+                            <?php
+                                echo "{$this->parameters['nb_members']}<i class='fa fa-users fa-2x'></i>";
+                            ?>
+                        </li>
+                        <?php
+                            if($this->parameters['group']->getContact()->getIdentity() !== null) {
+                                echo
+                                    '<li>',
+                                    $this->parameters['group']->getContact()->getIdentity(),
+                                    '<i class="fa fa-phone fa-2x"></i>',
+                                    '</li>'
+                                ;
+                            }
+                        ?>
+                    </ul>
                 </div>
-                <h1><?php echo $this->parameters['group']->getName(); ?></h1>
-                <h3><?php echo $this->parameters['group']->getType()->getLabel(); ?></h3>
             </header>
-            <section>
-                <ul>
-                    <li>
-                        <i class="fa fa-users fa-3x"></i>
-                        <?php echo $this->parameters['nb_members']; ?>
-                        Members
-                    </li>
-                    <?php
-                        if($this->parameters['group']->getContact()->getIdentity() !== null) {
-                            echo
-                                '<li>',
-                                '<i class="fa fa-phone fa-3x"></i>',
-                                $this->parameters['group']->getContact()->getIdentity(),
-                                '</li>'
-                            ;
-                        }
-                    ?>
-                </ul>
-            </section>
-        </div>
+        </section>
         <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>

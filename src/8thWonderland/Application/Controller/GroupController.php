@@ -56,7 +56,7 @@ class GroupController extends ActionController {
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
             'group' => $group,
-            'nb_members' => $groupManager->countGroupMembers($_GET['group_id']),
+            'nb_members' => (int) $groupManager->countGroupMembers($_GET['group_id']),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId())
         ]);
     }
