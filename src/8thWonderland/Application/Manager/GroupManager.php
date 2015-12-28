@@ -19,6 +19,10 @@ class GroupManager {
         $this->repository = $groupRepository;
     }
     
+    /**
+     * @param int $id
+     * @return Group|null
+     */
     public function getGroup($id) {
         if(($data = $this->repository->find($id)) === false) {
             return null;
@@ -29,7 +33,11 @@ class GroupManager {
             ->setName($data['name'])
             ->setDescription($data['description'])
             ->setType((new GroupType())->setLabel($data['label']))
-            ->setContact((new Member())->setId($data['contact_id']))
+            ->setContact(
+                (new Member())
+                ->setId($data['contact_id'])
+                ->setIdentity($data['contact_identity'])
+            )
             ->setCreatedAt(new \DateTime($data['created_at']))
             ->setUpdatedAt(new \DateTime($data['updated_at']))
         ;
@@ -65,7 +73,7 @@ class GroupManager {
      * @param int $groupId
      * @return int
      */
-    public function countMembers($groupId) {
+    public function countGroupMembers($groupId) {
         return $this->repository->countGroupMembers($groupId);
     }
     

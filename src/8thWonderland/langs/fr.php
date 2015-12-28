@@ -82,6 +82,7 @@ $array = array(
     'groups'                => 'Groupes',
     'groups.thematic'       => 'Groupes Thématiques',
     'groups.regional'       => 'Groupes Régionaux',
+    'groups.back_to_list'   => 'Revenir à la liste des Groupes',
         
 
     // Partie 'TACHES'

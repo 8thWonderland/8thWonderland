@@ -24,11 +24,14 @@ class ErrorHandler {
      */
     public function handleException(\Exception $exception) {
         if(is_a($exception, 'Wonderland\\Library\\Exception\\AbstractException')) {
-            $exception->handle();
+            $response = $exception->handle();
+            $response->makeHeaders();
+            $response->respond();
         }
         if($this->reporting !== false) {
             $this->logError(get_class($exception), "{$exception->getMessage()} at file {$exception->getFile()} at line {$exception->getLine()}");
         }
+        exit(0);
     }
     
     /**

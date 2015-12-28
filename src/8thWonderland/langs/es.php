@@ -79,6 +79,7 @@ $array = array(
     "stats_country"         => "Estadístico del país",
     'my_groups'             => 'Mis groupos',
     'groups'                => 'Grupos',
+    'groups.back_to_list'   => 'Volver a la lista del grupos',
                 
 
     // Partie 'TACHES'

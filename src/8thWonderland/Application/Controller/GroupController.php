@@ -4,6 +4,9 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
+use Wonderland\Library\Exception\BadRequestException;
+use Wonderland\Library\Exception\NotFoundException;
+
 use Wonderland\Library\Http\Response\Response;
 use Wonderland\Library\Http\Response\PaginatedResponse;
 
@@ -34,6 +37,26 @@ class GroupController extends ActionController {
             'groups' => $groupManager->getGroups($typeId, $range['min'], $range['max'], false),
             'groups_range' => $range['max'],
             'total_groups' => $groupManager->countGroups($typeId),
+            'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId())
+        ]);
+    }
+    
+    public function showAction() {
+        $member = $this->getUser();
+        
+        if(!isset($_GET['group_id'])) {
+            throw new BadRequestException('A group ID must be set');
+        }
+        $groupManager = $this->application->get('group_manager');
+        
+        if(($group = $groupManager->getGroup($_GET['group_id'])) === null) {
+            throw new NotFoundException('Group Not Found');
+        }
+        return $this->render('groups/show', [
+            'identity' => $member->getIdentity(),
+            'avatar' => $member->getAvatar(),
+            'group' => $group,
+            'nb_members' => (int) $groupManager->countGroupMembers($_GET['group_id']),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId())
         ]);
     }

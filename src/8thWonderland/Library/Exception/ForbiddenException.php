@@ -2,6 +2,8 @@
 
 namespace Wonderland\Library\Exception;
 
+use Wonderland\Library\Http\Response\Response;
+
 class ForbiddenException extends AbstractException {
     /** @var array **/
     protected $rejectedAttributes;
@@ -14,6 +16,6 @@ class ForbiddenException extends AbstractException {
     }
     
     public function handle() {
-        header("{$_SERVER['SERVER_PROTOCOL']} 403 Forbidden");
+        return new Response(null, 403);
     }
 }

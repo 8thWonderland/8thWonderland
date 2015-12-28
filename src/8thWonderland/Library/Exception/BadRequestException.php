@@ -2,15 +2,14 @@
 
 namespace Wonderland\Library\Exception;
 
+use Wonderland\Library\Http\Response\JsonResponse;
+
 class BadRequestException extends AbstractException {
     public function handle() {
-        header("{$_SERVER['SERVER_PROTOCOL']} 400 Bad Request");
-        header('Content-Type: application/json');
-        
-        echo json_encode([
+        return new JsonResponse([
             'errors' => [
                 $this->getMessage()
             ]
-        ]);
+        ], 400);
     }
 }
