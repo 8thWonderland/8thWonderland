@@ -52,13 +52,13 @@
                         <ul>
                             <?php
                                 foreach($this->parameters['groups'] as $group) {
-                                    echo "<li><a href='#'>{$group->getName()}</a></li>";
+                                    echo "<li><a href='", VIEW_PATH, "group/show?group_id={$group->getId()}'>{$group->getName()}</a></li>";
                                 }
                             ?>
                         </ul>
                     </section>
                     <footer>
-                        <a href="group/list" class="btn btn-info"><?php $this->translate('discover_groups'); ?></a>
+                        <a href="<?php echo VIEW_PATH; ?>group/list" class="btn btn-info"><?php $this->translate('discover_groups'); ?></a>
                     </footer>
                 </section>
             </div>
