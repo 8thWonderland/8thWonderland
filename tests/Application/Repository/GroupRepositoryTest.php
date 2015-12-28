@@ -31,7 +31,7 @@ class GroupRepositoryTest extends WonderlandTestCase {
             'name' => 'Développeurs',
             'description' => 'Equipe de développement du site',
             'contact_id' => '1',
-            'identity' => 'John Doe',
+            'contact_identity' => 'John Doe',
             'created_at' => '2015-08-22 15:30:00',
             'updated_at' => '2015-09-01 23:54:32',
             'label' => 'groups.thematic'
