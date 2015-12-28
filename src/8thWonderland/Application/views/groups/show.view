@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>8th Wonderland - <?php echo $this->parameters['group']->getName(); ?></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>intranet.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>groups.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="<?php echo IMG_PATH; ?>icone.png" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>bootstrap.min.css" type="text/css" media="screen" />
+    </head>
+    <body>
+        <?php
+            echo $this->render('intranet/header');
+        ?>
+        <div id="content">
+            <header>
+                <div>
+
+                </div>
+                <div>
+                </div>
+                <h1><?php echo $this->parameters['group']->getName(); ?></h1>
+                <h3><?php echo $this->parameters['group']->getType()->getLabel(); ?></h3>
+            </header>
+            <section>
+                <ul>
+                    <li>
+                        <i class="fa fa-users fa-3x"></i>
+                        <?php echo $this->parameters['nb_members']; ?>
+                        Members
+                    </li>
+                    <?php
+                        if($this->parameters['group']->getContact()->getIdentity() !== null) {
+                            echo
+                                '<li>',
+                                '<i class="fa fa-phone fa-3x"></i>',
+                                $this->parameters['group']->getContact()->getIdentity(),
+                                '</li>'
+                            ;
+                        }
+                    ?>
+                </ul>
+            </section>
+        </div>
+        <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>
+    </body>
+</html>
