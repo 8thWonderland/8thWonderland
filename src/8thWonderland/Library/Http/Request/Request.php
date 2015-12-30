@@ -2,14 +2,15 @@
 
 namespace Wonderland\Library\Http\Request;
 
-use Wonderland\Library\Exception\BadRequestException;
-
 class Request {
     /** @var array **/
     protected $headers;
+    /** @var array **/
+    protected $parameters;
     
     public function __construct() {
         $this->setHeaders();
+        $this->setParameters();
     }
     
     public function setHeaders() {
@@ -22,6 +23,21 @@ class Request {
                 $this->headers[strtolower(str_replace('_', '-', substr($name, 5)))] = $value;
             }
         }
+    }
+    
+    public function setParameters() {
+        if(isset($this->headers['content-type']) && $_SERVER['content-type'] === 'application/json') {
+            $this->parameters = $this->getJsonData();
+            return;
+        }
+        $this->parameters = array_merge($_GET, $_POST);
+    }
+    
+    /**
+     * @return array
+     */
+    public function getJsonData() {
+        return json_decode(file_get_contents('php://input'), true);
     }
     
     /**
@@ -54,5 +70,21 @@ class Request {
             'min' => $range[0],
             'max' => $range[1]
         ];
+    }
+    
+    /**
+     * @param string $parameterName
+     * @param mixed $defaultValue
+     * @param string $cast
+     * @return string
+     */
+    public function get($parameterName, $defaultValue = null, $cast = null) {
+        if(!isset($this->parameters[$parameterName])) {
+            return $defaultValue;
+        }
+        if($cast !== null) {
+            settype($this->parameters[$parameterName], $cast);
+        }
+        return $this->parameters[$parameterName];
     }
 }
