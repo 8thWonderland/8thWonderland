@@ -32,6 +32,15 @@ class MotionRepository extends AbstractRepository {
     }
     
     /**
+     * @return array
+     */
+    public function getMotionThemes() {
+        return $this->connection->query(
+            'SELECT id, label, duration FROM motion_themes'
+        )->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    /**
      * @param array $data
      * @return array
      */

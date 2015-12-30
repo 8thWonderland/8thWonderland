@@ -103,9 +103,7 @@ class MotionManager {
      * @return array
      */
     public function getMotionThemes() {
-        return $this->connection->query(
-            'SELECT theme_id, label_key FROM motions_themes ORDER BY label_key ASC'
-        );
+        return $this->repository->getMotionThemes();
     }
     
     /**
