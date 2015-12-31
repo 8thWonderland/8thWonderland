@@ -14,4 +14,4 @@ CREATE TABLE IF NOT EXISTS `motions` (
   `score` varchar(6)
 );
 
-INSERT INTO `motions` (`id`, `theme_id`, `title`, `description`, `means`, `created_at`, `ended_at`, `author_id`, `is_active`, `is_approved`, `score`) VALUES(47, 1, 'Test des motions', 'test', 'test', '2015-09-23 13:57:10', '2015-10-01 13:57:10', 1, 0, 0, 0);
+INSERT INTO `motions` (`id`, `theme_id`, `title`, `description`, `means`, `created_at`, `ended_at`, `author_id`, `is_active`, `is_approved`, `score`) VALUES(1, 1, 'Test des motions', 'test', 'test', '2015-09-23 13:57:10', '2015-10-01 13:57:10', 1, 0, 0, 0);
