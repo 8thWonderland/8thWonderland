@@ -1,0 +1,31 @@
+#create-motion-form {
+    width:800px;
+    margin:auto;
+}
+
+#create-motion-form h1 {
+    text-align:center;
+}
+
+#motion-dates {
+    display:flex;
+    justify-content: space-between;
+    padding-bottom:20px;
+}
+
+#motion-dates h3 {
+    text-align:center;
+}
+
+#motion-dates span {
+    font-size:2.0em;
+    text-align:center;
+}
+
+#create-motion-form form > .form-group:last-of-type {
+    text-align:center;
+}
+
+#create-motion-form textarea {
+    resize: vertical;
+}
