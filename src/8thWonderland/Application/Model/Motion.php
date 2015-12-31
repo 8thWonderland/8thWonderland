@@ -2,7 +2,7 @@
 
 namespace Wonderland\Application\Model;
 
-class Motion {
+class Motion implements \JsonSerializable {
     /** @var int **/
     protected $id;
     /** @var \Wonderland\Application\Model\MotionTheme **/
@@ -211,5 +211,21 @@ class Motion {
      */
     public function getScore() {
         return $this->score;
+    }
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'means' => $this->means,
+            'theme' => $this->theme,
+            'author' => $this->author,
+            'created_at' => $this->createdAt,
+            'ended_at' => $this->endedAt,
+            'is_active' => $this->isActive,
+            'is_approved' => $this->isApproved,
+            'score' => $this->score
+        ];
     }
 }
