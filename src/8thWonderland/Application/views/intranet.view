@@ -35,7 +35,9 @@
                         </ul>
                     </section>
                     <footer>
-                        <button class="btn btn-success"><?php $this->translate('create_motion'); ?></button>
+                        <a href="<?php echo VIEW_PATH, 'motion/new'; ?>" class="btn btn-success">
+                            <?php $this->translate('create_motion'); ?>
+                        </a>
                         <button class="btn btn-danger"><?php $this->translate('display_archives'); ?></button>
                     </footer>
                 </section>
