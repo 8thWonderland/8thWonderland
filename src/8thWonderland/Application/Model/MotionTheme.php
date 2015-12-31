@@ -6,7 +6,7 @@ class MotionTheme {
     /** @var int **/
     protected $id;
     /** @var string **/
-    protected $name;
+    protected $label;
     /** @var int **/
     protected $duration;
     
@@ -28,11 +28,11 @@ class MotionTheme {
     }
     
     /**
-     * @param string $name
+     * @param string $label
      * @return \Wonderland\Application\Model\MotionTheme
      */
-    public function setName($name) {
-        $this->name = $name;
+    public function setLabel($label) {
+        $this->label = $label;
         
         return $this;
     }
@@ -40,8 +40,8 @@ class MotionTheme {
     /**
      * @return string
      */
-    public function getName() {
-        return $this->name;
+    public function getLabel() {
+        return $this->label;
     }
     
     /**

@@ -5,6 +5,8 @@ namespace Wonderland\Test\Application\Repository;
 use Wonderland\Application\Repository\MotionRepository;
 
 use Wonderland\Application\Model\Member;
+use Wonderland\Application\Model\MotionTheme;
+use Wonderland\Application\Model\Motion;
 
 use Wonderland\Test\WonderlandTestCase;
 
@@ -18,6 +20,7 @@ class MotionRepositoryTest extends WonderlandTestCase {
         $this->loadFixture('group_types');
         $this->loadFixture('groups');
         $this->loadFixture('users');
+        $this->loadFixture('motion_themes');
         $this->loadFixture('motions');
         $this->loadFixture('motions_vote_tokens');
         
@@ -30,6 +33,49 @@ class MotionRepositoryTest extends WonderlandTestCase {
         $motions = $this->repository->getActiveMotions($this->getMemberMock());
         
         var_dump($motions);
+    }
+    
+    public function testGetMotionThemes() {
+        $motionThemes = $this->repository->getMotionThemes();
+        
+        $this->assertCount(3, $motionThemes);
+        $this->assertEquals([
+            'id' => '1',
+            'label' => 'motion_themes.constitutional',
+            'duration' => '8'
+        ], $motionThemes[0]);
+    }
+    
+    public function testGetMotionTheme() {
+        $motionTheme = $this->repository->getMotionTheme(2);
+        
+        $this->assertInstanceOf('Wonderland\\Application\\Model\\MotionTheme', $motionTheme);
+        $this->assertEquals('2', $motionTheme->getId());
+        $this->assertEquals('motion_themes.action', $motionTheme->getLabel());
+        $this->assertEquals('3', $motionTheme->getDuration());
+    }
+    
+    public function testCreateMotion() {
+        $motion = $this->getMotionMock();
+        
+        $this->repository->createMotion($motion);
+        
+        $this->assertEquals(2, $motion->getId());
+    }
+    
+    public function getMotionMock() {
+        return
+            (new Motion())
+            ->setTitle('Eggs for dinner')
+            ->setDescription('Give eggs everyday to everyone')
+            ->setMeans('Chickens')
+            ->setIsActive(1)
+            ->setIsApproved(0)
+            ->setTheme((new MotionTheme())->setId(2))
+            ->setCreatedAt(new \DateTime())
+            ->setEndedAt(new \DateTime())
+            ->setAuthor($this->getMemberMock())
+        ;
     }
     
     public function getMemberMock() {

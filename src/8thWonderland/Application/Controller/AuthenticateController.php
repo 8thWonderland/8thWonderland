@@ -16,11 +16,10 @@ class AuthenticateController extends ActionController {
      * @return \Wonderland\Library\Http\Response\AbstractResponse
      */
     public function connectAction() {
-        $request = $this->getJsonRequest();
         $memberManager = $this->application->get('member_manager');
         $translator = $this->application->get('translator');
         
-        if (($member = $memberManager->getMemberByLoginAndPassword($request['login'], hash('sha512', $request['password']))) !== null) {
+        if (($member = $memberManager->getMemberByLoginAndPassword($this->request->get('login'), hash('sha512', $this->request->get('password')))) !== null) {
             $db = $this->application->get('database_connection');
             // Enregistrement de la date et heure de la connexion         
             $statement = $db->prepare(

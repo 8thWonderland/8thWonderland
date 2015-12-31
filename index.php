@@ -7,7 +7,7 @@ ini_set('display_errors', 1);
 /*
  * Set default timezone
  */
-date_default_timezone_set('GMT');
+date_default_timezone_set('Europe/Paris');
 
 $rootPath = 
     (!isset($_SERVER['BASE']))

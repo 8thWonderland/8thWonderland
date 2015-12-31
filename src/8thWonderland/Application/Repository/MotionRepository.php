@@ -4,6 +4,7 @@ namespace Wonderland\Application\Repository;
 
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Motion;
+use Wonderland\Application\Model\MotionTheme;
 
 class MotionRepository extends AbstractRepository {
     /**
@@ -29,6 +30,60 @@ class MotionRepository extends AbstractRepository {
             ;
         }
         return $result;
+    }
+    
+    /**
+     * @return array
+     */
+    public function getMotionThemes() {
+        return $this->connection->query(
+            'SELECT id, label, duration FROM motion_themes'
+        )->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * @param int $motionThemeId
+     * @return array|null
+     */
+    public function getMotionTheme($motionThemeId) {
+        $data = $this->connection->prepareStatement(
+            'SELECT id, label, duration FROM motion_themes WHERE id = :id'
+        , ['id' => $motionThemeId])->fetch(\PDO::FETCH_ASSOC);
+        
+        if($data === false) {
+            return null;
+        }
+        return
+            (new MotionTheme())
+            ->setId($data['id'])
+            ->setLabel($data['label'])
+            ->setDuration($data['duration'])
+        ;
+    }
+    
+    /**
+     * @param \Wonderland\Application\Model\Motion $motion
+     */
+    public function createMotion(Motion &$motion) {
+        $affectedRows = $this->connection->prepareStatement(
+            'INSERT INTO motions(theme_id, title, description, means, author_id, ' .
+            'created_at, ended_at, is_active, is_approved) VALUES(:theme_id, :title, ' .
+            ':description, :means, :author_id, :created_at, :ended_at, :is_active, :is_approved)'
+        , [
+            'theme_id' => $motion->getTheme()->getId(),
+            'title' => $motion->getTitle(),
+            'description' => $motion->getDescription(),
+            'means' => $motion->getMeans(),
+            'author_id' => $motion->getAuthor()->getId(),
+            'created_at' => $motion->getCreatedAt()->format('c'),
+            'ended_at' => $motion->getEndedAt()->format('c'),
+            'is_active' => $motion->getIsActive(),
+            'is_approved' => $motion->getIsApproved()
+        ])->rowCount();
+        if($affectedRows === 0) {
+            throw new \PDOException($this->connection->errorInfo()[2], $this->connection->errorCode());
+        }
+        $motion->setId($this->connection->lastInsertId());
     }
     
     /**

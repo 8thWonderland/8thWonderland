@@ -5,7 +5,6 @@ namespace Wonderland\Library\Controller;
 use Wonderland\Library\Application;
 
 use Wonderland\Library\Exception\AccessDeniedException;
-use Wonderland\Library\Exception\BadRequestException;
 use Wonderland\Library\Exception\ForbiddenException;
 
 use Wonderland\Library\Http\Request\Request;
@@ -56,16 +55,6 @@ abstract class ActionController {
             ;
         }
         return $this->user;
-    }
-    
-    /**
-     * @return array
-     */
-    public function getJsonRequest() {
-        if(!isset($_SERVER['CONTENT_TYPE']) || $_SERVER['CONTENT_TYPE'] !== 'application/json') {
-            throw new BadRequestException('JSON data is expected');
-        }
-        return json_decode(file_get_contents('php://input'), true);
     }
     
     /**

@@ -2,7 +2,7 @@
 
 namespace Wonderland\Library\Exception;
 
-use Wonderland\Library\Http\Response\Response;
+use Wonderland\Library\Http\Response\JsonResponse;
 
 class ForbiddenException extends AbstractException {
     /** @var array **/
@@ -16,6 +16,10 @@ class ForbiddenException extends AbstractException {
     }
     
     public function handle() {
-        return new Response(null, 403);
+        return new JsonResponse($this->rejectedAttributes, 403);
+    }
+    
+    public function getRejectedAttributes() {
+        return $this->rejectedAttributes;
     }
 }

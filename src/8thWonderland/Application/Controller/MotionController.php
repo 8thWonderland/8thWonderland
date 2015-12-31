@@ -7,27 +7,31 @@ use Wonderland\Library\Controller\ActionController;
 use Wonderland\Library\Admin\Log;
 
 use Wonderland\Library\Http\Response\Response;
+use Wonderland\Library\Http\Response\JsonResponse;
 
 class MotionController extends ActionController {
-    public function displayCreateMotionAction() {
-        $translate = $this->application->get('translator');
-        $motionThemes = $this->application->get('motion_manager')->getMotionThemes();
+    public function newAction() {
+        $this->checkAccess('citizenship');
         
-        $selectTheme = '<option></options>';
-        
-        while ($theme = $motionThemes->fetch(\PDO::FETCH_ASSOC)) {
-            $selectTheme .= "<option value='{$theme['theme_id']}'>{$translate->translate($theme['label_key'])}</option>";
-        }
-        return $this->render('actions/create_motion', [
-            'msg' => '',
-            'select_theme' => $selectTheme
+        return $this->render('motions/new', [
+            'themes' => $this->application->get('motion_manager')->getMotionThemes(),
+            'identity' => $this->getUser()->getIdentity(),
+            'avatar' => $this->getUser()->getAvatar(),
+            'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($this->getUser()->getId())
         ]);
     }
     
-    public function displayMotionsInProgressAction() {
-        return $this->render('actions/motions_inprogress', [
-            'list_motions' => $this->application->get('motion_manager')->displayActiveMotions($this->getUser())
-        ]);
+    public function createAction() {
+        $this->checkAccess('citizenship');
+        
+        $motion = $this->application->get('motion_manager')->createMotion(
+            $this->request->get('title'),
+            $this->request->get('description'),
+            $this->request->get('theme'),
+            $this->getUser(),
+            $this->request->get('means')
+        );
+        return new JsonResponse($motion, 201);
     }
     
     public function displayMotionsAction() {
