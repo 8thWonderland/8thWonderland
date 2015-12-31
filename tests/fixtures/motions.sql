@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS `motions` (
   `created_at` datetime NOT NULL,
   `ended_at` datetime NOT NULL,
   `author_id` int(11) NOT NULL,
-  `status` tinyint(1) NOT NULL,
-  `result` tinyint(1) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `is_approved` tinyint(1) NOT NULL,
   `score` varchar(6)
 );
 
-INSERT INTO `motions` (`id`, `theme_id`, `title`, `description`, `means`, `created_at`, `ended_at`, `author_id`, `status`, `result`, `score`) VALUES(47, 1, 'Test des motions', 'test', 'test', '2015-09-23 13:57:10', '2015-10-01 13:57:10', 1, 0, 0, 0);
+INSERT INTO `motions` (`id`, `theme_id`, `title`, `description`, `means`, `created_at`, `ended_at`, `author_id`, `is_active`, `is_approved`, `score`) VALUES(47, 1, 'Test des motions', 'test', 'test', '2015-09-23 13:57:10', '2015-10-01 13:57:10', 1, 0, 0, 0);
