@@ -3,6 +3,9 @@
 namespace Wonderland\Application\Manager;
 
 use Wonderland\Application\Model\Member;
+use Wonderland\Application\Model\Motion;
+
+use Wonderland\Library\Exception\NotFoundException;
 
 use Wonderland\Library\Database\PdoDriver;
 
@@ -26,6 +29,30 @@ class MotionManager {
         $this->connection = $connection;
         $this->translator = $translator;
         $this->repository = $repository;
+    }
+    
+    public function createMotion($title, $description, $themeId, Member $author, $means) {
+        if(($theme = $this->repository->getMotionTheme($themeId)) === null) {
+            throw new NotFoundException('Motion Theme Not Found');
+        }
+        
+        $endedAt = new \DateTime();
+        $endedAt->add(new \DateInterval("P{$theme->getDuration()}D"));
+        
+        $motion =
+            (new Motion())
+            ->setTitle($title)
+            ->setDescription($description)
+            ->setMeans($means)
+            ->setAuthor($author)
+            ->setTheme($theme)
+            ->setIsActive(1)
+            ->setIsApproved(0)
+            ->setCreatedAt(new \DateTime())
+            ->setEndedAt($endedAt)
+        ;
+        $this->repository->createMotion($motion);
+        return $motion;
     }
     
     /**

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>8th Wonderland - <?php $this->translate('motions.new_title'); ?></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>intranet.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>motions.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="<?php echo IMG_PATH; ?>icone.png" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>bootstrap.min.css" type="text/css" media="screen" />
+    </head>
+    <body>
+        <?php
+            echo $this->render('intranet/header');
+        ?>
+        <section id="create-motion-form">
+            <header>
+                <h1>
+                    <?php $this->translate('motions.new_title'); ?>
+                </h1>
+            </header>
+            <section>
+                <div id="motion-dates">
+                    <div id="motion-creation-date">
+                        <h3>
+                            <?php $this->translate('motions.creation_date'); ?>
+                        </h3>
+                        <span>
+                            <?php
+                                echo date('Y-m-d H:i:s');
+                            ?>
+                        </span>
+                    </div>
+                    <div id="motion-end-date">
+                        <h3>
+                            <?php $this->translate('motions.end_date'); ?>
+                        </h3>
+                        <span x-data-default-message="<?php $this->translate('motions.select_type_for_duration'); ?>">
+                            <?php
+                                $this->translate('motions.select_type_for_duration');
+                            ?>
+                        </span>
+                    </div>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label class="control-label" for="motion-theme">
+                            <?php $this->translate('motions.theme'); ?>
+                        </label>
+                        <select id="motion-theme" class="form-control" name="theme">
+                            <option value="0"></option>
+                            <?php
+                                foreach($this->parameters['themes'] as $theme) {
+                                    echo "<option x-data-duration='{$theme['duration']}' value={$theme['id']}>{$theme['label']}</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="motion-title">
+                            <?php $this->translate('motions.title'); ?>
+                        </label>
+                        <input id="motion-title" class="form-control" type="text" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="motion-description">
+                            <?php $this->translate('motions.description'); ?>
+                        </label>
+                        <textarea id="motion-description" class="form-control" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="motion-means">
+                            <?php $this->translate('motions.means'); ?>
+                        </label>
+                        <textarea id="motion-means" class="form-control" name="means"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success" type="submit">
+                            <?php $this->translate('motions.validate'); ?>
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </section>
+        <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>intranet.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>motions.js"></script>
+    </body>
+</html>
