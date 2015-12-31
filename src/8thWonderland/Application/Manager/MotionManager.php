@@ -24,6 +24,7 @@ class MotionManager {
     /**
      * @param \Wonderland\Library\Database\PdoDriver $connection
      * @param \Wonderland\Library\Translator $translator
+     * @param \Wonderland\Application\Repository\MotionRepository $repository
      */
     public function __construct(PdoDriver $connection, Translator $translator, MotionRepository $repository) {
         $this->connection = $connection;
@@ -31,6 +32,15 @@ class MotionManager {
         $this->repository = $repository;
     }
     
+    /**
+     * @param string $title
+     * @param string $description
+     * @param int $themeId
+     * @param \Wonderland\Application\Model\Member $author
+     * @param string $means
+     * @return \Wonderland\Application\Model\Motion
+     * @throws \Wonderland\Library\Exception\NotFoundException
+     */
     public function createMotion($title, $description, $themeId, Member $author, $means) {
         if(($theme = $this->repository->getMotionTheme($themeId)) === null) {
             throw new NotFoundException('Motion Theme Not Found');
@@ -61,39 +71,6 @@ class MotionManager {
      */
     public function getActiveMotions(Member $member) {
         return $this->repository->getActiveMotions($member);
-    }
-    
-    /**
-     * Return motions which are currently being voted
-     * 
-     * @param \Wonderland\Application\Model\Member
-     * @return string
-     */
-    public function displayActiveMotions(Member $member) {
-        $motions = $this->connection->query(
-            'SELECT motion_id, title_key, date_fin_vote ' .
-            'FROM motions ' .
-            'WHERE Date_fin_vote >  NOW() ' .
-            'ORDER BY date_fin_vote DESC '
-        );
-        $response = '';
-        while ($motion = $motions->fetch(\PDO::FETCH_ASSOC)) {
-            $response .=
-                "<tr><td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['title_key']}</a></td>" .
-                "<td><a onclick=\"Clic('/Motion/displayMotion', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">{$motion['date_fin_vote']}</a></td>"
-            ;
-            if ($this->hasAlreadyVoted($motion['motion_id'], $member->getId()) == 0) {
-                $response .=
-                    "<td><div class='bouton'><a onclick=\"Clic('/Motion/displayVote', 'motion_id={$motion['motion_id']}', 'milieu_milieu'); return false;\">" .
-                    "<span style='color: #dfdfdf;'>{$this->translator->translate('btn_votemotion')}</span></a></div></td>"
-                ;
-            }
-            $response .= '</tr>';
-        }
-        if(!empty($response)) {
-            return $response;
-        }
-        return "<tr><td>{$this->translator->translate('no_result')}</td></tr>";
     }
     
     /**
@@ -146,30 +123,6 @@ class MotionManager {
                 "SELECT COUNT(*) AS count FROM motions_votes WHERE Motion_id = $motionId AND Choix = 2"
             )->fetch(\PDO::FETCH_ASSOC)['count']
         ];
-    }
-    
-    /**
-     * @param \Wonderland\Application\Model\Member $member
-     * @param string $title
-     * @param string $theme
-     * @param string $description
-     * @param string $means
-     * @return \mysqli_result
-     */
-    public function validateMotion(Member $member, $title, $theme, $description, $means) {
-        return $this->connection->prepareStatement(
-            'INSERT INTO motions ' .
-            '(Theme_id, Title_key, Description, Moyens, Submission_date, Date_fin_vote, Citizen_id) ' .
-            'values (:theme_id, :title, :description, :means,  NOW(), ' .
-            'DATE_ADD(NOW(), INTERVAL (SELECT Duree FROM motions_themes ' .
-            'WHERE motions_themes.Theme_id = :theme_id) DAY), :citizen_id)'
-        , [
-            'theme_id' => $theme,
-            'title' => $title,
-            'description' => $description,
-            'means' => $means,
-            'citizen_id' => $member->getId()
-        ]);
     }
     
     /**

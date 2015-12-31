@@ -34,27 +34,6 @@ class MotionController extends ActionController {
         return new JsonResponse($motion, 201);
     }
     
-    public function displayCreateMotionAction() {
-        $translate = $this->application->get('translator');
-        $motionThemes = $this->application->get('motion_manager')->getMotionThemes();
-        
-        $selectTheme = '<option></options>';
-        
-        while ($theme = $motionThemes->fetch(\PDO::FETCH_ASSOC)) {
-            $selectTheme .= "<option value='{$theme['theme_id']}'>{$translate->translate($theme['label_key'])}</option>";
-        }
-        return $this->render('actions/create_motion', [
-            'msg' => '',
-            'select_theme' => $selectTheme
-        ]);
-    }
-    
-    public function displayMotionsInProgressAction() {
-        return $this->render('actions/motions_inprogress', [
-            'list_motions' => $this->application->get('motion_manager')->displayActiveMotions($this->getUser())
-        ]);
-    }
-    
     public function displayMotionsAction() {
         return $this->render('actions/motions', [
             'list_motions' => $this->renderMotions()
