@@ -161,3 +161,16 @@ html, body {
     font-variant:small-caps;
     border-bottom:1px solid #000;
 }
+
+.group a{
+    display:flex;
+    padding:5px 10px;
+    border-top:1px solid #EFEFEF;
+    border-bottom: 1px solid #EFEFEF;
+    border-collapse: collapse;
+    text-decoration:none;
+}
+
+.group a:hover {
+    text-decoration:none;
+}

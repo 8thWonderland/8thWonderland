@@ -15,61 +15,65 @@
                 echo $this->render('intranet/header');
             ?>
             <div id="content">
-                <section id="motions" class="module">
-                    <header>
-                        <h3>
-                            <i class="fa fa-university fa-1x"></i>
-                            <?php
-                                $this->translate('motions_inprogress');
-                            ?>
-                        </h3>
-                    </header>
-                    <section>
-                        <ul>
-                            <?php
-                                foreach($this->parameters['motions'] as $motion) {
-                                    echo
-                                        '<li class="motion">',
-                                        "<a href='" . VIEW_PATH . "motion/show?motion_id={$motion['id']}'>",
-                                        "<div class='motion-title'><h6>{$motion['title']}</h6>",
-                                        "<span>{$motion['ended_at']}</span></div>",
-                                        '<div class="motion-vote-flag"><span>'
-                                    ;
-                                    ($motion['has_already_voted'] === '0') ? $this->translate('motions.vote') : null;
-                                    echo '</span></div></a></li>';
-                                }
-                            ?>
-                        </ul>
+                <div id="motions">
+                    <section class="module">
+                        <header>
+                            <h3>
+                                <i class="fa fa-university fa-1x"></i>
+                                <?php
+                                    $this->translate('motions_inprogress');
+                                ?>
+                            </h3>
+                        </header>
+                        <section>
+                            <ul>
+                                <?php
+                                    foreach($this->parameters['motions'] as $motion) {
+                                        echo
+                                            '<li class="motion">',
+                                            "<a href='" . VIEW_PATH . "motion/show?motion_id={$motion['id']}'>",
+                                            "<div class='motion-title'><h6>{$motion['title']}</h6>",
+                                            "<span>{$motion['ended_at']}</span></div>",
+                                            '<div class="motion-vote-flag"><span>'
+                                        ;
+                                        ($motion['has_already_voted'] === '0') ? $this->translate('motions.vote') : null;
+                                        echo '</span></div></a></li>';
+                                    }
+                                ?>
+                            </ul>
+                        </section>
+                        <footer>
+                            <a href="<?php echo VIEW_PATH, 'motion/new'; ?>" class="btn btn-success">
+                                <?php $this->translate('create_motion'); ?>
+                            </a>
+                            <button class="btn btn-danger"><?php $this->translate('display_archives'); ?></button>
+                        </footer>
                     </section>
-                    <footer>
-                        <a href="<?php echo VIEW_PATH, 'motion/new'; ?>" class="btn btn-success">
-                            <?php $this->translate('create_motion'); ?>
-                        </a>
-                        <button class="btn btn-danger"><?php $this->translate('display_archives'); ?></button>
-                    </footer>
-                </section>
-                <section id="groups" class="module">
-                    <header>
-                        <h3>
-                            <i class="fa fa-users fa-1x"></i>
-                            <?php
-                                $this->translate('my_groups');
-                            ?>
-                        </h3>
-                    </header>
-                    <section>
-                        <ul>
-                            <?php
-                                foreach($this->parameters['groups'] as $group) {
-                                    echo "<li><a href='", VIEW_PATH, "group/show?group_id={$group->getId()}'>{$group->getName()}</a></li>";
-                                }
-                            ?>
-                        </ul>
+                </div>
+                <div id="groups">
+                    <section class="module">
+                        <header>
+                            <h3>
+                                <i class="fa fa-users fa-1x"></i>
+                                <?php
+                                    $this->translate('my_groups');
+                                ?>
+                            </h3>
+                        </header>
+                        <section>
+                            <ul>
+                                <?php
+                                    foreach($this->parameters['groups'] as $group) {
+                                        echo "<li class='group'><a href='", VIEW_PATH, "group/show?group_id={$group->getId()}'>{$group->getName()}</a></li>";
+                                    }
+                                ?>
+                            </ul>
+                        </section>
+                        <footer>
+                            <a href="<?php echo VIEW_PATH; ?>group/list" class="btn btn-info"><?php $this->translate('discover_groups'); ?></a>
+                        </footer>
                     </section>
-                    <footer>
-                        <a href="<?php echo VIEW_PATH; ?>group/list" class="btn btn-info"><?php $this->translate('discover_groups'); ?></a>
-                    </footer>
-                </section>
+                </div>
             </div>
         </div>
         <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
