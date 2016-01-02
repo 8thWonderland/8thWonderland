@@ -26,12 +26,19 @@
                     </header>
                     <section>
                         <ul>
-                            <li>
-                                <a href="#">
-                                    Question de la motion ?
-                                    <button class="btn btn-warning">Voter</button>
-                                </a>
-                            </li>
+                            <?php
+                                foreach($this->parameters['motions'] as $motion) {
+                                    echo
+                                        '<li class="motion">',
+                                        "<a href='" . VIEW_PATH . "motion/show?motion_id={$motion['id']}'>",
+                                        "<div class='motion-title'><h6>{$motion['title']}</h6>",
+                                        "<span>{$motion['ended_at']}</span></div>",
+                                        '<div class="motion-vote-flag"><span>'
+                                    ;
+                                    ($motion['has_already_voted'] === '0') ? $this->translate('motions.vote') : null;
+                                    echo '</span></div></a></li>';
+                                }
+                            ?>
                         </ul>
                     </section>
                     <footer>
