@@ -85,8 +85,19 @@ $array = array(
     'groups.thematic'       => 'Thematic Groups',
     'groups.regional'       => 'Regional Groups',
     'groups.back_to_list'   => 'Back to the groups list',
-            
-
+    
+    // Motions
+    'motions.vote'          => 'Vote',
+    'motions.new_title'     => 'Create a motion',
+    'motions.creation_date' => 'Creation date',
+    'motions.end_date'      => 'End date',
+    'motions.select_type_for_duration' => 'Depending on the motion\'s theme',
+    'motions.theme'         => 'Motion\'s theme',
+    'motions.title'         => 'Motion\'s title',
+    'motions.description'   => 'Motion\'s description',
+    'motions.means'         => 'Application means',
+    'motions.validate'      => 'Create the motion',
+    
     // Partie 'TACHES'
     "tasks_inprogress"      => "The tasks in progress",
     "display_archivestasks" => "Display the archives",
