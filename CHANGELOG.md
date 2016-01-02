@@ -2,6 +2,7 @@
 ### Added
 - Group details page
 - Motion creation form and treatment
+- Active motions list
 
 ## 0.1.2 - 2015-26-12
 ### Added
