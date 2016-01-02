@@ -34,6 +34,15 @@ class MotionController extends ActionController {
         return new JsonResponse($motion, 201);
     }
     
+    public function showAction() {
+        return $this->render('motions/show', [
+            'motion' => $this->application->get('motion_manager')->getMotion($this->request->get('motion_id', null, 'int')),
+            'identity' => $this->getUser()->getIdentity(),
+            'avatar' => $this->getUser()->getAvatar(),
+            'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($this->getUser()->getId())
+        ]);
+    }
+    
     public function displayMotionsAction() {
         return $this->render('actions/motions', [
             'list_motions' => $this->renderMotions()
