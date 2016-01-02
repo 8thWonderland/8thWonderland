@@ -87,6 +87,38 @@ class MotionRepository extends AbstractRepository {
     }
     
     /**
+     * @param int $motionId
+     * @return \Wonderland\Application\Model\Motion|null
+     */
+    public function getMotion($motionId) {
+        $data = $this->connection->prepareStatement(
+            'SELECT m.id, m.title, mt.id as theme_id, mt.label as theme_label, ' .
+            'm.description, m.means, m.created_at, m.ended_at, m.is_active, m.is_approved, ' .
+            'm.score, u.id as author_id, u.identity as author_identity ' .
+            'FROM motions m '.
+            'INNER JOIN motion_themes mt ON mt.id = m.theme_id ' .
+            'INNER JOIN users u ON m.author_id = u.id ' .
+            'WHERE m.id = :motion_id'
+        , ['motion_id' => $motionId])->fetch(\PDO::FETCH_ASSOC);
+        
+        if($data === false) {
+            return null;
+        }
+        return $this->formatObject($data);
+    }
+    
+    
+    /**
+     * @param Motion $motion
+     */
+    public function getVotes(Motion $motion) {
+        $data = $this->connection->prepareStatement(
+            'SELECT COUNT(mv1.hash) AS positive_votes, COUNT(mv2.hash) as negative_votes ' .
+            'FROM motions_votes WHERE Motion_id = $motionId AND Choix = 1'
+        )->fetch(\PDO::FETCH_ASSOC);
+    }
+    
+    /**
      * @param array $data
      * @return array
      */
@@ -112,8 +144,23 @@ class MotionRepository extends AbstractRepository {
     public function formatObject($data) {
         return
             (new Motion())
-            ->setId($data['id'])
+            ->setId((int) $data['id'])
             ->setTitle($data['title'])
+            ->setDescription($data['description'])
+            ->setMeans($data['means'])
+            ->setIsActive((bool)$data['is_active'])
+            ->setIsApproved((bool)$data['is_approved'])
+            ->setScore((float)$data['score'])
+            ->setTheme(
+                (new MotionTheme())
+                ->setId((int)$data['theme_id'])
+                ->setLabel($data['theme_label'])
+            )
+            ->setAuthor(
+                (new Member())
+                ->setId((int)$data['author_id'])
+                ->setIdentity($data['author_identity'])
+            )
             ->setCreatedAt(new \DateTime($data['created_at']))
             ->setEndedAt(new \DateTime($data['ended_at']))
         ;

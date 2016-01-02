@@ -74,6 +74,18 @@ class MotionManager {
     }
     
     /**
+     * @param int $motionId
+     * @return \Wonderland\Application\Model\Motion
+     * @throws NotFoundException
+     */
+    public function getMotion($motionId) {
+        if(($motion = $this->repository->getMotion($motionId)) === null) {
+            throw new NotFoundException('Motion Not Found');
+        }
+        return $motion;
+    }
+    
+    /**
      * @return array
      */
     public function displayMotions() {
@@ -108,21 +120,6 @@ class MotionManager {
      */
     public function getMotionThemes() {
         return $this->repository->getMotionThemes();
-    }
-    
-    /**
-     * @param int $motionId
-     * @return array
-     */
-    public function getVotes($motionId) {
-        return [
-            $this->connection->query(
-                "SELECT COUNT(*) AS count FROM motions_votes WHERE Motion_id = $motionId AND Choix = 1"
-            )->fetch(\PDO::FETCH_ASSOC)['count'],
-            $this->connection->query(
-                "SELECT COUNT(*) AS count FROM motions_votes WHERE Motion_id = $motionId AND Choix = 2"
-            )->fetch(\PDO::FETCH_ASSOC)['count']
-        ];
     }
     
     /**

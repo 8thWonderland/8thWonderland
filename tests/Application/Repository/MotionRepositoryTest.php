@@ -63,6 +63,25 @@ class MotionRepositoryTest extends WonderlandTestCase {
         $this->assertEquals(2, $motion->getId());
     }
     
+    public function testGetMotion() {
+        $motion = $this->repository->getMotion(1);
+        
+        $this->assertInstanceOf('Wonderland\Application\Model\Motion', $motion);
+        $this->assertEquals(1, $motion->getId());
+        $this->assertEquals('Test des motions', $motion->getTitle());
+        $this->assertEquals('test', $motion->getDescription());
+        $this->assertEquals('test', $motion->getMeans());
+        $this->assertInstanceOf('Wonderland\Application\Model\Member', $motion->getAuthor());
+        $this->assertFalse($motion->getIsActive());
+        $this->assertFalse($motion->getIsApproved());
+        $this->assertInstanceOf('DateTime', $motion->getCreatedAt());
+        $this->assertInstanceOf('DateTime', $motion->getEndedAt());
+    }
+    
+    public function testGetUnexistingMotion() {
+        $this->assertNull($this->repository->getMotion(10));
+    }
+    
     public function getMotionMock() {
         return
             (new Motion())

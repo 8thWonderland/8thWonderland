@@ -1,9 +1,17 @@
-#create-motion-form {
+#motion-details {
     width:800px;
     margin:auto;
 }
 
-#create-motion-form h1 {
+#motion-details h1,
+#motion-details h4 {
+    color: #F00;
+    text-align:center;
+}
+
+#motion-details p {
+    padding-top:10px;
+    padding-bottom:10px;
     text-align:center;
 }
 
@@ -22,10 +30,10 @@
     text-align:center;
 }
 
-#create-motion-form form > .form-group:last-of-type {
+#motion-details form > .form-group:last-of-type {
     text-align:center;
 }
 
-#create-motion-form textarea {
+#motion-details textarea {
     resize: vertical;
 }

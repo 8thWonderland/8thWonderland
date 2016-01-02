@@ -13,7 +13,7 @@
         <?php
             echo $this->render('intranet/header');
         ?>
-        <section id="create-motion-form">
+        <section id="motion-details">
             <header>
                 <h1>
                     <?php $this->translate('motions.new_title'); ?>
