@@ -14,9 +14,9 @@ class MotionRepository extends AbstractRepository {
      */
     public function getActiveMotions(Member $member, $raw = true) {
         $statement = $this->connection->prepareStatement(
-            'SELECT m.id, m.title, m.created_at, m.ended_at, COUNT(mvt.citizen_id) as has_already_voted ' .
+            'SELECT m.id, m.title, m.created_at, m.ended_at, !ISNULL(mvt.citizen_id) as has_already_voted ' .
             'FROM motions m ' .
-            'INNER JOIN motions_vote_tokens mvt ON mvt.motion_id = m.id AND mvt.citizen_id = :citizen_id ' .
+            'LEFT JOIN motions_vote_tokens mvt ON mvt.motion_id = m.id AND mvt.citizen_id = :citizen_id ' .
             'WHERE m.ended_at > NOW() ' .
             'ORDER BY m.ended_at DESC '
         , ['citizen_id' => $member->getId()]);
