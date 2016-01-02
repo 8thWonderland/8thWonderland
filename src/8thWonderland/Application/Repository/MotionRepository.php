@@ -144,21 +144,21 @@ class MotionRepository extends AbstractRepository {
     public function formatObject($data) {
         return
             (new Motion())
-            ->setId($data['id'])
+            ->setId((int) $data['id'])
             ->setTitle($data['title'])
             ->setDescription($data['description'])
             ->setMeans($data['means'])
-            ->setIsActive($data['is_active'])
-            ->setIsApproved($data['is_approved'])
-            ->setScore($data['score'])
+            ->setIsActive((bool)$data['is_active'])
+            ->setIsApproved((bool)$data['is_approved'])
+            ->setScore((float)$data['score'])
             ->setTheme(
                 (new MotionTheme())
-                ->setId($data['theme_id'])
+                ->setId((int)$data['theme_id'])
                 ->setLabel($data['theme_label'])
             )
             ->setAuthor(
                 (new Member())
-                ->setId($data['author_id'])
+                ->setId((int)$data['author_id'])
                 ->setIdentity($data['author_identity'])
             )
             ->setCreatedAt(new \DateTime($data['created_at']))
