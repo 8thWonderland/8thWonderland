@@ -88,36 +88,6 @@ class MotionManager {
     /**
      * @return array
      */
-    public function displayMotions() {
-        return $this->connection->query(
-            'SELECT m.Motion_id, m.Title_key, mt.Label_key, m.Submission_date, m.Date_fin_vote, u.identity ' .
-            'FROM motions m ' .
-            'INNER JOIN motions_themes mt ON m.Theme_id = mt.Theme_id ' .
-            'LEFT JOIN users u ON u.id = m.Citizen_id ' .
-            'WHERE m.Date_fin_vote < NOW() ' .
-            'ORDER BY m.motion_id DESC'
-        )->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    
-    /**
-     * Récupération des détails d'une motion
-     * 
-     * @param int $id
-     * @return array
-     */
-    public function displayMotionDetails($id) {
-        $motion = $this->connection->query(
-            'SELECT motion_id, title_key, label_key, description, moyens, submission_date, date_fin_vote ' .
-            'FROM motions, motions_themes ' .
-            "WHERE motion_id = $id AND motions.theme_id = motions_themes.Theme_id"
-        )->fetchAll(\PDO::FETCH_ASSOC);
-        $motion[0]['vote'] = $this->getVotes($id);
-        return $motion;
-    }
-    
-    /**
-     * @return array
-     */
     public function getMotionThemes() {
         return $this->repository->getMotionThemes();
     }
@@ -169,40 +139,4 @@ class MotionManager {
     public function hasAlreadyVoted($motionId, $memberId) {
         return $this->repository->hasAlreadyVoted($motionId, $memberId);
     }
-    
-    public function checkMotion(){
-        // vérification des votes
-        // en commentaire car c'est un code sensible à n'utiliser qu'en cas de crise
-    /*
-        $db = memory_registry::get('db');
-
-        $req = "SELECT * ".
-                  "FROM Motions_Votes_Jetons, Motions_Votes".
-                  " WHERE Motions_Votes_id = Motions_Votes_Jetons_id";
-        $motions = $db->select($req);
-
-        foreach($motions as $motion){
-            $motion['Date'] = date("Y-m-d h-i-s", strtotime($motion['Date']));
-            echo "<br/>";
-            $vote= ($motion['Choix'] == 1 ? 'approved' : 'refused');
-        
-            $hash = hash("sha512",$motion['Motions_Votes_id']."#".$motion['Motion_id']."#".$motion['Citizen_id']."#".($motion['Choix'] == 1 ? 'approved' : 'refused')."#".$motion['Date']."#".$motion['Ip']);
-            if($hash != $motion['Hash'] ){
-                echo $motion['Motions_Votes_id']." err:<br/>\n";
-                echo $hash." != ".$motion['Hash']."<br/>\n";
-                $hash2 = hash("sha512",$motion['Motions_Votes_id']."#".$motion['Motion_id']."#".$motion['Citizen_id']."#".($motion['Choix'] == 1 ? 'refused' : 'approved')."#".$motion['Date']."#".$motion['Ip']);
-                if($hash2!= $motion['Hash']){
-                    echo $hash2." != ".$motion['Hash']."<br/>\n";
-                }else{
-                   $req2 = "UPDATE Motions_Votes SET Choix = 2 WHERE Motions_Votes_id = ".$motion['Motions_Votes_id'];
-                //   $db->_query($req2); // ATTENTION LÀ C'EST SUPER DÉLICAT. IL FAUT ÊTRE SÛR À 100% QUE C'EST BON.
-                    
-                    echo $motion['Motions_Votes_id']." # 2 et non 1<br>\n";
-                }
-            }else{
-                echo $motion['Motions_Votes_id']." ok<br/>\n";
-            }
-        }
-        */
-    } 
 }
