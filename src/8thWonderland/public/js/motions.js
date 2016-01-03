@@ -18,7 +18,7 @@ $("#motion-theme").on('change', function() {
     );
 });
 
-$("#create-motion-form form").on('submit', function(e) {
+$("#motion-details form").on('submit', function(e) {
     $.ajax({
         type: "POST",
         url: website_root + "motion/create",
