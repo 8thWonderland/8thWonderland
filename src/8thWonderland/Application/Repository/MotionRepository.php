@@ -131,12 +131,13 @@ class MotionRepository extends AbstractRepository {
     /**
      * @param int $motionId
      * @param int $memberId
+     * @param string $memberIdentity
      * @param string $date
      * @param string $ip
      * @param boolean $vote
      * @return type
      */
-    public function createVote($motionId, $memberId, $date, $ip, $vote) {
+    public function createVote($motionId, $memberId, $memberIdentity, $date, $ip, $vote) {
         if(!$this->connection->beginTransaction()) {
             throw new \PDOException(
                 $this->connection->errorInfo()[2],
@@ -165,7 +166,7 @@ class MotionRepository extends AbstractRepository {
             );
         }
         unset($voteTokenStatement);
-        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$id#{$member->getIdentity()}#$vote#$date#$ip");
+        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$id#$memberIdentity#$vote#$date#$ip");
         $voteStatement = $this->connection->prepareStatement(
             'INSERT INTO motions_votes(motion_id, choice, hash)  VALUES (:id, :choice, :hash)'
         , [

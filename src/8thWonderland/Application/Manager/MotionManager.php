@@ -98,7 +98,7 @@ class MotionManager {
         $ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : 'inconnue';
         
         try {
-            $this->repository->createVote($motionId, $member->getId(), $date, $ip, $vote);
+            $this->repository->createVote($motionId, $member->getId(), $member->getIdentity(), $date, $ip, $vote);
         } catch(\PDOException $exception) {
             throw new RuntimeException("The vote failed : {$exception->getMessage()}");
         }
