@@ -6,6 +6,7 @@ use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Motion;
 
 use Wonderland\Library\Exception\NotFoundException;
+use Wonderland\Library\Exception\BadRequestException;
 use Wonderland\Library\Exception\RuntimeException;
 
 use Wonderland\Application\Repository\MotionRepository;
@@ -85,16 +86,19 @@ class MotionManager {
      * Returns number of affected rows
      * 
      * @param \Wonderland\Application\Model\Member $member
-     * @param int $id
+     * @param int $motionId
      * @param string $vote
-     * @return int
      */
-    public function voteMotion(Member $member, $id, $vote) {
+    public function voteMotion(Member $member, $motionId, $vote) {
+        if($this->hasAlreadyVoted($motionId, $member->getId())) {
+            throw new BadRequestException('You already voted this motion');
+        }
+        
         $date = date('Y-m-d h-i-s');
         $ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : 'inconnue';
         
         try {
-            $this->repository->createVote($id, $member->getId(), $date, $ip, $vote);
+            $this->repository->createVote($motionId, $member->getId(), $date, $ip, $vote);
         } catch(\PDOException $exception) {
             throw new RuntimeException("The vote failed : {$exception->getMessage()}");
         }
