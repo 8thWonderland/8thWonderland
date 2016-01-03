@@ -22,8 +22,12 @@ class Request {
         }
         foreach ($_SERVER as $name => $value) {
             if (substr($name, 0, 5) == 'HTTP_') {
-                $this->headers[strtolower(str_replace('_', '-', substr($name, 5)))] = $value;
+                $this->headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
             }
+        }
+        // Special case with the Content type header which is not prefixed with "HTTP_"
+        if(isset($_SERVER['CONTENT_TYPE'])) {
+            $this->headers['Content-Type'] = $_SERVER['CONTENT_TYPE'];
         }
     }
     
