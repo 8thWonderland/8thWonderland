@@ -129,6 +129,71 @@ class MotionRepository extends AbstractRepository {
     }
     
     /**
+     * @param int $motionId
+     * @param int $memberId
+     * @param string $date
+     * @param string $ip
+     * @param boolean $vote
+     * @return type
+     */
+    public function createVote($motionId, $memberId, $date, $ip, $vote) {
+        if(!$this->connection->beginTransaction()) {
+            throw new \PDOException(
+                $this->connection->errorInfo()[2],
+                $this->connection->errorCode()
+            );
+        }
+        $voteTokenStatement = $this->connection->prepareStatement(
+            'INSERT INTO motions_vote_tokens (motion_id, citizen_id, date, ip) ' .
+            'VALUES (:motion_id, :citizen_id, :date, :ip)'
+        , [
+            'motion_id' => $motionId,
+            'citizen_id' => $memberId,
+            'date' => $date,
+            'ip' => $ip
+        ]);
+        if ($voteTokenStatement->rowCount() === 0) {
+            if(!$this->connection->rollBack()) {
+                throw new \PDOException(
+                    $this->connection->errorInfo()[2],
+                    $this->connection->errorCode()
+                );
+            }
+            throw new \PDOException(
+                $this->connection->errorInfo()[2],
+                $this->connection->errorCode()
+            );
+        }
+        unset($voteTokenStatement);
+        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$id#{$member->getIdentity()}#$vote#$date#$ip");
+        $voteStatement = $this->connection->prepareStatement(
+            'INSERT INTO motions_votes(motion_id, choice, hash)  VALUES (:id, :choice, :hash)'
+        , [
+            'id' => $motionId,
+            'choice' => $vote,
+            'hash' => $hash
+        ]);
+        if($voteStatement->rowCount() === 0) {
+            if(!$this->connection->rollBack()) {
+                throw new \PDOException(
+                    $this->connection->errorInfo()[2],
+                    $this->connection->errorCode()
+                );
+            }
+            throw new \PDOException(
+                $this->connection->errorInfo()[2],
+                $this->connection->errorCode()
+            );
+        }
+        if(!$this->connection->commit()) {
+            throw new \PDOException(
+                $this->connection->errorInfo()[2],
+                $this->connection->errorCode()
+            );
+        }
+    }
+    
+    /**
      * @param array $data
      * @return array
      */

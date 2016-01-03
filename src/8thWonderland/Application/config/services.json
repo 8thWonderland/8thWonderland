@@ -115,8 +115,6 @@
     "motion_manager" : {
         "class" : "Wonderland\\Application\\Manager\\MotionManager",
         "arguments" : [
-            "@database_connection",
-            "@translator",
             "@motion_repository"
         ]
     },

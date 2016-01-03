@@ -4,21 +4,17 @@ namespace Wonderland\Test\Application\Manager;
 
 use Wonderland\Application\Manager\MotionManager;
 
-use Wonderland\Test\WonderlandTestCase;
-
 use Wonderland\Library\Exception\NotFoundException;
 
 use Wonderland\Application\Model\MotionTheme;
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Motion;
 
-class MotionManagerTest extends WonderlandTestCase {
+class MotionManagerTest extends \PHPUnit_Framework_TestCase {
     protected $manager;
     
     public function setUp() {
         $this->manager = new MotionManager(
-            $this->getConnection(),
-            $this->getTranslatorMock(),
             $this->getRepositoryMock()
         );
     }
@@ -64,15 +60,6 @@ class MotionManagerTest extends WonderlandTestCase {
      */
     public function testGetUnexistingMotion() {
         $this->manager->getMotion(15);
-    }
-    
-    public function getTranslatorMock() {
-        $translatorMock = $this
-            ->getMockBuilder('Wonderland\Library\Translator')
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        return $translatorMock;
     }
     
     public function getRepositoryMock() {

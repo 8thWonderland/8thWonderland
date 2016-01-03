@@ -6,29 +6,18 @@ use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Motion;
 
 use Wonderland\Library\Exception\NotFoundException;
-
-use Wonderland\Library\Database\PdoDriver;
+use Wonderland\Library\Exception\RuntimeException;
 
 use Wonderland\Application\Repository\MotionRepository;
 
-use Wonderland\Library\Translator;
-
 class MotionManager {
-    /** @var \Wonderland\Library\Database\PdoDriver **/
-    protected $connection;
-    /** @var \Wonderland\Library\Translator **/
-    protected $translator;
     /** @var \Wonderland\Application\Repository\MotionRepository **/
     protected $repository;
     
     /**
-     * @param \Wonderland\Library\Database\PdoDriver $connection
-     * @param \Wonderland\Library\Translator $translator
      * @param \Wonderland\Application\Repository\MotionRepository $repository
      */
-    public function __construct(PdoDriver $connection, Translator $translator, MotionRepository $repository) {
-        $this->connection = $connection;
-        $this->translator = $translator;
+    public function __construct(MotionRepository $repository) {
         $this->repository = $repository;
     }
     
@@ -102,33 +91,13 @@ class MotionManager {
      */
     public function voteMotion(Member $member, $id, $vote) {
         $date = date('Y-m-d h-i-s');
-        $ip =
-            (isset($_SERVER['REMOTE_ADDR']))
-            ? $_SERVER['REMOTE_ADDR']
-            : 'inconnue'
-        ;
-        $statement = $this->connection->prepareStatement(
-            'INSERT INTO motions_vote_tokens (motion_id, citizen_id, date, ip) ' .
-            'VALUES (:motion_id, :citizen_id, :date, :ip)'
-        , [
-            'motion_id' => $id,
-            'citizen_id' => $member->getId(),
-            'date' => $date,
-            'ip' => $ip
-        ]);
-        if ($statement->rowCount() === 0) {
-            return 0;
-        }
+        $ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : 'inconnue';
         
-        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$id#{$member->getIdentity()}#$vote#$date#$ip");
-        $statement = $this->connection->prepareStatement(
-            'INSERT INTO motions_votes(motion_id, choice, hash)  VALUES (:id, :choice, :hash)'
-        , [
-            'id' => $id,
-            'choice' => $vote,
-            'hash' => $hash
-        ]);
-        return $statement->rowCount();
+        try {
+            $this->repository->createVote($id, $member->getId(), $date, $ip, $vote);
+        } catch(\PDOException $exception) {
+            throw new RuntimeException("The vote failed : {$exception->getMessage()}");
+        }
     }
     
     /**
