@@ -95,6 +95,10 @@ $array = array(
     'motions.description'   => 'Description de la motion',
     'motions.means'         => 'Moyens nécessaires à l\'application de la motion',
     'motions.validate'      => 'Créer la motion',
+    'motions.already_voted' => 'Vous avez déjà voté cette motion',
+    'motions.vote.request'  => 'Approuvez-vous cette motion ?',
+    'motions.vote.yes'      => 'Oui',
+    'motions.vote.no'       => 'Non',
 
     // Partie 'TACHES'
     "tasks_inprogress"      => "Les tâches en cours",
