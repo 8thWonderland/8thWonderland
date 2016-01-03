@@ -26,14 +26,14 @@
                             echo '</h3>';
                         } else {
                     ?>
-                    <h3>
+                    <h3 x-data-vote-success-message="<?php $this->translate('motions.already_voted'); ?>">
                         <?php $this->translate('motions.vote.request'); ?>
                     </h3>
                     <div id="vote-controls">
-                        <button>
+                        <button class="btn btn-primary" onclick="vote_motion(<?php echo $this->parameters['motion']->getId(); ?>, 1);">
                             <?php $this->translate('motions.vote.yes') ?>
                         </button>
-                        <button>
+                        <button class="btn btn-danger" onclick="vote_motion(<?php echo $this->parameters['motion']->getId(); ?>, 0);">
                             <?php $this->translate('motions.vote.no'); ?>
                         </button>
                     </div>
