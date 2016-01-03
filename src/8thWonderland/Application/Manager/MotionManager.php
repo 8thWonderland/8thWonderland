@@ -138,7 +138,7 @@ class MotionManager {
             : 'inconnue'
         ;
         $statement = $this->connection->prepareStatement(
-            'INSERT INTO motions_votes_jetons (Motion_id, Citizen_id, Date, Ip) ' .
+            'INSERT INTO motions_vote_tokens (motion_id, citizen_id, date, ip) ' .
             'VALUES (:motion_id, :citizen_id, :date, :ip)'
         , [
             'motion_id' => $id,
@@ -150,14 +150,12 @@ class MotionManager {
             return 0;
         }
         
-        $choice = ($vote === 'approved') ? 1 : 2;
-        
-        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$id#{$member->getIdentity()}#$choice#$date#$ip");
+        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$id#{$member->getIdentity()}#$vote#$date#$ip");
         $statement = $this->connection->prepareStatement(
-            'INSERT INTO motions_votes(Motion_id, Choix, Hash)  VALUES (:id, :choice, :hash)'
+            'INSERT INTO motions_votes(motion_id, choice, hash)  VALUES (:id, :choice, :hash)'
         , [
             'id' => $id,
-            'choice' => $choice,
+            'choice' => $vote,
             'hash' => $hash
         ]);
         return $statement->rowCount();
