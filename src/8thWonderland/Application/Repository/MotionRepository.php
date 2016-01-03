@@ -107,15 +107,25 @@ class MotionRepository extends AbstractRepository {
         return $this->formatObject($data);
     }
     
-    
     /**
      * @param Motion $motion
      */
     public function getVotes(Motion $motion) {
         $data = $this->connection->prepareStatement(
             'SELECT COUNT(mv1.hash) AS positive_votes, COUNT(mv2.hash) as negative_votes ' .
-            'FROM motions_votes WHERE Motion_id = $motionId AND Choix = 1'
-        )->fetch(\PDO::FETCH_ASSOC);
+            'FROM motions_votes WHERE Motion_id = :motion_id AND Choix = 1'
+        , ['motion_id' => $motion->getId()])->fetch(\PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * @param int $motionId
+     * @param int $memberId
+     * @return bool
+     */
+    public function hasAlreadyVoted($motionId, $memberId) {
+        return (bool) $this->connection->prepareStatement(
+            "SELECT COUNT(*) AS count FROM motions_vote_tokens WHERE motion_id = :motion_id AND citizen_id = :citizen_id"
+        , ['motion_id' => $motionId, 'citizen_id' => $memberId])->fetch(\PDO::FETCH_ASSOC)['count'];
     }
     
     /**

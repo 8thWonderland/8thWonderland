@@ -18,6 +18,29 @@
                 <h1>
                     <?php echo $this->parameters['motion']->getTitle(); ?>
                 </h1>
+                <div id="vote-module">
+                    <?php
+                        if($this->parameters['has_already_voted'] === true) {
+                            echo '<h3>';
+                            $this->translate('motions.already_voted');
+                            echo '</h3>';
+                        } else {
+                    ?>
+                    <h3>
+                        <?php $this->translate('motions.vote.request'); ?>
+                    </h3>
+                    <div id="vote-controls">
+                        <button>
+                            <?php $this->translate('motions.vote.yes') ?>
+                        </button>
+                        <button>
+                            <?php $this->translate('motions.vote.no'); ?>
+                        </button>
+                    </div>
+                    <?php
+                        }
+                    ?>
+                </div>
             </header>
             <section>
                 <div id="motion-dates">

@@ -166,12 +166,10 @@ class MotionManager {
     /**
      * @param int $motionId
      * @param int $memberId
-     * @return int
+     * @return bool
      */
-    protected function hasAlreadyVoted($motionId, $memberId) {
-        return $this->connection->query(
-            "SELECT COUNT(*) AS count FROM motions_votes_jetons WHERE Motion_id = $motionId AND Citizen_id = $memberId"
-        )->fetch(\PDO::FETCH_ASSOC)['count'];
+    public function hasAlreadyVoted($motionId, $memberId) {
+        return $this->repository->hasAlreadyVoted($motionId, $memberId);
     }
     
     public function checkMotion(){

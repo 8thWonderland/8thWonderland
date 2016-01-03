@@ -35,8 +35,12 @@ class MotionController extends ActionController {
     }
     
     public function showAction() {
+        $motionManager = $this->application->get('motion_manager');
+        $motionId = $this->request->get('motion_id', null, 'int');
+        
         return $this->render('motions/show', [
-            'motion' => $this->application->get('motion_manager')->getMotion($this->request->get('motion_id', null, 'int')),
+            'motion' => $motionManager->getMotion($motionId),
+            'has_already_voted' => $motionManager->hasAlreadyVoted($motionId, $this->getUser()->getId()),
             'identity' => $this->getUser()->getIdentity(),
             'avatar' => $this->getUser()->getAvatar(),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($this->getUser()->getId())
