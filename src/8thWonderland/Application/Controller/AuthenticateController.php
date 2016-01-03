@@ -46,21 +46,13 @@ class AuthenticateController extends ActionController {
     }
     
     public function subscribeAction() {
-        $request = $this->getJsonRequest();
-        if (
-            empty($request['login']) || empty($request['password']) || 
-            empty($request['confirmation_password']) || empty($request['email']) ||
-            empty($request['country_id']) || empty($request['region_id'])
-        ) {
-            throw new BadRequestException($this->application->get('translator')->translate('fields_empty'));
-        }
         $result = $this->application->get('member_manager')->create(
-            $request['login'],
-            $request['password'],
-            $request['confirmation_password'],
-            $request['email'],
-            $request['country_id'],
-            $request['region_id']
+            $this->request->get('login'),
+            $this->request->get('password'),
+            $this->request->get('confirmation_password'),
+            $this->request->get('email'),
+            $this->request->get('country_id', null, 'int'),
+            $this->request->get('region_id', null, 'int')
         );
         // In case of errors, the manager returns an array containing it
         if($result !== true) {
