@@ -2,6 +2,8 @@
 
 namespace Wonderland\Library\Http\Request;
 
+use Wonderland\Library\Exception\BadRequestException;
+
 class Request {
     /** @var array **/
     protected $headers;
@@ -80,6 +82,9 @@ class Request {
      */
     public function get($parameterName, $defaultValue = null, $cast = null) {
         if(!isset($this->parameters[$parameterName])) {
+            if($defaultValue === null) {
+                throw new BadRequestException("Missing $parameterName parameter");
+            }
             return $defaultValue;
         }
         if($cast !== null) {
