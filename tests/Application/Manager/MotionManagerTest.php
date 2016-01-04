@@ -3,31 +3,33 @@
 namespace Wonderland\Test\Application\Manager;
 
 use Wonderland\Application\Manager\MotionManager;
-
 use Wonderland\Library\Exception\NotFoundException;
 use Wonderland\Library\Exception\BadRequestException;
-
 use Wonderland\Application\Model\MotionTheme;
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Motion;
 
-class MotionManagerTest extends \PHPUnit_Framework_TestCase {
+class MotionManagerTest extends \PHPUnit_Framework_TestCase
+{
     protected $manager;
-    
-    public function setUp() {
+
+    public function setUp()
+    {
         $this->manager = new MotionManager(
             $this->getRepositoryMock()
         );
     }
-    
-    public function testGetMotionThemes() {
+
+    public function testGetMotionThemes()
+    {
         $this->assertEquals(
             $this->getMotionThemesMock(),
             $this->manager->getMotionThemes()
         );
     }
-    
-    public function testCreateMotion() {
+
+    public function testCreateMotion()
+    {
         $motion = $this->manager->createMotion(
             'Eggs for dinner',
             'eat eggs everyday',
@@ -35,14 +37,15 @@ class MotionManagerTest extends \PHPUnit_Framework_TestCase {
             $this->getAuthorMock(),
             'chickens'
         );
-        
+
         $this->assertInstanceOf('Wonderland\Application\Model\Motion', $motion);
         $this->assertEquals('2', $motion->getId());
     }
-    
-    public function testGetMotion() {
+
+    public function testGetMotion()
+    {
         $motion = $this->manager->getMotion(1);
-        
+
         $this->assertInstanceOf('Wonderland\Application\Model\Motion', $motion);
         $this->assertEquals(1, $motion->getId());
         $this->assertEquals('Eggs for dinner', $motion->getTitle());
@@ -54,28 +57,32 @@ class MotionManagerTest extends \PHPUnit_Framework_TestCase {
         $this->assertInstanceOf('DateTime', $motion->getCreatedAt());
         $this->assertInstanceOf('DateTime', $motion->getEndedAt());
     }
-    
+
     /**
      * @expectedException \Wonderland\Library\Exception\NotFoundException
      * @expectedMessage Motion Not Found
      */
-    public function testGetUnexistingMotion() {
+    public function testGetUnexistingMotion()
+    {
         $this->manager->getMotion(15);
     }
-    
+
     /**
      * @expectedException \Wonderland\Library\Exception\BadRequestException
      * @expectedExceptionMessage You already voted this motion
      */
-    public function testVoteAlreadyVotedMotion() {
+    public function testVoteAlreadyVotedMotion()
+    {
         $this->manager->voteMotion($this->getAuthorMock(), 1, 1);
     }
-    
-    public function testVoteMotion() {
+
+    public function testVoteMotion()
+    {
         $this->assertNull($this->manager->voteMotion($this->getAuthorMock(), 2, 0));
     }
-    
-    public function getRepositoryMock() {
+
+    public function getRepositoryMock()
+    {
         $repositoryMock = $this
             ->getMockBuilder('Wonderland\Application\Repository\MotionRepository')
             ->disableOriginalConstructor()
@@ -106,13 +113,16 @@ class MotionManagerTest extends \PHPUnit_Framework_TestCase {
             ->method('createVote')
             ->willReturnCallback([$this, 'createVoteMock'])
         ;
+
         return $repositoryMock;
     }
-    
-    public function getMotionMock($motionId) {
-        if($motionId > 10) {
+
+    public function getMotionMock($motionId)
+    {
+        if ($motionId > 10) {
             throw new NotFoundException('Motion Not Found');
         }
+
         return
             (new Motion())
             ->setId(1)
@@ -127,28 +137,30 @@ class MotionManagerTest extends \PHPUnit_Framework_TestCase {
             ->setAuthor($this->getAuthorMock())
         ;
     }
-    
-    public function getMotionThemesMock() {
+
+    public function getMotionThemesMock()
+    {
         return [
             [
                 'id' => '1',
                 'label' => 'motion_themes.constitutional',
-                'duration' => '8'
+                'duration' => '8',
             ],
             [
                 'id' => '2',
                 'label' => 'motion_themes.action',
-                'duration' => '3'
+                'duration' => '3',
             ],
             [
                 'id' => '3',
                 'label' => 'motion_themes.emergency',
-                'duration' => '1'
-            ]
+                'duration' => '1',
+            ],
         ];
     }
-    
-    public function getMotionThemeMock() {
+
+    public function getMotionThemeMock()
+    {
         return
             (new MotionTheme())
             ->setId('2')
@@ -156,19 +168,23 @@ class MotionManagerTest extends \PHPUnit_Framework_TestCase {
             ->setDuration('3')
         ;
     }
-    
-    public function createMotionMock(Motion &$motion) {
+
+    public function createMotionMock(Motion &$motion)
+    {
         $motion->setId(2);
     }
-    
-    public function createVoteMock($motionId) {
-        if($motionId !== 2) {
+
+    public function createVoteMock($motionId)
+    {
+        if ($motionId !== 2) {
             throw new BadRequestException('You already voted this motion');
         }
+
         return true;
     }
-    
-    public function getAuthorMock() {
+
+    public function getAuthorMock()
+    {
         return
             (new Member())
             ->setId(3)

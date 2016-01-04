@@ -3,15 +3,14 @@
 namespace Wonderland\Library\Controller;
 
 use Wonderland\Library\Application;
-
 use Wonderland\Library\Exception\AccessDeniedException;
 use Wonderland\Library\Exception\ForbiddenException;
-
 use Wonderland\Library\Http\Request\Request;
 use Wonderland\Library\Http\Response\Response;
 use Wonderland\Library\Http\Response\RedirectResponse;
 
-abstract class ActionController {
+abstract class ActionController
+{
     /** @var \Wonderland\Library\Application **/
     protected $application;
     /** @var \Wonderland\Library\Http\Request\Request **/
@@ -20,54 +19,61 @@ abstract class ActionController {
     protected $controllersDirectory = 'src/8thWonderland/Application/Controller';
     /** @var \Wonderland\Application\Model\Member **/
     protected $user;
-    
+
     /**
      * @param Application $application
      */
-    public function __construct(Application $application, Request $request) {
+    public function __construct(Application $application, Request $request)
+    {
         $this->application = $application;
         $this->request = $request;
     }
-    
+
     /**
      * @param string $view
-     * @param array $parameters
-     * @param array $headers
+     * @param array  $parameters
+     * @param array  $headers
+     *
      * @return \Wonderland\Library\Http\Response\Response
      */
-    public function render($view, $parameters = [], $headers = [], $status = 200) {
+    public function render($view, $parameters = [], $headers = [], $status = 200)
+    {
         return new Response($this
             ->application
             ->get('templating')
-            ->render($view, $parameters)
-        , $status);
+            ->render($view, $parameters), $status);
     }
-    
+
     /**
      * @return \Wonderland\Application\Model\Member
      */
-    public function getUser() {
-        if($this->user === null) {
+    public function getUser()
+    {
+        if ($this->user === null) {
             $this->user = $this
                 ->application
                 ->get('member_manager')
                 ->getMember($this->application->get('session')->get('__id__'))
             ;
         }
+
         return $this->user;
     }
-    
+
     /**
      * @param string $url
+     *
      * @return \Wonderland\Library\Http\Response\AbstractResponse
      */
-    public function redirect($url) {   
+    public function redirect($url)
+    {
         if ($this->is_Ajax()) {
-            $rootPath = 
+            $rootPath =
                 (!isset($_SERVER['BASE']))
                 ? '/'
-                : $_SERVER['BASE'] . '/'
+                : $_SERVER['BASE'].'/'
             ;
+
             return new RedirectResponse($url, 301);
         }
         $params = $this->_formatURL($url);
@@ -78,21 +84,23 @@ abstract class ActionController {
 
         return $controller->$action();
     }
-    
+
     /**
-     * @return boolean
+     * @return bool
      */
     protected function is_Ajax()
     {
-        return (
+        return
             array_key_exists('HTTP_X_REQUESTED_WITH', $_SERVER) &&
             strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
-        );
+        ;
     }
-    
+
     /**
      * @param string $url
+     *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
@@ -106,12 +114,12 @@ abstract class ActionController {
         if (count($params) < 2) {
             throw new \InvalidArgumentException('The url is invalid !');
         }
-        $controllerName = ucfirst($params[1]) . 'Controller';
+        $controllerName = ucfirst($params[1]).'Controller';
         $controller = "Wonderland\\Application\\Controller\\$controllerName";
         if (isset($params[2])) {
             $action = $params[2];
         }
-        
+
         // Vérification si le controleur existe
         $filename = "{$this->controllersDirectory}/$controllerName.php";
         if (!file_exists($filename)) {
@@ -121,21 +129,24 @@ abstract class ActionController {
         if (!in_array("{$action}Action", get_class_methods($controller))) {
             throw new \Exception("The Action '$action' does not exist !");
         }
+
         return [$controller, $action];
     }
-    
+
     /**
      * @param string $rule
-     * @param int $objectId
-     * @param array $dynamicAttributes
+     * @param int    $objectId
+     * @param array  $dynamicAttributes
+     *
      * @throws \Wonderland\Library\Exception\AccessDeniedException
      * @throws ForbiddenException
      */
-    public function checkAccess($rule, $objectId = null, $dynamicAttributes = []) {
-        if(($user = $this->getUser()) === null ) {
+    public function checkAccess($rule, $objectId = null, $dynamicAttributes = [])
+    {
+        if (($user = $this->getUser()) === null) {
             throw new AccessDeniedException();
         }
-        if(($check = $this->application->get('abac')->enforce($rule, $user->getId(), $objectId, $dynamicAttributes)) !== true) {
+        if (($check = $this->application->get('abac')->enforce($rule, $user->getId(), $objectId, $dynamicAttributes)) !== true) {
             throw new ForbiddenException($check);
         }
     }

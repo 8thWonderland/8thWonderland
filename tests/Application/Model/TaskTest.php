@@ -4,8 +4,10 @@ namespace Wonderland\Test\Application\Model;
 
 use Wonderland\Application\Model\Task;
 
-class TaskTest extends \PHPUnit_Framework_TestCase {
-    public function testModel() {
+class TaskTest extends \PHPUnit_Framework_TestCase
+{
+    public function testModel()
+    {
         $task =
             (new Task())
             ->setId(1)

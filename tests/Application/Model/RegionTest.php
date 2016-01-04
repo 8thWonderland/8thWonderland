@@ -5,8 +5,10 @@ namespace Wonderland\Test\Application\Model;
 use Wonderland\Application\Model\Region;
 use Wonderland\Application\Model\Country;
 
-class RegionTest extends \PHPUnit_Framework_TestCase {
-    public function testModel() {
+class RegionTest extends \PHPUnit_Framework_TestCase
+{
+    public function testModel()
+    {
         $region =
             (new Region())
             ->setId(1)

@@ -4,8 +4,10 @@ namespace Wonderland\Test\Application\Model;
 
 use Wonderland\Application\Model\MotionTheme;
 
-class MotionThemeTest extends \PHPUnit_Framework_TestCase {
-    public function testModel() {
+class MotionThemeTest extends \PHPUnit_Framework_TestCase
+{
+    public function testModel()
+    {
         $motionTheme =
             (new MotionTheme())
             ->setId(1)

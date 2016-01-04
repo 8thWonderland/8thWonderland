@@ -1,31 +1,31 @@
 <?php
 
 /**
- *
- *
  * @version $Id$
+ *
  * @copyright 2011
  */
 
 // Sélection de la langue
-if (isset($_GET['langue']))
-{$_SESSION['langue'] = $_GET['langue'];}
-else
-{
-	if (!isset($_SESSION['langue']))
-	{
-		if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {$lg_nav = $_SERVER['HTTP_ACCEPT_LANGUAGE'];}
-		else {$lg_nav = "<inconnue>";}
-		$lg_nav = explode(',',$lg_nav);
-		$tmp = $lg_nav[0];
-		$tmp = explode('-', $tmp);
-		$_SESSION['langue'] = $tmp[0];
-	}
+if (isset($_GET['langue'])) {
+    $_SESSION['langue'] = $_GET['langue'];
+} else {
+    if (!isset($_SESSION['langue'])) {
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $lg_nav = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        } else {
+            $lg_nav = '<inconnue>';
+        }
+        $lg_nav = explode(',', $lg_nav);
+        $tmp = $lg_nav[0];
+        $tmp = explode('-', $tmp);
+        $_SESSION['langue'] = $tmp[0];
+    }
 }
-if ($_SESSION['langue'] != "en" && $_SESSION['langue'] != "de" && $_SESSION['langue'] != "fr") {
-	$_SESSION['langue'] = "en";
+if ($_SESSION['langue'] != 'en' && $_SESSION['langue'] != 'de' && $_SESSION['langue'] != 'fr') {
+    $_SESSION['langue'] = 'en';
 }
-include_once("Intranet/langues/" . $_SESSION['langue'] . ".php");
+include_once 'Intranet/langues/'.$_SESSION['langue'].'.php';
 $lang = $array;
 
 ?>

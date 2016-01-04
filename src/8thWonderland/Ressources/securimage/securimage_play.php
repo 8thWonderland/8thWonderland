@@ -2,7 +2,7 @@
 
 /**
  * Project:     Securimage: A PHP class for creating and managing form CAPTCHA images<br />
- * File:        securimage_play.php<br />
+ * File:        securimage_play.php<br />.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,16 +27,15 @@
  * @link http://www.phpcaptcha.org Securimage PHP CAPTCHA
  * @link http://www.phpcaptcha.org/latest.zip Download Latest Version
  * @link http://www.phpcaptcha.org/Securimage_Docs/ Online Documentation
+ *
  * @copyright 2009 Drew Phillips
  * @author drew010 <drew@drew-phillips.com>
- * @version 2.0.1 BETA (December 6th, 2009)
- * @package Securimage
  *
+ * @version 2.0.1 BETA (December 6th, 2009)
  */
-
 include 'securimage.php';
 
-$img    = new Securimage();
+$img = new Securimage();
 $img->audio_format = (isset($_GET['format']) && in_array(strtolower($_GET['format']), array('mp3', 'wav')) ? strtolower($_GET['format']) : 'mp3');
 //$img->setAudioPath('/path/to/securimage/audio/');
 

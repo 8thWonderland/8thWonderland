@@ -3,10 +3,8 @@
 /**
  * Project:     Securimage: A PHP class for creating and managing form CAPTCHA images<br />
  * File:        securimage.php<br />
- * URL:         www.phpcaptcha.org
+ * URL:         www.phpcaptcha.org.
  */
-
-
 session_start();  // Start the session where the code will be stored.
 
 ?>
@@ -18,7 +16,8 @@ session_start();  // Start the session where the code will be stored.
 <body>
 
 <?php
-if (empty($_POST)) { ?>
+if (empty($_POST)) {
+    ?>
 <form method="POST">
 Username:<br />
 <input type="text" name="username" /><br />
@@ -53,16 +52,17 @@ Code:<br />
 </form>
 
 <?php
-} else { //form is posted
-  include("securimage.php");
-  $img = new Securimage();
-  $valid = $img->check($_POST['code']);
 
-  if($valid == true) {
-    echo "<center>Thanks, you entered the correct code.<br />Click <a href=\"{$_SERVER['PHP_SELF']}\">here</a> to go back.</center>";
-  } else {
-    echo "<center>Sorry, the code you entered was invalid.  <a href=\"javascript:history.go(-1)\">Go back</a> to try again.</center>";
-  }
+} else { //form is posted
+  include 'securimage.php';
+    $img = new Securimage();
+    $valid = $img->check($_POST['code']);
+
+    if ($valid == true) {
+        echo "<center>Thanks, you entered the correct code.<br />Click <a href=\"{$_SERVER['PHP_SELF']}\">here</a> to go back.</center>";
+    } else {
+        echo '<center>Sorry, the code you entered was invalid.  <a href="javascript:history.go(-1)">Go back</a> to try again.</center>';
+    }
 }
 
 ?>

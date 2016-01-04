@@ -2,16 +2,20 @@
 
 namespace Wonderland\Library\Http\Response;
 
-class RedirectResponse extends AbstractResponse {
+class RedirectResponse extends AbstractResponse
+{
     /**
      * @param string $url
-     * @param int $status
+     * @param int    $status
      * @param string $protocol
      */
-    public function __construct($url, $status = 300, $protocol = 'http') {
+    public function __construct($url, $status = 300, $protocol = 'http')
+    {
         $this->status = $status;
-        $this->addHeader('Location', "$protocol://{$_SERVER['SERVER_NAME']}" . VIEW_PATH . $url);
+        $this->addHeader('Location', "$protocol://{$_SERVER['SERVER_NAME']}".VIEW_PATH.$url);
     }
-    
-    public function respond() {}
+
+    public function respond()
+    {
+    }
 }

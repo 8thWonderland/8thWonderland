@@ -7,8 +7,10 @@ use Wonderland\Application\Model\Group;
 use Wonderland\Application\Model\Country;
 use Wonderland\Application\Model\Region;
 
-class MemberTest extends \PHPUnit_Framework_TestCase {
-    public function testModel() {
+class MemberTest extends \PHPUnit_Framework_TestCase
+{
+    public function testModel()
+    {
         $member =
             (new Member())
             ->setId(1)

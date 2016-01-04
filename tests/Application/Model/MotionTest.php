@@ -6,8 +6,10 @@ use Wonderland\Application\Model\Motion;
 use Wonderland\Application\Model\MotionTheme;
 use Wonderland\Application\Model\Member;
 
-class MotionTest extends \PHPUnit_Framework_TestCase {
-    public function testModel() {
+class MotionTest extends \PHPUnit_Framework_TestCase
+{
+    public function testModel()
+    {
         $motion =
             (new Motion())
             ->setId(1)

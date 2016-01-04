@@ -3,18 +3,18 @@
 namespace Wonderland\Test\Application\Repository;
 
 use Wonderland\Application\Repository\MotionRepository;
-
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\MotionTheme;
 use Wonderland\Application\Model\Motion;
-
 use Wonderland\Test\WonderlandTestCase;
 
-class MotionRepositoryTest extends WonderlandTestCase {
+class MotionRepositoryTest extends WonderlandTestCase
+{
     /** @var \Wonderland\Application\Repository\MotionRepository **/
     protected $repository;
-    
-    public function setUp() {
+
+    public function setUp()
+    {
         $this->loadFixture('countries');
         $this->loadFixture('regions');
         $this->loadFixture('group_types');
@@ -24,49 +24,54 @@ class MotionRepositoryTest extends WonderlandTestCase {
         $this->loadFixture('motions');
         $this->loadFixture('motions_votes');
         $this->loadFixture('motions_vote_tokens');
-        
+
         $this->repository = new MotionRepository($this->getConnection());
     }
-    
-    public function testGetActiveMotions() {
+
+    public function testGetActiveMotions()
+    {
         $this->markTestIncomplete('NOW() SQL function to replace to work with SQLite');
-        
+
         $motions = $this->repository->getActiveMotions($this->getMemberMock());
-        
+
         var_dump($motions);
     }
-    
-    public function testGetMotionThemes() {
+
+    public function testGetMotionThemes()
+    {
         $motionThemes = $this->repository->getMotionThemes();
-        
+
         $this->assertCount(3, $motionThemes);
         $this->assertEquals([
             'id' => '1',
             'label' => 'motion_themes.constitutional',
-            'duration' => '8'
+            'duration' => '8',
         ], $motionThemes[0]);
     }
-    
-    public function testGetMotionTheme() {
+
+    public function testGetMotionTheme()
+    {
         $motionTheme = $this->repository->getMotionTheme(2);
-        
+
         $this->assertInstanceOf('Wonderland\\Application\\Model\\MotionTheme', $motionTheme);
         $this->assertEquals('2', $motionTheme->getId());
         $this->assertEquals('motion_themes.action', $motionTheme->getLabel());
         $this->assertEquals('3', $motionTheme->getDuration());
     }
-    
-    public function testCreateMotion() {
+
+    public function testCreateMotion()
+    {
         $motion = $this->getMotionMock();
-        
+
         $this->repository->createMotion($motion);
-        
+
         $this->assertEquals(2, $motion->getId());
     }
-    
-    public function testGetMotion() {
+
+    public function testGetMotion()
+    {
         $motion = $this->repository->getMotion(1);
-        
+
         $this->assertInstanceOf('Wonderland\Application\Model\Motion', $motion);
         $this->assertEquals(1, $motion->getId());
         $this->assertEquals('Test des motions', $motion->getTitle());
@@ -78,26 +83,31 @@ class MotionRepositoryTest extends WonderlandTestCase {
         $this->assertInstanceOf('DateTime', $motion->getCreatedAt());
         $this->assertInstanceOf('DateTime', $motion->getEndedAt());
     }
-    
-    public function testGetUnexistingMotion() {
+
+    public function testGetUnexistingMotion()
+    {
         $this->assertNull($this->repository->getMotion(10));
     }
-    
-    public function testHasAlreadyVoted() {
+
+    public function testHasAlreadyVoted()
+    {
         $this->assertTrue($this->repository->hasAlreadyVoted(1, 1));
     }
-    
-    public function testHasNotAlreadyVoted() {
+
+    public function testHasNotAlreadyVoted()
+    {
         $this->assertFalse($this->repository->hasAlreadyVoted(1, 2));
     }
-    
-    public function testCreateVote() {
+
+    public function testCreateVote()
+    {
         $this->repository->createVote(1, 2, 'Alexander', '2016-06-08 14:50:35', '127.0.0.1', 1);
-        
+
         $this->assertTrue($this->repository->hasAlreadyVoted(1, 2));
     }
-    
-    public function getMotionMock() {
+
+    public function getMotionMock()
+    {
         return
             (new Motion())
             ->setTitle('Eggs for dinner')
@@ -111,8 +121,9 @@ class MotionRepositoryTest extends WonderlandTestCase {
             ->setAuthor($this->getMemberMock())
         ;
     }
-    
-    public function getMemberMock() {
+
+    public function getMemberMock()
+    {
         return
             (new Member())
             ->setId(2)

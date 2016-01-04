@@ -2,7 +2,8 @@
 
 namespace Wonderland\Library\Http\Response;
 
-abstract class AbstractResponse {
+abstract class AbstractResponse
+{
     /** @var array **/
     protected $primitiveHeaders = [];
     /** @var array **/
@@ -16,7 +17,7 @@ abstract class AbstractResponse {
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
-        
+
         200 => 'OK',
         201 => 'Created',
         202 => 'Accepted',
@@ -27,7 +28,7 @@ abstract class AbstractResponse {
         207 => 'Multi-Status',
         210 => 'Content Different',
         226 => 'IM Used',
-        
+
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
         302 => 'Moved Temporarily',
@@ -38,7 +39,7 @@ abstract class AbstractResponse {
         307 => 'Temporary Redirect',
         308 => 'Permanent Redirect',
         310 => 'Too many Redirects',
-        
+
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
@@ -71,7 +72,7 @@ abstract class AbstractResponse {
         451 => 'Unavailable for legal reasons',
         456 => 'Unrecoverable Error',
         499 => 'client has closed connection',
-        
+
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway',
@@ -85,49 +86,54 @@ abstract class AbstractResponse {
         510 => 'Not extended',
         511 => 'Network authentication required',
         520 => 'Web server is returning an unknown error',
-        521 => 'The server is not available " for legal reasons "'
+        521 => 'The server is not available " for legal reasons "',
     ];
-    
+
     abstract public function respond();
-    
-    public function makeHeaders() {
+
+    public function makeHeaders()
+    {
         // Make status header
         header("{$_SERVER['SERVER_PROTOCOL']} {$this->status} {$this->reasons[$this->status]}");
         // The primitive headers modified by the user will be overridden 
         $headers = array_merge($this->primitiveHeaders, $this->userHeaders);
-        foreach($headers as $header => $value) {
+        foreach ($headers as $header => $value) {
             header("$header: $value");
         }
     }
-    
+
     /**
      * @param array $headers
      */
-    public function addHeaders($headers) {
-        foreach($headers as $header => $value) {
+    public function addHeaders($headers)
+    {
+        foreach ($headers as $header => $value) {
             $this->userHeaders[$header] = $value;
         }
     }
-    
+
     /**
      * @param string $header
      * @param string $value
      */
-    public function addHeader($header, $value) {
+    public function addHeader($header, $value)
+    {
         $this->userHeaders[$header] = $value;
     }
-    
+
     /**
      * @param string $header
      */
-    public function removeHeader($header) {
+    public function removeHeader($header)
+    {
         unset($this->userHeaders[$header]);
     }
-    
+
     /**
      * @return array
      */
-    public function getHeaders() {
+    public function getHeaders()
+    {
         return $this->userHeaders;
     }
 }

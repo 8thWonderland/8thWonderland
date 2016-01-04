@@ -2,33 +2,36 @@
 
 namespace Wonderland\Library\Http\Response;
 
-class PaginatedResponse extends AbstractResponse {
+class PaginatedResponse extends AbstractResponse
+{
     /** @var string **/
     protected $location;
     /** @var string **/
     protected $rangeUnit;
     /** @var string **/
     protected $contentRange;
-    
+
     /**
-     * @param mixed $data
+     * @param mixed  $data
      * @param string $rangeUnit
      * @param string $range
-     * @param int $maxElements
-     * @param int $status
+     * @param int    $maxElements
+     * @param int    $status
      */
-    public function __construct($data = '', $rangeUnit, $range, $maxElements, $status = 200) {
+    public function __construct($data = '', $rangeUnit, $range, $maxElements, $status = 200)
+    {
         $this->data = $data;
         $this->status = $status;
-        
+
         $this->location = "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
         $this->rangeUnit = $rangeUnit;
         $this->contentRange = "$range/$maxElements";
-        
+
         $this->generatePaginationHeaders();
     }
-    
-    public function generatePaginationHeaders() {
+
+    public function generatePaginationHeaders()
+    {
         $data = explode('/', $this->contentRange);
         $ranges = explode('-', $data[0]);
         $minRange = $ranges[0];
@@ -60,8 +63,9 @@ class PaginatedResponse extends AbstractResponse {
             'Access-Control-Expose-Headers' => 'Accept-Ranges, Content-Range',
         ]);
     }
-    
-    public function respond() {
+
+    public function respond()
+    {
         echo json_encode($this->data, $this->status);
     }
 }

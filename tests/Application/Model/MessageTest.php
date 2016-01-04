@@ -5,8 +5,10 @@ namespace Wonderland\Test\Application\Model;
 use Wonderland\Application\Model\Message;
 use Wonderland\Application\Model\Member;
 
-class MessageTest extends \PHPUnit_Framework_TestCase {
-    public function testModel() {
+class MessageTest extends \PHPUnit_Framework_TestCase
+{
+    public function testModel()
+    {
         $message =
             (new Message())
             ->setId(1)

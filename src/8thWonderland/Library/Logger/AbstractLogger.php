@@ -2,7 +2,8 @@
 
 namespace Wonderland\Library\Logger;
 
-abstract class AbstractLogger {
+abstract class AbstractLogger
+{
     /**
      * @param string $type
      * @param string $message

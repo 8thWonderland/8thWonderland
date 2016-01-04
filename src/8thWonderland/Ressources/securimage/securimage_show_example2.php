@@ -2,7 +2,7 @@
 
 /**
  * Project:     Securimage: A PHP class for creating and managing form CAPTCHA images<br />
- * File:        securimage_show_example2.php<br />
+ * File:        securimage_show_example2.php<br />.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,13 +27,12 @@
  * @link http://www.phpcaptcha.org Securimage PHP CAPTCHA
  * @link http://www.phpcaptcha.org/latest.zip Download Latest Version
  * @link http://www.phpcaptcha.org/Securimage_Docs/ Online Documentation
+ *
  * @copyright 2009 Drew Phillips
  * @author Drew Phillips <drew@drew-phillips.com>
- * @version 2.0.1 BETA (December 6th, 2009)
- * @package Securimage
  *
+ * @version 2.0.1 BETA (December 6th, 2009)
  */
-
 include 'securimage.php';
 
 $img = new securimage();
@@ -42,14 +41,14 @@ $img = new securimage();
 $img->image_width = 280;
 $img->image_height = 100;
 $img->perturbation = 0.9;
-$img->code_length = rand(5,6);
-$img->image_bg_color = new Securimage_Color("#ffffff");
+$img->code_length = rand(5, 6);
+$img->image_bg_color = new Securimage_Color('#ffffff');
 $img->use_transparent_text = true;
 $img->text_transparency_percentage = 75; // 100 = completely transparent
 $img->num_lines = 15;
 $img->image_signature = '';
-$img->text_color = new Securimage_Color("#000000");
-$img->line_color = new Securimage_Color("#cccccc");
+$img->text_color = new Securimage_Color('#000000');
+$img->line_color = new Securimage_Color('#cccccc');
 
 $img->show(''); // alternate use:  $img->show('/path/to/background_image.jpg');
 

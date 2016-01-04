@@ -6,8 +6,10 @@ use Wonderland\Application\Model\Group;
 use Wonderland\Application\Model\GroupType;
 use Wonderland\Application\Model\Member;
 
-class GroupTest extends \PHPUnit_Framework_TestCase {
-    public function testModel() {
+class GroupTest extends \PHPUnit_Framework_TestCase
+{
+    public function testModel()
+    {
         $group =
             (new Group())
             ->setId(1)

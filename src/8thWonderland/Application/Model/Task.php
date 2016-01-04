@@ -2,7 +2,8 @@
 
 namespace Wonderland\Application\Model;
 
-class Task {
+class Task
+{
     /** @var int **/
     protected $id;
     /** @var string **/
@@ -15,106 +16,124 @@ class Task {
     protected $status;
     /** @var int **/
     protected $author;
-    
+
     /**
      * @param int $id
+     *
      * @return \Wonderland\Application\Model\Task
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
-        
+
         return $this;
     }
-    
+
     /**
      * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
-    
+
     /**
      * @param string $description
+     *
      * @return \Wonderland\Application\Model\Task
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
-        
+
         return $this;
     }
-    
+
     /**
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
-    
+
     /**
      * @param \DateTime $createdAt
+     *
      * @return \Wonderland\Application\Model\Task
      */
-    public function setCreatedAt(\DateTime $createdAt) {
+    public function setCreatedAt(\DateTime $createdAt)
+    {
         $this->createdAt = $createdAt;
-        
+
         return $this;
     }
-    
+
     /**
      * @return \DateTime
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->createdAt;
     }
-    
+
     /**
      * @param int $group
+     *
      * @return \Wonderland\Application\Model\Task
      */
-    public function setGroup($group) {
+    public function setGroup($group)
+    {
         $this->group = $group;
-        
+
         return $this;
     }
-    
+
     /**
      * @return int
      */
-    public function getGroup() {
+    public function getGroup()
+    {
         return $this->group;
     }
-    
+
     /**
      * @param int $status
+     *
      * @return \Wonderland\Application\Model\Task
      */
-    public function setStatus($status) {
+    public function setStatus($status)
+    {
         $this->status = $status;
-        
+
         return $this;
     }
-    
+
     /**
      * @return int
      */
-    public function getStatus() {
+    public function getStatus()
+    {
         return $this->status;
     }
-    
+
     /**
      * @param int $author
+     *
      * @return \Wonderland\Application\Model\Task
      */
-    public function setAuthor($author) {
+    public function setAuthor($author)
+    {
         $this->author = $author;
-        
+
         return $this;
     }
-    
+
     /**
      * @return int
      */
-    public function getAuthor() {
+    public function getAuthor()
+    {
         return $this->author;
     }
 }
