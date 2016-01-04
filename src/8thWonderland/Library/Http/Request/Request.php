@@ -2,6 +2,8 @@
 
 namespace Wonderland\Library\Http\Request;
 
+use Wonderland\Library\Exception\BadRequestException;
+
 class Request {
     /** @var array **/
     protected $headers;
@@ -20,8 +22,12 @@ class Request {
         }
         foreach ($_SERVER as $name => $value) {
             if (substr($name, 0, 5) == 'HTTP_') {
-                $this->headers[strtolower(str_replace('_', '-', substr($name, 5)))] = $value;
+                $this->headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
             }
+        }
+        // Special case with the Content type header which is not prefixed with "HTTP_"
+        if(isset($_SERVER['CONTENT_TYPE'])) {
+            $this->headers['Content-Type'] = $_SERVER['CONTENT_TYPE'];
         }
     }
     
@@ -80,6 +86,9 @@ class Request {
      */
     public function get($parameterName, $defaultValue = null, $cast = null) {
         if(!isset($this->parameters[$parameterName])) {
+            if($defaultValue === null) {
+                throw new BadRequestException("Missing $parameterName parameter");
+            }
             return $defaultValue;
         }
         if($cast !== null) {

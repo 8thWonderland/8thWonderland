@@ -107,15 +107,91 @@ class MotionRepository extends AbstractRepository {
         return $this->formatObject($data);
     }
     
-    
     /**
      * @param Motion $motion
      */
     public function getVotes(Motion $motion) {
         $data = $this->connection->prepareStatement(
             'SELECT COUNT(mv1.hash) AS positive_votes, COUNT(mv2.hash) as negative_votes ' .
-            'FROM motions_votes WHERE Motion_id = $motionId AND Choix = 1'
-        )->fetch(\PDO::FETCH_ASSOC);
+            'FROM motions_votes WHERE Motion_id = :motion_id AND Choix = 1'
+        , ['motion_id' => $motion->getId()])->fetch(\PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * @param int $motionId
+     * @param int $memberId
+     * @return bool
+     */
+    public function hasAlreadyVoted($motionId, $memberId) {
+        return (bool) $this->connection->prepareStatement(
+            "SELECT COUNT(*) AS count FROM motions_vote_tokens WHERE motion_id = :motion_id AND citizen_id = :citizen_id"
+        , ['motion_id' => $motionId, 'citizen_id' => $memberId])->fetch(\PDO::FETCH_ASSOC)['count'];
+    }
+    
+    /**
+     * @param int $motionId
+     * @param int $memberId
+     * @param string $memberIdentity
+     * @param string $date
+     * @param string $ip
+     * @param boolean $vote
+     * @return type
+     */
+    public function createVote($motionId, $memberId, $memberIdentity, $date, $ip, $vote) {
+        if(!$this->connection->beginTransaction()) {
+            throw new \PDOException(
+                $this->connection->errorInfo()[2],
+                $this->connection->errorCode()
+            );
+        }
+        $voteTokenStatement = $this->connection->prepareStatement(
+            'INSERT INTO motions_vote_tokens (motion_id, citizen_id, date, ip, browser) ' .
+            'VALUES (:motion_id, :citizen_id, :date, :ip, "")'
+        , [
+            'motion_id' => $motionId,
+            'citizen_id' => $memberId,
+            'date' => $date,
+            'ip' => $ip
+        ]);
+        if ($voteTokenStatement->rowCount() === 0) {
+            if(!$this->connection->rollBack()) {
+                throw new \PDOException(
+                    $this->connection->errorInfo()[2],
+                    $this->connection->errorCode()
+                );
+            }
+            throw new \PDOException(
+                $this->connection->errorInfo()[2],
+                $this->connection->errorCode()
+            );
+        }
+        unset($voteTokenStatement);
+        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$motionId#$memberIdentity#$vote#$date#$ip");
+        $voteStatement = $this->connection->prepareStatement(
+            'INSERT INTO motions_votes(motion_id, choice, hash)  VALUES (:id, :choice, :hash)'
+        , [
+            'id' => $motionId,
+            'choice' => $vote,
+            'hash' => $hash
+        ]);
+        if($voteStatement->rowCount() === 0) {
+            if(!$this->connection->rollBack()) {
+                throw new \PDOException(
+                    $this->connection->errorInfo()[2],
+                    $this->connection->errorCode()
+                );
+            }
+            throw new \PDOException(
+                $this->connection->errorInfo()[2],
+                $this->connection->errorCode()
+            );
+        }
+        if(!$this->connection->commit()) {
+            throw new \PDOException(
+                $this->connection->errorInfo()[2],
+                $this->connection->errorCode()
+            );
+        }
     }
     
     /**

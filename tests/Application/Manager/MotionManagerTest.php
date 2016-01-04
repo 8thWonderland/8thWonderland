@@ -4,21 +4,18 @@ namespace Wonderland\Test\Application\Manager;
 
 use Wonderland\Application\Manager\MotionManager;
 
-use Wonderland\Test\WonderlandTestCase;
-
 use Wonderland\Library\Exception\NotFoundException;
+use Wonderland\Library\Exception\BadRequestException;
 
 use Wonderland\Application\Model\MotionTheme;
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Motion;
 
-class MotionManagerTest extends WonderlandTestCase {
+class MotionManagerTest extends \PHPUnit_Framework_TestCase {
     protected $manager;
     
     public function setUp() {
         $this->manager = new MotionManager(
-            $this->getConnection(),
-            $this->getTranslatorMock(),
             $this->getRepositoryMock()
         );
     }
@@ -66,13 +63,16 @@ class MotionManagerTest extends WonderlandTestCase {
         $this->manager->getMotion(15);
     }
     
-    public function getTranslatorMock() {
-        $translatorMock = $this
-            ->getMockBuilder('Wonderland\Library\Translator')
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        return $translatorMock;
+    /**
+     * @expectedException \Wonderland\Library\Exception\BadRequestException
+     * @expectedExceptionMessage You already voted this motion
+     */
+    public function testVoteAlreadyVotedMotion() {
+        $this->manager->voteMotion($this->getAuthorMock(), 1, 1);
+    }
+    
+    public function testVoteMotion() {
+        $this->assertNull($this->manager->voteMotion($this->getAuthorMock(), 2, 0));
     }
     
     public function getRepositoryMock() {
@@ -100,6 +100,11 @@ class MotionManagerTest extends WonderlandTestCase {
             ->expects($this->any())
             ->method('createMotion')
             ->willReturnCallback([$this, 'createMotionMock'])
+        ;
+        $repositoryMock
+            ->expects($this->any())
+            ->method('createVote')
+            ->willReturnCallback([$this, 'createVoteMock'])
         ;
         return $repositoryMock;
     }
@@ -156,10 +161,18 @@ class MotionManagerTest extends WonderlandTestCase {
         $motion->setId(2);
     }
     
+    public function createVoteMock($motionId) {
+        if($motionId !== 2) {
+            throw new BadRequestException('You already voted this motion');
+        }
+        return true;
+    }
+    
     public function getAuthorMock() {
         return
             (new Member())
             ->setId(3)
+            ->setIdentity('Juan Neve')
         ;
     }
 }

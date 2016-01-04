@@ -18,7 +18,7 @@ $("#motion-theme").on('change', function() {
     );
 });
 
-$("#create-motion-form form").on('submit', function(e) {
+$("#motion-details form").on('submit', function(e) {
     $.ajax({
         type: "POST",
         url: website_root + "motion/create",
@@ -34,3 +34,27 @@ $("#create-motion-form form").on('submit', function(e) {
     });
     return false;
 });
+
+function vote_motion(motion_id, vote) {
+    var data = {
+        "motion_id" : motion_id,
+        "vote" : vote
+    };
+    
+    $.ajax({
+        type: "POST",
+        url: website_root + "motion/vote",
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(response) {
+            $("#vote-controls").slideUp('normal', function(){
+                $(this).remove();
+                var title = $("#vote-module h3");
+                title.html(title.attr('x-data-vote-success-message'));
+            });
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}

@@ -22,6 +22,7 @@ class MotionRepositoryTest extends WonderlandTestCase {
         $this->loadFixture('users');
         $this->loadFixture('motion_themes');
         $this->loadFixture('motions');
+        $this->loadFixture('motions_votes');
         $this->loadFixture('motions_vote_tokens');
         
         $this->repository = new MotionRepository($this->getConnection());
@@ -80,6 +81,20 @@ class MotionRepositoryTest extends WonderlandTestCase {
     
     public function testGetUnexistingMotion() {
         $this->assertNull($this->repository->getMotion(10));
+    }
+    
+    public function testHasAlreadyVoted() {
+        $this->assertTrue($this->repository->hasAlreadyVoted(1, 1));
+    }
+    
+    public function testHasNotAlreadyVoted() {
+        $this->assertFalse($this->repository->hasAlreadyVoted(1, 2));
+    }
+    
+    public function testCreateVote() {
+        $this->repository->createVote(1, 2, 'Alexander', '2016-06-08 14:50:35', '127.0.0.1', 1);
+        
+        $this->assertTrue($this->repository->hasAlreadyVoted(1, 2));
     }
     
     public function getMotionMock() {
