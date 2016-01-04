@@ -37,7 +37,7 @@ class Request
 
     public function setParameters()
     {
-        if (isset($this->headers['Content-Type']) && $this->headers['Content-Type'] === 'application/json') {
+        if (isset($this->headers['Content-Type']) && strpos($this->headers['Content-Type'], 'application/json') !== false) {
             $this->parameters = $this->getJsonData();
 
             return;
