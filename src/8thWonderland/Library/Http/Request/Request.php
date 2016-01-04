@@ -76,13 +76,13 @@ class Request
      */
     public function getRange($defaultNbElements)
     {
-        if (!isset($this->headers['range'])) {
+        if (!isset($this->headers['Range'])) {
             return [
                 'min' => 0,
                 'max' => $defaultNbElements,
             ];
         }
-        $range = explode('-', $this->headers['range']);
+        $range = explode('-', $this->headers['Range']);
 
         return [
             'min' => $range[0],

@@ -23,7 +23,7 @@ class PaginatedResponse extends AbstractResponse
         $this->data = $data;
         $this->status = $status;
 
-        $this->location = "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
+        $this->location = "http://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
         $this->rangeUnit = $rangeUnit;
         $this->contentRange = "$range/$maxElements";
 
