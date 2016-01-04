@@ -145,8 +145,8 @@ class MotionRepository extends AbstractRepository {
             );
         }
         $voteTokenStatement = $this->connection->prepareStatement(
-            'INSERT INTO motions_vote_tokens (motion_id, citizen_id, date, ip) ' .
-            'VALUES (:motion_id, :citizen_id, :date, :ip)'
+            'INSERT INTO motions_vote_tokens (motion_id, citizen_id, date, ip, browser) ' .
+            'VALUES (:motion_id, :citizen_id, :date, :ip, "")'
         , [
             'motion_id' => $motionId,
             'citizen_id' => $memberId,
@@ -166,7 +166,7 @@ class MotionRepository extends AbstractRepository {
             );
         }
         unset($voteTokenStatement);
-        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$id#$memberIdentity#$vote#$date#$ip");
+        $hash = hash('sha512', "{$this->connection->lastInsertId()}#$motionId#$memberIdentity#$vote#$date#$ip");
         $voteStatement = $this->connection->prepareStatement(
             'INSERT INTO motions_votes(motion_id, choice, hash)  VALUES (:id, :choice, :hash)'
         , [
