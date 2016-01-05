@@ -31,4 +31,38 @@ abstract class AbstractRepository
 
         return 'LIMIT '.($max - $min)." OFFSET $min";
     }
+    
+    public function beginTransaction() {
+        if (!$this->connection->beginTransaction()) {
+            $this->throwPdoException();
+        }
+    }
+    
+    public function commit() {
+        if (!$this->connection->commit()) {
+            $this->throwPdoException();
+        }
+    }
+    
+    /**
+     * @param bool $throwException
+     */
+    public function rollback($throwException = false) {
+        if (!$this->connection->rollBack()) {
+            $this->throwPdoException();
+        }
+        if ($throwException) {
+            $this->throwPdoException();
+        }
+    }
+    
+    /**
+     * @throws \PDOException
+     */
+    public function throwPdoException() {
+        throw new \PDOException(
+            $this->connection->errorInfo()[2],
+            $this->connection->errorCode()
+        );
+    }
 }
