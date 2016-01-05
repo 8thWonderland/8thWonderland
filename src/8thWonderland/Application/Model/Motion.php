@@ -168,11 +168,11 @@ class Motion implements \JsonSerializable
     }
 
     /**
-     * @param string $author
+     * @param \Wonderland\Application\Model\Member $author
      *
      * @return \Wonderland\Application\Model\Motion
      */
-    public function setAuthor($author)
+    public function setAuthor(Member $author)
     {
         $this->author = $author;
 
@@ -180,7 +180,7 @@ class Motion implements \JsonSerializable
     }
 
     /**
-     * @return string
+     * @return \Wonderland\Application\Model\Member
      */
     public function getAuthor()
     {
@@ -228,7 +228,7 @@ class Motion implements \JsonSerializable
     }
 
     /**
-     * @param int $score
+     * @param float $score
      *
      * @return \Wonderland\Application\Model\Motion
      */
@@ -240,7 +240,7 @@ class Motion implements \JsonSerializable
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getScore()
     {
