@@ -31,12 +31,12 @@
                                     foreach($this->parameters['motions'] as $motion) {
                                         echo
                                             '<li class="motion">',
-                                            "<a href='" . VIEW_PATH . "motion/show?motion_id={$motion['id']}'>",
-                                            "<div class='motion-title'><h6>{$motion['title']}</h6>",
-                                            "<span>{$motion['ended_at']}</span></div>",
+                                            "<a href='" . VIEW_PATH . "motion/show?motion_id={$motion['motion']->getId()}'>",
+                                            "<div class='motion-title'><h6>{$motion['motion']->getTitle()}</h6>",
+                                            "<span>{$motion['motion']->getEndedAt()->format($this->getTranslation('date_format'))}</span></div>",
                                             '<div class="motion-vote-flag"><span>'
                                         ;
-                                        ($motion['has_already_voted'] === '0') ? $this->translate('motions.vote') : null;
+                                        (!$motion['has_already_voted']) ? $this->translate('motions.vote') : null;
                                         echo '</span></div></a></li>';
                                     }
                                 ?>
