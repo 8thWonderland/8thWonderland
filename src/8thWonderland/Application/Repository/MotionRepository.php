@@ -177,8 +177,11 @@ class MotionRepository extends AbstractRepository
         $isApproved = $votes['positive'] > $votes['negative'];
         $score = round(100 - ($votes[($isApproved) ? 'negative' : 'positive'] / ($votes['negative'] + $votes['positive'])) * 100, 2);
         
-        $motion->setIsApproved($isApproved);
-        $motion->setScore($score);
+        $motion
+            ->setIsActive(false)
+            ->setIsApproved($isApproved)
+            ->setScore($score)
+        ;
         
         $nbAffectedRows = $this->connection->prepareStatement(
             'UPDATE motions SET is_active = 0, is_approved = :is_approved, score = :score WHERE id = :id'
