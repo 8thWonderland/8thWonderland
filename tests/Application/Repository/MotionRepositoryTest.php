@@ -105,16 +105,36 @@ class MotionRepositoryTest extends WonderlandTestCase
 
         $this->assertTrue($this->repository->hasAlreadyVoted(1, 2));
     }
+    
+    public function testCheckMotion() {
+        $motion = $this->getMotionMock();
+        
+        $this->repository->checkMotion($motion);
+        
+        $this->assertEquals(100.00, $motion->getScore());
+        $this->assertTrue($motion->getIsApproved());
+        $this->assertFalse($motion->getIsActive());
+    }
+    
+    public function testGetVotes() {
+        $motion = $this->getMotionMock();
+        
+        $this->assertEquals([
+            'positive' => 1,
+            'negative' => 0
+        ], $this->repository->getVotes($motion));
+    }
 
     public function getMotionMock()
     {
         return
             (new Motion())
+            ->setId(1)
             ->setTitle('Eggs for dinner')
             ->setDescription('Give eggs everyday to everyone')
             ->setMeans('Chickens')
-            ->setIsActive(1)
-            ->setIsApproved(0)
+            ->setIsActive(true)
+            ->setIsApproved(false)
             ->setTheme((new MotionTheme())->setId(2))
             ->setCreatedAt(new \DateTime())
             ->setEndedAt(new \DateTime())

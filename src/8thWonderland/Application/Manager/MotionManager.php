@@ -81,7 +81,7 @@ class MotionManager
         if (($motion = $this->repository->getMotion($motionId)) === null) {
             throw new NotFoundException('Motion Not Found');
         }
-
+        $this->repository->checkMotion($motion);
         return $motion;
     }
 

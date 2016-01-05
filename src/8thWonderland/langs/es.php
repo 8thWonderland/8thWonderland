@@ -9,6 +9,8 @@ $array = array(
     'fr' => 'francès',
     'en' => 'inglès',
     'es' => 'español',
+    
+    'date_format' => 'd-m-Y H:i:s',
 
     // Connexion / Perte de mot de passe
     'login' => 'Usuario',

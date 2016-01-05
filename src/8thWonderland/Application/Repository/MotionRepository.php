@@ -10,28 +10,29 @@ class MotionRepository extends AbstractRepository
 {
     /**
      * @param \Wonderland\Application\Model\Member $member
-     * @param bool                                 $raw
      *
      * @return array|Member
      */
-    public function getActiveMotions(Member $member, $raw = true)
+    public function getActiveMotions(Member $member)
     {
         $statement = $this->connection->prepareStatement(
-            'SELECT m.id, m.title, m.created_at, m.ended_at, !ISNULL(mvt.citizen_id) as has_already_voted '.
+            'SELECT m.id, m.title, m.created_at, m.ended_at, !ISNULL(mvt.citizen_id) as has_already_voted, m.is_active '.
             'FROM motions m '.
             'LEFT JOIN motions_vote_tokens mvt ON mvt.motion_id = m.id AND mvt.citizen_id = :citizen_id '.
-            'WHERE m.ended_at > NOW() '.
+            'WHERE m.is_active = 1 '.
             'ORDER BY m.ended_at DESC ', ['citizen_id' => $member->getId()]);
 
         $result = [];
         while ($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $result[] =
-                ($raw)
-                ? $this->formatArray($data)
-                : $this->formatObject($data)
-            ;
+            $motion = $this->formatObject($data);
+            // We add the motion to the active motions list only if its vote isn't finished yet
+            if(!$this->checkMotion($motion)) {
+                $result[] = [
+                    'motion' => $motion,
+                    'has_already_voted' => (bool) $data['has_already_voted']
+                ];
+            }
         }
-
         return $result;
     }
 
@@ -87,7 +88,7 @@ class MotionRepository extends AbstractRepository
             'is_approved' => $motion->getIsApproved(),
         ])->rowCount();
         if ($affectedRows === 0) {
-            throw new \PDOException($this->connection->errorInfo()[2], $this->connection->errorCode());
+            $this->throwPdoException();
         }
         $motion->setId($this->connection->lastInsertId());
     }
@@ -116,16 +117,6 @@ class MotionRepository extends AbstractRepository
     }
 
     /**
-     * @param Motion $motion
-     */
-    public function getVotes(Motion $motion)
-    {
-        $data = $this->connection->prepareStatement(
-            'SELECT COUNT(mv1.hash) AS positive_votes, COUNT(mv2.hash) as negative_votes '.
-            'FROM motions_votes WHERE Motion_id = :motion_id AND Choix = 1', ['motion_id' => $motion->getId()])->fetch(\PDO::FETCH_ASSOC);
-    }
-
-    /**
      * @param int $motionId
      * @param int $memberId
      *
@@ -149,12 +140,7 @@ class MotionRepository extends AbstractRepository
      */
     public function createVote($motionId, $memberId, $memberIdentity, $date, $ip, $vote)
     {
-        if (!$this->connection->beginTransaction()) {
-            throw new \PDOException(
-                $this->connection->errorInfo()[2],
-                $this->connection->errorCode()
-            );
-        }
+        $this->beginTransaction();
         $voteTokenStatement = $this->connection->prepareStatement(
             'INSERT INTO motions_vote_tokens (motion_id, citizen_id, date, ip, browser) '.
             'VALUES (:motion_id, :citizen_id, :date, :ip, "")', [
@@ -164,16 +150,7 @@ class MotionRepository extends AbstractRepository
             'ip' => $ip,
         ]);
         if ($voteTokenStatement->rowCount() === 0) {
-            if (!$this->connection->rollBack()) {
-                throw new \PDOException(
-                    $this->connection->errorInfo()[2],
-                    $this->connection->errorCode()
-                );
-            }
-            throw new \PDOException(
-                $this->connection->errorInfo()[2],
-                $this->connection->errorCode()
-            );
+            $this->rollback(true);
         }
         unset($voteTokenStatement);
         $hash = hash('sha512', "{$this->connection->lastInsertId()}#$motionId#$memberIdentity#$vote#$date#$ip");
@@ -184,23 +161,56 @@ class MotionRepository extends AbstractRepository
             'hash' => $hash,
         ]);
         if ($voteStatement->rowCount() === 0) {
-            if (!$this->connection->rollBack()) {
-                throw new \PDOException(
-                    $this->connection->errorInfo()[2],
-                    $this->connection->errorCode()
-                );
-            }
-            throw new \PDOException(
-                $this->connection->errorInfo()[2],
-                $this->connection->errorCode()
-            );
+            $this->rollback(true);
         }
-        if (!$this->connection->commit()) {
-            throw new \PDOException(
-                $this->connection->errorInfo()[2],
-                $this->connection->errorCode()
-            );
+        $this->commit();
+    }
+    
+    public function checkMotion(Motion $motion) {
+        if(!$motion->getIsActive() || $motion->getEndedAt() > new \DateTime()) {
+            return false;
         }
+        $this->beginTransaction();
+        
+        $votes = $this->getVotes($motion);
+        
+        $isApproved = $votes['positive'] > $votes['negative'];
+        $score = round(100 - ($votes[($isApproved) ? 'negative' : 'positive'] / ($votes['negative'] + $votes['positive'])) * 100, 2);
+        
+        $motion
+            ->setIsActive(false)
+            ->setIsApproved($isApproved)
+            ->setScore($score)
+        ;
+        
+        $nbAffectedRows = $this->connection->prepareStatement(
+            'UPDATE motions SET is_active = 0, is_approved = :is_approved, score = :score WHERE id = :id'
+        , [
+            'is_approved' => $isApproved,
+            'score' => $score,
+            'id' => $motion->getId()
+        ])->rowCount();
+        if($nbAffectedRows === 0) {
+            $this->rollback(true);
+        }
+        $this->commit();
+        return true;
+    }
+    
+    public function getVotes(Motion $motion) {
+        $statement = $this->connection->prepareStatement(
+            'SELECT COUNT(*) as nb_votes, choice FROM motions_votes WHERE motion_id = :motion_id GROUP BY choice'
+        , ['motion_id' => $motion->getId()]);
+        
+        $votes = [
+            'positive' => 0,
+            'negative' => 0
+        ];
+        
+        while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $votes[((bool)$data['choice']) ? 'positive' : 'negative'] = (int) $data['nb_votes'];
+        }
+        return $votes;
     }
 
     /**
