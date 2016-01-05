@@ -78,6 +78,14 @@ class Renderer
     {
         echo $this->translator->translate($key);
     }
+    
+    /**
+     * @param string $key
+     * @return string
+     */
+    public function getTranslation($key) {
+        return $this->translator->translate($key);
+    }
 
     /**
      * @param string $rule
