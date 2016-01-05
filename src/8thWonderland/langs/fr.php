@@ -10,7 +10,7 @@ $array = array(
     'en' => 'Anglais',
     'es' => 'Espagnol',
     
-    'date_format' => 'd-m-Y H:i:s',
+    'date_format' => 'd/m/Y H:i:s',
 
     // Connexion / Perte de mot de passe
     'login' => 'Identifiant',
