@@ -99,6 +99,10 @@ $array = array(
     'motions.vote.request' => 'Approuvez-vous cette motion ?',
     'motions.vote.yes' => 'Oui',
     'motions.vote.no' => 'Non',
+    
+    'messages.inbox' => 'Boîte de réception',
+    'messages.box_list_title' => 'Messagerie',
+    'messages.write_message' => 'Rédiger un message',
 
     // Partie 'TACHES'
     'tasks_inprogress' => 'Les tâches en cours',
