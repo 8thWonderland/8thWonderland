@@ -73,10 +73,19 @@ class MessageManager
                 ->setAuthor($author)
                 ->setRecipient($recipient)
                 ->setCreatedAt(new \DateTime($data['created_at']))
+                ->setOpenedAt(($data['opened_at'] !== null) ? new \DateTime($data['opened_at']) : null)
             ;
         }
 
         return $messages;
+    }
+    
+    /**
+     * @param int $recipientId
+     * @return int
+     */
+    public function countReceivedMessages($recipientId) {
+        return $this->repository->countReceivedMessages($recipientId);
     }
 
     /**

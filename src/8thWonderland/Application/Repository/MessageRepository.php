@@ -79,6 +79,12 @@ class MessageRepository extends AbstractRepository
     public function countUnreadMessages($recipientId)
     {
         return (int) $this->connection->prepareStatement(
-            'SELECT COUNT(*) AS nb_unread_messages FROM messages WHERE recipient_id = :recipient_id AND opened_at IS NULL', ['recipient_id' => $recipientId])->fetch(\PDO::FETCH_ASSOC)['nb_unread_messages'];
+            'SELECT COUNT(*) AS nb_unread_messages FROM messages WHERE recipient_id = :recipient_id AND opened_at IS NULL AND deleted_by_recipient = 0', ['recipient_id' => $recipientId])->fetch(\PDO::FETCH_ASSOC)['nb_unread_messages'];
+    }
+    
+    public function countReceivedMessages($recipientId) {
+        return (int) $this->connection->prepareStatement(
+            'SELECT COUNT(*) AS nb_messages FROM messages WHERE recipient_id = :recipient_id AND deleted_by_recipient = 0',
+        ['recipient_id' => $recipientId])->fetch(\PDO::FETCH_ASSOC)['nb_messages'];
     }
 }
