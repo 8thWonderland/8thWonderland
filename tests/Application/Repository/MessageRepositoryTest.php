@@ -58,7 +58,7 @@ class MessageRepositoryTest extends WonderlandTestCase
 
     public function testFindByRecipient()
     {
-        $statement = $this->repository->findByRecipient((new Member())->setId(2));
+        $statement = $this->repository->findByRecipient((new Member())->setId(2), 0, 15);
 
         $this->assertInstanceOf('PdoStatement', $statement);
         $this->assertEquals([
@@ -103,7 +103,7 @@ class MessageRepositoryTest extends WonderlandTestCase
 
     public function testCountUnreadMessages()
     {
-        $this->assertEquals(2, $this->repository->countUnreadMessages(2));
+        $this->assertEquals(1, $this->repository->countUnreadMessages(2));
     }
 
     public function getMessageMock()
