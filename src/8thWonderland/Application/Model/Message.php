@@ -119,10 +119,10 @@ class Message
     }
     
     /**
-     * @param \DateTime $openedAt
+     * @param \DateTime|null $openedAt
      * @return \Wonderland\Application\Model\Message
      */
-    public function setOpenedAt(\DateTime $openedAt) {
+    public function setOpenedAt($openedAt) {
         $this->openedAt = $openedAt;
         
         return $this;
