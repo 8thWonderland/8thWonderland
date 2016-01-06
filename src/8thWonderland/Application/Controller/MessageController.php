@@ -18,11 +18,12 @@ class MessageController extends ActionController {
         $memberId = $member->getId();
         
         $range = $this->request->getRange(15);
+        $messages = $messageManager->getReceivedMessages($this->getUser(), $range['min'], $range['max']);
         $nbMessages = $messageManager->countReceivedMessages($memberId);
         
         if ($this->is_Ajax()) {
             return new PaginatedResponse([
-                    'messages' => $messageManager->getReceivedMessages($this->getUser(), $range['min'], $range['max']),
+                    'messages' => $messages,
                     'total_messages' => $nbMessages,
                 ],
                 $_SERVER['HTTP_RANGE_UNIT'],
@@ -32,7 +33,7 @@ class MessageController extends ActionController {
         }
         
         return $this->render('communications/inbox', [
-            'messages' => $messageManager->getReceivedMessages($this->getUser()),
+            'messages' => $messages,
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
             'messages_range' => $range['max'],
