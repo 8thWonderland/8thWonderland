@@ -6,11 +6,25 @@ use Wonderland\Library\Controller\ActionController;
 use Wonderland\Application\Model\Message;
 use Wonderland\Library\Admin\Log;
 
-class MessagingController extends ActionController
-{
-    public function displayReceptionAction()
-    {
-        return $this->render('communications/messaging');
+class MessageController extends ActionController {
+    public function inboxAction() {
+        if(($member = $this->getUser()) === null) {
+            return $this->redirect('index/index');
+        }
+        
+        $messageManager = $this->application->get('message_manager');
+        $memberId = $member->getId();
+        
+        $range = $this->request->getRange(15);
+        
+        return $this->render('communications/inbox', [
+            'messages' => $messageManager->getReceivedMessages($this->getUser()),
+            'identity' => $member->getIdentity(),
+            'avatar' => $member->getAvatar(),
+            'messages_range' => $range['max'],
+            'total_messages' => $messageManager->countReceivedMessages($memberId),
+            'nb_unread_messages' => $messageManager->countUnreadMessages($memberId),
+        ]);
     }
 
     public function displayReceivedMessagesAction()
