@@ -14,6 +14,8 @@ class Message
     protected $author;
     /** @var \DateTime **/
     protected $createdAt;
+    /** @var \DateTime **/
+    protected $openedAt;
     /** @var \Wonderland\Application\Model\Member **/
     protected $recipient;
 
@@ -114,6 +116,20 @@ class Message
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+    
+    /**
+     * @param \DateTime $openedAt
+     * @return \Wonderland\Application\Model\Message
+     */
+    public function setOpenedAt(\DateTime $openedAt) {
+        $this->openedAt = $openedAt;
+        
+        return $this;
+    }
+    
+    public function getOpenedAt() {
+        return $this->openedAt;
     }
 
     /**
