@@ -18,7 +18,7 @@ class PaginatedResponse extends AbstractResponse
      * @param int    $maxElements
      * @param int    $status
      */
-    public function __construct($data = '', $rangeUnit, $range, $maxElements, $status = 200)
+    public function __construct($data = '', $rangeUnit, $range, $maxElements, $status = 206)
     {
         $this->data = $data;
         $this->status = $status;
