@@ -20,15 +20,16 @@ class GroupController extends ActionController
         $groupManager = $this->application->get('group_manager');
 
         $range = $this->request->getRange(10);
+        $nbGroups = $groupManager->countGroups($typeId);
+        
         if ($this->is_Ajax()) {
             return new PaginatedResponse([
                     'groups' => $groupManager->getGroups($typeId, $range['min'], $range['max']),
-                    'total_groups' => $groupManager->countGroups($typeId),
+                    'total_groups' => $nbGroups,
                 ],
                 $_SERVER['HTTP_RANGE_UNIT'],
                 $_SERVER['HTTP_RANGE'],
-                $groupManager->countGroups($typeId),
-                206
+                $nbGroups
             );
         }
 
@@ -37,7 +38,7 @@ class GroupController extends ActionController
             'avatar' => $member->getAvatar(),
             'groups' => $groupManager->getGroups($typeId, $range['min'], $range['max'], false),
             'groups_range' => $range['max'],
-            'total_groups' => $groupManager->countGroups($typeId),
+            'total_groups' => $nbGroups,
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId()),
         ]);
     }
