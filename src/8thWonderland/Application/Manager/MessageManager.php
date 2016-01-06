@@ -57,9 +57,9 @@ class MessageManager
      *
      * @return array
      */
-    public function getReceivedMessages(Member $recipient)
+    public function getReceivedMessages(Member $recipient, $minRange, $maxRange)
     {
-        $statement = $this->repository->findByRecipient($recipient);
+        $statement = $this->repository->findByRecipient($recipient, $minRange, $maxRange);
 
         $messages = [];
 

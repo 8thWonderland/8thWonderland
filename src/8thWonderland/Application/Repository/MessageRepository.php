@@ -41,10 +41,12 @@ class MessageRepository extends AbstractRepository
      *
      * @return \PDOStatement
      */
-    public function findByRecipient(Member $recipient)
+    public function findByRecipient(Member $recipient, $minRange, $maxRange)
     {
         return $this->connection->prepareStatement(
-            'SELECT * FROM messages WHERE recipient_id = :recipient_id AND deleted_by_recipient = 0', ['recipient_id' => $recipient->getId()]);
+            'SELECT * FROM messages WHERE recipient_id = :recipient_id AND deleted_by_recipient = 0 ' .
+            $this->getRangeStatements($minRange, $maxRange)
+        , ['recipient_id' => $recipient->getId()]);
     }
 
     /**
