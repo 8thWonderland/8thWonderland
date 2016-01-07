@@ -28,72 +28,115 @@ class MessageRepositoryTest extends WonderlandTestCase
     {
         $this->repository->create($this->getMessageMock());
 
-        $this->assertEquals([
-            'id' => '4',
-            'title' => 'You have a new message !',
-            'content' => 'Sorry, it was a test',
-            'author_id' => '1',
-            'recipient_id' => '2',
-            'created_at' => '2015-08-22T15:20:00+02:00',
-            'opened_at' => null,
-            'deleted_by_author' => '0',
-            'deleted_by_recipient' => '0',
-        ], $this->repository->find(4));
+        $message = $this->repository->find(4);
+        
+        $this->assertInstanceOf('Wonderland\Application\Model\Message', $message);
+        $this->assertEquals(4, $message->getId());
+        $this->assertEquals('You have a new message !', $message->getTitle());
+        $this->assertEquals('Sorry, it was a test', $message->getContent());
+        $this->assertInstanceOf('DateTime', $message->getCreatedAt());
+        $this->assertNull($message->getOpenedAt());
+        
+        $author = $message->getAuthor();
+        
+        $this->assertInstanceOf('Wonderland\Application\Model\Member', $author);
+        $this->assertEquals(1, $author->getId());
+        $this->assertEquals('John Doe', $author->getIdentity());
+        $this->assertEquals('avatar.png', $author->getAvatar());
+        
+        $recipient = $message->getRecipient();
+        $this->assertInstanceOf('Wonderland\Application\Model\Member', $recipient);
+        $this->assertEquals(2, $recipient->getId());
+        $this->assertEquals('Alexander', $recipient->getIdentity());
+        $this->assertEquals('avatar.jpg', $recipient->getAvatar());
     }
 
     public function testFind()
     {
-        $this->assertEquals([
-            'id' => '1',
-            'title' => 'Test',
-            'content' => 'test',
-            'author_id' => '1',
-            'recipient_id' => '2',
-            'created_at' => '2015-10-03 08:39:36',
-            'opened_at' => null,
-            'deleted_by_author' => '0',
-            'deleted_by_recipient' => '1',
-        ], $this->repository->find(1));
+        $message = $this->repository->find(1);
+        
+        $this->assertInstanceOf('Wonderland\Application\Model\Message', $message);
+        $this->assertEquals(1, $message->getId());
+        $this->assertEquals('Test', $message->getTitle());
+        $this->assertEquals('test', $message->getContent());
+        $this->assertInstanceOf('DateTime', $message->getCreatedAt());
+        $this->assertNull($message->getOpenedAt());
+        
+        $author = $message->getAuthor();
+        
+        $this->assertInstanceOf('Wonderland\Application\Model\Member', $author);
+        $this->assertEquals(1, $author->getId());
+        $this->assertEquals('John Doe', $author->getIdentity());
+        $this->assertEquals('avatar.png', $author->getAvatar());
+        
+        $recipient = $message->getRecipient();
+        $this->assertInstanceOf('Wonderland\Application\Model\Member', $recipient);
+        $this->assertEquals(2, $recipient->getId());
+        $this->assertEquals('Alexander', $recipient->getIdentity());
+        $this->assertEquals('avatar.jpg', $recipient->getAvatar());
     }
 
     public function testFindByRecipient()
     {
-        $statement = $this->repository->findByRecipient((new Member())->setId(2), 0, 15);
-
-        $this->assertInstanceOf('PdoStatement', $statement);
-        $this->assertEquals([
-            [
-                'id' => '2',
-                'title' => 'Test again',
-                'content' => 'again',
-                'author_id' => '1',
-                'recipient_id' => '2',
-                'created_at' => '2015-10-03 09:03:21',
-                'opened_at' => null,
-                'deleted_by_author' => '1',
-                'deleted_by_recipient' => '0',
-            ],
-        ], $statement->fetchAll(\PDO::FETCH_ASSOC));
+        $messages = $this->repository->findByRecipient(
+            (new Member())->setId(2)->setIdentity('Alexander')->setAvatar('avatar.jpg'),
+            0,
+            15
+        );
+        
+        $this->assertCount(1, $messages);
+        
+        $message = $messages[0];
+        
+        $this->assertInstanceOf('Wonderland\Application\Model\Message', $message);
+        $this->assertEquals(2, $message->getId());
+        $this->assertEquals('Test again', $message->getTitle());
+        $this->assertEquals('again', $message->getContent());
+        $this->assertInstanceOf('DateTime', $message->getCreatedAt());
+        $this->assertNull($message->getOpenedAt());
+        
+        $author = $message->getAuthor();
+        
+        $this->assertInstanceOf('Wonderland\Application\Model\Member', $author);
+        $this->assertEquals(1, $author->getId());
+        $this->assertEquals('John Doe', $author->getIdentity());
+        $this->assertEquals('avatar.png', $author->getAvatar());
+        
+        $recipient = $message->getRecipient();
+        $this->assertInstanceOf('Wonderland\Application\Model\Member', $recipient);
+        $this->assertEquals(2, $recipient->getId());
+        $this->assertEquals('Alexander', $recipient->getIdentity());
+        $this->assertEquals('avatar.jpg', $recipient->getAvatar());
     }
 
     public function findByAuthor()
     {
-        $statement = $this->repository->findByAuthor((new Member())->setId(1));
+        $messages = $this->repository->findByAuthor(
+            (new Member())->setId(1)->setIdentity('John Doe')->setAvatar('avatar.png')
+        );
 
-        $this->assertInstanceOf('PdoStatement', $statement);
-        $this->assertEquals([
-            [
-                'id' => '1',
-                'title' => 'Test',
-                'content' => 'test',
-                'author_id' => '1',
-                'recipient_id' => '2',
-                'created_at' => '2015-10-03 08:39:36',
-                'opened_at' => null,
-                'deleted_by_author' => '0',
-                'deleted_by_recipient' => '1',
-            ],
-        ], $statement->fetchAll(\PDO::FETCH_ASSOC));
+        $this->assertCount(1, $messages);
+        
+        $message = $messages[0];
+        
+        $this->assertInstanceOf('Wonderland\Application\Model\Message', $message);
+        $this->assertEquals(1, $message->getId());
+        $this->assertEquals('Test', $message->getTitle());
+        $this->assertEquals('test', $message->getContent());
+        $this->assertNull($message->getOpenedAt());
+        $this->assertInstanceOf('DateTime', $message->getCreateAt());
+        
+        $author = $message->getAuthor();
+        $this->assertInstanceOf('Wonderland\Application\Model\Member', $author);
+        $this->assertEquals(2, $author->getId());
+        $this->assertEquals('Alexander', $author->getIdentity());
+        $this->assertEquals('avatar.jpg', $author->getAvatar());
+        
+        $recipient = $message->getRecipient();
+        $this->assertInstanceOf('Wonderland\Application\Model\Member', $recipient);
+        $this->assertEquals(2, $recipient->getId());
+        $this->assertEquals('Alexander', $recipient->getIdentity());
+        $this->assertEquals('avatar.jpg', $recipient->getAvatar());
     }
 
     public function testDelete()
