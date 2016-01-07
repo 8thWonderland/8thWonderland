@@ -51,6 +51,8 @@ class MotionController extends ActionController
 
     public function voteAction()
     {
+        $this->checkAccess('citizenship');
+        
         $this->application->get('motion_manager')->voteMotion(
             $this->getUser(),
             $this->request->get('motion_id', null, 'int'),
