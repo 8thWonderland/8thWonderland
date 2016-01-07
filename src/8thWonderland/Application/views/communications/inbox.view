@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>8th Wonderland - <?php $this->translate('messages.inbox') ?></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>intranet.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>messages.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="<?php echo IMG_PATH; ?>icone.png" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>bootstrap.min.css" type="text/css" media="screen" />
+    </head>
+    <body>
+        <?php
+            echo $this->render('intranet/header');
+        ?>
+        <div id="content">
+            <section id="box-list">
+                <h3>
+                    <?php
+                        $this->translate('messages.box_list_title');
+                    ?>
+                </h3>
+                <button class="btn btn-danger">
+                    <?php $this->translate('messages.write_message'); ?>
+                </button>
+                <ul>
+                    <li>
+                        <a>
+                            <?php
+                                $this->translate('messages.inbox');
+                            ?>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+            <section id="messages-list"
+                class="paginated-list"
+                x-data-range="<?php echo($this->parameters['messages_range']); ?>"
+                x-data-range-unit="messages"
+                x-data-total-items="<?php echo($this->parameters['total_messages']); ?>"
+                x-data-page="1"
+                x-data-callback="reloadMessages">
+                <header>
+                    <h3>
+                        <?php $this->translate('messages.inbox'); ?>
+                    </h3>
+                    <div class="paginator"></div>
+                </header>
+                <ul>
+                    <?php
+                        foreach($this->parameters['messages'] as $message) {
+                            echo
+                                "<li id='message-{$message->getId()}' class='message'>",
+                                "<a href='" . VIEW_PATH . "message/read?message_id={$message->getId()}' ",
+                                ($message->getOpenedAt() === null) ? 'class="message-unread">' : '>',
+                                '<span class="message-author">',
+                                ($message->getAuthor()->getAvatar()) ? "<img class='message-author-avatar' src='{$message->getAuthor()->getAvatar()}' alt='avatar'/>" : '<i class="fa fa-user fa-2x"></i>',
+                                "{$message->getAuthor()->getIdentity()}</span>",
+                                "<span class='message-title'>{$message->getTitle()}</span>",
+                                "<span class='message-date'>{$message->getCreatedAt()->format($this->getTranslation('date_format'))}</span>",
+                                '</a></li>'
+                            ;
+                        }
+                    ?>
+                </ul>
+                <footer class="paginator"></footer>
+            </section>
+        </div>
+        <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>intranet.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>paginator.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>messages.js"></script>
+    </body>
+</html>

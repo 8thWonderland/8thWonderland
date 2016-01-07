@@ -1,0 +1,148 @@
+#content {
+    justify-content: flex-start;
+}
+
+#messages-list {
+    flex-grow:3;
+    margin-left:40px;
+}
+
+#messages-list > header {
+    display:flex;
+    justify-content: space-between;
+}
+
+#messages-list > header .paginator ul {
+    margin-top:20px;
+    margin-bottom:0px;
+}
+
+#messages-list > ul {
+    margin-top:0px;
+    padding-left:0px;
+    list-style-type: none;
+    overflow-y: scroll;
+    height:400px;
+}
+
+.message {
+    color: #5060C0;
+    font-size:1.2em;
+    overflow:hidden;
+}
+
+.message a {
+    display:flex;
+    width:100%;
+    margin-left:-100%;
+    padding-top:10px;
+    padding-bottom:10px;
+    border-top:1px solid #888888;
+    border-bottom:1px solid #888888;
+    justify-content:space-around;
+    align-items: center;
+    color: #D08010;
+}
+
+.message-unread {
+    background-color: #FFD0A0;
+}
+
+.message-author-avatar {
+    width:48px;
+    height:48px;
+    border-radius:28px;
+    margin-right:20px;
+    border:2px solid EFEFEF;
+}
+
+#box-list {
+    flex-grow:1;
+}
+
+#box-list ul {
+    list-style-type:none;
+    margin-top:10px;
+    padding-left:0px;
+}
+
+#box-list ul > li {
+    border-top: 1px solid #888888;
+    border-bottom: 1px solid #888888;
+    padding:10px 20px;
+}
+
+.paginator ul {
+    list-style-type:none;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.paginator li {
+    padding-left:5px;
+    padding-right:5px;
+}
+
+.paginator li a {
+    cursor:pointer;
+    padding:5px 10px;
+    background-color: #FFD0A0;
+    color: #D08010;
+    font-size:1.1em;
+    border-radius:20px;
+    text-decoration:none;
+}
+
+.paginator li a[disabled] {
+    background-color: #FFE0C0;
+    color: #FFD0A0;
+}
+
+.paginator li a:hover,
+.paginator li a.active {
+    color:#FFD0A0;
+    background-color: #D08010;
+}
+
+#actions {
+    margin-top:10px;
+    margin-left:20px;
+}
+
+#message-details header {
+    display:flex;
+    justify-content:space-between
+}
+
+#message-titles {
+    margin-left:20px;
+}
+
+#message-titles h1{
+    margin-top:10px;
+    margin-bottom:0px;
+}
+
+#message-titles h3 {
+    margin-top:10px;
+}
+
+#message-infos {
+    margin-right:20px;
+}
+
+#message-infos ul {
+    display:inline-block;
+    list-style-type: none;
+    padding-left:0px;
+    font-size:1.3em;
+}
+
+#message-infos li {
+    display:inline-block;
+    padding-right:20px;
+}
+
+#message-infos i {
+    padding-left:10px;
+}

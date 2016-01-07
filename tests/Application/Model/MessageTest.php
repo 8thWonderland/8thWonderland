@@ -17,6 +17,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
             ->setAuthor(new Member())
             ->setRecipient(new Member())
             ->setCreatedAt(new \DateTime())
+            ->setOpenedAt(null)
         ;
         $this->assertEquals(1, $message->getId());
         $this->assertEquals('Hello world', $message->getTitle());
@@ -24,5 +25,6 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Wonderland\\Application\\Model\\Member', $message->getAuthor());
         $this->assertInstanceOf('Wonderland\\Application\\Model\\Member', $message->getRecipient());
         $this->assertInstanceOf('DateTime', $message->getCreatedAt());
+        $this->assertNull($message->getOpenedAt());
     }
 }

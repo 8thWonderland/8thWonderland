@@ -1,6 +1,6 @@
 $.fn.paginate = function() {
     var paginatedList = $(this);
-    var paginator = paginatedList.children('.paginator');
+    var paginator = paginatedList.find('.paginator');
     paginator.html('');
     
     var page = parseInt(paginatedList.attr('x-data-page'));

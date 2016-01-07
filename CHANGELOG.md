@@ -5,6 +5,7 @@
 - Active motions list
 - Motion details page
 - Motion vote new methods
+- Messages inbox view
 
 ## 0.1.2 - 2015-26-12
 ### Added

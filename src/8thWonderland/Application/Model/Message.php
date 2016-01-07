@@ -2,7 +2,7 @@
 
 namespace Wonderland\Application\Model;
 
-class Message
+class Message implements \JsonSerializable
 {
     /** @var int **/
     protected $id;
@@ -14,6 +14,8 @@ class Message
     protected $author;
     /** @var \DateTime **/
     protected $createdAt;
+    /** @var \DateTime **/
+    protected $openedAt;
     /** @var \Wonderland\Application\Model\Member **/
     protected $recipient;
 
@@ -115,6 +117,20 @@ class Message
     {
         return $this->createdAt;
     }
+    
+    /**
+     * @param \DateTime|null $openedAt
+     * @return \Wonderland\Application\Model\Message
+     */
+    public function setOpenedAt($openedAt) {
+        $this->openedAt = $openedAt;
+        
+        return $this;
+    }
+    
+    public function getOpenedAt() {
+        return $this->openedAt;
+    }
 
     /**
      * @param \Wonderland\Application\Model\Member $recipient
@@ -134,5 +150,28 @@ class Message
     public function getRecipient()
     {
         return $this->recipient;
+    }
+    
+    /**
+     * @return array
+     */
+    public function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'content' => $this->content,
+            'author' => [
+                'id' => $this->author->getId(),
+                'identity' => $this->author->getIdentity(),
+                'avatar' => $this->author->getAvatar()
+            ],
+            'recipient' => [
+                'id' => $this->recipient->getId(),
+                'identity' => $this->recipient->getIdentity(),
+                'avatar' => $this->recipient->getAvatar()
+            ],
+            'created_at' => $this->createdAt,
+            'opened_at' => $this->openedAt
+        ];
     }
 }

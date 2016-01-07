@@ -8,10 +8,12 @@
     </div>
     <div id="personal-area">
         <div id="messages" class="menu-component">
-            <i class="fa fa-envelope-o fa-2x"></i>
-            <span class="badge <?php if($this->parameters['nb_unread_messages'] > 0 ) echo "active"; ?>">
-                <?php echo $this->parameters['nb_unread_messages']; ?>
-            </span>
+            <a href="<?php echo VIEW_PATH ?>message/inbox">
+                <i class="fa fa-envelope-o fa-2x"></i>
+                <span class="badge <?php if($this->parameters['nb_unread_messages'] > 0 ) echo "active"; ?>">
+                    <?php echo $this->parameters['nb_unread_messages']; ?>
+                </span>
+            </a>
         </div>
         <div id="notifications" class="menu-component">
             <i class="fa fa-bell-o fa-2x"></i>
