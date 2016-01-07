@@ -2,28 +2,23 @@
 
 namespace Wonderland\Application\Manager;
 
-use Wonderland\Library\Database\PdoDriver;
 use Wonderland\Application\Repository\MessageRepository;
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Message;
 
 class MessageManager
 {
-    /** @var \Wonderland\Library\Database\PdoDriver **/
-    protected $connection;
     /** @var \Wonderland\Application\Manager\MemberManager **/
     protected $memberManager;
     /** @var \Wonderland\Application\Repository\MessageRepository **/
     protected $repository;
 
     /**
-     * @param \Wonderland\Library\Database\PdoDriver               $connection
      * @param \Wonderland\Application\Manager\MemberManager        $memberManager
      * @param \Wonderland\Application\Repository\MessageRepository $repository
      */
-    public function __construct(PdoDriver $connection, MemberManager $memberManager, MessageRepository $repository)
+    public function __construct(MemberManager $memberManager, MessageRepository $repository)
     {
-        $this->connection = $connection;
         $this->memberManager = $memberManager;
         $this->repository = $repository;
     }
@@ -59,25 +54,7 @@ class MessageManager
      */
     public function getReceivedMessages(Member $recipient, $minRange, $maxRange)
     {
-        $statement = $this->repository->findByRecipient($recipient, $minRange, $maxRange);
-
-        $messages = [];
-
-        while ($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $author = $this->memberManager->getMember($data['author_id']);
-            $messages[] =
-                (new Message())
-                ->setId($data['id'])
-                ->setTitle($data['title'])
-                ->setContent($data['content'])
-                ->setAuthor($author)
-                ->setRecipient($recipient)
-                ->setCreatedAt(new \DateTime($data['created_at']))
-                ->setOpenedAt(($data['opened_at'] !== null) ? new \DateTime($data['opened_at']) : null)
-            ;
-        }
-
-        return $messages;
+        return $this->repository->findByRecipient($recipient, $minRange, $maxRange);
     }
     
     /**
@@ -95,24 +72,7 @@ class MessageManager
      */
     public function getSentMessages(Member $author)
     {
-        $statement = $this->repository->findByAuthor($author);
-
-        $messages = [];
-
-        while ($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $recipient = $this->memberManager->getMember($data['recipient_id']);
-            $messages[] =
-                (new Message())
-                ->setId($data['id'])
-                ->setTitle($data['title'])
-                ->setContent($data['content'])
-                ->setAuthor($author)
-                ->setRecipient($recipient)
-                ->setCreatedAt(new \DateTime($data['created_at']))
-            ;
-        }
-
-        return $messages;
+        return $this->repository->findByAuthor($author);
     }
 
     /**
@@ -122,20 +82,7 @@ class MessageManager
      */
     public function getMessage($id)
     {
-        $data = $this->repository->find($id);
-
-        $author = $this->memberManager->getMember($data['author_id']);
-        $recipient = $this->memberManager->getMember($data['recipient_id']);
-
-        return
-            (new Message())
-            ->setId($id)
-            ->setTitle($data['title'])
-            ->setContent($data['content'])
-            ->setAuthor($author)
-            ->setRecipient($recipient)
-            ->setCreatedAt(new \DateTime($data['created_at']))
-        ;
+        return $this->repository->find($id);
     }
 
     /**
