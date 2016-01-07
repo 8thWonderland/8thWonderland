@@ -2,7 +2,7 @@
 
 namespace Wonderland\Application\Model;
 
-class Message
+class Message implements \JsonSerializable
 {
     /** @var int **/
     protected $id;
@@ -150,5 +150,28 @@ class Message
     public function getRecipient()
     {
         return $this->recipient;
+    }
+    
+    /**
+     * @return array
+     */
+    public function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'content' => $this->content,
+            'author' => [
+                'id' => $this->author->getId(),
+                'identity' => $this->author->getIdentity(),
+                'avatar' => $this->author->getAvatar()
+            ],
+            'recipient' => [
+                'id' => $this->recipient->getId(),
+                'identity' => $this->recipient->getIdentity(),
+                'avatar' => $this->recipient->getAvatar()
+            ],
+            'created_at' => $this->createdAt,
+            'opened_at' => $this->openedAt
+        ];
     }
 }
