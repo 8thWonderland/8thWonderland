@@ -98,6 +98,9 @@ $array = array(
     'motions.vote.request' => 'Do you approve this motion ?',
     'motions.vote.yes' => 'Yes',
     'motions.vote.no' => 'No',
+    'motions.archives' => 'Archived motions',
+    'motions.approved' => 'This motion is approved',
+    'motions.rejected' => 'This motion is rejected',
     
     'messages.inbox' => 'Inbox',
     'messages.box_list_title' => 'Messages',
