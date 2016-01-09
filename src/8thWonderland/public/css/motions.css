@@ -56,3 +56,49 @@
 #motion-details textarea {
     resize: vertical;
 }
+
+#motions-archives {
+    width:80%;
+    margin:auto;
+}
+
+#motions-archives h3 {
+    text-align:center;
+}
+
+.motion {
+    display:flex;
+    color: #5060C0;
+    font-size:1.2em;
+    overflow:hidden;
+}
+
+.motion a {
+    width:100%;
+    display:flex;
+    margin-left:-100%;
+    padding-top:20px;
+    padding-bottom:20px;
+    border-top:1px solid #888888;
+    align-items:center;
+    justify-content: space-around;
+}
+
+.motion-title {
+    flex-grow:2;
+    width:20%;
+}
+
+.motion-score {
+    flex-grow:1;
+    width:200px;
+}
+
+.motion-score .progress {
+    margin-bottom:0px;
+}
+
+.motion-end-date {
+    flex-grow:1;
+    text-align:center;
+}
