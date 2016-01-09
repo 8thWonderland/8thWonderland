@@ -20,10 +20,18 @@
                 </h1>
                 <div id="vote-module">
                     <?php
-                        if($this->parameters['has_already_voted'] === true) {
-                            echo '<h3>';
-                            $this->translate('motions.already_voted');
-                            echo '</h3>';
+                        if(!$this->parameters['motion']->getIsActive()) {
+                            $isApproved = $this->parameters['motion']->getIsApproved();
+                            echo 
+                                "<h3>{$this->getTranslation(($isApproved) ? 'motions.approved' : 'motions.rejected')}</h3>",
+                                '<span class="motion-score">',
+                                '<div class="progress"><div class="progress-bar progress-bar-' . (($isApproved) ? 'success' : 'danger') . '" ',
+                                "role='progressbar' aria-valuenow='{$this->parameters['motion']->getScore()}' aria-valuemin='0' ",
+                                "aria-valuemax='100' style='width: {$this->parameters['motion']->getScore()}%;'>",
+                                "{$this->parameters['motion']->getScore()}%</div></div></span>"
+                            ;
+                        } elseif($this->parameters['has_already_voted'] === true) {
+                            echo "<h3>{$this->getTranslation('motions.already_voted')}</h3>";
                         } else {
                     ?>
                     <h3 x-data-vote-success-message="<?php $this->translate('motions.already_voted'); ?>">
