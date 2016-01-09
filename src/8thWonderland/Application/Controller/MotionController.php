@@ -48,6 +48,35 @@ class MotionController extends ActionController
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($this->getUser()->getId()),
         ]);
     }
+    
+    public function archivesAction() {
+        
+        $range = $this->request->getRange(15);
+        
+        $motionManager = $this->application->get('motion_manager');
+        
+        $motions = $motionManager->getArchives($range['min'], $range['max']);
+        $nbMotions = $motionManager->countArchivedMotions();
+        
+        if ($this->is_Ajax()) {
+            return new PaginatedResponse([
+                    'motions' => $motions,
+                    'total_motions' => $nbMotions,
+                ],
+                $_SERVER['HTTP_RANGE_UNIT'],
+                $_SERVER['HTTP_RANGE'],
+                $nbMotions
+            );
+        }
+        return $this->render('motions/archives', [
+            'motions' => $motions,
+            'motions_range' => $range['max'],
+            'total_motions' => $nbMotions,
+            'identity' => $this->getUser()->getIdentity(),
+            'avatar' => $this->getUser()->getAvatar(),
+            'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($this->getUser()->getId()),
+        ]);
+    }
 
     public function voteAction()
     {

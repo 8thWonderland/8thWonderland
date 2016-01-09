@@ -115,6 +115,22 @@ class MotionManager
             throw new RuntimeException("The vote failed : {$exception->getMessage()}");
         }
     }
+    
+    /**
+     * @param int $minRange
+     * @param int $maxRange
+     * @return array
+     */
+    public function getArchives($minRange, $maxRange) {
+        return $this->repository->getArchives($minRange, $maxRange);
+    }
+    
+    /**
+     * @return int
+     */
+    public function countArchivedMotions() {
+        return $this->repository->countArchivedMotions();
+    }
 
     /**
      * @param int $motionId
