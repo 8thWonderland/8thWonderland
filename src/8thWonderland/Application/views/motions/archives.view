@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>8th Wonderland - <?php $this->translate('motions.archives') ?></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>intranet.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>paginator.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>motions.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="<?php echo IMG_PATH; ?>icone.png" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>bootstrap.min.css" type="text/css" media="screen" />
+    </head>
+    <body>
+        <?php
+            echo $this->render('intranet/header');
+        ?>
+        <div id="content">
+            <section id="motions-archives"
+                class="paginated-list"
+                x-data-range="<?php echo($this->parameters['motions_range']); ?>"
+                x-data-range-unit="motions"
+                x-data-total-items="<?php echo($this->parameters['total_motions']); ?>"
+                x-data-page="1"
+                x-data-callback="reloadMotions">
+                <header>
+                    <h3>
+                        <?php $this->translate('motions.archives'); ?>
+                    </h3>
+                    <div class="paginator"></div>
+                </header>
+                <ul>
+                    <?php
+                        foreach($this->parameters['motions'] as $motion) {
+                            echo
+                                "<li id='motion-{$motion->getId()}' class='motion'>",
+                                "<a href='" . VIEW_PATH . "motion/show?motion_id={$motion->getId()}'>",
+                                "<span class='motion-title'>{$motion->getTitle()}</span>",
+                                '<span class="motion-score">',
+                                '<div class="progress"><div class="progress-bar progress-bar-' . (($motion->getIsApproved()) ? 'success' : 'danger') . '" ',
+                                "role='progressbar' aria-valuenow='{$motion->getScore()}' aria-valuemin='0' ",
+                                "aria-valuemax='100' style='width: {$motion->getScore()}%;'>",
+                                "{$motion->getScore()}%</div></div></span>",
+                                "<span class='motion-end-date'>{$motion->getEndedAt()->format($this->getTranslation('date_format'))}</span>",
+                                '</a></li>'
+                            ;
+                        }
+                    ?>
+                </ul>
+                <footer class="paginator"></footer>
+            </section>
+        </div>
+        <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>intranet.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>paginator.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>motions.js"></script>
+        <script type="text/javascript">
+            $(".paginated_list").paginate();
+        </script>
+    </body>
+</html>

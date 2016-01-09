@@ -6,6 +6,7 @@
 - Motion details page
 - Motion vote new methods
 - Messages inbox view
+- Motion archives list
 
 ## 0.1.2 - 2015-26-12
 ### Added
