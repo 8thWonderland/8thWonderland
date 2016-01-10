@@ -61,8 +61,7 @@ abstract class AbstractRepository
      */
     public function throwPdoException() {
         throw new \PDOException(
-            $this->connection->errorInfo()[2],
-            $this->connection->errorCode()
+            "[{$this->connection->errorCode()}] {$this->connection->errorInfo()[2]}"
         );
     }
 }
