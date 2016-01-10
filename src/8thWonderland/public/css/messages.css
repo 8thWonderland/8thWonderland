@@ -31,6 +31,10 @@
     text-indent:20px;
 }
 
+#message-creation-form .alert {
+    display:none;
+}
+
 #messages-list{
     width:100%;
 }

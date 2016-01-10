@@ -73,4 +73,37 @@ function removeMessage() {
     });
 }
 
+function createMessage() {
+    $.ajax({
+        type: "POST",
+        url: website_root + 'message/create',
+        data: JSON.stringify($("#message-creation-form form").serializeFormJSON()),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function(response) {
+            displayMessageCreationAlert('success', response.message);
+            setTimeout(function() {
+                $("#message-creation-form").modal('hide');
+            }, 4000);
+        },
+        error: function(response) {
+            var errors = JSON.parse(response.responseText);
+            var html = '';
+            $.each(errors, function(index, error) {
+                html += '<li>' + error.message + '</li>'
+            });
+            displayMessageCreationAlert('danger', html);
+        }
+    });
+}
+
+function displayMessageCreationAlert(type, content) {
+    $("#message-creation-form .alert").slideUp('fast', function() {
+        $(this).remove();
+    })
+    $("#message-creation-form .modal-body").prepend(
+        '<div class="alert alert-' + type + '">' + content + '</div>'
+    ).find('.alert').slideDown('fast');
+}
+
 $(".paginated-list").paginate();
