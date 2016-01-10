@@ -15,12 +15,18 @@ class GroupRepository extends AbstractRepository
      */
     public function find($id)
     {
-        return $this->connection->prepareStatement(
-            'SELECT g.id, g.name, g.description, g.contact_id, u.identity as contact_identity, g.created_at, g.updated_at, gt.label '.
+        $data = $this->connection->prepareStatement(
+            'SELECT g.id, g.name, g.description, g.contact_id, u.identity as contact_identity, g.is_public, g.created_at, g.updated_at, gt.label '.
             'FROM groups g '.
             'INNER JOIN group_types gt ON gt.id = g.type_id '.
             'LEFT JOIN users u ON u.id = g.contact_id '.
-            'WHERE g.id = :id', ['id' => $id])->fetch(\PDO::FETCH_ASSOC);
+            'WHERE g.id = :id'
+        , ['id' => $id])->fetch(\PDO::FETCH_ASSOC);
+        
+        if($data === false) {
+            return null;
+        }
+        return $this->formatObject($data);
     }
 
     /**
@@ -39,7 +45,7 @@ class GroupRepository extends AbstractRepository
             : ''
         ;
         $statement = $this->connection->query(
-            'SELECT g.id, g.name, g.description, u.identity, g.created_at, g.updated_at, gt.id as type_id, gt.label '.
+            'SELECT g.id, g.name, g.description, u.identity, g.is_public, g.created_at, g.updated_at, gt.id as type_id, gt.label '.
             'FROM groups g '.
             'INNER JOIN group_types gt ON gt.id = g.type_id '.
             'LEFT JOIN users u ON u.id = g.contact_id '.
@@ -144,6 +150,7 @@ class GroupRepository extends AbstractRepository
             )
             ->setDescription($data['description'])
             ->setContact((new Member())->setIdentity($data['identity']))
+            ->setIsPublic((bool) $data['is_public'])
             ->setCreatedAt((new \DateTime($data['created_at'])))
             ->setUpdatedAt(new \DateTime($data['updated_at']))
         ;
