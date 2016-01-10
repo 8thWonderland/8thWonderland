@@ -18,17 +18,17 @@ html, body {
     padding-left:0px;
 }
 
-#header h1 {
+#logo h1 {
     margin:0px;
     margin-left:20px;
 }
 
-#header a{
+#logo a{
     color: #EFEFEF;
     text-decoration:none;
 }
 
-#header h1 span {
+#logo h1 span {
     color: #ff0000;
 }
 
@@ -49,6 +49,8 @@ html, body {
 #messages a{
     display:flex;
     align-items:center;
+    color: #EFEFEF;
+    text-decoration:none;
 }
 
 #messages,
