@@ -13,6 +13,7 @@ class MessageManagerTest extends \PHPUnit_Framework_TestCase {
     public function setUp() {
         $this->manager = new MessageManager(
             $this->getMemberManagerMock(),
+            $this->getTranslatorMock(),
             $this->getRepositoryMock()
         );
     }
@@ -43,6 +44,20 @@ class MessageManagerTest extends \PHPUnit_Framework_TestCase {
             ->willReturnCallback([$this, 'getMemberMock'])
         ;
         return $managerMock;
+    }
+    
+    public function getTranslatorMock() {
+        $translatorMock = $this
+            ->getMockBuilder('Wonderland\Library\Translator')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $translatorMock
+            ->expects($this->any())
+            ->method('translate')
+            ->willReturnArgument(0)
+        ;
+        return $translatorMock;
     }
     
     public function getRepositoryMock() {
