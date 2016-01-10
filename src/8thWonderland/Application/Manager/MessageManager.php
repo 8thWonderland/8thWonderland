@@ -76,13 +76,14 @@ class MessageManager
     }
 
     /**
+     * @param int $memberId
      * @param int $id
      *
-     * @return \Wonderland\Application\Model\Message
+     * @return \Wonderland\Application\Model\Message|null
      */
-    public function getMessage($id)
+    public function getMessage($memberId, $id)
     {
-        return $this->repository->find($id);
+        return $this->repository->find($memberId, $id);
     }
 
     /**
