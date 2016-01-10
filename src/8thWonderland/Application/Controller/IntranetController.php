@@ -22,7 +22,7 @@ class IntranetController extends ActionController
         return $this->render('intranet', [
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
-            'admin' => $this->application->get('member_manager')->isMemberInGroup($member, 1),
+            'admin' => $this->application->get('group_manager')->isMemberInGroup($member, 1),
             'motions' => $this->application->get('motion_manager')->getActiveMotions($member),
             'groups' => $member->getGroups(),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId()),
