@@ -26,11 +26,12 @@ class MessageRepository extends AbstractRepository
     }
 
     /**
+     * @param int $memberId
      * @param int $id
-     *
+     * 
      * @return \Wonderland\Application\Model\Message|null
      */
-    public function find($id)
+    public function find($memberId, $id)
     {
         $data = $this->connection->prepareStatement(
             'SELECT m.id, m.title, m.content, m.created_at, m.opened_at, ' .
@@ -39,9 +40,16 @@ class MessageRepository extends AbstractRepository
             'FROM messages m ' .
             'INNER JOIN users author ON author.id = m.author_id ' .
             'INNER JOIN users recipient ON recipient.id = m.recipient_id ' .
-            'WHERE m.id = :id', ['id' => $id])->fetch(\PDO::FETCH_ASSOC);
+            'WHERE m.id = :id AND (author.id = :member_id OR recipient.id = :member_id)'
+        , ['id' => $id, 'member_id' => $memberId])->fetch(\PDO::FETCH_ASSOC);
         if(!$data) {
             return null;
+        }
+        if((int)$data['recipient_id'] === $memberId) {
+            $affectedRows = $this->connection->exec("UPDATE messages SET opened_at = NOW() WHERE id = $id");
+            if($affectedRows === 0) {
+                $this->throwPdoException();
+            }
         }
         return $this->formatObject($data);
     }

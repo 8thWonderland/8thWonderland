@@ -8,6 +8,7 @@
 - Messages inbox view
 - Motion archives list
 - Join group webservice
+- Message reading
 
 ## 0.1.2 - 2015-26-12
 ### Added
