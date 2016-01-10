@@ -53,6 +53,9 @@ class GroupRepository extends AbstractRepository
             'ORDER BY g.name ASC '.
             $this->getRangeStatements($minRange, $maxRange)
         );
+        if($statement === false) {
+            $this->throwPdoException();
+        }
         $groups = [];
         while ($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $groups[] =
