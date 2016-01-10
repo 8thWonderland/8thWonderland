@@ -1,4 +1,4 @@
-## Unreleased
+## 0.1.3 - 2016-10-01
 ### Added
 - Group details page
 - Motion creation form and treatment
@@ -9,6 +9,7 @@
 - Motion archives list
 - Join group webservice
 - Message reading
+- Message creation
 
 ## 0.1.2 - 2015-26-12
 ### Added
