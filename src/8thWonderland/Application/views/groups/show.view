@@ -30,9 +30,17 @@
                 </div>
                 <div id="group-infos">
                     <ul>
-                        <li>
+                        <?php
+                            if(!$this->parameters['is_member_in_group'] && $this->parameters['group']->getIsPublic()) {
+                                echo
+                                    "<li id='join-button'><a class='btn btn-danger' onclick='joinGroup({$this->parameters['group']->getId()});'>",
+                                    $this->getTranslation('groups.join') . '</a></li>'
+                                ;
+                            }
+                        ?>
+                        <li id='nb_members'>
                             <?php
-                                echo "{$this->parameters['nb_members']}<i class='fa fa-users fa-2x'></i>";
+                                echo "<span>{$this->parameters['nb_members']}</span><i class='fa fa-users fa-2x'></i>";
                             ?>
                         </li>
                         <?php
@@ -52,5 +60,7 @@
         <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>bootstrap.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>intranet.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>groups.js"></script>
     </body>
 </html>

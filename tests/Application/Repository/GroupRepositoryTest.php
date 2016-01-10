@@ -27,16 +27,17 @@ class GroupRepositoryTest extends WonderlandTestCase
 
     public function testFind()
     {
-        $this->assertEquals([
-            'id' => '1',
-            'name' => 'Développeurs',
-            'description' => 'Equipe de développement du site',
-            'contact_id' => '1',
-            'contact_identity' => 'John Doe',
-            'created_at' => '2015-08-22 15:30:00',
-            'updated_at' => '2015-09-01 23:54:32',
-            'label' => 'groups.thematic',
-        ], $this->repository->find(1));
+        $group = $this->repository->find(1);
+        
+        $this->assertInstanceOf('Wonderland\Application\Model\Group', $group);
+        $this->assertEquals(1, $group->getId());
+        $this->assertEquals('Développeurs', $group->getName());
+        $this->assertEquals('Equipe de développement du site', $group->getDescription());
+        $this->assertEquals(1, $group->getContact()->getId());
+        $this->assertEquals('John Doe', $group->getContact()->getIdentity());
+        $this->assertInstanceOf('DateTime', $group->getCreatedAt());
+        $this->assertInstanceOf('DateTime', $group->getUpdatedAt());
+        $this->assertEquals('groups.thematic', $group->getType()->getLabel());
     }
 
     public function testFindGroups()
@@ -50,6 +51,7 @@ class GroupRepositoryTest extends WonderlandTestCase
                 'name' => 'Développeurs',
                 'description' => 'Equipe de développement du site',
                 'identity' => 'John Doe',
+                'is_public' => '0',
                 'created_at' => '2015-08-22 15:30:00',
                 'updated_at' => '2015-09-01 23:54:32',
                 'label' => 'groups.thematic',
@@ -59,6 +61,7 @@ class GroupRepositoryTest extends WonderlandTestCase
                 'name' => 'Normandie',
                 'description' => 'Groupe régional de Normandie',
                 'identity' => 'Alexander',
+                'is_public' => '1',
                 'created_at' => '2014-05-17 10:30:00',
                 'updated_at' => '2014-12-15 17:52:50',
                 'label' => 'groups.regional',
@@ -68,6 +71,7 @@ class GroupRepositoryTest extends WonderlandTestCase
                 'name' => 'Île-de-France',
                 'description' => "Groupe régional d'Île-de-France",
                 'identity' => 'John Doe',
+                'is_public' => '1',
                 'created_at' => '2013-10-13 14:07:00',
                 'updated_at' => '2013-10-13 14:07:00',
                 'label' => 'groups.regional',
@@ -142,9 +146,9 @@ class GroupRepositoryTest extends WonderlandTestCase
         ;
         $this->repository->update($group);
 
-        $data = $this->repository->find(1);
+        $group = $this->repository->find(1);
 
-        $this->assertEquals('Support', $data['name']);
-        $this->assertEquals('Equipe de support', $data['description']);
+        $this->assertEquals('Support', $group->getName());
+        $this->assertEquals('Equipe de support', $group->getDescription());
     }
 }

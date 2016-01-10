@@ -3,9 +3,9 @@
 namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
-use Wonderland\Library\Exception\BadRequestException;
 use Wonderland\Library\Exception\NotFoundException;
 use Wonderland\Library\Http\Response\Response;
+use Wonderland\Library\Http\Response\JsonResponse;
 use Wonderland\Library\Http\Response\PaginatedResponse;
 
 class GroupController extends ActionController
@@ -45,14 +45,14 @@ class GroupController extends ActionController
 
     public function showAction()
     {
+        $this->checkAccess('citizenship');
+
+        $groupId = $this->request->get('group_id', null, 'int');
+        $groupManager = $this->application->get('group_manager');
+        
         $member = $this->getUser();
 
-        if (!isset($_GET['group_id'])) {
-            throw new BadRequestException('A group ID must be set');
-        }
-        $groupManager = $this->application->get('group_manager');
-
-        if (($group = $groupManager->getGroup($_GET['group_id'])) === null) {
+        if (($group = $groupManager->getGroup($groupId)) === null) {
             throw new NotFoundException('Group Not Found');
         }
 
@@ -60,8 +60,25 @@ class GroupController extends ActionController
             'identity' => $member->getIdentity(),
             'avatar' => $member->getAvatar(),
             'group' => $group,
-            'nb_members' => (int) $groupManager->countGroupMembers($_GET['group_id']),
+            'nb_members' => (int) $groupManager->countGroupMembers($groupId),
+            'is_member_in_group' => $groupManager->isMemberIngroup($member, $groupId),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId()),
+        ]);
+    }
+    
+    /**
+     * @return \Wonderland\Library\Http\Response\JsonResponse
+     */
+    public function joinAction() {
+        $groupId = $this->request->get('group_id', null, 'int');
+        
+        $this->checkAccess('citizenship');
+        
+        $groupManager = $this->application->get('group_manager');
+        $groupManager->addMemberToGroup($this->getUser(), $groupId);
+        return new JsonResponse([
+            'group' => $groupManager->getGroup($groupId),
+            'nb_members' => (int) $groupManager->countGroupMembers($groupId)
         ]);
     }
 

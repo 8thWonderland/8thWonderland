@@ -14,6 +14,8 @@ class Group
     protected $description;
     /** @var \Wonderland\Application\Model\Member **/
     protected $contact;
+    /** @var boolean **/
+    protected $isPublic;
     /** @var \DateTime **/
     protected $createdAt;
     /** @var \DateTime **/
@@ -117,6 +119,23 @@ class Group
     public function getContact()
     {
         return $this->contact;
+    }
+    
+    /**
+     * @param boolean $isPublic
+     * @return \Wonderland\Application\Model\Group
+     */
+    public function setIsPublic($isPublic) {
+        $this->isPublic = $isPublic;
+        
+        return $this;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function getIsPublic() {
+        return $this->isPublic;
     }
 
     /**

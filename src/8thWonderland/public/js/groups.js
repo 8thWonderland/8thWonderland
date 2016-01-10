@@ -50,4 +50,21 @@ function reloadGroups(data) {
     });
 }
 
-$(".paginated-list").paginate();
+function joinGroup(groupId) {
+    $.ajax({
+        type: "POST",
+        url: website_root + "group/join",
+        data: JSON.stringify({group_id: groupId}),
+        contentType: 'application/json',
+        dataType: "json",
+        success: function(data) {
+            $("#join-button").fadeTo('normal', 0, function() {
+                $(this).remove();
+            });
+            $("#nb_members span").html(data.nb_members);
+        }
+    });
+}
+if(jQuery().paginate) {
+    $(".paginated-list").paginate();
+}

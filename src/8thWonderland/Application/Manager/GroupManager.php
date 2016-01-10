@@ -3,7 +3,6 @@
 namespace Wonderland\Application\Manager;
 
 use Wonderland\Application\Model\Group;
-use Wonderland\Application\Model\GroupType;
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Repository\GroupRepository;
 
@@ -27,24 +26,7 @@ class GroupManager
      */
     public function getGroup($id)
     {
-        if (($data = $this->repository->find($id)) === false) {
-            return;
-        }
-
-        return
-            (new Group())
-            ->setId($id)
-            ->setName($data['name'])
-            ->setDescription($data['description'])
-            ->setType((new GroupType())->setLabel($data['label']))
-            ->setContact(
-                (new Member())
-                ->setId($data['contact_id'])
-                ->setIdentity($data['contact_identity'])
-            )
-            ->setCreatedAt(new \DateTime($data['created_at']))
-            ->setUpdatedAt(new \DateTime($data['updated_at']))
-        ;
+        return $this->repository->find($id);
     }
 
     /**
@@ -68,6 +50,29 @@ class GroupManager
     public function countGroups($typeId = null)
     {
         return $this->repository->countGroups($typeId);
+    }
+
+    /**
+     * @param \Wonderland\Application\Model\Member $member
+     * @param int                                  $groupId
+     *
+     * @return boolean
+     */
+    public function isMemberInGroup(Member $member, $groupId)
+    {
+        return isset($member->getGroups()[$groupId]);
+    }
+    
+    /**
+     * 
+     * @param \Wonderland\Application\Model\Member $member
+     * @param int $groupId
+     */
+    public function addMemberToGroup(Member $member, $groupId) {
+        if($this->isMemberInGroup($member, $groupId)) {
+            throw new BadRequestException('You are already in this group');
+        }
+        $this->repository->addMemberToGroup($member->getId(), $groupId);
     }
 
     /**
