@@ -7,6 +7,7 @@
 - Motion vote new methods
 - Messages inbox view
 - Motion archives list
+- Join group webservice
 
 ## 0.1.2 - 2015-26-12
 ### Added
