@@ -34,37 +34,39 @@
                     </li>
                 </ul>
             </section>
-            <section id="messages-list"
-                class="paginated-list"
-                x-data-range="<?php echo($this->parameters['messages_range']); ?>"
-                x-data-range-unit="messages"
-                x-data-total-items="<?php echo($this->parameters['total_messages']); ?>"
-                x-data-page="1"
-                x-data-callback="reloadMessages">
-                <header>
-                    <h3>
-                        <?php $this->translate('messages.inbox'); ?>
-                    </h3>
-                    <div class="paginator"></div>
-                </header>
-                <ul>
-                    <?php
-                        foreach($this->parameters['messages'] as $message) {
-                            echo
-                                "<li id='message-{$message->getId()}' class='message'>",
-                                "<a href='" . VIEW_PATH . "message/read?message_id={$message->getId()}' ",
-                                ($message->getOpenedAt() === null) ? 'class="message-unread">' : '>',
-                                '<span class="message-author">',
-                                ($message->getAuthor()->getAvatar()) ? "<img class='message-author-avatar' src='{$message->getAuthor()->getAvatar()}' alt='avatar'/>" : '<i class="fa fa-user fa-2x"></i>',
-                                "{$message->getAuthor()->getIdentity()}</span>",
-                                "<span class='message-title'>{$message->getTitle()}</span>",
-                                "<span class='message-date'>{$message->getCreatedAt()->format($this->getTranslation('date_format'))}</span>",
-                                '</a></li>'
-                            ;
-                        }
-                    ?>
-                </ul>
-                <footer class="paginator"></footer>
+            <section id="message-area">
+                <section id="messages-list"
+                    class="paginated-list"
+                    x-data-range="<?php echo($this->parameters['messages_range']); ?>"
+                    x-data-range-unit="messages"
+                    x-data-total-items="<?php echo($this->parameters['total_messages']); ?>"
+                    x-data-page="1"
+                    x-data-callback="reloadMessages">
+                    <header>
+                        <h3>
+                            <?php $this->translate('messages.inbox'); ?>
+                        </h3>
+                        <div class="paginator"></div>
+                    </header>
+                    <ul>
+                        <?php
+                            foreach($this->parameters['messages'] as $message) {
+                                echo
+                                    "<li id='message-{$message->getId()}' class='message'>",
+                                    "<a onclick='readMessage({$message->getId()});return false;' ",
+                                    ($message->getOpenedAt() === null) ? 'class="message-unread">' : '>',
+                                    '<span class="message-author">',
+                                    ($message->getAuthor()->getAvatar()) ? "<img class='message-author-avatar' src='{$message->getAuthor()->getAvatar()}' alt='avatar'/>" : '<i class="fa fa-user fa-2x"></i>',
+                                    "{$message->getAuthor()->getIdentity()}</span>",
+                                    "<span class='message-title'>{$message->getTitle()}</span>",
+                                    "<span class='message-date'>{$message->getCreatedAt()->format($this->getTranslation('date_format'))}</span>",
+                                    '</a></li>'
+                                ;
+                            }
+                        ?>
+                    </ul>
+                    <footer class="paginator"></footer>
+                </section>
             </section>
         </div>
         <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>

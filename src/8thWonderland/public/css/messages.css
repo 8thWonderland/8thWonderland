@@ -2,9 +2,37 @@
     justify-content: flex-start;
 }
 
-#messages-list {
+#message-area {
+    display:flex;
     flex-grow:3;
     margin-left:40px;
+    overflow:hidden;
+}
+
+.message-details {
+    width:0%;
+    margin-right:20px;
+    overflow-x:hidden;
+}
+
+.message-details header {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.message-details header i {
+    color: #FF0000;
+}
+
+.message-details p {
+    padding-top:20px;
+    font-variant:small-caps;
+    text-indent:20px;
+}
+
+#messages-list{
+    width:100%;
 }
 
 #messages-list > header {
