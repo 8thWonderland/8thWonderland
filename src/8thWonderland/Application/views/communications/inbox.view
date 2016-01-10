@@ -22,7 +22,7 @@
                     ?>
                 </h3>
                 <button data-toggle="modal" data-target="#message-creation-form" class="btn btn-danger">
-                    <?php $this->translate('messages.write_message'); ?>
+                    <?php $this->translate('messages.creation.title'); ?>
                 </button>
                 <ul>
                     <li>

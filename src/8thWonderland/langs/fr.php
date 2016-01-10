@@ -105,8 +105,16 @@ $array = array(
     
     'messages.inbox' => 'Boîte de réception',
     'messages.box_list_title' => 'Messagerie',
-    'messages.write_message' => 'Rédiger un message',
-
+    'messages.creation.title' => 'Rédiger un message',
+    'messages.title' => 'Objet',
+    'messages.recipient' => 'Destinataire',
+    'messages.content' => 'Message',
+    'messages.creation.close' => 'Annuler',
+    'messages.creation.send' => 'Envoyer',
+    'messages.creation.success' => 'Votre message a été correctement envoyé !',
+    'messages.creation.recipient_not_found' => 'Le destinataire indiqué n\'existe pas',
+    'messages.creation.empty_content' => 'Le message ne peut être vide',
+    'messages.creation.empty_title' => 'L\'objet ne peut être vide',
     // Partie 'TACHES'
     'tasks_inprogress' => 'Les tâches en cours',
     'display_archivestasks' => 'Voir les tâches résolues',
