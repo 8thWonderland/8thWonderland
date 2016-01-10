@@ -104,7 +104,16 @@ $array = array(
     
     'messages.inbox' => 'Inbox',
     'messages.box_list_title' => 'Messages',
-    'messages.write_message' => 'Write a message',
+    'messages.creation.title' => 'Write a message',
+    'messages.title' => 'Subject',
+    'messages.recipient' => 'Recipient',
+    'messages.content' => 'Content',
+    'messages.creation.close' => 'Cancel',
+    'messages.creation.send' => 'Send',
+    'messages.creation.success' => 'Your message was successfully sent !',
+    'messages.creation.recipient_not_found' => 'This recipient does not exist',
+    'messages.creation.empty_content' => 'Content cannot be empty',
+    'messages.creation.empty_title' => 'Subject cannot be empty',
 
     // Partie 'TACHES'
     'tasks_inprogress' => 'The tasks in progress',

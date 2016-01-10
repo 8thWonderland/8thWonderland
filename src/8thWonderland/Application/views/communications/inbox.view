@@ -21,8 +21,8 @@
                         $this->translate('messages.box_list_title');
                     ?>
                 </h3>
-                <button class="btn btn-danger">
-                    <?php $this->translate('messages.write_message'); ?>
+                <button data-toggle="modal" data-target="#message-creation-form" class="btn btn-danger">
+                    <?php $this->translate('messages.creation.title'); ?>
                 </button>
                 <ul>
                     <li>
@@ -68,6 +68,49 @@
                     <footer class="paginator"></footer>
                 </section>
             </section>
+        </div>
+        <!-- Message creation form Modal -->
+        <div class="modal fade" id="message-creation-form" tabindex="-1" role="dialog" aria-labelledby="message-creation-form-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="message-creation-form-modal">
+                            <?php $this->translate('messages.creation.title'); ?>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label class="control-label" for="message-recipient">
+                                    <?php $this->translate('messages.recipient'); ?>
+                                </label>
+                                <input id="message-recipient" class="form-control" type="text" name="recipient">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="message-title">
+                                    <?php $this->translate('messages.title'); ?>
+                                </label>
+                                <input id="message-title" class="form-control" type="text" name="title">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="message-content">
+                                    <?php $this->translate('messages.content'); ?>
+                                </label>
+                                <textarea id="message-content" class="form-control" name="content"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            <?php $this->translate('messages.creation.close'); ?>
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="createMessage();">
+                            <?php $this->translate('messages.creation.send'); ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
         <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
         <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>

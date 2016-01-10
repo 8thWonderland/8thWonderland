@@ -2,6 +2,8 @@
 
 namespace Wonderland\Application\Manager;
 
+use Wonderland\Library\Translator;
+
 use Wonderland\Application\Repository\MessageRepository;
 use Wonderland\Application\Model\Member;
 use Wonderland\Application\Model\Message;
@@ -10,6 +12,8 @@ class MessageManager
 {
     /** @var \Wonderland\Application\Manager\MemberManager **/
     protected $memberManager;
+    /** @var \Wonderland\Library\Translator **/
+    protected $translator;
     /** @var \Wonderland\Application\Repository\MessageRepository **/
     protected $repository;
 
@@ -17,23 +21,41 @@ class MessageManager
      * @param \Wonderland\Application\Manager\MemberManager        $memberManager
      * @param \Wonderland\Application\Repository\MessageRepository $repository
      */
-    public function __construct(MemberManager $memberManager, MessageRepository $repository)
+    public function __construct(MemberManager $memberManager, Translator $translator, MessageRepository $repository)
     {
         $this->memberManager = $memberManager;
+        $this->translator = $translator;
         $this->repository = $repository;
     }
 
     /**
-     * @param string                               $title
-     * @param string                               $content
      * @param \Wonderland\Application\Model\Member $author
      * @param string                               $recipientIdentity
-     *
-     * @return \Wonderland\Application\Model\Message
+     * @param string                               $title
+     * @param string                               $content
      */
-    public function createMessage($title, $content, Member $author, $recipientIdentity)
+    public function createMessage(Member $author, $recipientIdentity, $title, $content)
     {
-        $recipient = $this->memberManager->getMemberByIdentity($recipientIdentity);
+        $errors = [];
+        if(($recipient = $this->memberManager->getMemberByIdentity($recipientIdentity)) === null) {
+            $errors[] = [
+                'message' => $this->translator->translate('messages.creation.recipient_not_found')
+            ];
+        }
+        if(trim($title) === '') {
+            $errors[] = [
+                'message' => $this->translator->translate('messages.creation.empty_content')
+            ];
+        }
+        if(trim($content) === '') {
+            $errors[] = [
+                'message' => $this->translator->translate('messages.creation.empty_content')
+            ];
+        }
+        if(count($errors) > 0) {
+            return $errors;
+        }
+        
         $message =
             (new Message())
             ->setTitle($title)
@@ -43,8 +65,8 @@ class MessageManager
             ->setCreatedAt(new \DateTime())
         ;
         $this->repository->create($message);
-
-        return $message;
+        
+        return true;
     }
 
     /**

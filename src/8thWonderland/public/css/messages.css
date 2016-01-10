@@ -31,6 +31,10 @@
     text-indent:20px;
 }
 
+#message-creation-form .alert {
+    display:none;
+}
+
 #messages-list{
     width:100%;
 }
@@ -70,13 +74,21 @@
     justify-content:space-around;
     align-items: center;
     color: #D08010;
+    transition:background-color 0.4s ease-out, color 0.4s ease-out;
+}
+
+.message a:hover {
+    text-decoration:none;
+    color: #EFEFEF;
+    background-color: #D08010;
 }
 
 .message-unread {
     background-color: #FFD0A0;
 }
 
-.message-author-avatar {
+.message-author-avatar,
+.message-author i{
     width:48px;
     height:48px;
     border-radius:28px;

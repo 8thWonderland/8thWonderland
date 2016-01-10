@@ -59,4 +59,21 @@ class MessageController extends ActionController {
             'message' => $message
         ]);
     }
+    
+    public function createAction() {
+        $this->checkAccess('citizenship');
+        
+        $result = $this->application->get('message_manager')->createMessage(
+            $this->getUser(),
+            $this->request->get('recipient'),
+            $this->request->get('title'),
+            $this->request->get('content')
+        );
+        if($result !== true) {
+            return new JsonResponse($result, 400);
+        }
+        return new JsonResponse([
+            'message' => $this->application->get('translator')->translate('messages.creation.success')
+        ]);
+    }
 }

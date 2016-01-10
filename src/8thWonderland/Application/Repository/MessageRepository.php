@@ -67,6 +67,7 @@ class MessageRepository extends AbstractRepository
             'FROM messages m ' .
             'INNER JOIN users u ON u.id = m.author_id ' .
             'WHERE m.recipient_id = :recipient_id AND m.deleted_by_recipient = 0 ' .
+            'ORDER BY m.created_at DESC ' .
             $this->getRangeStatements($minRange, $maxRange)
         , ['recipient_id' => $recipient->getId()]);
         
