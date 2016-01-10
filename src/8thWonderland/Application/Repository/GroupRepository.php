@@ -166,7 +166,11 @@ class GroupRepository extends AbstractRepository
                 ->setLabel($data['label'])
             )
             ->setDescription($data['description'])
-            ->setContact((new Member())->setIdentity($data['identity']))
+            ->setContact(
+                (new Member())
+                ->setId($data['contact_id'])
+                ->setIdentity($data['identity'])
+            )
             ->setIsPublic((bool) $data['is_public'])
             ->setCreatedAt((new \DateTime($data['created_at'])))
             ->setUpdatedAt(new \DateTime($data['updated_at']))
