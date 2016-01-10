@@ -45,6 +45,7 @@ class GroupController extends ActionController
 
     public function showAction()
     {
+        $this->checkAccess('citizenship');
         $member = $this->getUser();
 
         if (!isset($_GET['group_id'])) {
@@ -61,6 +62,7 @@ class GroupController extends ActionController
             'avatar' => $member->getAvatar(),
             'group' => $group,
             'nb_members' => (int) $groupManager->countGroupMembers($_GET['group_id']),
+            'is_member_in_group' => $this->application->get('member_manager')->isMemberIngroup($member, $_GET['group_id']),
             'nb_unread_messages' => $this->application->get('message_manager')->countUnreadMessages($member->getId()),
         ]);
     }

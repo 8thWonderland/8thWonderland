@@ -205,7 +205,7 @@ class MemberManager
      * @param \Wonderland\Application\Model\Member $member
      * @param int                                  $groupId
      *
-     * @return int
+     * @return boolean
      */
     public function isMemberInGroup(Member $member, $groupId)
     {
