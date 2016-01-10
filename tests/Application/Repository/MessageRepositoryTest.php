@@ -28,7 +28,7 @@ class MessageRepositoryTest extends WonderlandTestCase
     {
         $this->repository->create($this->getMessageMock());
 
-        $message = $this->repository->find(4);
+        $message = $this->repository->find(1, 4);
         
         $this->assertInstanceOf('Wonderland\Application\Model\Message', $message);
         $this->assertEquals(4, $message->getId());
@@ -53,7 +53,7 @@ class MessageRepositoryTest extends WonderlandTestCase
 
     public function testFind()
     {
-        $message = $this->repository->find(1);
+        $message = $this->repository->find(1, 1);
         
         $this->assertInstanceOf('Wonderland\Application\Model\Message', $message);
         $this->assertEquals(1, $message->getId());
