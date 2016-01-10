@@ -16,7 +16,7 @@ class GroupRepository extends AbstractRepository
     public function find($id)
     {
         $data = $this->connection->prepareStatement(
-            'SELECT g.id, g.name, g.description, g.contact_id, u.identity as contact_identity, g.is_public, g.created_at, g.updated_at, gt.label '.
+            'SELECT g.id, g.name, g.description, g.contact_id, u.identity as identity, g.is_public, g.created_at, g.updated_at, g.type_id, gt.label '.
             'FROM groups g '.
             'INNER JOIN group_types gt ON gt.id = g.type_id '.
             'LEFT JOIN users u ON u.id = g.contact_id '.
@@ -65,6 +65,20 @@ class GroupRepository extends AbstractRepository
         return $groups;
     }
 
+    /**
+     * @param int $memberId
+     * @param int $groupId
+     */
+    public function addMemberToGroup($memberId, $groupId) {
+        $affectedRows = $this->connection->prepareStatement(
+            'INSERT INTO citizen_groups(citizen_id, group_id) VALUES(:citizen_id, :group_id)'
+        , ['citizen_id' => $memberId, 'group_id' => $groupId])->rowCount();
+        
+        if($affectedRows === 0) {
+            $this->throwPdoException();
+        }
+    }
+    
     public function countGroups($typeId = null)
     {
         $whereClause =

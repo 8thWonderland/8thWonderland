@@ -205,17 +205,6 @@ class MemberManager
      * @param \Wonderland\Application\Model\Member $member
      * @param int                                  $groupId
      *
-     * @return boolean
-     */
-    public function isMemberInGroup(Member $member, $groupId)
-    {
-        return isset($member->getGroups()[$groupId]);
-    }
-
-    /**
-     * @param \Wonderland\Application\Model\Member $member
-     * @param int                                  $groupId
-     *
      * @return int
      */
     public function isContact(Member $member, $groupId = null)
