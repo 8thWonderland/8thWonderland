@@ -3,10 +3,11 @@
 namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
-use Wonderland\Application\Model\Message;
-use Wonderland\Library\Admin\Log;
 
+use Wonderland\Library\Http\Response\JsonResponse;
 use Wonderland\Library\Http\Response\PaginatedResponse;
+
+use Wonderland\Library\Exception\NotFoundException;
 
 class MessageController extends ActionController {
     public function inboxAction() {
@@ -39,6 +40,23 @@ class MessageController extends ActionController {
             'messages_range' => $range['max'],
             'total_messages' => $nbMessages,
             'nb_unread_messages' => $messageManager->countUnreadMessages($memberId),
+        ]);
+    }
+    
+    /**
+     * @return \Wonderland\Library\Http\Response\JsonResponse
+     * @throws NotFoundException
+     */
+    public function readAction() {
+        $message = $this->application->get('message_manager')->getMessage(
+            $this->getUser()->getId(),
+            $this->request->get('message_id', null, 'int')
+        );
+        if($message === null) {
+            throw new NotFoundException('Message Not Found');
+        }
+        return new JsonResponse([
+            'message' => $message
         ]);
     }
 }
