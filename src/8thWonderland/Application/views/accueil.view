@@ -74,6 +74,10 @@
                     <i class="fa fa-comments-o"></i>
                     <?php $this->translate('chatrooms.link'); ?>
                 </a>
+                <a href="developer/gettingStarted">
+                    <i class="fa fa-cogs-o"></i>
+                    <?php $this->translate('developers.local_installation'); ?>
+                </a>
             </nav>
         </div>
         <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
