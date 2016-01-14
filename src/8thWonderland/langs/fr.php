@@ -115,6 +115,14 @@ $array = array(
     'messages.creation.recipient_not_found' => 'Le destinataire indiqué n\'existe pas',
     'messages.creation.empty_content' => 'Le message ne peut être vide',
     'messages.creation.empty_title' => 'L\'objet ne peut être vide',
+    
+    'developers.local_installation' => 'Installer le site en local',
+    'developers.environment_installation_title' => 'Installation de l\'environnement',
+    'developers.project_installation_title' => 'Installation du projet',
+    'developers.server_installation_title' => 'Installation du serveur web',
+    'developers.server_installation_easyphp' => 'Avec EasyPHP',
+    'developers.database_installation_title' => 'Installation de la base de données',
+    
     // Partie 'TACHES'
     'tasks_inprogress' => 'Les tâches en cours',
     'display_archivestasks' => 'Voir les tâches résolues',
