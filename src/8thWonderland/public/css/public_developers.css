@@ -1,0 +1,25 @@
+#content {
+    width:600px;
+    margin:auto;
+    font-size:1.2em;
+}
+
+#content a {
+    color: #FF0000;
+}
+
+#logo {
+    margin-top:20px;
+}
+
+.code-snippet {
+    border-radius:5px;
+    border: 1px solid #111;
+    background-color: #282828;
+    padding-left: 20px;
+}
+
+.code-snippet p {
+    font-size:1.1em;
+    color: #EFEFEF;
+}
