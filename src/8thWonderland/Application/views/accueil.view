@@ -70,12 +70,16 @@
                 </div>
             </div>
             <nav class="outer-nav right vertical">
-                <a href="intranet/openChatroom">
+                <a href="<?php echo VIEW_PATH ?>">
+                    <i class="fa fa-home"></i>
+                    <?php $this->translate('home'); ?>
+                </a>
+                <a href="<?php echo VIEW_PATH ?>intranet/openChatroom">
                     <i class="fa fa-comments-o"></i>
                     <?php $this->translate('chatrooms.link'); ?>
                 </a>
-                <a href="developer/gettingStarted">
-                    <i class="fa fa-cogs-o"></i>
+                <a href="<?php echo VIEW_PATH ?>developer/installationGuide">
+                    <i class="fa fa-cogs"></i>
                     <?php $this->translate('developers.local_installation'); ?>
                 </a>
             </nav>
