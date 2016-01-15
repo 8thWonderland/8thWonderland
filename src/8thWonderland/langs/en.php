@@ -114,6 +114,99 @@ $array = array(
     'messages.creation.recipient_not_found' => 'This recipient does not exist',
     'messages.creation.empty_content' => 'Content cannot be empty',
     'messages.creation.empty_title' => 'Subject cannot be empty',
+    
+    'developers.local_installation' => 'Local website installation',
+    'developers.environment_installation_title' => 'Environment setup',
+    'developers.environment_installation' => 
+        '<p>
+            It will be necessary to install some tools to make the website work on your computer.
+        </p>
+        <p>
+            You can find below the list of these tools associated with the links to their official websites to get downloads and documentations :
+        </p>
+        <ul>
+            <li>
+                Dependency manager : Composer
+                <a href="https://getcomposer.org">(Official website)</a>
+            </li>
+            <li>
+                Versionning : Git
+                <a href="https://git-for-windows.github.io/">(Git Bash for Windows)</a>
+            </li>
+            <li>
+                Webserver (Example : Apache or Nginx)
+                <a href="http://www.easyphp.org/">(EasyPHP: a tool pack with webserver and database modules)</a>
+            </li>
+        </ul>',
+    'developers.project_installation_title' => 'Project setup',
+    'developers.project_installation_1' =>
+        '<p>
+            You have to fork the Github official repository to work on the project
+            (This will allow you to push your work and then make Merge Requests to the main repository).
+        </p>
+        <p>
+            To do it, go on <a href="https://github.com/8thWonderland/8thWonderland">8thWonderland\'s official repository</a>
+            and push the button <code>Fork</code> after login with your Github account.
+        </p>
+        <p>
+            Now you have your own repository, within it you can organize your work before pushing it via Merge Requests to the official repository.
+        </p>
+        <p>
+            Go in your projects folder and tip the following command, replacing {{login}} with your Github username :
+        </p>',
+    'developers.project_installation_2' => 
+        '<p>
+            You now have a 8thWonderland folder into your current directory. Once you will go into it wih your console, you will be on the master branch.
+
+            We now have to configure the application to make it work.
+
+            First, copy the configuration file and update it :
+        </p>',
+    'developers.project_installation_3' =>
+        '<p>
+            Then you can modify the <code>config.json</code> file to put the right values (about your database for example).
+        </p>
+        <p>
+            Now we will use Composer to install the project dependencies and generate autoload files.
+        </p>
+        <div class="code-snippet">
+            <span># Use php composer.phar instead of composer if you downloaded the archive instead of the command</span>
+            <p>composer install</p>
+        </div>',
+    'developers.server_installation_title' => 'Webserver setup',
+    'developers.server_installation_easyphp_title' => 'With EasyPHP',
+    'developers.server_installation_easyphp' =>
+        '<p>
+            With EasyPHP we are going to create an alias pointing to your project folder.
+            Go on EasyPHP administration page, and create a new alias within the "Alias" section.
+            You will be asked a name and a path to create this alias.
+            Set the 8thWonderland project root folder (which is containing ./src and ./dump folders) path as the alias path.
+        </p>',
+    'developers.database_installation_title' => 'Database setup',
+    'developers.database_installation' => 
+        '<p>
+            We have to create the database to be able to load the structure and initial data into it.
+        </p>
+        <p>
+            You can use PHPMyAdmin (installed with EasyPHP) to manage your databases, or use direct connections with mysql command-line.
+        </p>
+        <p>
+            Create a database named <code>thwonderbdd</code>.
+        </p>
+        <p>
+            Then we load the structure dumps with a set of initial data.
+        </p>
+        <p>
+            Load into your database the content of the different project files.
+        </p>
+        <ul>
+            <li>
+                <code>./dump/thwonderbdd.sql</code> contains the database structure with tables.
+            </li>
+            <li>
+                <code>./dump/init_data.sql</code> contains initial data.
+            </li>
+        </ul>',
 
     // Partie 'TACHES'
     'tasks_inprogress' => 'The tasks in progress',

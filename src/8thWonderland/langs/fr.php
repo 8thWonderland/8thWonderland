@@ -145,10 +145,10 @@ $array = array(
         '<p>
             Afin d\'installer le projet, il est tout d\'abord nécessaire de le forker sur Github
             (afin de pouvoir ensuite pousser vos modifications et ensuite effectuer une Merge Request
-            à destination du dépôt officiel de 8thWonderland.
+            à destination du dépôt officiel de 8thWonderland).
         </p>
         <p>
-            Pour ce faire, rendez-vous sur le <a href="https:://github.com/8thWonderland/8thWonderland">dépôt officiel de 8th Wonderland</a>
+            Pour ce faire, rendez-vous sur le <a href="https://github.com/8thWonderland/8thWonderland">dépôt officiel de 8th Wonderland</a>
             après vous être connectés avec votre compte Github et appuyez sur le bouton <code>Fork</code>.
         </p>
         <p>
@@ -170,7 +170,7 @@ $array = array(
             Vous pouvez à présent modifier les valeurs du fichier <code>config.json</code> pour y mettre les bonnes valeurs (par exemple pour votre base de données).
         </p>
         <p>
-            Ensuite, nous allons utiliser Composer pour installer les dépendances du projet et générer les fichiers d\'autoload
+            Ensuite, nous allons utiliser Composer pour installer les dépendances du projet et générer les fichiers d\'autoload.
         </p>
         <div class="code-snippet">
             <span># Utilisez php composer.phar au lieu de composer si vous avez installé l\'archive plutôt que la commande</span>
@@ -200,7 +200,7 @@ $array = array(
             Une fois ceci fait, nous allons charger la structure de la base de données avec des données initiales.
         </p>
         <p>
-            Vous devez charger dans votre base de données les contenus des différents fichiers SQL du projet
+            Vous devez charger dans votre base de données les contenus des différents fichiers SQL du projet.
         </p>
         <ul>
             <li>
