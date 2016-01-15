@@ -1,3 +1,7 @@
+## Unreleased
+### Added
+- Website installation guide
+
 ## 0.1.3 - 2016-10-01
 ### Added
 - Group details page

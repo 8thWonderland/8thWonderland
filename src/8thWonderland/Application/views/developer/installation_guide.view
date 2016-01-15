@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>8th Wonderland - <?php $this->translate('developers.local_installation'); ?></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta http-equiv="Pragma" content="no-cache"/>
+        <meta http-equiv="Expires" content="0"/>
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>accueil.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>home_menu.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>public_developers.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+        <link rel="shortcut icon" type="image/png" href="<?php echo IMG_PATH; ?>icone.png" />
+    </head>
+    <body>
+        <div id="perspective" class="perspective effect-moveleft">
+            <div class="container">
+                <div class="wrapper">
+                    <div id="header">
+                        <div id="header-left">
+                            <a href="https://github.com/8thWonderland/8thWonderland">
+                            <img style="position: absolute; top: 0; left: 0; border: 0;"
+                                 src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67"
+                                 alt="Fork me on GitHub"
+                                 data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png">
+                            </a>
+                        </div>
+                        <div id="logo">
+                            <h1>
+                                <?php $this->translate('developers.local_installation'); ?>
+                            </h1>
+                        </div>
+                        <div id="menu-handler">
+                            <i id="showMenu" class="fa fa-bars"></i>
+                        </div>
+                    </div>
+                    <div id="content">
+                        <h3>
+                            <?php $this->translate('developers.environment_installation_title'); ?>
+                        </h3>
+                        <?php $this->translate('developers.environment_installation'); ?>
+                        <h3>
+                            <?php $this->translate('developers.project_installation_title'); ?>
+                        </h3>
+                        <?php $this->translate('developers.project_installation_1'); ?>
+                        <div class="code-snippet">
+                            <p>git clone git@github.com:{{login}}/8thWonderland.git</p>
+                        </div>
+                        <?php $this->translate('developers.project_installation_2'); ?>
+                        <div class='code-snippet'>
+                            <p>cd src/8thWonderland/Application/config</p>
+                            <p>cp config.json.dist config.json</p>
+                            <p>cd -</p>
+                        </div>
+                        <?php $this->translate('developers.project_installation_3'); ?>
+                        <h3>
+                            <?php $this->translate('developers.server_installation_title'); ?>
+                        </h3>
+                        <h4>
+                            <?php $this->translate('developers.server_installation_easyphp_title') ?>
+                        </h4>
+                        <?php $this->translate('developers.server_installation_easyphp') ?>
+                        <h3>
+                            <?php $this->translate('developers.database_installation_title'); ?>
+                        </h3>
+                        <?php $this->translate('developers.database_installation'); ?>
+                    </div>
+                </div>
+            </div>
+            <nav class="outer-nav right vertical">
+                <a href="<?php echo VIEW_PATH ?>">
+                    <i class="fa fa-home"></i>
+                    <?php $this->translate('home'); ?>
+                </a>
+                <a href="<?php echo VIEW_PATH ?>intranet/openChatroom">
+                    <i class="fa fa-comments-o"></i>
+                    <?php $this->translate('chatrooms.link'); ?>
+                </a>
+                <a href="<?php echo VIEW_PATH ?>developer/installationGuide">
+                    <i class="fa fa-cogs"></i>
+                    <?php $this->translate('developers.local_installation'); ?>
+                </a>
+            </nav>
+        </div>
+        <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>modernizer.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>classie.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>home.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>home_menu.js"></script>
+    </body>
+</html>
