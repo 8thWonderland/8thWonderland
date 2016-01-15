@@ -118,10 +118,98 @@ $array = array(
     
     'developers.local_installation' => 'Installer le site en local',
     'developers.environment_installation_title' => 'Installation de l\'environnement',
+    'developers.environment_installation' => 
+        '<p>
+            Pour faire fonctionner correctement l\'application et pouvoir travailler avec en toute quiétude,
+            il vous faudra certains outils sur votre poste de développement.
+        </p>
+        <p>
+            Retrouvez ici la liste des différents outils nécessaires, accompagnés d\'un lien vers leurs sites respectifs, où vous pourrez les télécharger et consulter leurs documentations :
+        </p>
+        <ul>
+            <li>
+                Outil de gestion de dépendances : Composer
+                <a href="https://getcomposer.org">(Site officiel)</a>
+            </li>
+            <li>
+                Outil de versionning : Git
+                <a href="https://git-for-windows.github.io/">(Site du terminal Git Bash pour Windows)</a>
+            </li>
+            <li>
+                Server Web (Exemple : Apache ou Nginx)
+                <a href="http://www.easyphp.org/">(EasyPHP: un utilitaire prêt à l\'emploi avec serveur web et base de données)</a>
+            </li>
+        </ul>',
     'developers.project_installation_title' => 'Installation du projet',
+    'developers.project_installation_1' =>
+        '<p>
+            Afin d\'installer le projet, il est tout d\'abord nécessaire de le forker sur Github
+            (afin de pouvoir ensuite pousser vos modifications et ensuite effectuer une Merge Request
+            à destination du dépôt officiel de 8thWonderland.
+        </p>
+        <p>
+            Pour ce faire, rendez-vous sur le <a href="https:://github.com/8thWonderland/8thWonderland">dépôt officiel de 8th Wonderland</a>
+            après vous être connectés avec votre compte Github et appuyez sur le bouton <code>Fork</code>.
+        </p>
+        <p>
+            Vous disposez à présent de votre copie du dépôt, qui vous permettra d\'organiser vos modifications avant de demander à les intégrer dans le code officiel du site.
+        </p>
+        <p>
+            Placez-vous donc dans le dossier où vous mettez vos différents projets et tapez la commande suivante, en remplaçant {{login}} par votre nom d\'utilisateur Github :
+        </p>',
+    'developers.project_installation_2' => 
+        '<p>
+            Un dossier 8thWonderland a maintenant été créé dans votre répertoire. En vous y plaçant dans votre terminal, vous vous situerez sur la branche master du projet.
+
+            Il faut maintenant configurer l\'application pour qu\'elle fonctionne sur votre poste.
+
+            Pour ce faire, il faut copier le fichier de configuration modèle et le modifier :
+        </p>',
+    'developers.project_installation_3' =>
+        '<p>
+            Vous pouvez à présent modifier les valeurs du fichier <code>config.json</code> pour y mettre les bonnes valeurs (par exemple pour votre base de données).
+        </p>
+        <p>
+            Ensuite, nous allons utiliser Composer pour installer les dépendances du projet et générer les fichiers d\'autoload
+        </p>
+        <div class="code-snippet">
+            <span># Utilisez php composer.phar au lieu de composer si vous avez installé l\'archive plutôt que la commande</span>
+            <p>composer install</p>
+        </div>',
     'developers.server_installation_title' => 'Installation du serveur web',
-    'developers.server_installation_easyphp' => 'Avec EasyPHP',
+    'developers.server_installation_easyphp_title' => 'Avec EasyPHP',
+    'developers.server_installation_easyphp' =>
+        '<p>
+            Avec EasyPHP, nous allons créer un alias qui pointera vers votre répertoire.
+            Il faut vous rendre sur la page d\'administration d\'EasyPHP, et dans la section "Alias" créer un nouvel alias.
+            Il vous sera demandé d\'indiquer le nom de l\'alias ainsi que le chemin.
+            Comme chemin vous pouvez renseigner le chemin menant à la racine du projet 8thWonderland (qui contient les dossiers dump et src).
+        </p>',
     'developers.database_installation_title' => 'Installation de la base de données',
+    'developers.database_installation' => 
+        '<p>
+            Il faut maintenant créer la base de données de l\'application et construire sa structure avec des données initiales.
+        </p>
+        <p>
+            Vous pouvez utiliser PHPMyAdmin (module nativement installé sur EasyPHP) pour administrer vos bases de données, ou bien vous connecter directement avec MySQL
+        </p>
+        <p>
+            En premier lieu, créez une base de données nommée <code>thwonderbdd</code>
+        </p>
+        <p>
+            Une fois ceci fait, nous allons charger la structure de la base de données avec des données initiales.
+        </p>
+        <p>
+            Vous devez charger dans votre base de données les contenus des différents fichiers SQL du projet
+        </p>
+        <ul>
+            <li>
+                <code>./dump/thwonderbdd.sql</code> contient l\'ensemble de la structure et des tables de la base.
+            </li>
+            <li>
+                <code>./dump/init_data.sql</code> contient des données initiales nécessaires au fonctionnement du projet.
+            </li>
+        </ul>',
     
     // Partie 'TACHES'
     'tasks_inprogress' => 'Les tâches en cours',
