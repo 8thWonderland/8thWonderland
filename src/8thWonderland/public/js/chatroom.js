@@ -109,7 +109,16 @@ function addMessage(message) {
     var messages = $("#messages");
     var d = messages[0];
     var doScroll = d.scrollTop === d.scrollHeight - d.clientHeight;
-    messages.append("<div class='message'><span class='author'>" + message.author + " : </span>" + message.content + '</div>');
+    var date = new Date(message.created_at);
+    var date_string = 
+        date.getFullYear() + '-' +
+        ('0' + date.getMonth() + 1).slice(-2) + '-' +
+        ('0' + date.getDate()).slice(-2) + ' ' +
+        ('0' + date.getHours()).slice(-2) + ':' +
+        ('0' + date.getMinutes()).slice(-2) + ':' +
+        ('0' + date.getSeconds()).slice(-2)
+    ;
+    messages.append("<div class='message'><span class='author'>[" + date_string + "] " + message.author + " : </span>" + message.content + '</div>');
     if (doScroll) {
         d.scrollTop = d.scrollHeight - d.clientHeight;
     }

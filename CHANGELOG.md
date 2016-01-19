@@ -1,6 +1,7 @@
 ## Unreleased
 ### Added
 - Website installation guide
+- Chatroom messages date
 
 ## 0.1.3 - 2016-10-01
 ### Added
