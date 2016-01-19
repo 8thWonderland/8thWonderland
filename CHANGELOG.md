@@ -7,6 +7,9 @@
 - Group data formatting for groups list
 - Archived motions display order
 - Default avatar displaying
+- Logo size for small screens
+- Carriage returns for motions text fields
+- Motion themes translations
 
 ## 0.1.3 - 2016-10-01
 ### Added
