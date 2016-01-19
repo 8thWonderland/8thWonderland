@@ -5,6 +5,7 @@
 
 ### Fixed
 - Group data formatting for groups list
+- Archived motions display order
 
 ## 0.1.3 - 2016-10-01
 ### Added
