@@ -6,6 +6,7 @@
 ### Fixed
 - Group data formatting for groups list
 - Archived motions display order
+- Default avatar displaying
 
 ## 0.1.3 - 2016-10-01
 ### Added
