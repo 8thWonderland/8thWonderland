@@ -3,6 +3,9 @@
 - Website installation guide
 - Chatroom messages date
 
+### Fixed
+- Group data formatting for groups list
+
 ## 0.1.3 - 2016-10-01
 ### Added
 - Group details page
