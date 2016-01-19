@@ -44,7 +44,13 @@ body {
 
 #logo img {
     margin-top:50px;
-    width:771px;
+    width:700px;
+}
+
+@media screen and (max-width: 800px) {
+    #logo img {
+        width:400px;
+    }
 }
 
 #account-forms {
