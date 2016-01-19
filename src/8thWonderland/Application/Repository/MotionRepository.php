@@ -236,6 +236,7 @@ class MotionRepository extends AbstractRepository
             'INNER JOIN motion_themes mt ON mt.id = m.theme_id '.
             'INNER JOIN users u ON m.author_id = u.id '.
             'WHERE m.is_active = 0 ' .
+            'ORDER BY m.ended_at DESC ' .
             $this->getRangeStatements($minRange, $maxRange)
         );
         $motions = [];

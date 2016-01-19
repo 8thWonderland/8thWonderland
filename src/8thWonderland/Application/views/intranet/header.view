@@ -23,7 +23,7 @@
             <div id="avatar">
                 <?php
                     echo
-                        ($this->parameters['avatar'] === null)
+                        ($this->parameters['avatar'] === null || $this->parameters['avatar'] === '')
                         ? '<i class="fa fa-user fa-3x"></i>'
                         : "<img src='{$this->parameters['avatar']}' alt='avatar'/>"
                     ;

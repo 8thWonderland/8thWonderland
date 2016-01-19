@@ -84,6 +84,12 @@ $array = array(
     'groups.regional' => 'Groupes Régionaux',
     'groups.back_to_list' => 'Revenir à la liste des Groupes',
 
+    // Motion Themes
+    'motion_themes.constitutional' => 'Motion constitutionnelle',
+    'motion_themes.justice' => 'Motion Judiciaire',
+    'motion_themes.organization' => 'Motion organisationnelle',
+    'motion_themes.actions' => 'Motion d\'action',
+    
     // Motions
     'motions.vote' => 'Voter',
     'motions.new_title' => 'Déposition de motion',
