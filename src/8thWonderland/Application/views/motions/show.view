@@ -89,13 +89,13 @@
                     <?php $this->translate('motions.description'); ?>
                 </h4>
                 <p>
-                    <?php echo $this->parameters['motion']->getDescription(); ?>
+                    <?php echo nl2br($this->parameters['motion']->getDescription()); ?>
                 </p>
                 <h4>
                     <?php $this->translate('motions.means'); ?>
                 </h4>
                 <p>
-                    <?php echo $this->parameters['motion']->getMeans(); ?>
+                    <?php echo nl2br($this->parameters['motion']->getMeans()); ?>
                 </p>
             </section>
         </section>
