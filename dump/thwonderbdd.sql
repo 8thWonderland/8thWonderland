@@ -581,10 +581,10 @@ CREATE TABLE IF NOT EXISTS `motion_themes` (
 --
 
 INSERT INTO `motion_themes` (`id`, `label`, `duration`) VALUES
-(1, 'organization', 8),
-(2, 'justice', 8),
-(3, 'constitutional', 8),
-(4, 'actions', 8);
+(1, 'motion_themes.organization', 8),
+(2, 'motion_themes.justice', 8),
+(3, 'motion_themes.constitutional', 8),
+(4, 'motion_themes.actions', 8);
 
 -- --------------------------------------------------------
 
