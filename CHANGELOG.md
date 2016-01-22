@@ -2,6 +2,7 @@
 ### Added
 - Website installation guide
 - Chatroom messages date
+- Public motions list
 
 ### Fixed
 - Database dump
