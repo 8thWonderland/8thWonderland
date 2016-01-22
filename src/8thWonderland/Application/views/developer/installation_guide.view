@@ -72,6 +72,10 @@
                     <i class="fa fa-home"></i>
                     <?php $this->translate('home'); ?>
                 </a>
+                <a href="<?php echo VIEW_PATH ?>index/motions">
+                    <i class="fa fa-university"></i>
+                    <?php $this->translate('motions'); ?>
+                </a>
                 <a href="<?php echo VIEW_PATH ?>intranet/openChatroom">
                     <i class="fa fa-comments-o"></i>
                     <?php $this->translate('chatrooms.link'); ?>
