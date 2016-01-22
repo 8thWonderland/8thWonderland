@@ -91,6 +91,8 @@ $array = array(
     'motion_themes.actions' => 'Motion d\'action',
     
     // Motions
+    'motions' => 'Motions',
+    'motions.in_progress' => 'Motion en cours de vote',
     'motions.vote' => 'Voter',
     'motions.new_title' => 'Déposition de motion',
     'motions.creation_date' => 'Date de début',
