@@ -73,8 +73,6 @@ $array = array(
     'shop' => 'Magasin',
     'what_new' => 'Dernières infos',
     'friend_groups' => 'Groupes sympathisants',
-    'motions_inprogress' => 'Motions en cours',
-    'motions_archives' => 'Motions archivées',
     'stats_country' => 'Statistiques du pays',
     'my_groups' => 'Mes groupes',
 

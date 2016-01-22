@@ -35,6 +35,7 @@
                                 "<li id='motion-{$motion->getId()}' class='motion'>",
                                 "<a href='" . VIEW_PATH . "motion/show?motion_id={$motion->getId()}'>",
                                 "<span class='motion-title'>{$motion->getTitle()}</span>",
+                                "<span class='motion-type'>{$this->getTranslation($motion->getTheme()->getLabel())}</span>",
                                 '<span class="motion-score">',
                                 '<div class="progress"><div class="progress-bar progress-bar-' . (($motion->getIsApproved()) ? 'success' : 'danger') . '" ',
                                 "role='progressbar' aria-valuenow='{$motion->getScore()}' aria-valuemin='0' ",

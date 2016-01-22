@@ -48,6 +48,7 @@
                                         "<li id='motion-{$motion->getId()}' class='motion motion-$class'>",
                                         "<a href='" . VIEW_PATH . "index/motion?motion_id={$motion->getId()}'>",
                                         "<span class='motion-title'>{$motion->getTitle()}</span>",
+                                        "<span class='motion-type'>{$this->getTranslation($motion->getTheme()->getLabel())}</span>",
                                         '<span class="motion-score">',
                                         (
                                             ($motion->getIsActive())
