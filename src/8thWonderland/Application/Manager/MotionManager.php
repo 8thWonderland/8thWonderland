@@ -68,6 +68,15 @@ class MotionManager
     {
         return $this->repository->getActiveMotions($member);
     }
+    
+    /**
+     * @param int $minRange
+     * @param int $maxRange
+     * @return array
+     */
+    public function getMotions($minRange, $maxRange) {
+        return $this->repository->getMotions($minRange, $maxRange);
+    }
 
     /**
      * @param int $motionId
@@ -123,6 +132,13 @@ class MotionManager
      */
     public function getArchives($minRange, $maxRange) {
         return $this->repository->getArchives($minRange, $maxRange);
+    }
+    
+    /**
+     * @return int
+     */
+    public function countMotions() {
+        return $this->repository->countMotions();
     }
     
     /**

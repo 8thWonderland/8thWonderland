@@ -89,6 +89,8 @@ $array = array(
     'motion_themes.organization' => 'Organizational motion',
     'motion_themes.actions' => 'Action motion',
     // Motions
+    'motions' => 'Motions',
+    'motions.in_progress' => 'Motion in vote',
     'motions.vote' => 'Vote',
     'motions.new_title' => 'Create a motion',
     'motions.creation_date' => 'Creation date',

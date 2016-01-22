@@ -92,6 +92,29 @@ class MotionRepository extends AbstractRepository
         }
         $motion->setId($this->connection->lastInsertId());
     }
+    
+    /**
+     * @param int $minRange
+     * @param int $maxRange
+     * @return array
+     */
+    public function getMotions($minRange, $maxRange) {
+        $statement = $this->connection->query(
+            'SELECT m.id, m.title, mt.id as theme_id, mt.label as theme_label, '.
+            'm.description, m.means, m.created_at, m.ended_at, m.is_active, m.is_approved, '.
+            'm.score, u.id as author_id, u.identity as author_identity '.
+            'FROM motions m '.
+            'INNER JOIN motion_themes mt ON mt.id = m.theme_id '.
+            'INNER JOIN users u ON m.author_id = u.id '.
+            'ORDER BY m.ended_at DESC ' .
+            $this->getRangeStatements($minRange, $maxRange)
+        );
+        $motions = [];
+        while($data = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $motions[] = $this->formatObject($data);
+        }
+        return $motions;
+    }
 
     /**
      * @param int $motionId
@@ -211,6 +234,15 @@ class MotionRepository extends AbstractRepository
             $votes[((bool)$data['choice']) ? 'positive' : 'negative'] = (int) $data['nb_votes'];
         }
         return $votes;
+    }
+    
+    /**
+     * @return int
+     */
+    public function countMotions() {
+        return (int) $this->connection->query(
+            'SELECT COUNT(*) as nb_motions FROM motions'
+        )->fetch(\PDO::FETCH_ASSOC)['nb_motions'];
     }
     
     /**

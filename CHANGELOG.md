@@ -2,6 +2,10 @@
 ### Added
 - Website installation guide
 - Chatroom messages date
+- Public motions list
+
+### Fixed
+- Database dump
 
 ### Fixed
 - Group data formatting for groups list

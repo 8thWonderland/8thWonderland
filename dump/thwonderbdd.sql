@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.4
+-- version 4.4.13.1
 -- http://www.phpmyadmin.net
 --
--- Client :  127.0.0.1
--- Généré le :  Lun 02 Novembre 2015 à 21:10
--- Version du serveur :  5.6.15-log
--- Version de PHP :  5.4.24
+-- Client :  lacitadekz8thw.mysql.db
+-- Généré le :  Jeu 14 Janvier 2016 à 14:36
+-- Version du serveur :  5.5.46-0+deb7u1-log
+-- Version de PHP :  5.3.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données :  `thwonderbdd`
+-- Base de données :  `lacitadekz8thw`
 --
 
 -- --------------------------------------------------------
@@ -27,12 +27,20 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `abac_attributes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `table_name` varchar(65) COLLATE utf8_unicode_ci NOT NULL,
   `column_name` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
-  `criteria_column` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+  `criteria_column` varchar(40) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `abac_attributes`
+--
+
+INSERT INTO `abac_attributes` (`id`, `table_name`, `column_name`, `criteria_column`) VALUES
+(1, 'groups', 'contact_id', 'id'),
+(2, 'users', 'is_enabled', 'id'),
+(3, 'users', 'is_banned', 'id');
 
 -- --------------------------------------------------------
 
@@ -41,13 +49,21 @@ CREATE TABLE IF NOT EXISTS `abac_attributes` (
 --
 
 CREATE TABLE IF NOT EXISTS `abac_attributes_data` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `slug` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+  `slug` varchar(45) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `abac_attributes_data`
+--
+
+INSERT INTO `abac_attributes_data` (`id`, `created_at`, `updated_at`, `name`, `slug`) VALUES
+(1, '2015-11-12 00:00:00', '2015-11-12 00:00:00', 'Group Owner', 'group-owner'),
+(2, '2016-01-02 00:00:00', '2016-01-02 00:00:00', 'User Account Activation', 'user-account-activation'),
+(3, '2016-01-02 00:00:00', '2016-01-02 00:00:00', 'User Banishment', 'user-banishment');
 
 -- --------------------------------------------------------
 
@@ -56,10 +72,9 @@ CREATE TABLE IF NOT EXISTS `abac_attributes_data` (
 --
 
 CREATE TABLE IF NOT EXISTS `abac_environment_attributes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `variable_name` varchar(65) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  `id` int(11) NOT NULL,
+  `variable_name` varchar(65) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -68,13 +83,19 @@ CREATE TABLE IF NOT EXISTS `abac_environment_attributes` (
 --
 
 CREATE TABLE IF NOT EXISTS `abac_policy_rules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `abac_policy_rules`
+--
+
+INSERT INTO `abac_policy_rules` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'group-management', '2015-11-12 00:00:00', '2015-11-12 00:00:00'),
+(2, 'citizenship', '2016-01-02 00:00:00', '2016-01-02 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -88,11 +109,1065 @@ CREATE TABLE IF NOT EXISTS `abac_policy_rules_attributes` (
   `type` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   `comparison_type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   `comparison` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  KEY `policy_rule_id` (`policy_rule_id`,`attribute_id`),
-  KEY `attributes` (`attribute_id`)
+  `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Contenu de la table `abac_policy_rules_attributes`
+--
+
+INSERT INTO `abac_policy_rules_attributes` (`policy_rule_id`, `attribute_id`, `type`, `comparison_type`, `comparison`, `value`) VALUES
+(1, 1, 'object', 'Numeric', 'isEqual', 'dynamic'),
+(2, 2, 'user', 'Boolean', 'boolAnd', '1'),
+(2, 3, 'user', 'Numeric', 'isEqual', '0');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `citizen_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `citizen_groups` (
+  `citizen_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `countries`
+--
+
+CREATE TABLE IF NOT EXISTS `countries` (
+  `id` int(11) NOT NULL,
+  `code` varchar(2) NOT NULL,
+  `fr` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `en` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `label` varchar(75) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=239 DEFAULT CHARSET=utf8;
+
+--
+-- Contenu de la table `countries`
+--
+
+INSERT INTO `countries` (`id`, `code`, `fr`, `en`, `label`) VALUES
+(1, 'AF', 'Afghanistan', 'Afghanistan', 'countries.afghanistan'),
+(2, 'ZA', 'Afrique du Sud', 'South Africa', 'countries.south_africa'),
+(3, 'AL', 'Albanie', 'Albania', 'countries.albania'),
+(4, 'DZ', 'AlgÃƒÂ©rie', 'Algeria', 'countries.algeria'),
+(5, 'DE', 'Allemagne', 'Germany', 'countries.germany'),
+(6, 'AD', 'Andorre', 'Andorra', 'countries.andorra'),
+(7, 'AO', 'Angola', 'Angola', 'countries.angola'),
+(8, 'AI', 'Anguilla', 'Anguilla', 'countries.anguilla'),
+(9, 'AQ', 'Antarctique', 'Antarctica', 'countries.antartica'),
+(10, 'AG', 'Antigua-et-Barbuda', 'Antigua & Barbuda', 'countries.antigua_and_barbuda'),
+(11, 'AN', 'Antilles nÃƒÂ©erlandaises', 'Netherlands Antilles', 'countries.netherlands_antilles'),
+(12, 'SA', 'Arabie saoudite', 'Saudi Arabia', 'countries.saudi_arabia'),
+(13, 'AR', 'Argentine', 'Argentina', 'countries.argentina'),
+(14, 'AM', 'ArmÃƒÂ©nie', 'Armenia', 'countries.armenia'),
+(15, 'AW', 'Aruba', 'Aruba', 'countries.aruba'),
+(16, 'AU', 'Australie', 'Australia', 'countries.australia'),
+(17, 'AT', 'Autriche', 'Austria', 'countries.austria'),
+(18, 'AZ', 'AzerbaÃƒÂ¯djan', 'Azerbaijan', 'countries.azerbaijan'),
+(19, 'BJ', 'BÃƒÂ©nin', 'Benin', 'countries.benin'),
+(20, 'BS', 'Bahamas', 'Bahamas, The', 'countries.bahamas'),
+(21, 'BH', 'BahreÃƒÂ¯n', 'Bahrain', 'countries.bahrain'),
+(22, 'BD', 'Bangladesh', 'Bangladesh', 'countries.bangladesh'),
+(23, 'BB', 'Barbade', 'Barbados', 'countries.barbados'),
+(24, 'PW', 'Belau', 'Palau', 'countries.palau'),
+(25, 'BE', 'Belgique', 'Belgium', 'countries.belgium'),
+(26, 'BZ', 'Belize', 'Belize', 'countries.belize'),
+(27, 'BM', 'Bermudes', 'Bermuda', 'countries.bermuda'),
+(28, 'BT', 'Bhoutan', 'Bhutan', 'countries.bhutan'),
+(29, 'BY', 'BiÃƒÂ©lorussie', 'Belarus', 'countries.belarus'),
+(30, 'MM', 'Birmanie', 'Myanmar (ex-Burma)', 'countries.myanmar'),
+(31, 'BO', 'Bolivie', 'Bolivia', 'countries.bolivia'),
+(32, 'BA', 'Bosnie-HerzÃƒÂ©govine', 'Bosnia and Herzegovina', 'countries.bosnia_and_herzegovina'),
+(33, 'BW', 'Botswana', 'Botswana', 'countries.botswana'),
+(34, 'BR', 'BrÃƒÂ©sil', 'Brazil', 'countries.brazil'),
+(35, 'BN', 'Brunei', 'Brunei Darussalam', 'countries.brunei_darussalam'),
+(36, 'BG', 'Bulgarie', 'Bulgaria', 'countries.bulgaria'),
+(37, 'BF', 'Burkina Faso', 'Burkina Faso', 'countries.burkina_faso'),
+(38, 'BI', 'Burundi', 'Burundi', 'countries.burundi'),
+(39, 'CI', 'CÃƒÂ´te d''Ivoire', 'Ivory Coast (see Cote d''Ivoire)', 'countries.ivory_coast'),
+(40, 'KH', 'Cambodge', 'Cambodia', 'countries.cambodia'),
+(41, 'CM', 'Cameroun', 'Cameroon', 'countries.cameroon'),
+(42, 'CA', 'Canada', 'Canada', 'countries.canada'),
+(43, 'CV', 'Cap-Vert', 'Cape Verde', 'countries.cape_verde'),
+(44, 'CL', 'Chili', 'Chile', 'countries.chile'),
+(45, 'CN', 'Chine', 'China', 'countries.china'),
+(46, 'CY', 'Chypre', 'Cyprus', 'countries.cyprus'),
+(47, 'CO', 'Colombie', 'Colombia', 'countries.colombia'),
+(48, 'KM', 'Comores', 'Comoros', 'countries.comoros'),
+(49, 'CG', 'Congo', 'Congo', 'countries.congo'),
+(50, 'KP', 'CorÃƒÂ©e du Nord', 'Korea, Demo. People''s Rep. of', 'countries.north_korea'),
+(51, 'KR', 'CorÃƒÂ©e du Sud', 'Korea, (South) Republic of', 'countries.south_korea'),
+(52, 'CR', 'Costa Rica', 'Costa Rica', 'countries.costa_rica'),
+(53, 'HR', 'Croatie', 'Croatia', 'countries.croatia'),
+(54, 'CU', 'Cuba', 'Cuba', 'countries.cuba'),
+(55, 'DK', 'Danemark', 'Denmark', 'countries.denmark'),
+(56, 'DJ', 'Djibouti', 'Djibouti', 'countries.djibouti'),
+(57, 'DM', 'Dominique', 'Dominica', 'countries.dominica'),
+(58, 'EG', 'Egypte', 'Egypt', 'countries.egypt'),
+(59, 'AE', 'Emirats arabes unis', 'United Arab Emirates', 'countries.united_arab_emirates'),
+(60, 'EC', 'Equateur', 'Ecuador', 'countries.ecuador'),
+(61, 'ER', 'ErythrÃƒÂ©e', 'Eritrea', 'countries.eritrea'),
+(62, 'ES', 'Espagne', 'Spain', 'countries.spain'),
+(63, 'EE', 'Estonie', 'Estonia', 'countries.estonia'),
+(64, 'US', 'Etats-Unis', 'United States', 'countries.united_states'),
+(65, 'ET', 'Ethiopie', 'Ethiopia', 'countries.ethiopia'),
+(66, 'FI', 'Finlande', 'Finland', 'countries.finland'),
+(67, 'FR', 'France', 'France', 'countries.france'),
+(68, 'GE', 'GÃƒÂ©orgie', 'Georgia', 'countries.georgia'),
+(69, 'GA', 'Gabon', 'Gabon', 'countries.gabon'),
+(70, 'GM', 'Gambie', 'Gambia, the', 'countries.gambia'),
+(71, 'GH', 'Ghana', 'Ghana', 'countries.ghana'),
+(72, 'GI', 'Gibraltar', 'Gibraltar', 'countries.gibraltar'),
+(73, 'GR', 'GrÃƒÂ¨ce', 'Greece', 'countries.greece'),
+(74, 'GD', 'Grenade', 'Grenada', 'countries.grenada'),
+(75, 'GL', 'Groenland', 'Greenland', 'countries.greenland'),
+(77, 'GU', 'Guam', 'Guam', 'countries.guam'),
+(78, 'GT', 'Guatemala', 'Guatemala', 'countries.guatemala'),
+(79, 'GN', 'GuinÃƒÂ©e', 'Guinea', 'countries.guinea'),
+(80, 'GQ', 'GuinÃƒÂ©e ÃƒÂ©quatoriale', 'Equatorial Guinea', 'countries.equatorial_guinea'),
+(81, 'GW', 'GuinÃƒÂ©e-Bissao', 'Guinea-Bissau', 'countries.guinea_bissau'),
+(82, 'GY', 'Guyana', 'Guyana', 'countries.guyana'),
+(84, 'HT', 'HaÃƒÂ¯ti', 'Haiti', 'countries.haiti'),
+(85, 'HN', 'Honduras', 'Honduras', 'countries.honduras'),
+(86, 'HK', 'Hong Kong', 'Hong Kong, (China)', 'countries.hong_kong'),
+(87, 'HU', 'Hongrie', 'Hungary', 'countries.hungary'),
+(88, 'BV', 'Ile Bouvet', 'Bouvet Island', 'countries.bouvet_island'),
+(89, 'CX', 'Ile Christmas', 'Christmas Island', 'countries.christmas_island'),
+(90, 'NF', 'Ile Norfolk', 'Norfolk Island', 'countries.norfolk_island'),
+(91, 'KY', 'Iles Cayman', 'Cayman Islands', 'countries.cayman_islands'),
+(92, 'CK', 'Iles Cook', 'Cook Islands', 'countries.cook_islands'),
+(93, 'FO', 'Iles FÃƒÂ©roÃƒÂ©', 'Faroe Islands', 'countries.faroe_islands'),
+(94, 'FK', 'Iles Falkland', 'Falkland Islands (Malvinas)', 'countries.malvinas'),
+(95, 'FJ', 'Iles Fidji', 'Fiji', 'countries.fiji'),
+(96, 'GS', 'Iles GÃƒÂ©orgie du Sud et Sandwich du Sud', 'S. Georgia and S. Sandwich Is.', 'countries.south_georgia_and_south_sandwich_islands'),
+(97, 'HM', 'Iles Heard et McDonald', 'Heard and McDonald Islands', 'countries.heard_and_mcdonald_islands'),
+(98, 'MH', 'Iles Marshall', 'Marshall Islands', 'countries.marshall_islands'),
+(99, 'PN', 'Iles Pitcairn', 'Pitcairn Island', 'countries.pitcairn_island'),
+(100, 'SB', 'Iles Salomon', 'Solomon Islands', 'countries.solomon_islands'),
+(101, 'SJ', 'Iles Svalbard et Jan Mayen', 'Svalbard and Jan Mayen Islands', 'countries.svalbard_and_jan_mayen_islands'),
+(102, 'TC', 'Iles Turks-et-Caicos', 'Turks and Caicos Islands', 'countries.turks_and_caicos_islands'),
+(103, 'VI', 'Iles Vierges amÃƒÂ©ricaines', 'Virgin Islands, U.S.', 'countries.virgin_islands_us'),
+(104, 'VG', 'Iles Vierges britanniques', 'Virgin Islands, British', 'countries.virgin_islands_uk'),
+(105, 'CC', 'Iles des Cocos (Keeling)', 'Cocos (Keeling) Islands', 'countries.cocos_islands'),
+(106, 'UM', 'Iles mineures ÃƒÂ©loignÃƒÂ©es des Etats-Unis', 'US Minor Outlying Islands', 'countries.us_minor_outlying_islands'),
+(107, 'IN', 'Inde', 'India', 'countries.india'),
+(108, 'ID', 'IndonÃƒÂ©sie', 'Indonesia', 'countries.indonesia'),
+(109, 'IR', 'Iran', 'Iran, Islamic Republic of', 'countries.iran'),
+(110, 'IQ', 'Iraq', 'Iraq', 'countries.iraq'),
+(111, 'IE', 'Irlande', 'Ireland', 'countries.ireland'),
+(112, 'IS', 'Islande', 'Iceland', 'countries.iceland'),
+(113, 'IL', 'IsraÃƒÂ«l', 'Israel', 'countries.israel'),
+(114, 'IT', 'Italie', 'Italy', 'countries.italy'),
+(115, 'JM', 'JamaÃƒÂ¯que', 'Jamaica', 'countries.jamaica'),
+(116, 'JP', 'Japon', 'Japan', 'countries.japan'),
+(117, 'JO', 'Jordanie', 'Jordan', 'countries.jordan'),
+(118, 'KZ', 'Kazakhstan', 'Kazakhstan', 'countries.kazakhstan'),
+(119, 'KE', 'Kenya', 'Kenya', 'countries.kenya'),
+(120, 'KG', 'Kirghizistan', 'Kyrgyzstan', 'countries.kyrgyzstan'),
+(121, 'KI', 'Kiribati', 'Kiribati', 'countries.kiribati'),
+(122, 'KW', 'KoweÃƒÂ¯t', 'Kuwait', 'countries.kuwait'),
+(123, 'LA', 'Laos', 'Lao People''s Democratic Republic', 'countries.lao'),
+(124, 'LS', 'Lesotho', 'Lesotho', 'countries.lesoto'),
+(125, 'LV', 'Lettonie', 'Latvia', 'countries.latvia'),
+(126, 'LB', 'Liban', 'Lebanon', 'countries.lebanon'),
+(127, 'LR', 'Liberia', 'Liberia', 'countries.liberia'),
+(128, 'LY', 'Libye', 'Libyan Arab Jamahiriya', 'countries.libya'),
+(129, 'LI', 'Liechtenstein', 'Liechtenstein', 'countries.liechtenstein'),
+(130, 'LT', 'Lituanie', 'Lithuania', 'countries.lithuania'),
+(131, 'LU', 'Luxembourg', 'Luxembourg', 'countries.luxembourg'),
+(132, 'MO', 'Macao', 'Macao, (China)', 'countries.macao'),
+(133, 'MG', 'Madagascar', 'Madagascar', 'countries.madagascar'),
+(134, 'MY', 'Malaisie', 'Malaysia', 'countries.malaysia'),
+(135, 'MW', 'Malawi', 'Malawi', 'countries.malawi'),
+(136, 'MV', 'Maldives', 'Maldives', 'countries.maldives'),
+(137, 'ML', 'Mali', 'Mali', 'countries.mali'),
+(138, 'MT', 'Malte', 'Malta', 'countries.malta'),
+(139, 'MP', 'Mariannes du Nord', 'Northern Mariana Islands', 'countries.northern_mariana_islands'),
+(140, 'MA', 'Maroc', 'Morocco', 'countries.morocco'),
+(141, 'MQ', 'Martinique', 'Martinique', 'countries.martinique'),
+(142, 'MU', 'Maurice', 'Mauritius', 'countries.mauritius'),
+(143, 'MR', 'Mauritanie', 'Mauritania', 'countries.mauritania'),
+(144, 'YT', 'Mayotte', 'Mayotte', 'countries.mayotte'),
+(145, 'MX', 'Mexique', 'Mexico', 'countries.mexico'),
+(146, 'FM', 'MicronÃƒÂ©sie', 'Micronesia, Federated States of', 'countries.micronesia'),
+(147, 'MD', 'Moldavie', 'Moldova, Republic of', 'countries.moldova'),
+(148, 'MC', 'Monaco', 'Monaco', 'countries.monaco'),
+(149, 'MN', 'Mongolie', 'Mongolia', 'countries.mongolia'),
+(150, 'MS', 'Montserrat', 'Montserrat', 'countries.montserrat'),
+(151, 'MZ', 'Mozambique', 'Mozambique', 'countries.mozanbique'),
+(152, 'NP', 'NÃƒÂ©pal', 'Nepal', 'countries.nepal'),
+(153, 'NA', 'Namibie', 'Namibia', 'countries.namibia'),
+(154, 'NR', 'Nauru', 'Nauru', 'countries.nauru'),
+(155, 'NI', 'Nicaragua', 'Nicaragua', 'countries.nicaragua'),
+(156, 'NE', 'Niger', 'Niger', 'countries.niger'),
+(157, 'NG', 'Nigeria', 'Nigeria', 'countries.nigeria'),
+(158, 'NU', 'NiouÃƒÂ©', 'Niue', 'countries.niue'),
+(159, 'NO', 'NorvÃƒÂ¨ge', 'Norway', 'countries.norway'),
+(160, 'NC', 'Nouvelle-CalÃƒÂ©donie', 'New Caledonia', 'countries.new_caledonia'),
+(161, 'NZ', 'Nouvelle-ZÃƒÂ©lande', 'New Zealand', 'countries.new_zealand'),
+(162, 'OM', 'Oman', 'Oman', 'countries.oman'),
+(163, 'UG', 'Ouganda', 'Uganda', 'countries.uganda'),
+(164, 'UZ', 'OuzbÃƒÂ©kistan', 'Uzbekistan', 'countries.uzbekistan'),
+(165, 'PE', 'PÃƒÂ©rou', 'Peru', 'countries.peru'),
+(166, 'PK', 'Pakistan', 'Pakistan', 'countries.pakistan'),
+(167, 'PA', 'Panama', 'Panama', 'countries.panama'),
+(168, 'PG', 'Papouasie-Nouvelle-GuinÃƒÂ©e', 'Papua New Guinea', 'countries.papua_new_guinea'),
+(169, 'PY', 'Paraguay', 'Paraguay', 'countries.paraguay'),
+(170, 'NL', 'Pays-Bas', 'Netherlands', 'countries.netherlands'),
+(171, 'PH', 'Philippines', 'Philippines', 'countries.philippines'),
+(172, 'PL', 'Pologne', 'Poland', 'countries.poland'),
+(173, 'PF', 'PolynÃƒÂ©sie franÃƒÂ§aise', 'French Polynesia', 'countries.french_polynesia'),
+(174, 'PR', 'Porto Rico', 'Puerto Rico', 'countries.puerto_rico'),
+(175, 'PT', 'Portugal', 'Portugal', 'countries.portugal'),
+(176, 'QA', 'Qatar', 'Qatar', 'countries.qatar'),
+(177, 'CF', 'RÃƒÂ©publique centrafricaine', 'Central African Republic', 'countries.central_african_republic'),
+(178, 'CD', 'RÃƒÂ©publique dÃƒÂ©mocratique du Congo', 'Congo, Democratic Rep. of the', 'countries.congo'),
+(179, 'DO', 'RÃƒÂ©publique dominicaine', 'Dominican Republic', 'countries.dominican_republic'),
+(180, 'CZ', 'RÃƒÂ©publique tchÃƒÂ¨que', 'Czech Republic', 'countries.czech_republic'),
+(181, 'RE', 'RÃƒÂ©union', 'Reunion', 'countries.reunion'),
+(182, 'RO', 'Roumanie', 'Romania', 'countries.romania'),
+(183, 'GB', 'Royaume-Uni', 'Saint Pierre and Miquelon', 'countries.united_kingdom'),
+(184, 'RU', 'Russie', 'Russia (Russian Federation)', 'countries.russia'),
+(185, 'RW', 'Rwanda', 'Rwanda', 'countries.rwanda'),
+(186, 'SN', 'SÃƒÂ©nÃƒÂ©gal', 'Senegal', 'countries.senegal'),
+(187, 'EH', 'Sahara occidental', 'Western Sahara', 'countries.western_sahara'),
+(188, 'KN', 'Saint-Christophe-et-NiÃƒÂ©vÃƒÂ¨s', 'Saint Kitts and Nevis', 'countries.saint_kitts_and_nevis'),
+(189, 'SM', 'Saint-Marin', 'San Marino', 'countries.san_marino'),
+(190, 'PM', 'Saint-Pierre-et-Miquelon', 'Saint Pierre and Miquelon', 'countries.saint_pierre_and_miquelon'),
+(191, 'VA', 'Saint-SiÃƒÂ¨ge ', 'Vatican City State (Holy See)', 'countries.vatican_city_state'),
+(192, 'VC', 'Saint-Vincent-et-les-Grenadines', 'Saint Vincent and the Grenadines', 'countries.saint_vicent_and_the_grenadines'),
+(193, 'SH', 'Sainte-HÃƒÂ©lÃƒÂ¨ne', 'Saint Helena', 'countries.saint_helena'),
+(194, 'LC', 'Sainte-Lucie', 'Saint Lucia', 'countries.saint_lucia'),
+(195, 'SV', 'Salvador', 'El Salvador', 'countries.el_salvador'),
+(196, 'WS', 'Samoa', 'Samoa', 'countries.samoa'),
+(197, 'AS', 'Samoa amÃƒÂ©ricaines', 'American Samoa', 'countries.american_samoa'),
+(198, 'ST', 'Sao TomÃƒÂ©-et-Principe', 'Sao Tome and Principe', 'countries.sao_tome_and_principe'),
+(199, 'SC', 'Seychelles', 'Seychelles', 'countries.seychelles'),
+(200, 'SL', 'Sierra Leone', 'Sierra Leone', 'countries.sierra_leone'),
+(201, 'SG', 'Singapour', 'Singapore', 'countries.singapore'),
+(202, 'SI', 'SlovÃƒÂ©nie', 'Slovenia', 'countries.slovenia'),
+(203, 'SK', 'Slovaquie', 'Slovakia', 'countries.slovakia'),
+(204, 'SO', 'Somalie', 'Somalia', 'countries.somalia'),
+(205, 'SD', 'Soudan', 'Sudan', 'countries.sudan'),
+(206, 'LK', 'Sri Lanka', 'Sri Lanka (ex-Ceilan)', 'countries.sri_lanka'),
+(207, 'SE', 'SuÃƒÂ¨de', 'Sweden', 'countries.sweden'),
+(208, 'CH', 'Suisse', 'Switzerland', 'countries.switzerland'),
+(209, 'SR', 'Suriname', 'Suriname', 'countries.suriname'),
+(210, 'SZ', 'Swaziland', 'Swaziland', 'countries.swaziland'),
+(211, 'SY', 'Syrie', 'Syrian Arab Republic', 'countries.syria'),
+(212, 'TW', 'TaÃƒÂ¯wan', 'Taiwan', 'countries.taiwan'),
+(213, 'TJ', 'Tadjikistan', 'Tajikistan', 'countries.taijikistan'),
+(214, 'TZ', 'Tanzanie', 'Tanzania, United Republic of', 'countries.tanzania'),
+(215, 'TD', 'Tchad', 'Chad', 'countries.chad'),
+(216, 'TF', 'Terres australes franÃƒÂ§aises', 'French Southern Territories - TF', 'countries.french_southern_territories'),
+(217, 'IO', 'Territoire britannique de l''OcÃƒÂ©an Indien', 'British Indian Ocean Territory', 'countries.british_indian_ocean_territory'),
+(218, 'TH', 'ThaÃƒÂ¯lande', 'Thailand', 'countries.thailand'),
+(219, 'TL', 'Timor Oriental', 'Timor-Leste (East Timor)', 'countries.timor_leste'),
+(220, 'TG', 'Togo', 'Togo', 'countries.togo'),
+(221, 'TK', 'TokÃƒÂ©laou', 'Tokelau', 'countries.tokelau'),
+(222, 'TO', 'Tonga', 'Tonga', 'countries.tonga'),
+(223, 'TT', 'TrinitÃƒÂ©-et-Tobago', 'Trinidad & Tobago', 'countries.trinidad_and_tobago'),
+(224, 'TN', 'Tunisie', 'Tunisia', 'countries.tunisia'),
+(225, 'TM', 'TurkmÃƒÂ©nistan', 'Turkmenistan', 'countries.turkmenistan'),
+(226, 'TR', 'Turquie', 'Turkey', 'countries.turkey'),
+(227, 'TV', 'Tuvalu', 'Tuvalu', 'countries.tuvalu'),
+(228, 'UA', 'Ukraine', 'Ukraine', 'countries.ukraine'),
+(229, 'UY', 'Uruguay', 'Uruguay', 'countries.uruguay'),
+(230, 'VU', 'Vanuatu', 'Vanuatu', 'countries.vanuatu'),
+(231, 'VE', 'Venezuela', 'Venezuela', 'countries.venezuela'),
+(232, 'VN', 'ViÃƒÂªt Nam', 'Viet Nam', 'countries.viet_nam'),
+(233, 'WF', 'Wallis-et-Futuna', 'Wallis and Futuna', 'countries.wallis_and_futuna'),
+(234, 'YE', 'YÃƒÂ©men', 'Yemen', 'countries.yemen'),
+(235, 'YU', 'Yougoslavie', 'Saint Pierre and Miquelon', 'countries.yougoslavia'),
+(236, 'ZM', 'Zambie', 'Zambia', 'countries.zambia'),
+(237, 'ZW', 'Zimbabwe', 'Zimbabwe', 'countries.zimbabwe'),
+(238, 'MK', 'ex-RÃƒÂ©publique yougoslave de MacÃƒÂ©doine', 'Macedonia, TFYR', 'countries.macedonia');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `groups`
+--
+
+CREATE TABLE IF NOT EXISTS `groups` (
+  `id` int(11) NOT NULL,
+  `type_id` int(11) NOT NULL,
+  `description` varchar(250) NOT NULL,
+  `name` varchar(65) NOT NULL,
+  `contact_id` int(11) NOT NULL,
+  `is_public` tinyint(1) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8;
+
+--
+-- Contenu de la table `groups`
+--
+
+INSERT INTO `groups` (`id`, `type_id`, `description`, `name`, `contact_id`, `is_public`, `created_at`, `updated_at`) VALUES
+(1, 2, 'Groupe prive regroupant les developpeurs du site web', 'Développeurs', 1, 0, '2012-01-27 10:14:42', '0000-00-00 00:00:00'),
+(2, 1, 'Groupe regional', 'Ile-de-France', 7, 1, '2012-02-07 20:08:35', '2015-10-09 12:39:14'),
+(10, 1, 'Groupe regional', 'Midi-Pyrénées', 1, 1, '2012-02-07 19:37:13', '0000-00-00 00:00:00'),
+(15, 1, 'Groupe regional', 'Picardie', 1, 1, '2012-02-07 21:28:54', '0000-00-00 00:00:00'),
+(25, 1, 'Groupe regional', 'Bretagne', 1, 1, '2012-02-07 22:44:06', '0000-00-00 00:00:00'),
+(55, 1, 'Groupe regional', 'Languedoc-Roussillon', 1, 1, '2012-02-08 14:33:20', '0000-00-00 00:00:00'),
+(56, 1, 'Groupe regional', 'Aquitaine', 1, 1, '2012-02-08 15:26:56', '0000-00-00 00:00:00'),
+(57, 1, 'Groupe regional', 'Centre', 1, 1, '2012-02-08 16:22:27', '0000-00-00 00:00:00'),
+(58, 1, 'Groupe regional', 'Nord-Pas-de-Calais', 1, 1, '2012-02-08 17:40:33', '0000-00-00 00:00:00'),
+(59, 1, 'Groupe regional', 'Rhône-Alpes', 1, 1, '2012-02-08 17:41:02', '0000-00-00 00:00:00'),
+(60, 1, 'Groupe regional', 'Lorraine', 1, 1, '2012-02-08 18:20:35', '0000-00-00 00:00:00'),
+(61, 1, 'Groupe regional', 'Basse-Normandie', 1, 1, '2012-02-08 18:26:53', '0000-00-00 00:00:00'),
+(62, 1, 'Groupe regional', 'Corse', 1, 1, '2012-02-08 18:37:35', '0000-00-00 00:00:00'),
+(63, 1, 'Groupe regional', 'Pays de la Loire', 1, 1, '2012-02-08 21:07:08', '0000-00-00 00:00:00'),
+(64, 1, 'Groupe regional', 'Alsace', 1, 1, '2012-02-09 00:40:44', '0000-00-00 00:00:00'),
+(65, 1, 'Groupe regional', 'La province de Luxembourg', 1, 1, '2012-02-09 01:44:11', '0000-00-00 00:00:00'),
+(66, 1, 'Groupe regional', 'Départements d''Outre-Mer', 1, 1, '2012-02-09 08:51:49', '0000-00-00 00:00:00'),
+(67, 1, 'Groupe regional', 'Auvergne', 1, 1, '2012-02-09 10:18:56', '0000-00-00 00:00:00'),
+(68, 1, 'Groupe regional', 'Haute-Normandie', 1, 1, '2012-02-09 13:14:03', '0000-00-00 00:00:00'),
+(69, 1, 'Groupe regional', 'Neuchâtel', 1, 1, '2012-02-09 14:37:24', '0000-00-00 00:00:00'),
+(70, 1, 'Groupe regional', 'Champagne-Ardenne', 1, 1, '2012-02-09 15:23:59', '0000-00-00 00:00:00'),
+(71, 1, 'Groupe regional', 'Le Hainaut', 1, 1, '2012-02-09 15:42:12', '0000-00-00 00:00:00'),
+(72, 1, 'Groupe regional', 'Bourgogne', 1, 1, '2012-02-09 20:18:48', '0000-00-00 00:00:00'),
+(73, 1, 'Groupe regional', 'Vaud', 1, 1, '2012-02-09 21:18:10', '0000-00-00 00:00:00'),
+(74, 1, 'Groupe regional', 'Poitou-Charentes', 1, 1, '2012-02-09 21:33:13', '0000-00-00 00:00:00'),
+(75, 1, 'Groupe regional', 'Grand Casablanca', 1, 1, '2012-02-09 22:26:49', '0000-00-00 00:00:00'),
+(76, 1, 'Groupe regional', 'Franche-Comté', 1, 1, '2012-02-09 23:14:00', '0000-00-00 00:00:00'),
+(77, 1, 'Groupe regional', 'Provence-Alpes-Côte-d''Azur', 1, 1, '2012-02-09 23:40:00', '0000-00-00 00:00:00'),
+(78, 1, 'Groupe regional', 'Algeria', 1, 1, '2012-02-10 11:51:02', '0000-00-00 00:00:00'),
+(79, 1, 'Groupe regional', 'Québec', 1, 1, '2012-02-10 15:04:40', '0000-00-00 00:00:00'),
+(80, 1, 'Groupe regional', 'Province Sud', 1, 1, '2012-02-11 09:43:39', '0000-00-00 00:00:00'),
+(81, 1, 'Groupe regional', 'La province de Namur', 1, 1, '2012-02-11 22:15:04', '0000-00-00 00:00:00'),
+(82, 1, 'Groupe regional', 'La province de Liège', 1, 1, '2012-02-12 11:37:35', '0000-00-00 00:00:00'),
+(83, 1, 'Groupe regional', 'Lisboa', 1, 1, '2012-02-12 17:20:48', '0000-00-00 00:00:00'),
+(84, 1, 'Groupe regional', 'Limousin', 1, 1, '2012-02-12 19:16:27', '0000-00-00 00:00:00'),
+(85, 1, 'Groupe regional', 'Le Brabant wallon', 1, 1, '2012-02-14 08:35:45', '0000-00-00 00:00:00'),
+(86, 1, 'Groupe regional', 'Fribourg', 1, 1, '2012-02-14 22:44:27', '0000-00-00 00:00:00'),
+(87, 1, 'Groupe regional', 'La Flandre orientale', 1, 1, '2012-02-15 12:24:00', '0000-00-00 00:00:00'),
+(88, 2, 'Groupe d''informations', 'Groupe d''informations', 1, 0, '2012-02-16 16:35:55', '0000-00-00 00:00:00'),
+(89, 1, 'Groupe regional', 'Tunis', 1, 1, '2012-02-17 23:27:36', '0000-00-00 00:00:00'),
+(90, 1, 'Groupe regional', 'Le Brabant flamand', 1, 1, '2012-02-20 23:22:07', '0000-00-00 00:00:00'),
+(91, 1, 'Groupe regional', 'Guyane', 1, 1, '2012-02-21 16:44:48', '0000-00-00 00:00:00'),
+(92, 1, 'Groupe regional', 'Jura', 1, 1, '2012-02-22 17:37:38', '0000-00-00 00:00:00'),
+(93, 1, 'Groupe regional', 'Haute-Savoie', 1, 1, '2012-02-26 20:27:46', '0000-00-00 00:00:00'),
+(94, 1, 'Groupe regional', 'Valais', 1, 1, '2012-02-26 22:55:48', '0000-00-00 00:00:00'),
+(96, 1, 'Groupe regional', 'Nordrhein-Westfalen', 1, 1, '2012-03-02 23:47:24', '0000-00-00 00:00:00'),
+(97, 1, 'Groupe regional', 'Meknès-Tafilalet', 1, 1, '2012-03-04 02:51:49', '0000-00-00 00:00:00'),
+(98, 1, 'Groupe regional', 'Martinique', 1, 1, '2012-03-08 02:59:27', '0000-00-00 00:00:00'),
+(99, 1, 'Groupe regional', 'Berlin', 1, 1, '2012-03-09 00:40:13', '0000-00-00 00:00:00'),
+(100, 1, 'Groupe regional', 'Guadeloupe', 1, 1, '2012-03-15 02:50:34', '0000-00-00 00:00:00'),
+(101, 1, 'Groupe regional', 'Territoires d''Outre-Mer', 1, 1, '2012-03-17 04:37:48', '0000-00-00 00:00:00'),
+(102, 1, 'Groupe regional', 'Baden-Württemberg', 1, 1, '2012-03-19 21:21:47', '0000-00-00 00:00:00'),
+(103, 1, 'Groupe regional', 'Reunion', 1, 1, '2012-03-25 23:54:37', '0000-00-00 00:00:00'),
+(104, 1, 'Groupe regional', 'Rabat-Salé-Zemmour-Zaër', 1, 1, '2012-03-26 00:59:31', '0000-00-00 00:00:00'),
+(105, 1, 'Groupe regional', 'Tanger-Tétouan', 1, 1, '2012-03-26 20:22:42', '0000-00-00 00:00:00'),
+(106, 1, 'Groupe regional', 'Genève', 1, 1, '2012-04-01 08:27:03', '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `group_types`
+--
+
+CREATE TABLE IF NOT EXISTS `group_types` (
+  `id` int(11) NOT NULL,
+  `label` varchar(45) NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `group_types`
+--
+
+INSERT INTO `group_types` (`id`, `label`) VALUES
+(1, 'r&Atilde;&copy;gional'),
+(2, 'Thematiques');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `logs`
+--
+
+CREATE TABLE IF NOT EXISTS `logs` (
+  `id` int(11) NOT NULL,
+  `level` tinyint(4) NOT NULL,
+  `msg` varchar(2500) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `timelogs` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `messages`
+--
+
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `author_id` int(11) NOT NULL,
+  `recipient_id` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `deleted_by_author` tinyint(1) NOT NULL,
+  `deleted_by_recipient` tinyint(1) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `motions`
+--
+
+CREATE TABLE IF NOT EXISTS `motions` (
+  `id` int(11) NOT NULL,
+  `theme_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `means` text NOT NULL,
+  `created_at` datetime NOT NULL,
+  `ended_at` datetime NOT NULL,
+  `author_id` int(11) NOT NULL,
+  `is_active` tinyint(1) NOT NULL COMMENT '1 : vote ouvert; 0 : vote fermÃ©',
+  `is_approved` tinyint(1) NOT NULL COMMENT '1: acceptÃ©e; 0: refusÃ©e',
+  `Score` varchar(6) DEFAULT NULL COMMENT 'score du vote (base64_encode)'
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `motions_votes`
+--
+
+CREATE TABLE IF NOT EXISTS `motions_votes` (
+  `motion_id` int(11) NOT NULL,
+  `choice` int(11) NOT NULL,
+  `hash` varchar(129) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `motions_vote_tokens`
+--
+
+CREATE TABLE IF NOT EXISTS `motions_vote_tokens` (
+  `motion_id` int(11) NOT NULL,
+  `citizen_id` int(11) NOT NULL,
+  `date` datetime NOT NULL,
+  `ip` varchar(15) NOT NULL,
+  `browser` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `motion_themes`
+--
+
+CREATE TABLE IF NOT EXISTS `motion_themes` (
+  `id` smallint(6) NOT NULL,
+  `label` varchar(125) NOT NULL,
+  `duration` tinyint(4) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+--
+-- Contenu de la table `motion_themes`
+--
+
+INSERT INTO `motion_themes` (`id`, `label`, `duration`) VALUES
+(1, 'organization', 8),
+(2, 'justice', 8),
+(3, 'constitutional', 8),
+(4, 'actions', 8);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `regions`
+--
+
+CREATE TABLE IF NOT EXISTS `regions` (
+  `id` int(11) NOT NULL,
+  `country_id` smallint(6) NOT NULL,
+  `name` varchar(85) CHARACTER SET utf8 NOT NULL,
+  `longitude` decimal(10,7) DEFAULT NULL,
+  `latitude` decimal(10,7) DEFAULT NULL,
+  `created_at` datetime NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=371 DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `regions`
+--
+
+INSERT INTO `regions` (`id`, `country_id`, `name`, `longitude`, `latitude`, `created_at`) VALUES
+(1, 67, 'Alsace', '48.5000000', '7.5000000', '2012-01-25 09:37:05'),
+(2, 67, 'Aquitaine', '44.5833330', '0.0166670', '2012-01-25 09:37:05'),
+(3, 67, 'Auvergne', '45.3333330', '3.0000000', '2012-01-25 09:37:05'),
+(4, 67, 'Basse-Normandie', '49.0000000', '-1.0000000', '2012-01-25 09:37:05'),
+(5, 67, 'Bourgogne', '47.2475000', '4.1513900', '2012-01-25 09:37:05'),
+(6, 67, 'Bretagne', '48.0000000', '-3.0000000', '2012-01-25 09:37:05'),
+(7, 67, 'Centre', '47.5000000', '1.7500000', '2012-01-25 09:37:05'),
+(8, 67, 'Champagne-Ardenne', '49.0000000', '4.5000000', '2012-01-25 09:37:05'),
+(9, 67, 'Corse', '42.1500000', '9.0833330', '2012-01-25 09:37:05'),
+(10, 67, 'DÃ©partements d''Outre-Mer', NULL, NULL, '2012-01-25 09:37:05'),
+(11, 67, 'Franche-ComtÃ©', '47.0000000', '6.0000000', '2012-01-25 09:37:05'),
+(12, 67, 'Haute-Normandie', '49.5000000', '1.0000000', '2012-01-25 09:37:05'),
+(14, 67, 'Ile-de-France', '48.5000000', '2.5000000', '2012-01-25 09:37:05'),
+(15, 67, 'Languedoc-Roussillon', '43.6666670', '3.1666670', '2012-01-25 09:37:05'),
+(16, 67, 'Limousin', '45.6879500', '1.6204830', '2012-01-25 09:37:05'),
+(17, 67, 'Lorraine', '49.0000000', '6.0000000', '2012-01-25 09:37:05'),
+(18, 67, 'Midi-PyrÃ©nÃ©es', '43.5000000', '1.3333330', '2012-01-25 09:37:05'),
+(19, 67, 'Nord-Pas-de-Calais', '50.4666670', '2.7166670', '2012-01-25 09:37:05'),
+(20, 67, 'Pays de la Loire', '47.4280000', '-1.1430000', '2012-01-25 09:37:05'),
+(21, 67, 'Picardie', '49.5000000', '2.8333330', '2012-01-25 09:37:05'),
+(22, 67, 'Poitou-Charentes', '46.0833330', '0.1666670', '2012-01-25 09:37:05'),
+(23, 67, 'Provence-Alpes-CÃ´te-d''Azur', '44.0000000', '6.0000000', '2012-01-25 09:37:05'),
+(24, 67, 'RhÃ´ne-Alpes', '45.5000000', '5.3333330', '2012-01-25 09:37:05'),
+(25, 67, 'Territoires d''Outre-Mer', NULL, NULL, '2012-01-25 09:37:05'),
+(13, 67, 'Haute-Savoie', '46.0000000', '6.3333330', '2012-02-07 09:32:36'),
+(26, 0, 'Appenzell Rh.-Ext', '47.3664810', '9.3000916', '2012-02-07 10:09:57'),
+(27, 0, 'Appenzell Rh.-Int', '47.3161925', '9.4316573', '2012-02-07 10:09:57'),
+(28, 0, 'Argovie', '47.3907380', '8.0455830', '2012-02-07 10:09:57'),
+(29, 0, 'BÃ¢le-Campagne', '47.4819450', '7.7403550', '2012-02-07 10:09:57'),
+(30, 0, 'BÃ¢le-Ville', '47.5666670', '7.6000000', '2012-02-07 10:09:57'),
+(31, 0, 'Bern', '46.9500000', '7.4500000', '2012-02-07 10:09:57'),
+(32, 0, 'Fribourg', '46.8000000', '7.1500000', '2012-02-07 10:09:57'),
+(33, 0, 'GenÃ¨ve', '46.2000130', '6.1499850', '2012-02-07 10:09:57'),
+(34, 0, 'Glaris', '47.0333330', '9.0666670', '2012-02-07 10:09:57'),
+(35, 0, 'Grisons', '46.7500000', '9.5000000', '2012-02-07 10:09:57'),
+(36, 0, 'Jura', '47.3444474', '7.1430608', '2012-02-07 10:09:57'),
+(37, 0, 'Lucerne', '47.0500000', '8.3000000', '2012-02-07 10:09:57'),
+(38, 0, 'NeuchÃ¢tel', '46.9902810', '6.9305670', '2012-02-07 10:09:57'),
+(39, 0, 'Nidwald', '46.9333330', '8.0666670', '2012-02-07 10:09:57'),
+(40, 0, 'Obwald', '46.8666670', '8.0333330', '2012-02-07 10:09:57'),
+(41, 0, 'Schaffhouse', '47.7000010', '8.6333330', '2012-02-07 10:09:57'),
+(42, 0, 'Schywtz', '47.0198346', '8.6473977', '2012-02-07 10:09:57'),
+(43, 0, 'Soleure', '47.2083310', '7.5375130', '2012-02-07 10:09:57'),
+(44, 0, 'St-Gall', '47.4166670', '9.3666670', '2012-02-07 10:09:57'),
+(45, 0, 'Tessin', '46.3317340', '8.8004529', '2012-02-07 10:09:57'),
+(46, 0, 'Thurgovie', '47.5833330', '9.0666670', '2012-02-07 10:09:57'),
+(47, 0, 'Uri', '46.7738629', '8.6025153', '2012-02-07 10:09:57'),
+(48, 0, 'Valais', '46.0666670', '7.6000000', '2012-02-07 10:09:57'),
+(49, 0, 'Vaud', '46.6166670', '6.5500000', '2012-02-07 10:09:57'),
+(50, 0, 'Zoug', '47.1666670', '8.5166670', '2012-02-07 10:09:57'),
+(51, 0, 'Zurich', '47.3778950', '8.5411830', '2012-02-07 10:09:57'),
+(52, 0, 'Le Brabant flamand', '50.8815434', '4.5645970', '2012-02-07 10:28:21'),
+(53, 0, 'Le Brabant wallon', '50.6332410', '4.5243150', '2012-02-07 10:28:21'),
+(54, 0, 'La Flandre occidentale', '51.0536024', '3.1457942', '2012-02-07 10:28:21'),
+(55, 0, 'La Flandre orientale', '51.0362101', '3.7373124', '2012-02-07 10:28:21'),
+(56, 0, 'Le Hainaut', '50.5257076', '4.0621017', '2012-02-07 10:28:21'),
+(57, 0, 'Le Limbourg', '50.9738973', '5.3419677', '2012-02-07 10:28:21'),
+(58, 0, 'La province d''Anvers', '51.2194933', '4.4024500', '2012-02-07 10:28:21'),
+(59, 0, 'La province de LiÃ¨ge', '50.6325574', '5.5796662', '2012-02-07 10:28:21'),
+(60, 0, 'La province de Luxembourg', '49.6568287', '6.0333955', '2012-02-07 10:28:21'),
+(61, 0, 'La province de Namur', '50.4653280', '4.8676650', '2012-02-07 10:28:21'),
+(62, 0, 'Monaco', '43.7326220', '7.4182170', '2012-02-07 10:35:10'),
+(63, 0, 'Liechtenstein', '47.1450000', '9.5538890', '2012-02-07 10:35:10'),
+(64, 0, 'Andorra la Vella', '42.5075000', '1.5169400', '2012-02-07 10:35:10'),
+(65, 0, 'Andalucia', '37.3833330', '-5.9833330', '2012-02-07 15:20:18'),
+(66, 0, 'Aragon', '41.0000000', '-1.0000000', '2012-02-07 15:20:18'),
+(67, 0, 'Principado de Asturias', '3.3333330', '-6.0000000', '2012-02-07 15:20:18'),
+(68, 0, 'Las Islas de Baleares', NULL, NULL, '2012-02-07 15:20:18'),
+(69, 0, 'Canarias', '28.1000000', '-15.4000000', '2012-02-07 15:20:18'),
+(70, 0, 'Cantabria', '43.3333330', '-4.0000000', '2012-02-07 15:20:18'),
+(71, 0, 'CataluÃ±a', '41.8166670', '1.4666670', '2012-02-07 15:20:18'),
+(72, 0, 'La Ciudad Autonoma de Ceuta', '35.8882475', '-5.3162201', '2012-02-07 15:20:18'),
+(73, 0, 'Extremadura', '39.0000000', '-6.0000000', '2012-02-07 15:20:18'),
+(74, 0, 'Galicia', '42.5000000', '-8.1000000', '2012-02-07 15:20:18'),
+(75, 0, 'Comunidad de Madrid', '40.5000000', '-3.6666700', '2012-02-07 15:20:18'),
+(76, 0, 'La Ciudad Autonoma de Melilla', '35.2888670', '-2.9467832', '2012-02-07 15:20:18'),
+(77, 0, 'Region de Murcia', '8.0000000', '-1.0000000', '2012-02-07 15:20:18'),
+(78, 0, 'Comunidad Foral de Navarra', '2.8166670', '-1.6500000', '2012-02-07 15:20:18'),
+(79, 0, 'Pais Vasco', '2.8333330', '-2.6833330', '2012-02-07 15:20:18'),
+(80, 0, 'La Rioja', '42.2500000', '-2.5000000', '2012-02-07 15:20:18'),
+(81, 0, 'Comunidad Valenciana', '39.5000000', '-0.7500000', '2012-02-07 15:20:18'),
+(82, 0, 'Alentejo', '40.3135915', '-7.8015006', '2012-02-07 15:55:30'),
+(83, 0, 'Algarve', '37.0144440', '-7.9352780', '2012-02-07 15:55:30'),
+(84, 0, 'Centro', '40.2069920', '-8.4293810', '2012-02-07 15:55:30'),
+(85, 0, 'Lisboa', '38.7000000', '-9.1666670', '2012-02-07 15:55:30'),
+(86, 0, 'Norte', '41.1499680', '-8.6102426', '2012-02-07 15:55:30'),
+(87, 0, 'RegiÃ£o autonoma de aÃ§ores', NULL, NULL, '2012-02-07 15:55:30'),
+(88, 0, 'RegiÃ£o autonoma de Madeira', '32.6511111', '-16.9097222', '2012-02-07 15:55:30'),
+(89, 0, 'Baden-WÃ¼rttemberg', '48.5300000', '9.0500000', '2012-02-07 16:35:50'),
+(90, 0, 'Bayern', '49.0000000', '11.5000000', '2012-02-07 16:35:50'),
+(91, 0, 'Berlin', '52.5186000', '13.4081000', '2012-02-07 16:35:50'),
+(92, 0, 'Brandenburg', '52.3619440', '13.0080560', '2012-02-07 16:35:50'),
+(93, 0, 'Bremen', '7.5833330', '60.2000000', '2012-02-07 16:35:50'),
+(94, 0, 'Hamburg', '53.5652780', '10.0013890', '2012-02-07 16:35:50'),
+(95, 0, 'Hessen', '50.6661110', '8.5911110', '2012-02-07 16:35:50'),
+(96, 0, 'CataluÃ±a', '41.8166670', '1.4666670', '2012-02-07 16:35:50'),
+(97, 0, 'Mecklenburg-Vorpommern', '53.6121000', '12.7002000', '2012-02-07 16:35:50'),
+(98, 0, 'Niedersachsen', '52.7562000', '9.3933100', '2012-02-07 16:35:50'),
+(99, 0, 'Nordrhein-Westfalen', '51.4783000', '7.5550000', '2012-02-07 16:35:50'),
+(100, 0, 'Rheinland-Pfalz', '49.9131000', '7.4497200', '2012-02-07 16:35:50'),
+(101, 0, 'Saarland', '49.3833000', '6.8333300', '2012-02-07 16:35:50'),
+(102, 0, 'Sachsen', '51.0269440', '13.3588890', '2012-02-07 16:35:50'),
+(103, 0, 'Sachsen-Anhalt', '51.9713000', '11.4697000', '2012-02-07 16:35:50'),
+(104, 0, 'Schleswig-Holstein', '54.4700000', '9.5141600', '2012-02-07 16:35:50'),
+(105, 0, 'ThÃ¼ringen', '50.8611110', '11.0519440', '2012-02-07 16:35:50'),
+(106, 0, 'Hovedstaden', '55.9398330', '12.3000000', '2012-02-07 18:57:27'),
+(107, 0, 'Midtjylland', '56.1666670', '9.5000000', '2012-02-07 18:57:27'),
+(108, 0, 'Nordjylland', '56.8307416', '9.4930528', '2012-02-07 18:57:27'),
+(109, 0, 'SjÃ¦lland', '55.5000000', '11.7500000', '2012-02-07 18:57:27'),
+(110, 0, 'Syddanmark', '55.3333330', '9.6666670', '2012-02-07 18:57:27'),
+(111, 0, 'Burgenland', '47.5000000', '16.4166670', '2012-02-07 19:02:10'),
+(112, 0, 'KÃ¤rnten', '46.7619000', '13.8189000', '2012-02-07 19:02:10'),
+(113, 0, 'NiederÃ¶sterreich', '48.3333330', '15.7500000', '2012-02-07 19:02:10'),
+(114, 0, 'OberÃ¶sterreich', '48.0258540', '13.9723665', '2012-02-07 19:02:10'),
+(115, 0, 'Salzburg', '47.8025000', '13.0458330', '2012-02-07 19:02:10'),
+(116, 0, 'Steiermark', '47.2500000', '15.1666670', '2012-02-07 19:02:10'),
+(117, 0, 'Tirol', '47.2537414', '11.6014870', '2012-02-07 19:02:10'),
+(118, 0, 'Vorarlberg', '47.2436000', '9.8938900', '2012-02-07 19:02:10'),
+(119, 0, 'Wien', '48.2083330', '16.3730560', '2012-02-07 19:02:10'),
+(120, 0, 'East Midlands', '2.9800000', '-0.7500000', '2012-02-07 19:19:25'),
+(121, 0, 'East of England', '2.2400000', '0.4100000', '2012-02-07 19:19:25'),
+(122, 0, 'Greater London', '51.5084100', '-0.1253600', '2012-02-07 19:19:25'),
+(123, 0, 'North East England', '54.8892460', '-1.3842770', '2012-02-07 19:19:25'),
+(124, 0, 'North West England', '53.6316110', '-2.6037600', '2012-02-07 19:19:25'),
+(125, 0, 'South East England', '50.9238130', '-0.3405760', '2012-02-07 19:19:25'),
+(126, 0, 'South West England', '0.9600000', '-3.2200000', '2012-02-07 19:19:25'),
+(127, 0, 'West Midlands', '52.4700000', '-2.2900000', '2012-02-07 19:19:25'),
+(128, 0, 'Yorkshire and the Humber', '53.7006543', '-0.4493882', '2012-02-07 19:19:25'),
+(129, 0, 'Connacht', '53.5729167', '-8.9900352', '2012-02-07 19:29:09'),
+(130, 0, 'Leinster', '53.3477780', '-6.2597220', '2012-02-07 19:29:09'),
+(131, 0, 'Munster', '52.2500000', '-9.0000000', '2012-02-07 19:29:09'),
+(132, 0, 'Ulster', '54.5969440', '-5.9300000', '2012-02-07 19:29:09'),
+(133, 0, 'Friesland', '53.1641642', '5.7817542', '2012-02-07 19:45:30'),
+(134, 0, 'Gelre', '52.0705520', '6.0276918', '2012-02-07 19:45:30'),
+(135, 0, 'Holland', '52.2500000', '4.6670000', '2012-02-07 19:45:30'),
+(136, 0, 'Overijssel', '52.4387814', '6.5016411', '2012-02-07 19:45:30'),
+(137, 0, 'Stad en Lande', '52.2477712', '5.2389583', '2012-02-07 19:45:30'),
+(138, 0, 'Utrecht', '52.0833330', '5.1000000', '2012-02-07 19:45:30'),
+(139, 0, 'Zeeland', '51.6976800', '5.6738000', '2012-02-07 19:45:30'),
+(140, 0, 'Diekirch', '49.8680000', '6.1566670', '2012-02-07 20:00:57'),
+(141, 0, 'Grevenmacher', '49.6666670', '6.4500000', '2012-02-07 20:00:57'),
+(142, 0, 'Luxembourg', '49.6000000', '6.1166670', '2012-02-07 20:00:57'),
+(143, 0, 'Ontario', '50.7000000', '-86.0500000', '2012-02-07 22:50:09'),
+(144, 0, 'QuÃ©bec', '53.7500000', '-71.9833330', '2012-02-07 22:50:09'),
+(145, 0, 'Nouvelle-Ecosse', '44.6911120', '-63.5668950', '2012-02-07 22:50:09'),
+(146, 0, 'Nouveau-Brunswick', '45.9575940', '-66.6444400', '2012-02-07 22:50:09'),
+(147, 0, 'Manitoba', '55.0666670', '-97.5166670', '2012-02-07 22:50:09'),
+(148, 0, 'Colombie-Britannique', '54.0000000', '-125.0000000', '2012-02-07 22:50:09'),
+(149, 0, 'Ile-du-prince-Edouard', '46.3333330', '-63.5000000', '2012-02-07 22:50:09'),
+(150, 0, 'Saskatchewan', '54.5000000', '-105.6813890', '2012-02-07 22:50:09'),
+(151, 0, 'Alberta', '55.1666670', '-114.4000000', '2012-02-07 22:50:09'),
+(152, 0, 'Chaouia-Ouardigha', '33.0473251', '-7.2652858', '2012-02-09 08:30:26'),
+(153, 0, 'Doukkala-Abda', '32.5997754', '-8.6600586', '2012-02-09 08:30:26'),
+(154, 0, 'FÃ¨s-Boulemane', '33.1870471', '-4.2333355', '2012-02-09 08:30:26'),
+(155, 0, 'Gharb-Chrarda-Beni Hssen', '34.5434461', '-5.8987139', '2012-02-09 08:30:26'),
+(156, 0, 'Grand Casablanca', '33.5205933', '-7.5680595', '2012-02-09 08:30:26'),
+(157, 0, 'Guelmim-Es Smara', '28.7082053', '-9.5450974', '2012-02-09 08:30:26'),
+(158, 0, 'LaÃ¢youne-Boujdour-Sakia el Hamra', '26.1333330', '-14.5000000', '2012-02-09 08:30:26'),
+(159, 0, 'Marrakech-Tensift-Al Haouz', '31.5628076', '-7.9592863', '2012-02-09 08:30:26'),
+(160, 0, 'MeknÃ¨s-Tafilalet', '31.9051275', '-4.7277528', '2012-02-09 08:30:26'),
+(161, 0, 'Oriental', '34.6964610', '-2.4499510', '2012-02-09 08:30:26'),
+(162, 0, 'Oued Ed-Dahab-Lagouira', '22.7337892', '-14.2861116', '2012-02-09 08:30:26'),
+(163, 0, 'Rabat-SalÃ©-Zemmour-ZaÃ«r', '33.8175173', '-6.2375947', '2012-02-09 08:30:26'),
+(164, 0, 'Souss-Massa-DrÃ¢a', '31.1200185', '-6.0679194', '2012-02-09 08:30:26'),
+(165, 0, 'Tadla-Azilal', '32.0042620', '-6.5783387', '2012-02-09 08:30:26'),
+(166, 0, 'Tanger-TÃ©touan', '35.2629558', '-5.5617279', '2012-02-09 08:30:26'),
+(167, 0, 'Taza-Al Hoceima-Taounate', '34.2581709', '-4.2333355', '2012-02-09 08:30:26'),
+(168, 0, 'Algeria', '36.7000000', '3.2166700', '2012-02-10 08:25:34'),
+(169, 0, 'Province Nord', '-9.0000000', '148.0833330', '2012-02-10 12:30:59'),
+(170, 0, 'Province Sud', '21.9166670', '166.3333330', '2012-02-10 12:30:59'),
+(171, 0, 'Province des Ã®les LoyautÃ©', '-21.0000000', '167.0000000', '2012-02-10 12:30:59'),
+(172, 0, 'Adamaoua', '6.9181954', '12.8054753', '2012-02-11 08:29:45'),
+(173, 0, 'Centre', '4.5764250', '12.0080570', '2012-02-11 08:29:45'),
+(174, 0, 'Est', '3.4585910', '14.5678710', '2012-02-11 08:29:45'),
+(175, 0, 'ExtrÃªme-Nord', '10.7577630', '14.5568850', '2012-02-11 08:29:45'),
+(176, 0, 'Littoral', '4.1682138', '10.0807298', '2012-02-11 08:29:45'),
+(177, 0, 'Nord', '8.5809013', '13.9143990', '2012-02-11 08:29:45'),
+(178, 0, 'Nord-Ouest', '6.4703739', '10.4396560', '2012-02-11 08:29:45'),
+(179, 0, 'Ouest', '5.4638158', '10.8000051', '2012-02-11 08:29:45'),
+(180, 0, 'Sud', '2.7202832', '11.7068294', '2012-02-11 08:29:45'),
+(181, 0, 'Sud-Ouest', '5.1573493', '9.3673084', '2012-02-11 08:29:45'),
+(182, 0, 'Amazonas', '-5.1151460', '-78.1108279', '2012-02-11 08:43:20'),
+(210, 0, 'Svealand', '61.2491020', '15.0732420', '2012-02-11 08:55:14'),
+(184, 0, 'Ancash', '-9.5500000', '-77.6166670', '2012-02-11 08:43:44'),
+(185, 0, 'Apurimac', '-14.0504533', '-73.0877490', '2012-02-11 08:43:44'),
+(186, 0, 'Arequipa', '-16.4308160', '-71.5155030', '2012-02-11 08:43:44'),
+(187, 0, 'Ayacucho', '-13.1630560', '-44.2244440', '2012-02-11 08:43:44'),
+(188, 0, 'Cajamarca', '-7.1644440', '-78.5105560', '2012-02-11 08:43:44'),
+(189, 0, 'Callao', '-12.0584000', '-77.1484000', '2012-02-11 08:43:44'),
+(190, 0, 'Cuzco', '-13.5250000', '-71.9722220', '2012-02-11 08:43:44'),
+(191, 0, 'Huancavelica', '-12.7850000', '-74.9713890', '2012-02-11 08:43:44'),
+(192, 0, 'Huanuco', '-9.9330000', '-76.2330000', '2012-02-11 08:43:44'),
+(193, 0, 'Ica', '-14.0666670', '-75.7333330', '2012-02-11 08:43:44'),
+(194, 0, 'Junin', '-11.3357980', '-75.3412179', '2012-02-11 08:43:44'),
+(195, 0, 'La Libertad', '-8.1435933', '-78.4751945', '2012-02-11 08:43:44'),
+(196, 0, 'Lambayeque', '-6.4776528', '-79.9192702', '2012-02-11 08:43:44'),
+(197, 0, 'Lima', '-12.0452990', '-77.0311370', '2012-02-11 08:43:44'),
+(198, 0, 'Loreto', '-4.2324729', '-74.2179326', '2012-02-11 08:43:44'),
+(199, 0, 'Madre de Dios', '-11.7668705', '-70.8119953', '2012-02-11 08:43:44'),
+(200, 0, 'Moquegua', '-17.2000000', '-70.9333330', '2012-02-11 08:43:44'),
+(201, 0, 'Pasco', '-10.4475753', '-75.1545381', '2012-02-11 08:43:44'),
+(202, 0, 'Piura', '-5.2000000', '-80.6333330', '2012-02-11 08:43:44'),
+(203, 0, 'Puno', '-15.8375000', '-70.0216000', '2012-02-11 08:43:44'),
+(204, 0, 'San Martin', '-7.2444881', '-76.8259652', '2012-02-11 08:43:44'),
+(205, 0, 'Tacna', '-18.0555560', '-70.2483330', '2012-02-11 08:43:44'),
+(206, 0, 'Tumbes', '-3.5666670', '-80.4500000', '2012-02-11 08:43:44'),
+(207, 0, 'Ucayali', '-8.5918800', '-74.3664600', '2012-02-11 08:43:44'),
+(209, 0, 'GÃ¶taland', '57.4684121', '18.4867447', '2012-02-11 08:55:14'),
+(211, 0, 'Norrland', '65.3301780', '18.1933590', '2012-02-11 08:55:14'),
+(212, 0, 'Adrar', '19.8652176', '-12.8054753', '2012-02-11 09:00:14'),
+(213, 0, 'Assaba', '16.6000000', '-11.9166670', '2012-02-11 09:00:14'),
+(214, 0, 'BrÃ¢kna', '17.2317561', '-13.1740348', '2012-02-11 09:00:14'),
+(215, 0, 'Dakhlet Nouadhibou', '0.9500000', '-16.2333330', '2012-02-11 09:00:14'),
+(216, 0, 'Gorgol', '15.9717357', '-12.6216211', '2012-02-11 09:27:22'),
+(217, 0, 'Guidimaka', '15.3833330', '-12.3500000', '2012-02-11 09:27:22'),
+(218, 0, 'Hodh ech Chargui', '9.0000000', '-7.2500000', '2012-02-11 09:27:22'),
+(219, 0, 'Hodh el Gharbi', '6.5000000', '-10.0000000', '2012-02-11 09:27:22'),
+(220, 0, 'Inchiri', '20.0666670', '-15.0666670', '2012-02-11 09:27:22'),
+(221, 0, 'Nouakchott', '18.1000000', '-15.9500000', '2012-02-11 09:27:22'),
+(222, 0, 'Tagant', '18.7000000', '-10.2000000', '2012-02-11 09:27:22'),
+(223, 0, 'Tiris Zemmour', '4.0000000', '-9.0000000', '2012-02-11 09:27:22'),
+(224, 0, 'Trarza', '17.9833330', '-14.7333330', '2012-02-11 09:27:22'),
+(225, 0, 'Ariana', '36.8500000', '10.2000000', '2012-02-16 09:16:11'),
+(226, 0, 'BÃ©ja', '36.7250000', '9.1820000', '2012-02-16 09:16:11'),
+(227, 0, 'Ben Arous', '36.7400000', '10.2100000', '2012-02-16 09:16:11'),
+(228, 0, 'Bizerte', '37.2700000', '9.8700000', '2012-02-16 09:16:11'),
+(229, 0, 'GabÃ¨s', '33.8900000', '10.1100000', '2012-02-16 09:16:11'),
+(230, 0, 'Gafsa', '34.4166670', '8.7833330', '2012-02-16 09:16:11'),
+(231, 0, 'Jendouba', '36.4900000', '8.7800000', '2012-02-16 09:16:11'),
+(232, 0, 'Kairouan', '35.6700000', '10.0900000', '2012-02-16 09:16:11'),
+(233, 0, 'Kasserine', '35.1600000', '8.8300000', '2012-02-16 09:16:11'),
+(234, 0, 'KÃ©bili', '33.7050000', '8.9650000', '2012-02-16 09:16:11'),
+(235, 0, 'Kef', '36.1860000', '8.7000000', '2012-02-16 09:16:11'),
+(236, 0, 'Mahdia', '35.5000000', '11.0600000', '2012-02-16 09:16:11'),
+(237, 0, 'Manouba', '36.8071900', '10.1008100', '2012-02-16 09:16:11'),
+(238, 0, 'MÃ©denine', '33.3450000', '10.4900000', '2012-02-16 09:16:11'),
+(239, 0, 'Monastir', '35.7600000', '10.8100000', '2012-02-16 09:16:11'),
+(240, 0, 'Nabeul', '36.4500000', '10.7400000', '2012-02-16 09:16:11'),
+(241, 0, 'Sfax', '34.7400000', '10.7600000', '2012-02-16 09:16:11'),
+(242, 0, 'Sidi Bouzid', '5.0333330', '9.5000000', '2012-02-16 09:16:11'),
+(243, 0, 'Siliana', '36.0700000', '9.3600000', '2012-02-16 09:16:11'),
+(244, 0, 'Sousse', '35.8260000', '10.6400000', '2012-02-16 09:16:11'),
+(245, 0, 'Tataouine', '32.9278240', '10.4492430', '2012-02-16 09:16:11'),
+(246, 0, 'Tozeur', '33.9200000', '8.1400000', '2012-02-16 09:16:11'),
+(247, 0, 'Tunis', '36.7974500', '10.1657850', '2012-02-16 09:16:11'),
+(248, 0, 'Zaghouan', '36.4000000', '10.1500000', '2012-02-16 09:16:11'),
+(249, 0, 'Andorra', '40.9772220', '-0.4447220', '2012-02-16 09:20:29'),
+(250, 0, 'Reunion', '-21.1151410', '55.5363840', '2012-02-16 09:29:31'),
+(251, 0, 'Guadeloupe', '16.2650000', '-61.5510000', '2012-02-19 18:00:40'),
+(252, 0, 'Martinique', '14.6415280', '-61.0241740', '2012-02-19 18:00:40'),
+(253, 0, 'Guyane', '3.9338890', '-53.1257820', '2012-02-19 18:01:13'),
+(254, 0, 'Mayotte', '-12.8275000', '45.1662440', '2012-02-19 18:01:13'),
+(255, 0, 'Kayes', NULL, NULL, '2012-02-21 08:47:24'),
+(256, 0, 'Koulikoro', NULL, NULL, '2012-02-21 08:47:24'),
+(257, 0, 'Sikasso', NULL, NULL, '2012-02-21 08:47:24'),
+(258, 0, 'SÃ©gou', NULL, NULL, '2012-02-21 08:47:24'),
+(259, 0, 'Mopti', NULL, NULL, '2012-02-21 08:47:24'),
+(260, 0, 'Gao', NULL, NULL, '2012-02-21 08:47:24'),
+(261, 0, 'Tombouctou', NULL, NULL, '2012-02-21 08:47:24'),
+(262, 0, 'Kidal', NULL, NULL, '2012-02-21 08:47:24'),
+(263, 0, 'Hokkaido', NULL, NULL, '2012-02-21 09:11:07'),
+(264, 0, 'Tohoku', NULL, NULL, '2012-02-21 09:11:07'),
+(265, 0, 'Chubu', NULL, NULL, '2012-02-21 09:11:07'),
+(266, 0, 'Kanto', NULL, NULL, '2012-02-21 09:11:07'),
+(267, 0, 'Kansai', NULL, NULL, '2012-02-21 09:11:07'),
+(268, 0, 'Chugoku', NULL, NULL, '2012-02-21 09:11:07'),
+(269, 0, 'Shikoku', NULL, NULL, '2012-02-21 09:11:07'),
+(270, 0, 'Kyushu', NULL, NULL, '2012-02-21 09:11:07'),
+(271, 0, 'Alabama', NULL, NULL, '2012-02-24 11:34:42'),
+(272, 0, 'Alaska', NULL, NULL, '2012-02-24 11:34:42'),
+(273, 0, 'Arizona', NULL, NULL, '2012-02-24 11:34:42'),
+(274, 0, 'Arkansas', NULL, NULL, '2012-02-24 11:34:42'),
+(275, 0, 'Californie', NULL, NULL, '2012-02-24 11:34:42'),
+(276, 0, 'Caroline du Nord', NULL, NULL, '2012-02-24 11:34:42'),
+(277, 0, 'Caroline du Sud', NULL, NULL, '2012-02-24 11:34:42'),
+(278, 0, 'Colorado', NULL, NULL, '2012-02-24 11:34:42'),
+(279, 0, 'Connecticut', NULL, NULL, '2012-02-24 11:34:42'),
+(280, 0, 'Dakota du Nord', NULL, NULL, '2012-02-24 11:34:42'),
+(281, 0, 'Dakota du Sud', NULL, NULL, '2012-02-24 11:34:42'),
+(282, 0, 'Delaware', NULL, NULL, '2012-02-24 11:34:42'),
+(283, 0, 'Floride', NULL, NULL, '2012-02-24 11:34:42'),
+(284, 0, 'Georgie', NULL, NULL, '2012-02-24 11:34:42'),
+(285, 0, 'HawaÃ¯', NULL, NULL, '2012-02-24 11:34:42'),
+(286, 0, 'Idaho', NULL, NULL, '2012-02-24 11:34:42'),
+(287, 0, 'Illinois', NULL, NULL, '2012-02-24 11:34:42'),
+(288, 0, 'Indiana', NULL, NULL, '2012-02-24 11:34:42'),
+(289, 0, 'Iowa', NULL, NULL, '2012-02-24 11:34:42'),
+(290, 0, 'Kansas', NULL, NULL, '2012-02-24 11:34:42'),
+(291, 0, 'Kentucky', NULL, NULL, '2012-02-24 11:34:42'),
+(292, 0, 'Louisiane', NULL, NULL, '2012-02-24 11:34:42'),
+(293, 0, 'Maine', NULL, NULL, '2012-02-24 11:34:42'),
+(294, 0, 'Massachusetts', NULL, NULL, '2012-02-24 11:34:42'),
+(295, 0, 'Michigan', NULL, NULL, '2012-02-24 11:34:42'),
+(296, 0, 'Minnesota', NULL, NULL, '2012-02-24 11:34:42'),
+(297, 0, 'Mississippi', NULL, NULL, '2012-02-24 11:34:42'),
+(298, 0, 'Missouri', NULL, NULL, '2012-02-24 11:34:42'),
+(299, 0, 'Montana', NULL, NULL, '2012-02-24 11:34:42'),
+(300, 0, 'Nebraska', NULL, NULL, '2012-02-24 11:34:42'),
+(301, 0, 'Nevada', NULL, NULL, '2012-02-24 11:34:42'),
+(302, 0, 'New Hampshire', NULL, NULL, '2012-02-24 11:34:42'),
+(303, 0, 'New Jersey', NULL, NULL, '2012-02-24 11:34:42'),
+(304, 0, 'New York', NULL, NULL, '2012-02-24 11:34:42'),
+(305, 0, 'Nouveau Mexique', NULL, NULL, '2012-02-24 11:34:42'),
+(306, 0, 'Ohio', NULL, NULL, '2012-02-24 11:34:42'),
+(307, 0, 'Oklahoma', NULL, NULL, '2012-02-24 11:34:42'),
+(308, 0, 'Oregon', NULL, NULL, '2012-02-24 11:34:42'),
+(309, 0, 'Pennsylvanie', NULL, NULL, '2012-02-24 11:34:42'),
+(310, 0, 'Rhode Island', NULL, NULL, '2012-02-24 11:34:42'),
+(311, 0, 'Tenessee', NULL, NULL, '2012-02-24 11:34:42'),
+(312, 0, 'Texas', NULL, NULL, '2012-02-24 11:34:42'),
+(313, 0, 'Utah', NULL, NULL, '2012-02-24 11:34:42'),
+(314, 0, 'Vermont', NULL, NULL, '2012-02-24 11:34:42'),
+(315, 0, 'Virginie', NULL, NULL, '2012-02-24 11:34:42'),
+(316, 0, 'Virginie occidentale', NULL, NULL, '2012-02-24 11:34:42'),
+(317, 0, 'Washington', NULL, NULL, '2012-02-24 11:34:42'),
+(318, 0, 'Wisconsin', NULL, NULL, '2012-02-24 11:34:42'),
+(319, 0, 'Wyoming', NULL, NULL, '2012-02-24 11:34:42'),
+(320, 0, 'Western Cape', NULL, NULL, '2012-02-24 11:40:15'),
+(321, 0, 'Northern Cape', NULL, NULL, '2012-02-24 11:40:15'),
+(322, 0, 'Eastern Cape', NULL, NULL, '2012-02-24 11:40:15'),
+(323, 0, 'KwaZulu-Natal', NULL, NULL, '2012-02-24 11:40:15'),
+(324, 0, 'Free State', NULL, NULL, '2012-02-24 11:40:15'),
+(325, 0, 'North West', NULL, NULL, '2012-02-24 11:40:15'),
+(326, 0, 'Gauteng', NULL, NULL, '2012-02-24 11:40:15'),
+(327, 0, 'Mpumalanga', NULL, NULL, '2012-02-24 11:40:15'),
+(328, 0, 'Limpopo', NULL, NULL, '2012-02-24 11:40:15'),
+(329, 0, 'Dakar', NULL, NULL, '2012-02-27 10:24:13'),
+(330, 0, 'Diourbel', NULL, NULL, '2012-02-27 10:24:13'),
+(331, 0, 'Fatick', NULL, NULL, '2012-02-27 10:24:13'),
+(332, 0, 'Kaolack', NULL, NULL, '2012-02-27 10:24:13'),
+(333, 0, 'Kolda', NULL, NULL, '2012-02-27 10:24:13'),
+(334, 0, 'Louga', NULL, NULL, '2012-02-27 10:24:13'),
+(335, 0, 'Matam', NULL, NULL, '2012-02-27 10:24:13'),
+(336, 0, 'Saint Louis', NULL, NULL, '2012-02-27 10:24:13'),
+(337, 0, 'Tambacounda', NULL, NULL, '2012-02-27 10:24:13'),
+(338, 0, 'ThiÃ¨s', NULL, NULL, '2012-02-27 10:24:13'),
+(339, 0, 'Ziguinchor', NULL, NULL, '2012-02-27 10:24:13'),
+(340, 0, 'Al Bahah', NULL, NULL, '2012-02-27 10:28:45'),
+(341, 0, 'Al-Hudud ach-Chamaliya', NULL, NULL, '2012-02-27 10:28:45'),
+(342, 0, 'Al Jawf', NULL, NULL, '2012-02-27 10:28:45'),
+(343, 0, 'MÃ©dine', NULL, NULL, '2012-02-27 10:28:45'),
+(344, 0, 'Al Qasim', NULL, NULL, '2012-02-27 10:28:45'),
+(345, 0, 'HaÃ¯l', NULL, NULL, '2012-02-27 10:28:45'),
+(346, 0, 'Asir', NULL, NULL, '2012-02-27 10:28:45'),
+(347, 0, 'Ach-Charqiya', NULL, NULL, '2012-02-27 10:28:45'),
+(348, 0, 'Riyad', NULL, NULL, '2012-02-27 10:28:45'),
+(349, 0, 'Tabuk', NULL, NULL, '2012-02-27 10:28:45'),
+(350, 0, 'Najran', NULL, NULL, '2012-02-27 10:28:45'),
+(351, 0, 'La Mecque', NULL, NULL, '2012-02-27 10:28:45'),
+(352, 0, 'Jizan', NULL, NULL, '2012-02-27 10:28:45'),
+(354, 0, 'Grande plaine septentrionale', NULL, NULL, '2012-03-10 14:54:49'),
+(355, 0, 'Grande plaine mÃ©ridionale', NULL, NULL, '2012-03-10 14:54:49'),
+(356, 0, 'Hongrie centrale', NULL, NULL, '2012-03-10 14:54:49'),
+(357, 0, 'Hongrie septentrionale', NULL, NULL, '2012-03-10 14:54:49'),
+(358, 0, 'Transdanubie centrale', NULL, NULL, '2012-03-10 14:54:49'),
+(359, 0, 'Transdanubie occidentale', NULL, NULL, '2012-03-10 14:54:49'),
+(360, 0, 'Transdanubie mÃ©ridionale', NULL, NULL, '2012-03-10 14:54:49'),
+(361, 0, 'Bouenza', NULL, NULL, '2012-03-14 07:23:09'),
+(362, 0, 'Cuvette', NULL, NULL, '2012-03-14 07:23:09'),
+(363, 0, 'Cuvette Ouest', NULL, NULL, '2012-03-14 07:23:09'),
+(364, 0, 'Kouilou', NULL, NULL, '2012-03-14 07:23:09'),
+(365, 0, 'Lekoumou', NULL, NULL, '2012-03-14 07:23:09'),
+(366, 0, 'Likouala', NULL, NULL, '2012-03-14 07:23:09'),
+(367, 0, 'Niari', NULL, NULL, '2012-03-14 07:23:09'),
+(368, 0, 'Plateaux', NULL, NULL, '2012-03-14 07:23:09'),
+(369, 0, 'Pool', NULL, NULL, '2012-03-14 07:23:09'),
+(370, 0, 'Sangha', NULL, NULL, '2012-03-14 07:23:09');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL,
+  `login` varchar(50) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `salt` varchar(85) NOT NULL,
+  `identity` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `avatar` varchar(255) NOT NULL,
+  `language` varchar(3) NOT NULL,
+  `country_id` int(11) NOT NULL,
+  `region_id` int(11) NOT NULL,
+  `last_connected_at` datetime NOT NULL,
+  `created_at` datetime NOT NULL,
+  `is_enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `is_banned` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+
+--
+-- Index pour les tables exportées
+--
+
+--
+-- Index pour la table `abac_attributes`
+--
+ALTER TABLE `abac_attributes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `abac_attributes_data`
+--
+ALTER TABLE `abac_attributes_data`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `abac_environment_attributes`
+--
+ALTER TABLE `abac_environment_attributes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `abac_policy_rules`
+--
+ALTER TABLE `abac_policy_rules`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Index pour la table `abac_policy_rules_attributes`
+--
+ALTER TABLE `abac_policy_rules_attributes`
+  ADD KEY `policy_rule_id` (`policy_rule_id`,`attribute_id`),
+  ADD KEY `attributes` (`attribute_id`);
+
+--
+-- Index pour la table `citizen_groups`
+--
+ALTER TABLE `citizen_groups`
+  ADD KEY `Citizen_id` (`citizen_id`,`group_id`);
+
+--
+-- Index pour la table `countries`
+--
+ALTER TABLE `countries`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `groups`
+--
+ALTER TABLE `groups`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `group_type_index` (`type_id`);
+
+--
+-- Index pour la table `group_types`
+--
+ALTER TABLE `group_types`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `label` (`label`);
+
+--
+-- Index pour la table `logs`
+--
+ALTER TABLE `logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `level` (`level`),
+  ADD KEY `time` (`timelogs`);
+
+--
+-- Index pour la table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `recipient_index` (`recipient_id`),
+  ADD KEY `author_index` (`author_id`);
+
+--
+-- Index pour la table `motions`
+--
+ALTER TABLE `motions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `motion_themes`
+--
+ALTER TABLE `motion_themes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `regions`
+--
+ALTER TABLE `regions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT pour les tables exportées
+--
+
+--
+-- AUTO_INCREMENT pour la table `abac_attributes`
+--
+ALTER TABLE `abac_attributes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT pour la table `abac_attributes_data`
+--
+ALTER TABLE `abac_attributes_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT pour la table `abac_environment_attributes`
+--
+ALTER TABLE `abac_environment_attributes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `abac_policy_rules`
+--
+ALTER TABLE `abac_policy_rules`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT pour la table `countries`
+--
+ALTER TABLE `countries`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=239;
+--
+-- AUTO_INCREMENT pour la table `groups`
+--
+ALTER TABLE `groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=107;
+--
+-- AUTO_INCREMENT pour la table `group_types`
+--
+ALTER TABLE `group_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT pour la table `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT pour la table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT pour la table `motions`
+--
+ALTER TABLE `motions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=51;
+--
+-- AUTO_INCREMENT pour la table `motion_themes`
+--
+ALTER TABLE `motion_themes`
+  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT pour la table `regions`
+--
+ALTER TABLE `regions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=371;
+--
+-- AUTO_INCREMENT pour la table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
 --
 -- Contraintes pour les tables exportées
 --
@@ -115,4349 +1190,6 @@ ALTER TABLE `abac_environment_attributes`
 ALTER TABLE `abac_policy_rules_attributes`
   ADD CONSTRAINT `attributes` FOREIGN KEY (`attribute_id`) REFERENCES `abac_attributes_data` (`id`),
   ADD CONSTRAINT `policy_rules` FOREIGN KEY (`policy_rule_id`) REFERENCES `abac_policy_rules` (`id`);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `associations`
---
-
-CREATE TABLE IF NOT EXISTS `associations` (
-  `ID_Asso` bigint(11) NOT NULL AUTO_INCREMENT,
-  `Nom_Asso` varchar(250) NOT NULL,
-  `Description` varchar(1000) NOT NULL,
-  `Date_Creation` bigint(20) NOT NULL,
-  PRIMARY KEY (`ID_Asso`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `citizen_groups`
---
-
-CREATE TABLE IF NOT EXISTS `citizen_groups` (
-  `citizen_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  KEY `Citizen_id` (`citizen_id`,`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `countries`
---
-
-CREATE TABLE IF NOT EXISTS `countries` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` varchar(2) NOT NULL,
-  `label` varchar(25) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=239 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `groups`
---
-
-CREATE TABLE IF NOT EXISTS `groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type_id` int(11) NOT NULL,
-  `description` varchar(250) NOT NULL,
-  `name` varchar(65) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `contact_id` int(11) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `Creation` (`created_at`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=107 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `group_types`
---
-
-CREATE TABLE IF NOT EXISTS `group_types` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `label` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `journal`
---
-
-CREATE TABLE IF NOT EXISTS `journal` (
-  `IDLog` int(11) NOT NULL AUTO_INCREMENT,
-  `Type` int(3) NOT NULL,
-  `Description` varchar(1000) NOT NULL,
-  `Fichier` varchar(50) NOT NULL,
-  `Ligne` int(11) NOT NULL,
-  `Login` varchar(50) NOT NULL,
-  `Ip` varchar(15) NOT NULL,
-  `Navigateur` varchar(150) NOT NULL,
-  `Date` datetime NOT NULL,
-  PRIMARY KEY (`IDLog`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `liste_noire`
---
-
-CREATE TABLE IF NOT EXISTS `liste_noire` (
-  `ban_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `ban_user` varchar(250) COLLATE utf8_bin DEFAULT NULL,
-  `ban_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `ban_email` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `ban_start` int(11) unsigned NOT NULL DEFAULT '0',
-  `ban_end` int(11) unsigned NOT NULL DEFAULT '0',
-  `ban_exclude` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `ban_reason` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `ban_give_reason` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`ban_id`),
-  KEY `ban_end` (`ban_end`),
-  KEY `ban_user` (`ban_user`,`ban_exclude`),
-  KEY `ban_email` (`ban_email`,`ban_exclude`),
-  KEY `ban_ip` (`ban_ip`,`ban_exclude`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `logs`
---
-
-CREATE TABLE IF NOT EXISTS `logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `level` tinyint(4) NOT NULL,
-  `msg` varchar(2500) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `timelogs` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `level` (`level`),
-  KEY `time` (`timelogs`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `messages`
---
-
-CREATE TABLE IF NOT EXISTS `messages` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `content` text NOT NULL,
-  `author_id` int(11) NOT NULL,
-  `recipient_id` int(11) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `opened_at` datetime,
-  `deleted_by_author` tinyint(1) NOT NULL,
-  `deleted_by_recipient` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `recipient_index` (`recipient_id`),
-  KEY `author_index` (`author_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `messages_received`
---
-
-CREATE TABLE IF NOT EXISTS `messages_received` (
-  `id_receivedmessage` bigint(20) NOT NULL AUTO_INCREMENT,
-  `title` varchar(250) NOT NULL,
-  `content` varchar(5000) NOT NULL,
-  `author` bigint(11) NOT NULL,
-  `date_msg` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `recipient` bigint(11) NOT NULL,
-  PRIMARY KEY (`id_receivedmessage`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `messages_sent`
---
-
-CREATE TABLE IF NOT EXISTS `messages_sent` (
-  `id_sentmessage` bigint(20) NOT NULL AUTO_INCREMENT,
-  `title` varchar(250) NOT NULL,
-  `content` varchar(5000) NOT NULL,
-  `author` bigint(11) NOT NULL,
-  `date_msg` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `recipients` varchar(500) NOT NULL,
-  PRIMARY KEY (`id_sentmessage`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `motions`
---
-
-CREATE TABLE IF NOT EXISTS `motions` (
-  `Motion_id` int(11) NOT NULL AUTO_INCREMENT,
-  `Theme_id` int(11) NOT NULL,
-  `Title_key` varchar(255) NOT NULL,
-  `Description` text NOT NULL,
-  `Moyens` text,
-  `Submission_date` datetime NOT NULL,
-  `Date_fin_vote` datetime NOT NULL,
-  `Citizen_id` int(11) NOT NULL,
-  `Choix` text NOT NULL COMMENT 'listes des choix de vote (base64_encode)',
-  `Vote_status` tinyint(1) NOT NULL COMMENT '1 : vote ouvert; 0 : vote fermÃ©',
-  `Resultat_vote` tinyint(1) DEFAULT NULL COMMENT '1: acceptÃ©e; 0: refusÃ©e',
-  `Score` text COMMENT 'score du vote (base64_encode)',
-  PRIMARY KEY (`Motion_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=50 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `motions_themes`
---
-
-CREATE TABLE IF NOT EXISTS `motions_themes` (
-  `Theme_id` int(11) NOT NULL AUTO_INCREMENT,
-  `Label_key` varchar(255) NOT NULL,
-  `Duree` smallint(6) NOT NULL DEFAULT '8' COMMENT 'en jour',
-  PRIMARY KEY (`Theme_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `motions_votes`
---
-
-CREATE TABLE IF NOT EXISTS `motions_votes` (
-  `Motions_Votes_id` int(11) NOT NULL AUTO_INCREMENT,
-  `Motion_id` int(11) NOT NULL,
-  `Choix` int(11) NOT NULL,
-  `Hash` varchar(129) NOT NULL,
-  PRIMARY KEY (`Motions_Votes_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3673 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `motions_votes_jetons`
---
-
-CREATE TABLE IF NOT EXISTS `motions_votes_jetons` (
-  `Motions_Votes_Jetons_id` int(11) NOT NULL AUTO_INCREMENT,
-  `Motion_id` int(11) NOT NULL,
-  `Citizen_id` int(11) NOT NULL,
-  `Date` datetime NOT NULL,
-  `Ip` text NOT NULL,
-  `Navigateur` varchar(150) NOT NULL,
-  PRIMARY KEY (`Motions_Votes_Jetons_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3673 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_acl_groups`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_acl_groups` (
-  `group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `auth_role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `auth_setting` tinyint(2) NOT NULL DEFAULT '0',
-  KEY `group_id` (`group_id`),
-  KEY `auth_opt_id` (`auth_option_id`),
-  KEY `auth_role_id` (`auth_role_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_acl_options`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_acl_options` (
-  `auth_option_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `auth_option` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `is_global` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `is_local` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `founder_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`auth_option_id`),
-  UNIQUE KEY `auth_option` (`auth_option`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=118 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_acl_roles`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_acl_roles` (
-  `role_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `role_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `role_description` text COLLATE utf8_bin NOT NULL,
-  `role_type` varchar(10) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `role_order` smallint(4) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`role_id`),
-  KEY `role_type` (`role_type`),
-  KEY `role_order` (`role_order`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=25 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_acl_roles_data`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_acl_roles_data` (
-  `role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `auth_setting` tinyint(2) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`role_id`,`auth_option_id`),
-  KEY `ath_op_id` (`auth_option_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_acl_users`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_acl_users` (
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `auth_role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `auth_setting` tinyint(2) NOT NULL DEFAULT '0',
-  KEY `user_id` (`user_id`),
-  KEY `auth_option_id` (`auth_option_id`),
-  KEY `auth_role_id` (`auth_role_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_attachments`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_attachments` (
-  `attach_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `post_msg_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `in_message` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `poster_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `is_orphan` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `physical_filename` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `real_filename` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `download_count` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `attach_comment` text COLLATE utf8_bin NOT NULL,
-  `extension` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `mimetype` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `filesize` int(20) unsigned NOT NULL DEFAULT '0',
-  `filetime` int(11) unsigned NOT NULL DEFAULT '0',
-  `thumbnail` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`attach_id`),
-  KEY `filetime` (`filetime`),
-  KEY `post_msg_id` (`post_msg_id`),
-  KEY `topic_id` (`topic_id`),
-  KEY `poster_id` (`poster_id`),
-  KEY `is_orphan` (`is_orphan`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=201 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_banlist`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_banlist` (
-  `ban_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `ban_userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `ban_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `ban_email` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `ban_start` int(11) unsigned NOT NULL DEFAULT '0',
-  `ban_end` int(11) unsigned NOT NULL DEFAULT '0',
-  `ban_exclude` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `ban_reason` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `ban_give_reason` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`ban_id`),
-  KEY `ban_end` (`ban_end`),
-  KEY `ban_user` (`ban_userid`,`ban_exclude`),
-  KEY `ban_email` (`ban_email`,`ban_exclude`),
-  KEY `ban_ip` (`ban_ip`,`ban_exclude`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_bbcodes`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_bbcodes` (
-  `bbcode_id` tinyint(3) NOT NULL DEFAULT '0',
-  `bbcode_tag` varchar(16) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `bbcode_helpline` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `display_on_posting` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `bbcode_match` text COLLATE utf8_bin NOT NULL,
-  `bbcode_tpl` mediumtext COLLATE utf8_bin NOT NULL,
-  `first_pass_match` mediumtext COLLATE utf8_bin NOT NULL,
-  `first_pass_replace` mediumtext COLLATE utf8_bin NOT NULL,
-  `second_pass_match` mediumtext COLLATE utf8_bin NOT NULL,
-  `second_pass_replace` mediumtext COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`bbcode_id`),
-  KEY `display_on_post` (`display_on_posting`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_bookmarks`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_bookmarks` (
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`topic_id`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_bots`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_bots` (
-  `bot_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `bot_active` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `bot_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `bot_agent` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `bot_ip` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`bot_id`),
-  KEY `bot_active` (`bot_active`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=52 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_config`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_config` (
-  `config_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `config_value` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `is_dynamic` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`config_name`),
-  KEY `is_dynamic` (`is_dynamic`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_confirm`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_confirm` (
-  `confirm_id` char(32) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `session_id` char(32) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `confirm_type` tinyint(3) NOT NULL DEFAULT '0',
-  `code` varchar(8) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `seed` int(10) unsigned NOT NULL DEFAULT '0',
-  `attempts` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`session_id`,`confirm_id`),
-  KEY `confirm_type` (`confirm_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_disallow`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_disallow` (
-  `disallow_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `disallow_username` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`disallow_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_drafts`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_drafts` (
-  `draft_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `save_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `draft_subject` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `draft_message` mediumtext COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`draft_id`),
-  KEY `save_time` (`save_time`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=48 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_extensions`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_extensions` (
-  `extension_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `extension` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`extension_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=67 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_extension_groups`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_extension_groups` (
-  `group_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `group_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `cat_id` tinyint(2) NOT NULL DEFAULT '0',
-  `allow_group` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `download_mode` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `upload_icon` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `max_filesize` int(20) unsigned NOT NULL DEFAULT '0',
-  `allowed_forums` text COLLATE utf8_bin NOT NULL,
-  `allow_in_pm` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=10 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_forums`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_forums` (
-  `forum_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `parent_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `left_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `right_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_parents` mediumtext COLLATE utf8_bin NOT NULL,
-  `forum_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_desc` text COLLATE utf8_bin NOT NULL,
-  `forum_desc_bitfield` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_desc_options` int(11) unsigned NOT NULL DEFAULT '7',
-  `forum_desc_uid` varchar(8) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_link` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_password` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_style` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_image` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_rules` text COLLATE utf8_bin NOT NULL,
-  `forum_rules_link` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_rules_bitfield` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_rules_options` int(11) unsigned NOT NULL DEFAULT '7',
-  `forum_rules_uid` varchar(8) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_topics_per_page` tinyint(4) NOT NULL DEFAULT '0',
-  `forum_type` tinyint(4) NOT NULL DEFAULT '0',
-  `forum_status` tinyint(4) NOT NULL DEFAULT '0',
-  `forum_posts` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_topics` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_topics_real` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_last_post_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_last_poster_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_last_post_subject` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_last_post_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `forum_last_poster_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_last_poster_colour` varchar(6) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `forum_flags` tinyint(4) NOT NULL DEFAULT '32',
-  `forum_options` int(20) unsigned NOT NULL DEFAULT '0',
-  `display_subforum_list` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `display_on_index` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `enable_indexing` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `enable_icons` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `enable_prune` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `prune_next` int(11) unsigned NOT NULL DEFAULT '0',
-  `prune_days` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `prune_viewed` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `prune_freq` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`forum_id`),
-  KEY `left_right_id` (`left_id`,`right_id`),
-  KEY `forum_lastpost_id` (`forum_last_post_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=236 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_forums_access`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_forums_access` (
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `session_id` char(32) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`forum_id`,`user_id`,`session_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_forums_track`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_forums_track` (
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `mark_time` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`,`forum_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_forums_watch`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_forums_watch` (
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `notify_status` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  KEY `forum_id` (`forum_id`),
-  KEY `user_id` (`user_id`),
-  KEY `notify_stat` (`notify_status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_groups`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_groups` (
-  `group_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `group_type` tinyint(4) NOT NULL DEFAULT '1',
-  `group_founder_manage` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `group_skip_auth` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `group_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `group_desc` text COLLATE utf8_bin NOT NULL,
-  `group_desc_bitfield` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `group_desc_options` int(11) unsigned NOT NULL DEFAULT '7',
-  `group_desc_uid` varchar(8) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `group_display` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `group_avatar` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `group_avatar_type` tinyint(2) NOT NULL DEFAULT '0',
-  `group_avatar_width` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `group_avatar_height` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `group_rank` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `group_colour` varchar(6) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `group_sig_chars` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `group_receive_pm` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `group_message_limit` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `group_max_recipients` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `group_legend` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`group_id`),
-  KEY `group_legend_name` (`group_legend`,`group_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=22 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_icons`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_icons` (
-  `icons_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `icons_url` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `icons_width` tinyint(4) NOT NULL DEFAULT '0',
-  `icons_height` tinyint(4) NOT NULL DEFAULT '0',
-  `icons_order` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `display_on_posting` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`icons_id`),
-  KEY `display_on_posting` (`display_on_posting`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_lang`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_lang` (
-  `lang_id` tinyint(4) NOT NULL AUTO_INCREMENT,
-  `lang_iso` varchar(30) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `lang_dir` varchar(30) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `lang_english_name` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `lang_local_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `lang_author` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`lang_id`),
-  KEY `lang_iso` (`lang_iso`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_log`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_log` (
-  `log_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `log_type` tinyint(4) NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `reportee_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `log_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `log_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `log_operation` text COLLATE utf8_bin NOT NULL,
-  `log_data` mediumtext COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`log_id`),
-  KEY `log_type` (`log_type`),
-  KEY `forum_id` (`forum_id`),
-  KEY `topic_id` (`topic_id`),
-  KEY `reportee_id` (`reportee_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_moderator_cache`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_moderator_cache` (
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `username` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `group_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `display_on_index` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  KEY `disp_idx` (`display_on_index`),
-  KEY `forum_id` (`forum_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_modules`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_modules` (
-  `module_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `module_enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `module_display` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `module_basename` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `module_class` varchar(10) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `parent_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `left_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `right_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `module_langname` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `module_mode` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `module_auth` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`module_id`),
-  KEY `left_right_id` (`left_id`,`right_id`),
-  KEY `module_enabled` (`module_enabled`),
-  KEY `class_left_id` (`module_class`,`left_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=199 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_poll_options`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_poll_options` (
-  `poll_option_id` tinyint(4) NOT NULL DEFAULT '0',
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `poll_option_text` text COLLATE utf8_bin NOT NULL,
-  `poll_option_total` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  KEY `poll_opt_id` (`poll_option_id`),
-  KEY `topic_id` (`topic_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_poll_votes`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_poll_votes` (
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `poll_option_id` tinyint(4) NOT NULL DEFAULT '0',
-  `vote_user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `vote_user_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  KEY `topic_id` (`topic_id`),
-  KEY `vote_user_id` (`vote_user_id`),
-  KEY `vote_user_ip` (`vote_user_ip`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_posts`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_posts` (
-  `post_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `poster_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `icon_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `poster_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `post_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `post_approved` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `post_reported` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `enable_bbcode` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `enable_smilies` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `enable_magic_url` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `enable_sig` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `post_username` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `post_subject` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `post_text` mediumtext COLLATE utf8_bin NOT NULL,
-  `post_checksum` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `post_attachment` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `bbcode_bitfield` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `bbcode_uid` varchar(8) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `post_postcount` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `post_edit_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `post_edit_reason` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `post_edit_user` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `post_edit_count` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `post_edit_locked` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`post_id`),
-  KEY `forum_id` (`forum_id`),
-  KEY `topic_id` (`topic_id`),
-  KEY `poster_ip` (`poster_ip`),
-  KEY `poster_id` (`poster_id`),
-  KEY `post_approved` (`post_approved`),
-  KEY `post_username` (`post_username`),
-  KEY `tid_post_time` (`topic_id`,`post_time`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=20491 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_privmsgs`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_privmsgs` (
-  `msg_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `root_level` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `author_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `icon_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `author_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `message_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `enable_bbcode` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `enable_smilies` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `enable_magic_url` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `enable_sig` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `message_subject` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `message_text` mediumtext COLLATE utf8_bin NOT NULL,
-  `message_edit_reason` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `message_edit_user` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `message_attachment` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `bbcode_bitfield` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `bbcode_uid` varchar(8) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `message_edit_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `message_edit_count` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `to_address` text COLLATE utf8_bin NOT NULL,
-  `bcc_address` text COLLATE utf8_bin NOT NULL,
-  `message_reported` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`msg_id`),
-  KEY `author_ip` (`author_ip`),
-  KEY `message_time` (`message_time`),
-  KEY `author_id` (`author_id`),
-  KEY `root_level` (`root_level`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_privmsgs_folder`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_privmsgs_folder` (
-  `folder_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `folder_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `pm_count` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`folder_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_privmsgs_rules`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_privmsgs_rules` (
-  `rule_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `rule_check` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `rule_connection` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `rule_string` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `rule_user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `rule_group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `rule_action` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `rule_folder_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`rule_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_privmsgs_to`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_privmsgs_to` (
-  `msg_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `author_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `pm_deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `pm_new` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `pm_unread` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `pm_replied` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `pm_marked` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `pm_forwarded` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `folder_id` int(11) NOT NULL DEFAULT '0',
-  KEY `msg_id` (`msg_id`),
-  KEY `author_id` (`author_id`),
-  KEY `usr_flder_id` (`user_id`,`folder_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_profile_fields`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_profile_fields` (
-  `field_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `field_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `field_type` tinyint(4) NOT NULL DEFAULT '0',
-  `field_ident` varchar(20) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `field_length` varchar(20) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `field_minlen` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `field_maxlen` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `field_novalue` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `field_default_value` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `field_validation` varchar(20) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `field_required` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `field_show_on_reg` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `field_show_on_vt` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `field_show_profile` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `field_hide` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `field_no_view` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `field_active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `field_order` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`field_id`),
-  KEY `fld_type` (`field_type`),
-  KEY `fld_ordr` (`field_order`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_profile_fields_data`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_profile_fields_data` (
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_profile_fields_lang`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_profile_fields_lang` (
-  `field_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `lang_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `field_type` tinyint(4) NOT NULL DEFAULT '0',
-  `lang_value` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`field_id`,`lang_id`,`option_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_profile_lang`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_profile_lang` (
-  `field_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `lang_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `lang_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `lang_explain` text COLLATE utf8_bin NOT NULL,
-  `lang_default_value` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`field_id`,`lang_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_ranks`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_ranks` (
-  `rank_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `rank_title` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `rank_min` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `rank_special` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `rank_image` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`rank_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_reports`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_reports` (
-  `report_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `reason_id` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `post_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `pm_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_notify` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `report_closed` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `report_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `report_text` mediumtext COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`report_id`),
-  KEY `post_id` (`post_id`),
-  KEY `pm_id` (`pm_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=25 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_reports_reasons`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_reports_reasons` (
-  `reason_id` smallint(4) unsigned NOT NULL AUTO_INCREMENT,
-  `reason_title` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `reason_description` mediumtext COLLATE utf8_bin NOT NULL,
-  `reason_order` smallint(4) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`reason_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_search_results`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_search_results` (
-  `search_key` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `search_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `search_keywords` mediumtext COLLATE utf8_bin NOT NULL,
-  `search_authors` mediumtext COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`search_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_search_wordlist`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_search_wordlist` (
-  `word_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `word_text` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `word_common` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `word_count` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`word_id`),
-  UNIQUE KEY `wrd_txt` (`word_text`),
-  KEY `wrd_cnt` (`word_count`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=68674 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_search_wordmatch`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_search_wordmatch` (
-  `post_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `word_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `title_match` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  UNIQUE KEY `unq_mtch` (`word_id`,`post_id`,`title_match`),
-  KEY `word_id` (`word_id`),
-  KEY `post_id` (`post_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_sessions`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_sessions` (
-  `session_id` char(32) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `session_user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `session_forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `session_last_visit` int(11) unsigned NOT NULL DEFAULT '0',
-  `session_start` int(11) unsigned NOT NULL DEFAULT '0',
-  `session_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `session_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `session_browser` varchar(150) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `session_forwarded_for` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `session_page` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `session_viewonline` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `session_autologin` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `session_admin` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`session_id`),
-  KEY `session_time` (`session_time`),
-  KEY `session_user_id` (`session_user_id`),
-  KEY `session_fid` (`session_forum_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_sessions_keys`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_sessions_keys` (
-  `key_id` char(32) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `last_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `last_login` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`key_id`,`user_id`),
-  KEY `last_login` (`last_login`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_sitelist`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_sitelist` (
-  `site_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `site_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `site_hostname` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `ip_exclude` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`site_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_smilies`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_smilies` (
-  `smiley_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `emotion` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `smiley_url` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `smiley_width` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `smiley_height` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `smiley_order` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `display_on_posting` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`smiley_id`),
-  KEY `display_on_post` (`display_on_posting`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=43 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_styles`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_styles` (
-  `style_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `style_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `style_copyright` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `style_active` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `theme_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `imageset_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`style_id`),
-  UNIQUE KEY `style_name` (`style_name`),
-  KEY `template_id` (`template_id`),
-  KEY `theme_id` (`theme_id`),
-  KEY `imageset_id` (`imageset_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_styles_imageset`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_styles_imageset` (
-  `imageset_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `imageset_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `imageset_copyright` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `imageset_path` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`imageset_id`),
-  UNIQUE KEY `imgset_nm` (`imageset_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_styles_imageset_data`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_styles_imageset_data` (
-  `image_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `image_name` varchar(200) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `image_filename` varchar(200) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `image_lang` varchar(30) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `image_height` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `image_width` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `imageset_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`image_id`),
-  KEY `i_d` (`imageset_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=351 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_styles_template`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_styles_template` (
-  `template_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `template_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `template_copyright` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `template_path` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `bbcode_bitfield` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT 'kNg=',
-  `template_storedb` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `template_inherits_id` int(4) unsigned NOT NULL DEFAULT '0',
-  `template_inherit_path` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`template_id`),
-  UNIQUE KEY `tmplte_nm` (`template_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_styles_template_data`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_styles_template_data` (
-  `template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `template_filename` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `template_included` text COLLATE utf8_bin NOT NULL,
-  `template_mtime` int(11) unsigned NOT NULL DEFAULT '0',
-  `template_data` mediumtext COLLATE utf8_bin NOT NULL,
-  KEY `tid` (`template_id`),
-  KEY `tfn` (`template_filename`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_styles_theme`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_styles_theme` (
-  `theme_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `theme_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `theme_copyright` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `theme_path` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `theme_storedb` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `theme_mtime` int(11) unsigned NOT NULL DEFAULT '0',
-  `theme_data` mediumtext COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`theme_id`),
-  UNIQUE KEY `theme_name` (`theme_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_topics`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_topics` (
-  `topic_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `icon_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_attachment` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `topic_approved` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `topic_reported` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `topic_title` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `topic_poster` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `topic_time_limit` int(11) unsigned NOT NULL DEFAULT '0',
-  `topic_views` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_replies` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_replies_real` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_status` tinyint(3) NOT NULL DEFAULT '0',
-  `topic_type` tinyint(3) NOT NULL DEFAULT '0',
-  `topic_first_post_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_first_poster_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `topic_first_poster_colour` varchar(6) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `topic_last_post_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_last_poster_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_last_poster_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `topic_last_poster_colour` varchar(6) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `topic_last_post_subject` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `topic_last_post_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `topic_last_view_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `topic_moved_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_bumped` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `topic_bumper` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `poll_title` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `poll_start` int(11) unsigned NOT NULL DEFAULT '0',
-  `poll_length` int(11) unsigned NOT NULL DEFAULT '0',
-  `poll_max_options` tinyint(4) NOT NULL DEFAULT '1',
-  `poll_last_vote` int(11) unsigned NOT NULL DEFAULT '0',
-  `poll_vote_change` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`topic_id`),
-  KEY `forum_id` (`forum_id`),
-  KEY `forum_id_type` (`forum_id`,`topic_type`),
-  KEY `last_post_time` (`topic_last_post_time`),
-  KEY `topic_approved` (`topic_approved`),
-  KEY `forum_appr_last` (`forum_id`,`topic_approved`,`topic_last_post_id`),
-  KEY `fid_time_moved` (`forum_id`,`topic_last_post_time`,`topic_moved_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1949 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_topics_posted`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_topics_posted` (
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_posted` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`,`topic_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_topics_track`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_topics_track` (
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `mark_time` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`,`topic_id`),
-  KEY `topic_id` (`topic_id`),
-  KEY `forum_id` (`forum_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_topics_watch`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_topics_watch` (
-  `topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `notify_status` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  KEY `topic_id` (`topic_id`),
-  KEY `user_id` (`user_id`),
-  KEY `notify_stat` (`notify_status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_users`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_users` (
-  `user_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `user_type` tinyint(2) NOT NULL DEFAULT '0',
-  `group_id` mediumint(8) unsigned NOT NULL DEFAULT '3',
-  `user_permissions` mediumtext COLLATE utf8_bin NOT NULL,
-  `user_perm_from` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_ip` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_regdate` int(11) unsigned NOT NULL DEFAULT '0',
-  `username` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `username_clean` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_password` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_passchg` int(11) unsigned NOT NULL DEFAULT '0',
-  `user_pass_convert` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `user_email` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_email_hash` bigint(20) NOT NULL DEFAULT '0',
-  `user_birthday` varchar(10) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_lastvisit` int(11) unsigned NOT NULL DEFAULT '0',
-  `user_lastmark` int(11) unsigned NOT NULL DEFAULT '0',
-  `user_lastpost_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `user_lastpage` varchar(200) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_last_confirm_key` varchar(10) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_last_search` int(11) unsigned NOT NULL DEFAULT '0',
-  `user_warnings` tinyint(4) NOT NULL DEFAULT '0',
-  `user_last_warning` int(11) unsigned NOT NULL DEFAULT '0',
-  `user_login_attempts` tinyint(4) NOT NULL DEFAULT '0',
-  `user_inactive_reason` tinyint(2) NOT NULL DEFAULT '0',
-  `user_inactive_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `user_posts` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_lang` varchar(30) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_timezone` decimal(5,2) NOT NULL DEFAULT '0.00',
-  `user_dst` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `user_dateformat` varchar(30) COLLATE utf8_bin NOT NULL DEFAULT 'd M Y H:i',
-  `user_style` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_rank` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_colour` varchar(6) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_new_privmsg` int(4) NOT NULL DEFAULT '0',
-  `user_unread_privmsg` int(4) NOT NULL DEFAULT '0',
-  `user_last_privmsg` int(11) unsigned NOT NULL DEFAULT '0',
-  `user_message_rules` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `user_full_folder` int(11) NOT NULL DEFAULT '-3',
-  `user_emailtime` int(11) unsigned NOT NULL DEFAULT '0',
-  `user_topic_show_days` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `user_topic_sortby_type` varchar(1) COLLATE utf8_bin NOT NULL DEFAULT 't',
-  `user_topic_sortby_dir` varchar(1) COLLATE utf8_bin NOT NULL DEFAULT 'd',
-  `user_post_show_days` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `user_post_sortby_type` varchar(1) COLLATE utf8_bin NOT NULL DEFAULT 't',
-  `user_post_sortby_dir` varchar(1) COLLATE utf8_bin NOT NULL DEFAULT 'a',
-  `user_notify` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `user_notify_pm` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `user_notify_type` tinyint(4) NOT NULL DEFAULT '0',
-  `user_allow_pm` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `user_allow_viewonline` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `user_allow_viewemail` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `user_allow_massemail` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `user_options` int(11) unsigned NOT NULL DEFAULT '230271',
-  `user_avatar` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_avatar_type` tinyint(2) NOT NULL DEFAULT '0',
-  `user_avatar_width` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `user_avatar_height` smallint(4) unsigned NOT NULL DEFAULT '0',
-  `user_sig` mediumtext COLLATE utf8_bin NOT NULL,
-  `user_sig_bbcode_uid` varchar(8) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_sig_bbcode_bitfield` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_from` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_icq` varchar(15) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_aim` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_yim` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_msnm` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_jabber` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_website` varchar(200) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_occ` text COLLATE utf8_bin NOT NULL,
-  `user_interests` text COLLATE utf8_bin NOT NULL,
-  `user_actkey` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_newpasswd` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_form_salt` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `user_new` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `user_reminded` tinyint(4) NOT NULL DEFAULT '0',
-  `user_reminded_time` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`),
-  UNIQUE KEY `username_clean` (`username_clean`),
-  KEY `user_birthday` (`user_birthday`),
-  KEY `user_email_hash` (`user_email_hash`),
-  KEY `user_type` (`user_type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6566 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_user_group`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_user_group` (
-  `group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `group_leader` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `user_pending` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  KEY `group_id` (`group_id`),
-  KEY `user_id` (`user_id`),
-  KEY `group_leader` (`group_leader`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_warnings`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_warnings` (
-  `warning_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `post_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `log_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `warning_time` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`warning_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_words`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_words` (
-  `word_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `word` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  `replacement` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-  PRIMARY KEY (`word_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `phpbb_zebra`
---
-
-CREATE TABLE IF NOT EXISTS `phpbb_zebra` (
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `zebra_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `friend` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `foe` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`,`zebra_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `recovery`
---
-
-CREATE TABLE IF NOT EXISTS `recovery` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `login` varchar(30) NOT NULL,
-  `code` int(11) NOT NULL,
-  `daterecovery` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `code` (`code`),
-  UNIQUE KEY `login` (`login`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Shpouik !' AUTO_INCREMENT=185 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `regions`
---
-
-CREATE TABLE IF NOT EXISTS `regions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `country_id` int(4) NOT NULL,
-  `name` varchar(180) NOT NULL,
-  `longitude` decimal(10,7) DEFAULT NULL,
-  `latitude` decimal(10,7) DEFAULT NULL,
-  `created_at` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `country_index` (`country_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=371 ;
-
---
--- Contraintes pour la table `regions`
---
-ALTER TABLE `regions`
-  ADD CONSTRAINT `country_foreign_key` FOREIGN KEY (`country_id`) REFERENCES `countries` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_access`
---
-
-CREATE TABLE IF NOT EXISTS `shop_access` (
-  `id_profile` int(10) unsigned NOT NULL,
-  `id_tab` int(10) unsigned NOT NULL,
-  `view` int(11) NOT NULL,
-  `add` int(11) NOT NULL,
-  `edit` int(11) NOT NULL,
-  `delete` int(11) NOT NULL,
-  PRIMARY KEY (`id_profile`,`id_tab`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_accessory`
---
-
-CREATE TABLE IF NOT EXISTS `shop_accessory` (
-  `id_product_1` int(10) unsigned NOT NULL,
-  `id_product_2` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_product_1`,`id_product_2`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_address`
---
-
-CREATE TABLE IF NOT EXISTS `shop_address` (
-  `id_address` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_country` int(10) unsigned NOT NULL,
-  `id_state` int(10) unsigned DEFAULT NULL,
-  `id_customer` int(10) unsigned NOT NULL DEFAULT '0',
-  `id_manufacturer` int(10) unsigned NOT NULL DEFAULT '0',
-  `id_supplier` int(10) unsigned NOT NULL DEFAULT '0',
-  `alias` varchar(32) NOT NULL,
-  `company` varchar(32) DEFAULT NULL,
-  `lastname` varchar(32) NOT NULL,
-  `firstname` varchar(32) NOT NULL,
-  `address1` varchar(128) NOT NULL,
-  `address2` varchar(128) DEFAULT NULL,
-  `postcode` varchar(12) DEFAULT NULL,
-  `city` varchar(64) NOT NULL,
-  `other` text,
-  `phone` varchar(16) DEFAULT NULL,
-  `phone_mobile` varchar(16) DEFAULT NULL,
-  `vat_number` varchar(32) DEFAULT NULL,
-  `dni` varchar(16) DEFAULT NULL,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_address`),
-  KEY `address_customer` (`id_customer`),
-  KEY `id_country` (`id_country`),
-  KEY `id_state` (`id_state`),
-  KEY `id_manufacturer` (`id_manufacturer`),
-  KEY `id_supplier` (`id_supplier`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_address_format`
---
-
-CREATE TABLE IF NOT EXISTS `shop_address_format` (
-  `id_country` int(10) unsigned NOT NULL,
-  `format` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id_country`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_alias`
---
-
-CREATE TABLE IF NOT EXISTS `shop_alias` (
-  `id_alias` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `alias` varchar(255) NOT NULL,
-  `search` varchar(255) NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_alias`),
-  UNIQUE KEY `alias` (`alias`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_attachment`
---
-
-CREATE TABLE IF NOT EXISTS `shop_attachment` (
-  `id_attachment` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `file` varchar(40) NOT NULL,
-  `file_name` varchar(128) NOT NULL,
-  `mime` varchar(128) NOT NULL,
-  PRIMARY KEY (`id_attachment`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_attachment_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_attachment_lang` (
-  `id_attachment` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(32) DEFAULT NULL,
-  `description` text,
-  PRIMARY KEY (`id_attachment`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_attribute`
---
-
-CREATE TABLE IF NOT EXISTS `shop_attribute` (
-  `id_attribute` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_attribute_group` int(10) unsigned NOT NULL,
-  `color` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`id_attribute`),
-  KEY `attribute_group` (`id_attribute_group`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_attribute_group`
---
-
-CREATE TABLE IF NOT EXISTS `shop_attribute_group` (
-  `id_attribute_group` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `is_color_group` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_attribute_group`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_attribute_group_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_attribute_group_lang` (
-  `id_attribute_group` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(128) NOT NULL,
-  `public_name` varchar(64) NOT NULL,
-  PRIMARY KEY (`id_attribute_group`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_attribute_impact`
---
-
-CREATE TABLE IF NOT EXISTS `shop_attribute_impact` (
-  `id_attribute_impact` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_product` int(11) unsigned NOT NULL,
-  `id_attribute` int(11) unsigned NOT NULL,
-  `weight` float NOT NULL,
-  `price` decimal(17,2) NOT NULL,
-  PRIMARY KEY (`id_attribute_impact`),
-  UNIQUE KEY `id_product` (`id_product`,`id_attribute`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_attribute_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_attribute_lang` (
-  `id_attribute` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(128) NOT NULL,
-  PRIMARY KEY (`id_attribute`,`id_lang`),
-  KEY `id_lang` (`id_lang`,`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_carrier`
---
-
-CREATE TABLE IF NOT EXISTS `shop_carrier` (
-  `id_carrier` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_tax_rules_group` int(10) unsigned DEFAULT '0',
-  `name` varchar(64) NOT NULL,
-  `url` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `shipping_handling` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `range_behavior` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `is_module` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `is_free` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `shipping_external` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `need_range` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `external_module_name` varchar(64) DEFAULT NULL,
-  `shipping_method` int(2) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_carrier`),
-  KEY `deleted` (`deleted`,`active`),
-  KEY `id_tax_rules_group` (`id_tax_rules_group`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_carrier_group`
---
-
-CREATE TABLE IF NOT EXISTS `shop_carrier_group` (
-  `id_carrier` int(10) unsigned NOT NULL,
-  `id_group` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_carrier`,`id_group`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_carrier_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_carrier_lang` (
-  `id_carrier` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `delay` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`id_carrier`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_carrier_zone`
---
-
-CREATE TABLE IF NOT EXISTS `shop_carrier_zone` (
-  `id_carrier` int(10) unsigned NOT NULL,
-  `id_zone` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_carrier`,`id_zone`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cart`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cart` (
-  `id_cart` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_carrier` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `id_address_delivery` int(10) unsigned NOT NULL,
-  `id_address_invoice` int(10) unsigned NOT NULL,
-  `id_currency` int(10) unsigned NOT NULL,
-  `id_customer` int(10) unsigned NOT NULL,
-  `id_guest` int(10) unsigned NOT NULL,
-  `secure_key` varchar(32) NOT NULL DEFAULT '-1',
-  `recyclable` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `gift` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `gift_message` text,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_cart`),
-  KEY `cart_customer` (`id_customer`),
-  KEY `id_address_delivery` (`id_address_delivery`),
-  KEY `id_address_invoice` (`id_address_invoice`),
-  KEY `id_carrier` (`id_carrier`),
-  KEY `id_lang` (`id_lang`),
-  KEY `id_currency` (`id_currency`),
-  KEY `id_guest` (`id_guest`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cart_discount`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cart_discount` (
-  `id_cart` int(10) unsigned NOT NULL,
-  `id_discount` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_cart`,`id_discount`),
-  KEY `id_discount` (`id_discount`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cart_product`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cart_product` (
-  `id_cart` int(10) unsigned NOT NULL,
-  `id_product` int(10) unsigned NOT NULL,
-  `id_product_attribute` int(10) unsigned NOT NULL DEFAULT '0',
-  `quantity` int(10) unsigned NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_cart`,`id_product`,`id_product_attribute`),
-  KEY `id_product_attribute` (`id_product_attribute`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_category`
---
-
-CREATE TABLE IF NOT EXISTS `shop_category` (
-  `id_category` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_parent` int(10) unsigned NOT NULL,
-  `level_depth` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `nleft` int(10) unsigned NOT NULL DEFAULT '0',
-  `nright` int(10) unsigned NOT NULL DEFAULT '0',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  `position` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_category`),
-  KEY `category_parent` (`id_parent`),
-  KEY `nleftright` (`nleft`,`nright`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_category_group`
---
-
-CREATE TABLE IF NOT EXISTS `shop_category_group` (
-  `id_category` int(10) unsigned NOT NULL,
-  `id_group` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_category`,`id_group`),
-  KEY `id_category` (`id_category`),
-  KEY `id_group` (`id_group`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_category_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_category_lang` (
-  `id_category` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(128) NOT NULL,
-  `description` text,
-  `link_rewrite` varchar(128) NOT NULL,
-  `meta_title` varchar(128) DEFAULT NULL,
-  `meta_keywords` varchar(255) DEFAULT NULL,
-  `meta_description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_category`,`id_lang`),
-  KEY `category_name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_category_product`
---
-
-CREATE TABLE IF NOT EXISTS `shop_category_product` (
-  `id_category` int(10) unsigned NOT NULL,
-  `id_product` int(10) unsigned NOT NULL,
-  `position` int(10) unsigned NOT NULL DEFAULT '0',
-  UNIQUE KEY `category_product_index` (`id_category`,`id_product`),
-  KEY `id_product` (`id_product`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cms`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cms` (
-  `id_cms` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_cms_category` int(10) unsigned NOT NULL,
-  `position` int(10) unsigned NOT NULL DEFAULT '0',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_cms`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cms_block`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cms_block` (
-  `id_cms_block` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_cms_category` int(10) unsigned NOT NULL,
-  `name` varchar(40) NOT NULL,
-  `location` tinyint(1) unsigned NOT NULL,
-  `position` int(10) unsigned NOT NULL DEFAULT '0',
-  `display_store` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_cms_block`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cms_block_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cms_block_lang` (
-  `id_cms_block` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(40) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id_cms_block`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cms_block_page`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cms_block_page` (
-  `id_cms_block_page` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_cms_block` int(10) unsigned NOT NULL,
-  `id_cms` int(10) unsigned NOT NULL,
-  `is_category` tinyint(1) unsigned NOT NULL,
-  PRIMARY KEY (`id_cms_block_page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cms_category`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cms_category` (
-  `id_cms_category` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_parent` int(10) unsigned NOT NULL,
-  `level_depth` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  `position` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_cms_category`),
-  KEY `category_parent` (`id_parent`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cms_category_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cms_category_lang` (
-  `id_cms_category` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(128) NOT NULL,
-  `description` text,
-  `link_rewrite` varchar(128) NOT NULL,
-  `meta_title` varchar(128) DEFAULT NULL,
-  `meta_keywords` varchar(255) DEFAULT NULL,
-  `meta_description` varchar(255) DEFAULT NULL,
-  UNIQUE KEY `category_lang_index` (`id_cms_category`,`id_lang`),
-  KEY `category_name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_cms_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_cms_lang` (
-  `id_cms` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `meta_title` varchar(128) NOT NULL,
-  `meta_description` varchar(255) DEFAULT NULL,
-  `meta_keywords` varchar(255) DEFAULT NULL,
-  `content` longtext,
-  `link_rewrite` varchar(128) NOT NULL,
-  PRIMARY KEY (`id_cms`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_compare`
---
-
-CREATE TABLE IF NOT EXISTS `shop_compare` (
-  `id_compare` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_customer` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_compare`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_compare_product`
---
-
-CREATE TABLE IF NOT EXISTS `shop_compare_product` (
-  `id_compare` int(10) unsigned NOT NULL,
-  `id_product` int(10) unsigned NOT NULL,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_compare`,`id_product`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_configuration`
---
-
-CREATE TABLE IF NOT EXISTS `shop_configuration` (
-  `id_configuration` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `value` text,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_configuration`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=193 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_configuration_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_configuration_lang` (
-  `id_configuration` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `value` text,
-  `date_upd` datetime DEFAULT NULL,
-  PRIMARY KEY (`id_configuration`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_connections`
---
-
-CREATE TABLE IF NOT EXISTS `shop_connections` (
-  `id_connections` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_guest` int(10) unsigned NOT NULL,
-  `id_page` int(10) unsigned NOT NULL,
-  `ip_address` bigint(20) DEFAULT NULL,
-  `date_add` datetime NOT NULL,
-  `http_referer` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_connections`),
-  KEY `id_guest` (`id_guest`),
-  KEY `date_add` (`date_add`),
-  KEY `id_page` (`id_page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_connections_page`
---
-
-CREATE TABLE IF NOT EXISTS `shop_connections_page` (
-  `id_connections` int(10) unsigned NOT NULL,
-  `id_page` int(10) unsigned NOT NULL,
-  `time_start` datetime NOT NULL,
-  `time_end` datetime DEFAULT NULL,
-  PRIMARY KEY (`id_connections`,`id_page`,`time_start`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_connections_source`
---
-
-CREATE TABLE IF NOT EXISTS `shop_connections_source` (
-  `id_connections_source` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_connections` int(10) unsigned NOT NULL,
-  `http_referer` varchar(255) DEFAULT NULL,
-  `request_uri` varchar(255) DEFAULT NULL,
-  `keywords` varchar(255) DEFAULT NULL,
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_connections_source`),
-  KEY `connections` (`id_connections`),
-  KEY `orderby` (`date_add`),
-  KEY `http_referer` (`http_referer`),
-  KEY `request_uri` (`request_uri`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_contact`
---
-
-CREATE TABLE IF NOT EXISTS `shop_contact` (
-  `id_contact` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(128) NOT NULL,
-  `customer_service` tinyint(1) NOT NULL DEFAULT '0',
-  `position` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_contact`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_contact_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_contact_lang` (
-  `id_contact` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(32) NOT NULL,
-  `description` text,
-  PRIMARY KEY (`id_contact`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_country`
---
-
-CREATE TABLE IF NOT EXISTS `shop_country` (
-  `id_country` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_zone` int(10) unsigned NOT NULL,
-  `id_currency` int(10) unsigned NOT NULL DEFAULT '0',
-  `iso_code` varchar(3) NOT NULL,
-  `call_prefix` int(10) NOT NULL DEFAULT '0',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `contains_states` tinyint(1) NOT NULL DEFAULT '0',
-  `need_identification_number` tinyint(1) NOT NULL DEFAULT '0',
-  `need_zip_code` tinyint(1) NOT NULL DEFAULT '1',
-  `zip_code_format` varchar(12) NOT NULL DEFAULT '',
-  `display_tax_label` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id_country`),
-  KEY `country_iso_code` (`iso_code`),
-  KEY `country_` (`id_zone`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=245 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_country_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_country_lang` (
-  `id_country` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(64) NOT NULL,
-  PRIMARY KEY (`id_country`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_county`
---
-
-CREATE TABLE IF NOT EXISTS `shop_county` (
-  `id_county` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `id_state` int(11) NOT NULL,
-  `active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id_county`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_county_zip_code`
---
-
-CREATE TABLE IF NOT EXISTS `shop_county_zip_code` (
-  `id_county` int(11) NOT NULL,
-  `from_zip_code` int(11) NOT NULL,
-  `to_zip_code` int(11) NOT NULL,
-  PRIMARY KEY (`id_county`,`from_zip_code`,`to_zip_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_currency`
---
-
-CREATE TABLE IF NOT EXISTS `shop_currency` (
-  `id_currency` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `iso_code` varchar(3) NOT NULL DEFAULT '0',
-  `iso_code_num` varchar(3) NOT NULL DEFAULT '0',
-  `sign` varchar(8) NOT NULL,
-  `blank` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `format` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `decimals` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `conversion_rate` decimal(13,6) NOT NULL,
-  `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_currency`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_customer`
---
-
-CREATE TABLE IF NOT EXISTS `shop_customer` (
-  `id_customer` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_gender` int(10) unsigned NOT NULL,
-  `id_default_group` int(10) unsigned NOT NULL DEFAULT '1',
-  `firstname` varchar(32) NOT NULL,
-  `lastname` varchar(32) NOT NULL,
-  `email` varchar(128) NOT NULL,
-  `passwd` varchar(32) NOT NULL,
-  `last_passwd_gen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `birthday` date DEFAULT NULL,
-  `newsletter` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `ip_registration_newsletter` varchar(15) DEFAULT NULL,
-  `newsletter_date_add` datetime DEFAULT NULL,
-  `optin` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `secure_key` varchar(32) NOT NULL DEFAULT '-1',
-  `note` text,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `is_guest` tinyint(1) NOT NULL DEFAULT '0',
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_customer`),
-  KEY `customer_email` (`email`),
-  KEY `customer_login` (`email`,`passwd`),
-  KEY `id_customer_passwd` (`id_customer`,`passwd`),
-  KEY `id_gender` (`id_gender`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_customer_group`
---
-
-CREATE TABLE IF NOT EXISTS `shop_customer_group` (
-  `id_customer` int(10) unsigned NOT NULL,
-  `id_group` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_customer`,`id_group`),
-  KEY `customer_login` (`id_group`),
-  KEY `id_customer` (`id_customer`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_customer_message`
---
-
-CREATE TABLE IF NOT EXISTS `shop_customer_message` (
-  `id_customer_message` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_customer_thread` int(11) DEFAULT NULL,
-  `id_employee` int(10) unsigned DEFAULT NULL,
-  `message` text NOT NULL,
-  `file_name` varchar(18) DEFAULT NULL,
-  `ip_address` int(11) DEFAULT NULL,
-  `user_agent` varchar(128) DEFAULT NULL,
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_customer_message`),
-  KEY `id_customer_thread` (`id_customer_thread`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_customer_thread`
---
-
-CREATE TABLE IF NOT EXISTS `shop_customer_thread` (
-  `id_customer_thread` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `id_lang` int(10) unsigned NOT NULL,
-  `id_contact` int(10) unsigned NOT NULL,
-  `id_customer` int(10) unsigned DEFAULT NULL,
-  `id_order` int(10) unsigned DEFAULT NULL,
-  `id_product` int(10) unsigned DEFAULT NULL,
-  `status` enum('open','closed','pending1','pending2') NOT NULL DEFAULT 'open',
-  `email` varchar(128) NOT NULL,
-  `token` varchar(12) DEFAULT NULL,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_customer_thread`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_customization`
---
-
-CREATE TABLE IF NOT EXISTS `shop_customization` (
-  `id_customization` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_product_attribute` int(10) unsigned NOT NULL DEFAULT '0',
-  `id_cart` int(10) unsigned NOT NULL,
-  `id_product` int(10) NOT NULL,
-  `quantity` int(10) NOT NULL,
-  `quantity_refunded` int(11) NOT NULL DEFAULT '0',
-  `quantity_returned` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_customization`,`id_cart`,`id_product`),
-  KEY `id_product_attribute` (`id_product_attribute`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_customization_field`
---
-
-CREATE TABLE IF NOT EXISTS `shop_customization_field` (
-  `id_customization_field` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_product` int(10) unsigned NOT NULL,
-  `type` tinyint(1) NOT NULL,
-  `required` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id_customization_field`),
-  KEY `id_product` (`id_product`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_customization_field_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_customization_field_lang` (
-  `id_customization_field` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_customization_field`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_customized_data`
---
-
-CREATE TABLE IF NOT EXISTS `shop_customized_data` (
-  `id_customization` int(10) unsigned NOT NULL,
-  `type` tinyint(1) NOT NULL,
-  `index` int(3) NOT NULL,
-  `value` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_customization`,`type`,`index`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_date_range`
---
-
-CREATE TABLE IF NOT EXISTS `shop_date_range` (
-  `id_date_range` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `time_start` datetime NOT NULL,
-  `time_end` datetime NOT NULL,
-  PRIMARY KEY (`id_date_range`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_delivery`
---
-
-CREATE TABLE IF NOT EXISTS `shop_delivery` (
-  `id_delivery` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_carrier` int(10) unsigned NOT NULL,
-  `id_range_price` int(10) unsigned DEFAULT NULL,
-  `id_range_weight` int(10) unsigned DEFAULT NULL,
-  `id_zone` int(10) unsigned NOT NULL,
-  `price` decimal(20,6) NOT NULL,
-  PRIMARY KEY (`id_delivery`),
-  KEY `id_zone` (`id_zone`),
-  KEY `id_carrier` (`id_carrier`,`id_zone`),
-  KEY `id_range_price` (`id_range_price`),
-  KEY `id_range_weight` (`id_range_weight`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_discount`
---
-
-CREATE TABLE IF NOT EXISTS `shop_discount` (
-  `id_discount` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_discount_type` int(10) unsigned NOT NULL,
-  `behavior_not_exhausted` tinyint(3) DEFAULT '1',
-  `id_customer` int(10) unsigned NOT NULL,
-  `id_group` int(10) unsigned NOT NULL DEFAULT '0',
-  `id_currency` int(10) unsigned NOT NULL DEFAULT '0',
-  `name` varchar(32) NOT NULL,
-  `value` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `quantity` int(10) unsigned NOT NULL DEFAULT '0',
-  `quantity_per_user` int(10) unsigned NOT NULL DEFAULT '1',
-  `cumulable` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `cumulable_reduction` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `date_from` datetime NOT NULL,
-  `date_to` datetime NOT NULL,
-  `minimal` decimal(17,2) DEFAULT NULL,
-  `include_tax` tinyint(1) NOT NULL DEFAULT '0',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `cart_display` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_discount`),
-  KEY `discount_name` (`name`),
-  KEY `discount_customer` (`id_customer`),
-  KEY `id_discount_type` (`id_discount_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_discount_category`
---
-
-CREATE TABLE IF NOT EXISTS `shop_discount_category` (
-  `id_category` int(11) unsigned NOT NULL,
-  `id_discount` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id_category`,`id_discount`),
-  KEY `discount` (`id_discount`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_discount_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_discount_lang` (
-  `id_discount` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `description` text,
-  PRIMARY KEY (`id_discount`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_discount_type`
---
-
-CREATE TABLE IF NOT EXISTS `shop_discount_type` (
-  `id_discount_type` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id_discount_type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_discount_type_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_discount_type_lang` (
-  `id_discount_type` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(64) NOT NULL,
-  PRIMARY KEY (`id_discount_type`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_editorial`
---
-
-CREATE TABLE IF NOT EXISTS `shop_editorial` (
-  `id_editorial` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `body_home_logo_link` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_editorial`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_editorial_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_editorial_lang` (
-  `id_editorial` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `body_title` varchar(255) NOT NULL,
-  `body_subheading` varchar(255) NOT NULL,
-  `body_paragraph` text NOT NULL,
-  `body_logo_subheading` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_editorial`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_employee`
---
-
-CREATE TABLE IF NOT EXISTS `shop_employee` (
-  `id_employee` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_profile` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL DEFAULT '0',
-  `lastname` varchar(32) NOT NULL,
-  `firstname` varchar(32) NOT NULL,
-  `email` varchar(128) NOT NULL,
-  `passwd` varchar(32) NOT NULL,
-  `last_passwd_gen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `stats_date_from` date DEFAULT NULL,
-  `stats_date_to` date DEFAULT NULL,
-  `bo_color` varchar(32) DEFAULT NULL,
-  `bo_theme` varchar(32) DEFAULT NULL,
-  `bo_uimode` enum('hover','click') DEFAULT 'click',
-  `bo_show_screencast` tinyint(1) NOT NULL DEFAULT '1',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_employee`),
-  KEY `employee_login` (`email`,`passwd`),
-  KEY `id_employee_passwd` (`id_employee`,`passwd`),
-  KEY `id_profile` (`id_profile`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_feature`
---
-
-CREATE TABLE IF NOT EXISTS `shop_feature` (
-  `id_feature` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id_feature`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_feature_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_feature_lang` (
-  `id_feature` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`id_feature`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_feature_product`
---
-
-CREATE TABLE IF NOT EXISTS `shop_feature_product` (
-  `id_feature` int(10) unsigned NOT NULL,
-  `id_product` int(10) unsigned NOT NULL,
-  `id_feature_value` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_feature`,`id_product`),
-  KEY `id_feature_value` (`id_feature_value`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_feature_value`
---
-
-CREATE TABLE IF NOT EXISTS `shop_feature_value` (
-  `id_feature_value` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_feature` int(10) unsigned NOT NULL,
-  `custom` tinyint(3) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id_feature_value`),
-  KEY `feature` (`id_feature`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=27 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_feature_value_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_feature_value_lang` (
-  `id_feature_value` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `value` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_feature_value`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_group`
---
-
-CREATE TABLE IF NOT EXISTS `shop_group` (
-  `id_group` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `reduction` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `price_display_method` tinyint(4) NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_group`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_group_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_group_lang` (
-  `id_group` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(32) NOT NULL,
-  PRIMARY KEY (`id_group`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_group_reduction`
---
-
-CREATE TABLE IF NOT EXISTS `shop_group_reduction` (
-  `id_group_reduction` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `id_group` int(10) unsigned NOT NULL,
-  `id_category` int(10) unsigned NOT NULL,
-  `reduction` decimal(4,3) NOT NULL,
-  PRIMARY KEY (`id_group_reduction`),
-  UNIQUE KEY `id_group` (`id_group`,`id_category`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_guest`
---
-
-CREATE TABLE IF NOT EXISTS `shop_guest` (
-  `id_guest` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_operating_system` int(10) unsigned DEFAULT NULL,
-  `id_web_browser` int(10) unsigned DEFAULT NULL,
-  `id_customer` int(10) unsigned DEFAULT NULL,
-  `javascript` tinyint(1) DEFAULT '0',
-  `screen_resolution_x` smallint(5) unsigned DEFAULT NULL,
-  `screen_resolution_y` smallint(5) unsigned DEFAULT NULL,
-  `screen_color` tinyint(3) unsigned DEFAULT NULL,
-  `sun_java` tinyint(1) DEFAULT NULL,
-  `adobe_flash` tinyint(1) DEFAULT NULL,
-  `adobe_director` tinyint(1) DEFAULT NULL,
-  `apple_quicktime` tinyint(1) DEFAULT NULL,
-  `real_player` tinyint(1) DEFAULT NULL,
-  `windows_media` tinyint(1) DEFAULT NULL,
-  `accept_language` varchar(8) DEFAULT NULL,
-  PRIMARY KEY (`id_guest`),
-  KEY `id_customer` (`id_customer`),
-  KEY `id_operating_system` (`id_operating_system`),
-  KEY `id_web_browser` (`id_web_browser`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_help_access`
---
-
-CREATE TABLE IF NOT EXISTS `shop_help_access` (
-  `id_help_access` int(11) NOT NULL AUTO_INCREMENT,
-  `label` varchar(45) NOT NULL,
-  `version` varchar(8) NOT NULL,
-  PRIMARY KEY (`id_help_access`),
-  UNIQUE KEY `label` (`label`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_hook`
---
-
-CREATE TABLE IF NOT EXISTS `shop_hook` (
-  `id_hook` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `title` varchar(64) NOT NULL,
-  `description` text,
-  `position` tinyint(1) NOT NULL DEFAULT '1',
-  `live_edit` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_hook`),
-  UNIQUE KEY `hook_name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=97 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_hook_module`
---
-
-CREATE TABLE IF NOT EXISTS `shop_hook_module` (
-  `id_module` int(10) unsigned NOT NULL,
-  `id_hook` int(10) unsigned NOT NULL,
-  `position` tinyint(2) unsigned NOT NULL,
-  PRIMARY KEY (`id_module`,`id_hook`),
-  KEY `id_hook` (`id_hook`),
-  KEY `id_module` (`id_module`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_hook_module_exceptions`
---
-
-CREATE TABLE IF NOT EXISTS `shop_hook_module_exceptions` (
-  `id_hook_module_exceptions` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_module` int(10) unsigned NOT NULL,
-  `id_hook` int(10) unsigned NOT NULL,
-  `file_name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_hook_module_exceptions`),
-  KEY `id_module` (`id_module`),
-  KEY `id_hook` (`id_hook`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_image`
---
-
-CREATE TABLE IF NOT EXISTS `shop_image` (
-  `id_image` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_product` int(10) unsigned NOT NULL,
-  `position` smallint(2) unsigned NOT NULL DEFAULT '0',
-  `cover` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_image`),
-  UNIQUE KEY `product_position` (`id_product`,`position`),
-  KEY `image_product` (`id_product`),
-  KEY `id_product_cover` (`id_product`,`cover`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=50 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_image_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_image_lang` (
-  `id_image` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `legend` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`id_image`,`id_lang`),
-  KEY `id_image` (`id_image`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_image_type`
---
-
-CREATE TABLE IF NOT EXISTS `shop_image_type` (
-  `id_image_type` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(16) NOT NULL,
-  `width` int(10) unsigned NOT NULL,
-  `height` int(10) unsigned NOT NULL,
-  `products` tinyint(1) NOT NULL DEFAULT '1',
-  `categories` tinyint(1) NOT NULL DEFAULT '1',
-  `manufacturers` tinyint(1) NOT NULL DEFAULT '1',
-  `suppliers` tinyint(1) NOT NULL DEFAULT '1',
-  `scenes` tinyint(1) NOT NULL DEFAULT '1',
-  `stores` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_image_type`),
-  KEY `image_type_name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_import_match`
---
-
-CREATE TABLE IF NOT EXISTS `shop_import_match` (
-  `id_import_match` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `match` text NOT NULL,
-  `skip` int(2) NOT NULL,
-  PRIMARY KEY (`id_import_match`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_lang` (
-  `id_lang` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `active` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `iso_code` char(2) NOT NULL,
-  `language_code` char(5) NOT NULL,
-  `date_format_lite` char(32) NOT NULL DEFAULT 'Y-m-d',
-  `date_format_full` char(32) NOT NULL DEFAULT 'Y-m-d H:i:s',
-  `is_rtl` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_lang`),
-  KEY `lang_iso_code` (`iso_code`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_log`
---
-
-CREATE TABLE IF NOT EXISTS `shop_log` (
-  `id_log` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `severity` tinyint(1) NOT NULL,
-  `error_code` int(11) DEFAULT NULL,
-  `message` text NOT NULL,
-  `object_type` varchar(32) DEFAULT NULL,
-  `object_id` int(10) unsigned DEFAULT NULL,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_log`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_manufacturer`
---
-
-CREATE TABLE IF NOT EXISTS `shop_manufacturer` (
-  `id_manufacturer` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_manufacturer`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_manufacturer_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_manufacturer_lang` (
-  `id_manufacturer` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `description` text,
-  `short_description` varchar(254) DEFAULT NULL,
-  `meta_title` varchar(128) DEFAULT NULL,
-  `meta_keywords` varchar(255) DEFAULT NULL,
-  `meta_description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_manufacturer`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_memcached_servers`
---
-
-CREATE TABLE IF NOT EXISTS `shop_memcached_servers` (
-  `id_memcached_server` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `ip` varchar(254) NOT NULL,
-  `port` int(11) unsigned NOT NULL,
-  `weight` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id_memcached_server`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_message`
---
-
-CREATE TABLE IF NOT EXISTS `shop_message` (
-  `id_message` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_cart` int(10) unsigned DEFAULT NULL,
-  `id_customer` int(10) unsigned NOT NULL,
-  `id_employee` int(10) unsigned DEFAULT NULL,
-  `id_order` int(10) unsigned NOT NULL,
-  `message` text NOT NULL,
-  `private` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_message`),
-  KEY `message_order` (`id_order`),
-  KEY `id_cart` (`id_cart`),
-  KEY `id_customer` (`id_customer`),
-  KEY `id_employee` (`id_employee`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_message_readed`
---
-
-CREATE TABLE IF NOT EXISTS `shop_message_readed` (
-  `id_message` int(10) unsigned NOT NULL,
-  `id_employee` int(10) unsigned NOT NULL,
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_message`,`id_employee`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_meta`
---
-
-CREATE TABLE IF NOT EXISTS `shop_meta` (
-  `id_meta` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `page` varchar(64) NOT NULL,
-  PRIMARY KEY (`id_meta`),
-  KEY `meta_name` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_meta_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_meta_lang` (
-  `id_meta` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `title` varchar(128) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `keywords` varchar(255) DEFAULT NULL,
-  `url_rewrite` varchar(254) NOT NULL,
-  PRIMARY KEY (`id_meta`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_module`
---
-
-CREATE TABLE IF NOT EXISTS `shop_module` (
-  `id_module` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_module`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=56 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_module_country`
---
-
-CREATE TABLE IF NOT EXISTS `shop_module_country` (
-  `id_module` int(10) unsigned NOT NULL,
-  `id_country` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_module`,`id_country`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_module_currency`
---
-
-CREATE TABLE IF NOT EXISTS `shop_module_currency` (
-  `id_module` int(10) unsigned NOT NULL,
-  `id_currency` int(11) NOT NULL,
-  PRIMARY KEY (`id_module`,`id_currency`),
-  KEY `id_module` (`id_module`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_module_group`
---
-
-CREATE TABLE IF NOT EXISTS `shop_module_group` (
-  `id_module` int(10) unsigned NOT NULL,
-  `id_group` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id_module`,`id_group`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_operating_system`
---
-
-CREATE TABLE IF NOT EXISTS `shop_operating_system` (
-  `id_operating_system` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`id_operating_system`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_orders`
---
-
-CREATE TABLE IF NOT EXISTS `shop_orders` (
-  `id_order` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_carrier` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `id_customer` int(10) unsigned NOT NULL,
-  `id_cart` int(10) unsigned NOT NULL,
-  `id_currency` int(10) unsigned NOT NULL,
-  `id_address_delivery` int(10) unsigned NOT NULL,
-  `id_address_invoice` int(10) unsigned NOT NULL,
-  `secure_key` varchar(32) NOT NULL DEFAULT '-1',
-  `payment` varchar(255) NOT NULL,
-  `conversion_rate` decimal(13,6) NOT NULL DEFAULT '1.000000',
-  `module` varchar(255) DEFAULT NULL,
-  `recyclable` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `gift` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `gift_message` text,
-  `shipping_number` varchar(32) DEFAULT NULL,
-  `total_discounts` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `total_paid` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `total_paid_real` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `total_products` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `total_products_wt` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `total_shipping` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `carrier_tax_rate` decimal(10,3) NOT NULL DEFAULT '0.000',
-  `total_wrapping` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `invoice_number` int(10) unsigned NOT NULL DEFAULT '0',
-  `delivery_number` int(10) unsigned NOT NULL DEFAULT '0',
-  `invoice_date` datetime NOT NULL,
-  `delivery_date` datetime NOT NULL,
-  `valid` int(1) unsigned NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_order`),
-  KEY `id_customer` (`id_customer`),
-  KEY `id_cart` (`id_cart`),
-  KEY `invoice_number` (`invoice_number`),
-  KEY `id_carrier` (`id_carrier`),
-  KEY `id_lang` (`id_lang`),
-  KEY `id_currency` (`id_currency`),
-  KEY `id_address_delivery` (`id_address_delivery`),
-  KEY `id_address_invoice` (`id_address_invoice`),
-  KEY `date_add` (`date_add`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_detail`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_detail` (
-  `id_order_detail` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_order` int(10) unsigned NOT NULL,
-  `product_id` int(10) unsigned NOT NULL,
-  `product_attribute_id` int(10) unsigned DEFAULT NULL,
-  `product_name` varchar(255) NOT NULL,
-  `product_quantity` int(10) unsigned NOT NULL DEFAULT '0',
-  `product_quantity_in_stock` int(10) NOT NULL DEFAULT '0',
-  `product_quantity_refunded` int(10) unsigned NOT NULL DEFAULT '0',
-  `product_quantity_return` int(10) unsigned NOT NULL DEFAULT '0',
-  `product_quantity_reinjected` int(10) unsigned NOT NULL DEFAULT '0',
-  `product_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
-  `reduction_percent` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `reduction_amount` decimal(20,6) NOT NULL DEFAULT '0.000000',
-  `group_reduction` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `product_quantity_discount` decimal(20,6) NOT NULL DEFAULT '0.000000',
-  `product_ean13` varchar(13) DEFAULT NULL,
-  `product_upc` varchar(12) DEFAULT NULL,
-  `product_reference` varchar(32) DEFAULT NULL,
-  `product_supplier_reference` varchar(32) DEFAULT NULL,
-  `product_weight` float NOT NULL,
-  `tax_name` varchar(16) NOT NULL,
-  `tax_rate` decimal(10,3) NOT NULL DEFAULT '0.000',
-  `ecotax` decimal(21,6) NOT NULL DEFAULT '0.000000',
-  `ecotax_tax_rate` decimal(5,3) NOT NULL DEFAULT '0.000',
-  `discount_quantity_applied` tinyint(1) NOT NULL DEFAULT '0',
-  `download_hash` varchar(255) DEFAULT NULL,
-  `download_nb` int(10) unsigned DEFAULT '0',
-  `download_deadline` datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id_order_detail`),
-  KEY `order_detail_order` (`id_order`),
-  KEY `product_id` (`product_id`),
-  KEY `product_attribute_id` (`product_attribute_id`),
-  KEY `id_order_id_order_detail` (`id_order`,`id_order_detail`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_discount`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_discount` (
-  `id_order_discount` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_order` int(10) unsigned NOT NULL,
-  `id_discount` int(10) unsigned NOT NULL,
-  `name` varchar(32) NOT NULL,
-  `value` decimal(17,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`id_order_discount`),
-  KEY `order_discount_order` (`id_order`),
-  KEY `id_discount` (`id_discount`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_history`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_history` (
-  `id_order_history` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_employee` int(10) unsigned NOT NULL,
-  `id_order` int(10) unsigned NOT NULL,
-  `id_order_state` int(10) unsigned NOT NULL,
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_order_history`),
-  KEY `order_history_order` (`id_order`),
-  KEY `id_employee` (`id_employee`),
-  KEY `id_order_state` (`id_order_state`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_message`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_message` (
-  `id_order_message` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_order_message`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_message_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_message_lang` (
-  `id_order_message` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(128) NOT NULL,
-  `message` text NOT NULL,
-  PRIMARY KEY (`id_order_message`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_return`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_return` (
-  `id_order_return` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_customer` int(10) unsigned NOT NULL,
-  `id_order` int(10) unsigned NOT NULL,
-  `state` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `question` text NOT NULL,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_order_return`),
-  KEY `order_return_customer` (`id_customer`),
-  KEY `id_order` (`id_order`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_return_detail`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_return_detail` (
-  `id_order_return` int(10) unsigned NOT NULL,
-  `id_order_detail` int(10) unsigned NOT NULL,
-  `id_customization` int(10) unsigned NOT NULL DEFAULT '0',
-  `product_quantity` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_order_return`,`id_order_detail`,`id_customization`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_return_state`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_return_state` (
-  `id_order_return_state` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `color` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`id_order_return_state`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_return_state_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_return_state_lang` (
-  `id_order_return_state` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(64) NOT NULL,
-  PRIMARY KEY (`id_order_return_state`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_slip`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_slip` (
-  `id_order_slip` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `conversion_rate` decimal(13,6) NOT NULL DEFAULT '1.000000',
-  `id_customer` int(10) unsigned NOT NULL,
-  `id_order` int(10) unsigned NOT NULL,
-  `shipping_cost` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_order_slip`),
-  KEY `order_slip_customer` (`id_customer`),
-  KEY `id_order` (`id_order`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_slip_detail`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_slip_detail` (
-  `id_order_slip` int(10) unsigned NOT NULL,
-  `id_order_detail` int(10) unsigned NOT NULL,
-  `product_quantity` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_order_slip`,`id_order_detail`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_state`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_state` (
-  `id_order_state` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `invoice` tinyint(1) unsigned DEFAULT '0',
-  `send_email` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `color` varchar(32) DEFAULT NULL,
-  `unremovable` tinyint(1) unsigned NOT NULL,
-  `hidden` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `logable` tinyint(1) NOT NULL DEFAULT '0',
-  `delivery` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_order_state`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_state_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_state_lang` (
-  `id_order_state` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `template` varchar(64) NOT NULL,
-  PRIMARY KEY (`id_order_state`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_order_tax`
---
-
-CREATE TABLE IF NOT EXISTS `shop_order_tax` (
-  `id_order` int(11) NOT NULL,
-  `tax_name` varchar(40) NOT NULL,
-  `tax_rate` decimal(6,3) NOT NULL,
-  `amount` decimal(20,6) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_pack`
---
-
-CREATE TABLE IF NOT EXISTS `shop_pack` (
-  `id_product_pack` int(10) unsigned NOT NULL,
-  `id_product_item` int(10) unsigned NOT NULL,
-  `quantity` int(10) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_product_pack`,`id_product_item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_page`
---
-
-CREATE TABLE IF NOT EXISTS `shop_page` (
-  `id_page` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_page_type` int(10) unsigned NOT NULL,
-  `id_object` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id_page`),
-  KEY `id_page_type` (`id_page_type`),
-  KEY `id_object` (`id_object`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_pagenotfound`
---
-
-CREATE TABLE IF NOT EXISTS `shop_pagenotfound` (
-  `id_pagenotfound` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `request_uri` varchar(256) NOT NULL,
-  `http_referer` varchar(256) NOT NULL,
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_pagenotfound`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_page_type`
---
-
-CREATE TABLE IF NOT EXISTS `shop_page_type` (
-  `id_page_type` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_page_type`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_page_viewed`
---
-
-CREATE TABLE IF NOT EXISTS `shop_page_viewed` (
-  `id_page` int(10) unsigned NOT NULL,
-  `id_date_range` int(10) unsigned NOT NULL,
-  `counter` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_page`,`id_date_range`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_payment_cc`
---
-
-CREATE TABLE IF NOT EXISTS `shop_payment_cc` (
-  `id_payment_cc` int(11) NOT NULL AUTO_INCREMENT,
-  `id_order` int(10) unsigned DEFAULT NULL,
-  `id_currency` int(10) unsigned NOT NULL,
-  `amount` decimal(10,2) NOT NULL,
-  `transaction_id` varchar(254) DEFAULT NULL,
-  `card_number` varchar(254) DEFAULT NULL,
-  `card_brand` varchar(254) DEFAULT NULL,
-  `card_expiration` char(7) DEFAULT NULL,
-  `card_holder` varchar(254) DEFAULT NULL,
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_payment_cc`),
-  KEY `id_order` (`id_order`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product` (
-  `id_product` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_supplier` int(10) unsigned DEFAULT NULL,
-  `id_manufacturer` int(10) unsigned DEFAULT NULL,
-  `id_tax_rules_group` int(10) unsigned NOT NULL,
-  `id_category_default` int(10) unsigned DEFAULT NULL,
-  `id_color_default` int(10) unsigned DEFAULT NULL,
-  `on_sale` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `online_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `ean13` varchar(13) DEFAULT NULL,
-  `upc` varchar(12) DEFAULT NULL,
-  `ecotax` decimal(17,6) NOT NULL DEFAULT '0.000000',
-  `quantity` int(10) NOT NULL DEFAULT '0',
-  `minimal_quantity` int(10) unsigned NOT NULL DEFAULT '1',
-  `price` decimal(20,6) NOT NULL DEFAULT '0.000000',
-  `wholesale_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
-  `unity` varchar(255) DEFAULT NULL,
-  `unit_price_ratio` decimal(20,6) NOT NULL DEFAULT '0.000000',
-  `additional_shipping_cost` decimal(20,2) NOT NULL DEFAULT '0.00',
-  `reference` varchar(32) DEFAULT NULL,
-  `supplier_reference` varchar(32) DEFAULT NULL,
-  `location` varchar(64) DEFAULT NULL,
-  `width` float NOT NULL DEFAULT '0',
-  `height` float NOT NULL DEFAULT '0',
-  `depth` float NOT NULL DEFAULT '0',
-  `weight` float NOT NULL DEFAULT '0',
-  `out_of_stock` int(10) unsigned NOT NULL DEFAULT '2',
-  `quantity_discount` tinyint(1) DEFAULT '0',
-  `customizable` tinyint(2) NOT NULL DEFAULT '0',
-  `uploadable_files` tinyint(4) NOT NULL DEFAULT '0',
-  `text_fields` tinyint(4) NOT NULL DEFAULT '0',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `available_for_order` tinyint(1) NOT NULL DEFAULT '1',
-  `condition` enum('new','used','refurbished') NOT NULL DEFAULT 'new',
-  `show_price` tinyint(1) NOT NULL DEFAULT '1',
-  `indexed` tinyint(1) NOT NULL DEFAULT '0',
-  `cache_is_pack` tinyint(1) NOT NULL DEFAULT '0',
-  `cache_has_attachments` tinyint(1) NOT NULL DEFAULT '0',
-  `cache_default_attribute` int(10) unsigned DEFAULT NULL,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_product`),
-  KEY `product_supplier` (`id_supplier`),
-  KEY `product_manufacturer` (`id_manufacturer`),
-  KEY `id_category_default` (`id_category_default`),
-  KEY `id_color_default` (`id_color_default`),
-  KEY `date_add` (`date_add`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_attachment`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_attachment` (
-  `id_product` int(10) unsigned NOT NULL,
-  `id_attachment` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_product`,`id_attachment`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_attribute`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_attribute` (
-  `id_product_attribute` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_product` int(10) unsigned NOT NULL,
-  `reference` varchar(32) DEFAULT NULL,
-  `supplier_reference` varchar(32) DEFAULT NULL,
-  `location` varchar(64) DEFAULT NULL,
-  `ean13` varchar(13) DEFAULT NULL,
-  `upc` varchar(12) DEFAULT NULL,
-  `wholesale_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
-  `price` decimal(20,6) NOT NULL DEFAULT '0.000000',
-  `ecotax` decimal(17,6) NOT NULL DEFAULT '0.000000',
-  `quantity` int(10) NOT NULL DEFAULT '0',
-  `weight` float NOT NULL DEFAULT '0',
-  `unit_price_impact` decimal(17,2) NOT NULL DEFAULT '0.00',
-  `default_on` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `minimal_quantity` int(10) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_product_attribute`),
-  KEY `product_attribute_product` (`id_product`),
-  KEY `reference` (`reference`),
-  KEY `supplier_reference` (`supplier_reference`),
-  KEY `product_default` (`id_product`,`default_on`),
-  KEY `id_product_id_product_attribute` (`id_product_attribute`,`id_product`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=43 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_attribute_combination`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_attribute_combination` (
-  `id_attribute` int(10) unsigned NOT NULL,
-  `id_product_attribute` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_attribute`,`id_product_attribute`),
-  KEY `id_product_attribute` (`id_product_attribute`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_attribute_image`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_attribute_image` (
-  `id_product_attribute` int(10) unsigned NOT NULL,
-  `id_image` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_product_attribute`,`id_image`),
-  KEY `id_image` (`id_image`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_country_tax`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_country_tax` (
-  `id_product` int(11) NOT NULL,
-  `id_country` int(11) NOT NULL,
-  `id_tax` int(11) NOT NULL,
-  PRIMARY KEY (`id_product`,`id_country`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_download`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_download` (
-  `id_product_download` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_product` int(10) unsigned NOT NULL,
-  `display_filename` varchar(255) DEFAULT NULL,
-  `physically_filename` varchar(255) DEFAULT NULL,
-  `date_deposit` datetime NOT NULL,
-  `date_expiration` datetime DEFAULT NULL,
-  `nb_days_accessible` int(10) unsigned DEFAULT NULL,
-  `nb_downloadable` int(10) unsigned DEFAULT '1',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_product_download`),
-  KEY `product_active` (`id_product`,`active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_group_reduction_cache`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_group_reduction_cache` (
-  `id_product` int(10) unsigned NOT NULL,
-  `id_group` int(10) unsigned NOT NULL,
-  `reduction` decimal(4,3) NOT NULL,
-  PRIMARY KEY (`id_product`,`id_group`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_lang` (
-  `id_product` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `description` text,
-  `description_short` text,
-  `link_rewrite` varchar(128) NOT NULL,
-  `meta_description` varchar(255) DEFAULT NULL,
-  `meta_keywords` varchar(255) DEFAULT NULL,
-  `meta_title` varchar(128) DEFAULT NULL,
-  `name` varchar(128) NOT NULL,
-  `available_now` varchar(255) DEFAULT NULL,
-  `available_later` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_product`,`id_lang`),
-  KEY `id_lang` (`id_lang`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_sale`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_sale` (
-  `id_product` int(10) unsigned NOT NULL,
-  `quantity` int(10) unsigned NOT NULL DEFAULT '0',
-  `sale_nbr` int(10) unsigned NOT NULL DEFAULT '0',
-  `date_upd` date NOT NULL,
-  PRIMARY KEY (`id_product`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_product_tag`
---
-
-CREATE TABLE IF NOT EXISTS `shop_product_tag` (
-  `id_product` int(10) unsigned NOT NULL,
-  `id_tag` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_product`,`id_tag`),
-  KEY `id_tag` (`id_tag`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_profile`
---
-
-CREATE TABLE IF NOT EXISTS `shop_profile` (
-  `id_profile` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id_profile`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_profile_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_profile_lang` (
-  `id_lang` int(10) unsigned NOT NULL,
-  `id_profile` int(10) unsigned NOT NULL,
-  `name` varchar(128) NOT NULL,
-  PRIMARY KEY (`id_profile`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_quick_access`
---
-
-CREATE TABLE IF NOT EXISTS `shop_quick_access` (
-  `id_quick_access` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `new_window` tinyint(1) NOT NULL DEFAULT '0',
-  `link` varchar(128) NOT NULL,
-  PRIMARY KEY (`id_quick_access`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_quick_access_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_quick_access_lang` (
-  `id_quick_access` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(32) NOT NULL,
-  PRIMARY KEY (`id_quick_access`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_range_price`
---
-
-CREATE TABLE IF NOT EXISTS `shop_range_price` (
-  `id_range_price` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_carrier` int(10) unsigned NOT NULL,
-  `delimiter1` decimal(20,6) NOT NULL,
-  `delimiter2` decimal(20,6) NOT NULL,
-  PRIMARY KEY (`id_range_price`),
-  UNIQUE KEY `id_carrier` (`id_carrier`,`delimiter1`,`delimiter2`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_range_weight`
---
-
-CREATE TABLE IF NOT EXISTS `shop_range_weight` (
-  `id_range_weight` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_carrier` int(10) unsigned NOT NULL,
-  `delimiter1` decimal(20,6) NOT NULL,
-  `delimiter2` decimal(20,6) NOT NULL,
-  PRIMARY KEY (`id_range_weight`),
-  UNIQUE KEY `id_carrier` (`id_carrier`,`delimiter1`,`delimiter2`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_referrer`
---
-
-CREATE TABLE IF NOT EXISTS `shop_referrer` (
-  `id_referrer` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `passwd` varchar(32) DEFAULT NULL,
-  `http_referer_regexp` varchar(64) DEFAULT NULL,
-  `http_referer_like` varchar(64) DEFAULT NULL,
-  `request_uri_regexp` varchar(64) DEFAULT NULL,
-  `request_uri_like` varchar(64) DEFAULT NULL,
-  `http_referer_regexp_not` varchar(64) DEFAULT NULL,
-  `http_referer_like_not` varchar(64) DEFAULT NULL,
-  `request_uri_regexp_not` varchar(64) DEFAULT NULL,
-  `request_uri_like_not` varchar(64) DEFAULT NULL,
-  `base_fee` decimal(5,2) NOT NULL DEFAULT '0.00',
-  `percent_fee` decimal(5,2) NOT NULL DEFAULT '0.00',
-  `click_fee` decimal(5,2) NOT NULL DEFAULT '0.00',
-  `cache_visitors` int(11) DEFAULT NULL,
-  `cache_visits` int(11) DEFAULT NULL,
-  `cache_pages` int(11) DEFAULT NULL,
-  `cache_registrations` int(11) DEFAULT NULL,
-  `cache_orders` int(11) DEFAULT NULL,
-  `cache_sales` decimal(17,2) DEFAULT NULL,
-  `cache_reg_rate` decimal(5,4) DEFAULT NULL,
-  `cache_order_rate` decimal(5,4) DEFAULT NULL,
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_referrer`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_referrer_cache`
---
-
-CREATE TABLE IF NOT EXISTS `shop_referrer_cache` (
-  `id_connections_source` int(11) unsigned NOT NULL,
-  `id_referrer` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id_connections_source`,`id_referrer`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_required_field`
---
-
-CREATE TABLE IF NOT EXISTS `shop_required_field` (
-  `id_required_field` int(11) NOT NULL AUTO_INCREMENT,
-  `object_name` varchar(32) NOT NULL,
-  `field_name` varchar(32) NOT NULL,
-  PRIMARY KEY (`id_required_field`),
-  KEY `object_name` (`object_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_scene`
---
-
-CREATE TABLE IF NOT EXISTS `shop_scene` (
-  `id_scene` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_scene`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_scene_category`
---
-
-CREATE TABLE IF NOT EXISTS `shop_scene_category` (
-  `id_scene` int(10) unsigned NOT NULL,
-  `id_category` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_scene`,`id_category`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_scene_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_scene_lang` (
-  `id_scene` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(100) NOT NULL,
-  PRIMARY KEY (`id_scene`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_scene_products`
---
-
-CREATE TABLE IF NOT EXISTS `shop_scene_products` (
-  `id_scene` int(10) unsigned NOT NULL,
-  `id_product` int(10) unsigned NOT NULL,
-  `x_axis` int(4) NOT NULL,
-  `y_axis` int(4) NOT NULL,
-  `zone_width` int(3) NOT NULL,
-  `zone_height` int(3) NOT NULL,
-  PRIMARY KEY (`id_scene`,`id_product`,`x_axis`,`y_axis`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_search_engine`
---
-
-CREATE TABLE IF NOT EXISTS `shop_search_engine` (
-  `id_search_engine` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `server` varchar(64) NOT NULL,
-  `getvar` varchar(16) NOT NULL,
-  PRIMARY KEY (`id_search_engine`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=39 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_search_index`
---
-
-CREATE TABLE IF NOT EXISTS `shop_search_index` (
-  `id_product` int(11) unsigned NOT NULL,
-  `id_word` int(11) unsigned NOT NULL,
-  `weight` smallint(4) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_word`,`id_product`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_search_word`
---
-
-CREATE TABLE IF NOT EXISTS `shop_search_word` (
-  `id_word` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_lang` int(10) unsigned NOT NULL,
-  `word` varchar(15) NOT NULL,
-  PRIMARY KEY (`id_word`),
-  UNIQUE KEY `id_lang` (`id_lang`,`word`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1553 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_sekeyword`
---
-
-CREATE TABLE IF NOT EXISTS `shop_sekeyword` (
-  `id_sekeyword` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `keyword` varchar(256) NOT NULL,
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_sekeyword`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_specific_price`
---
-
-CREATE TABLE IF NOT EXISTS `shop_specific_price` (
-  `id_specific_price` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_product` int(10) unsigned NOT NULL,
-  `id_shop` tinyint(3) unsigned NOT NULL,
-  `id_currency` int(10) unsigned NOT NULL,
-  `id_country` int(10) unsigned NOT NULL,
-  `id_group` int(10) unsigned NOT NULL,
-  `price` decimal(20,6) NOT NULL,
-  `from_quantity` mediumint(8) unsigned NOT NULL,
-  `reduction` decimal(20,6) NOT NULL,
-  `reduction_type` enum('amount','percentage') NOT NULL,
-  `from` datetime NOT NULL,
-  `to` datetime NOT NULL,
-  PRIMARY KEY (`id_specific_price`),
-  KEY `id_product` (`id_product`,`id_shop`,`id_currency`,`id_country`,`id_group`,`from_quantity`,`from`,`to`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_specific_price_priority`
---
-
-CREATE TABLE IF NOT EXISTS `shop_specific_price_priority` (
-  `id_specific_price_priority` int(11) NOT NULL AUTO_INCREMENT,
-  `id_product` int(11) NOT NULL,
-  `priority` varchar(80) NOT NULL,
-  PRIMARY KEY (`id_specific_price_priority`,`id_product`),
-  UNIQUE KEY `id_product` (`id_product`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_state`
---
-
-CREATE TABLE IF NOT EXISTS `shop_state` (
-  `id_state` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_country` int(11) unsigned NOT NULL,
-  `id_zone` int(11) unsigned NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `iso_code` char(4) NOT NULL,
-  `tax_behavior` smallint(1) NOT NULL DEFAULT '0',
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_state`),
-  KEY `id_country` (`id_country`),
-  KEY `id_zone` (`id_zone`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=313 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_statssearch`
---
-
-CREATE TABLE IF NOT EXISTS `shop_statssearch` (
-  `id_statssearch` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `keywords` varchar(255) NOT NULL,
-  `results` int(6) NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  PRIMARY KEY (`id_statssearch`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_stock_mvt`
---
-
-CREATE TABLE IF NOT EXISTS `shop_stock_mvt` (
-  `id_stock_mvt` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `id_product` int(11) unsigned DEFAULT NULL,
-  `id_product_attribute` int(11) unsigned DEFAULT NULL,
-  `id_order` int(11) unsigned DEFAULT NULL,
-  `id_stock_mvt_reason` int(11) unsigned NOT NULL,
-  `id_employee` int(11) unsigned NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_stock_mvt`),
-  KEY `id_order` (`id_order`),
-  KEY `id_product` (`id_product`),
-  KEY `id_product_attribute` (`id_product_attribute`),
-  KEY `id_stock_mvt_reason` (`id_stock_mvt_reason`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=31 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_stock_mvt_reason`
---
-
-CREATE TABLE IF NOT EXISTS `shop_stock_mvt_reason` (
-  `id_stock_mvt_reason` int(11) NOT NULL AUTO_INCREMENT,
-  `sign` tinyint(1) NOT NULL DEFAULT '1',
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_stock_mvt_reason`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_stock_mvt_reason_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_stock_mvt_reason_lang` (
-  `id_stock_mvt_reason` int(11) NOT NULL,
-  `id_lang` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_stock_mvt_reason`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_store`
---
-
-CREATE TABLE IF NOT EXISTS `shop_store` (
-  `id_store` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_country` int(10) unsigned NOT NULL,
-  `id_state` int(10) unsigned DEFAULT NULL,
-  `name` varchar(128) NOT NULL,
-  `address1` varchar(128) NOT NULL,
-  `address2` varchar(128) DEFAULT NULL,
-  `city` varchar(64) NOT NULL,
-  `postcode` varchar(12) NOT NULL,
-  `latitude` decimal(11,8) DEFAULT NULL,
-  `longitude` decimal(11,8) DEFAULT NULL,
-  `hours` varchar(254) DEFAULT NULL,
-  `phone` varchar(16) DEFAULT NULL,
-  `fax` varchar(16) DEFAULT NULL,
-  `email` varchar(128) DEFAULT NULL,
-  `note` text,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  PRIMARY KEY (`id_store`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_subdomain`
---
-
-CREATE TABLE IF NOT EXISTS `shop_subdomain` (
-  `id_subdomain` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(16) NOT NULL,
-  PRIMARY KEY (`id_subdomain`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_supplier`
---
-
-CREATE TABLE IF NOT EXISTS `shop_supplier` (
-  `id_supplier` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `date_add` datetime NOT NULL,
-  `date_upd` datetime NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_supplier`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_supplier_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_supplier_lang` (
-  `id_supplier` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `description` text,
-  `meta_title` varchar(128) DEFAULT NULL,
-  `meta_keywords` varchar(255) DEFAULT NULL,
-  `meta_description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_supplier`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_tab`
---
-
-CREATE TABLE IF NOT EXISTS `shop_tab` (
-  `id_tab` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_parent` int(11) NOT NULL,
-  `class_name` varchar(64) NOT NULL,
-  `module` varchar(64) DEFAULT NULL,
-  `position` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id_tab`),
-  KEY `class_name` (`class_name`),
-  KEY `id_parent` (`id_parent`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=89 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_tab_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_tab_lang` (
-  `id_tab` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`id_tab`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_tag`
---
-
-CREATE TABLE IF NOT EXISTS `shop_tag` (
-  `id_tag` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(32) NOT NULL,
-  PRIMARY KEY (`id_tag`),
-  KEY `tag_name` (`name`),
-  KEY `id_lang` (`id_lang`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_tax`
---
-
-CREATE TABLE IF NOT EXISTS `shop_tax` (
-  `id_tax` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `rate` decimal(10,3) NOT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_tax`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_tax_lang`
---
-
-CREATE TABLE IF NOT EXISTS `shop_tax_lang` (
-  `id_tax` int(10) unsigned NOT NULL,
-  `id_lang` int(10) unsigned NOT NULL,
-  `name` varchar(32) NOT NULL,
-  PRIMARY KEY (`id_tax`,`id_lang`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_tax_rule`
---
-
-CREATE TABLE IF NOT EXISTS `shop_tax_rule` (
-  `id_tax_rule` int(11) NOT NULL AUTO_INCREMENT,
-  `id_tax_rules_group` int(11) NOT NULL,
-  `id_country` int(11) NOT NULL,
-  `id_state` int(11) NOT NULL,
-  `id_county` int(11) NOT NULL,
-  `id_tax` int(11) NOT NULL,
-  `state_behavior` int(11) NOT NULL,
-  `county_behavior` int(11) NOT NULL,
-  PRIMARY KEY (`id_tax_rule`),
-  UNIQUE KEY `tax_rule` (`id_tax_rules_group`,`id_country`,`id_state`,`id_county`),
-  KEY `id_tax_rules_group` (`id_tax_rules_group`),
-  KEY `id_tax` (`id_tax`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=105 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_tax_rules_group`
---
-
-CREATE TABLE IF NOT EXISTS `shop_tax_rules_group` (
-  `id_tax_rules_group` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `active` int(11) NOT NULL,
-  PRIMARY KEY (`id_tax_rules_group`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_timezone`
---
-
-CREATE TABLE IF NOT EXISTS `shop_timezone` (
-  `id_timezone` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  PRIMARY KEY (`id_timezone`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=561 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_webservice_account`
---
-
-CREATE TABLE IF NOT EXISTS `shop_webservice_account` (
-  `id_webservice_account` int(11) NOT NULL AUTO_INCREMENT,
-  `key` varchar(32) NOT NULL,
-  `description` text,
-  `class_name` varchar(50) NOT NULL DEFAULT 'WebserviceRequest',
-  `is_module` tinyint(2) NOT NULL DEFAULT '0',
-  `module_name` varchar(50) DEFAULT NULL,
-  `active` tinyint(2) NOT NULL,
-  PRIMARY KEY (`id_webservice_account`),
-  KEY `key` (`key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_webservice_permission`
---
-
-CREATE TABLE IF NOT EXISTS `shop_webservice_permission` (
-  `id_webservice_permission` int(11) NOT NULL AUTO_INCREMENT,
-  `resource` varchar(50) NOT NULL,
-  `method` enum('GET','POST','PUT','DELETE','HEAD') NOT NULL,
-  `id_webservice_account` int(11) NOT NULL,
-  PRIMARY KEY (`id_webservice_permission`),
-  UNIQUE KEY `resource_2` (`resource`,`method`,`id_webservice_account`),
-  KEY `resource` (`resource`),
-  KEY `method` (`method`),
-  KEY `id_webservice_account` (`id_webservice_account`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_web_browser`
---
-
-CREATE TABLE IF NOT EXISTS `shop_web_browser` (
-  `id_web_browser` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`id_web_browser`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `shop_zone`
---
-
-CREATE TABLE IF NOT EXISTS `shop_zone` (
-  `id_zone` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_zone`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `sympathisants`
---
-
-CREATE TABLE IF NOT EXISTS `sympathisants` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) NOT NULL,
-  `langue` varchar(5) NOT NULL DEFAULT 'en',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `tasks`
---
-
-CREATE TABLE IF NOT EXISTS `tasks` (
-  `IDTask` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Description` varchar(2500) NOT NULL,
-  `Date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `Id_Group` int(11) NOT NULL,
-  `Status` bit(1) NOT NULL DEFAULT b'0',
-  `Author` int(11) NOT NULL,
-  PRIMARY KEY (`IDTask`),
-  KEY `Statut` (`Status`),
-  KEY `Id_Group` (`Id_Group`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=99 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `users`
---
-
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `login` varchar(50) NOT NULL,
-  `password` varchar(128) NOT NULL,
-  `salt` varchar(255) NOT NULL,
-  `identity` varchar(50) NOT NULL,
-  `gender` tinyint(1) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `avatar` varchar(100) NOT NULL DEFAULT 'http://www.8thwonderland.com/public/images/avatar_inconnu.png',
-  `language` varchar(3) NOT NULL,
-  `country` varchar(100) NOT NULL,
-  `region` int(11) DEFAULT NULL,
-  `last_connected_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `is_enabled` tinyint(1) NOT NULL,
-  `is_banned` tinyint(1) NOT NULL DEFAULT '0',
-  `theme` varchar(50) NOT NULL DEFAULT 'Rouge_Noir',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
-DROP PROCEDURE IF EXISTS `read_message`;
-
-DELIMITER //
-
-CREATE PROCEDURE `read_message`(IN `message_id` INT)
-BEGIN
-	UPDATE messages SET opened_at = NOW() WHERE id = message_id AND opened_at IS NULL;
-
-	SELECT
-		m.title,
-		m.content,
-		u.id as author_id,
-		u.identity as author_identity,
-		m.created_at,
-		m.opened_at,
-		m.deleted_by_author,
-		m.deleted_by_recipient
-	FROM messages m
-	INNER JOIN users u ON u.id = m.author_id;
-END//
-
-DELIMITER ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
