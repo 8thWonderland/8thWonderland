@@ -17,9 +17,32 @@ class IndexController extends ActionController
         }
 
         return $this->render('accueil', [
-            'appli_status' => 1,
-            'msg' => '',
             'countries' => $this->application->get('country_manager')->getCountries(),
+        ]);
+    }
+    
+    public function motionsAction() {
+        $range = $this->request->getRange(15);
+        
+        $motionManager = $this->application->get('motion_manager');
+        
+        $motions = $motionManager->getMotions($range['min'], $range['max']);
+        $nbMotions = $motionManager->countMotions();
+        
+        if ($this->is_Ajax()) {
+            return new PaginatedResponse([
+                    'motions' => $motions,
+                    'total_motions' => $nbMotions,
+                ],
+                $_SERVER['HTTP_RANGE_UNIT'],
+                $_SERVER['HTTP_RANGE'],
+                $nbMotions
+            );
+        }
+        return $this->render('motions/public_list', [
+            'motions' => $motions,
+            'motions_range' => $range['max'],
+            'total_motions' => $nbMotions
         ]);
     }
 }
