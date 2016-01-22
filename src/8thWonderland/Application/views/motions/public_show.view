@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>8th Wonderland - <?php echo $this->parameters['motion']->getTitle(); ?></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta http-equiv="Pragma" content="no-cache"/>
+        <meta http-equiv="Expires" content="0"/>
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>accueil.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>home_menu.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>paginator.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>motions.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>bootstrap.min.css" type="text/css" media="screen" />
+        <link rel="shortcut icon" type="image/png" href="<?php echo IMG_PATH; ?>icone.png" />
+    </head>
+    <body>
+        <div id="perspective" class="perspective effect-moveleft">
+            <div class="home-container">
+                <div class="wrapper">
+                    <div id="header">
+                        <div id="header-left">
+                            
+                        </div>
+                        <div id="logo">
+                            <h1>
+                                <?php $this->translate('motions'); ?>
+                            </h1>
+                        </div>
+                        <div id="menu-handler">
+                            <i id="showMenu" class="fa fa-bars"></i>
+                        </div>
+                    </div>
+                    <section id="motion-details">
+                        <header>
+                            <h1>
+                                <?php echo $this->parameters['motion']->getTitle(); ?>
+                            </h1>
+                            <div id="vote-module">
+                                <?php
+                                    if(!$this->parameters['motion']->getIsActive()) {
+                                        $isApproved = $this->parameters['motion']->getIsApproved();
+                                        echo 
+                                            "<h3>{$this->getTranslation(($isApproved) ? 'motions.approved' : 'motions.rejected')}</h3>",
+                                            '<span class="motion-score">',
+                                            '<div class="progress"><div class="progress-bar progress-bar-' . (($isApproved) ? 'success' : 'danger') . '" ',
+                                            "role='progressbar' aria-valuenow='{$this->parameters['motion']->getScore()}' aria-valuemin='0' ",
+                                            "aria-valuemax='100' style='width: {$this->parameters['motion']->getScore()}%;'>",
+                                            "{$this->parameters['motion']->getScore()}%</div></div></span>"
+                                        ;
+                                    } else {
+                                        echo "<h3>{$this->getTranslation('motions.vote.connect_to_vote')}</h3>";
+                                    }
+                                ?>
+                            </div>
+                        </header>
+                        <section>
+                            <div id="motion-dates">
+                                <div id="motion-creation-date">
+                                    <h3>
+                                        <?php $this->translate('motions.creation_date'); ?>
+                                    </h3>
+                                    <span>
+                                        <?php
+                                            echo $this->parameters['motion']->getCreatedAt()->format('Y-m-d H:i:s');
+                                        ?>
+                                    </span>
+                                </div>
+                                <div id="motion-end-date">
+                                    <h3>
+                                        <?php $this->translate('motions.end_date'); ?>
+                                    </h3>
+                                    <span>
+                                        <?php
+                                            echo $this->parameters['motion']->getEndedAt()->format('Y-m-d H:i:s');
+                                        ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <h4>
+                                <?php $this->translate('motions.theme'); ?>
+                            </h4>
+                            <p>
+                                <?php $this->translate($this->parameters['motion']->getTheme()->getLabel()); ?>
+                            </p>
+                            <h4>
+                                <?php $this->translate('motions.title'); ?>
+                            </h4>
+                            <p>
+                                <?php echo $this->parameters['motion']->getTitle(); ?>
+                            </p>
+                            <h4>
+                                <?php $this->translate('motions.description'); ?>
+                            </h4>
+                            <p>
+                                <?php echo nl2br($this->parameters['motion']->getDescription()); ?>
+                            </p>
+                            <h4>
+                                <?php $this->translate('motions.means'); ?>
+                            </h4>
+                            <p>
+                                <?php echo nl2br($this->parameters['motion']->getMeans()); ?>
+                            </p>
+                        </section>
+                    </section>
+                </div>
+            </div>
+            <nav class="outer-nav right vertical">
+                <a href="<?php echo VIEW_PATH ?>">
+                    <i class="fa fa-home"></i>
+                    <?php $this->translate('home'); ?>
+                </a>
+                <a href="<?php echo VIEW_PATH ?>index/motions">
+                    <i class="fa fa-university"></i>
+                    <?php $this->translate('motions'); ?>
+                </a>
+                <a href="<?php echo VIEW_PATH ?>intranet/openChatroom">
+                    <i class="fa fa-comments-o"></i>
+                    <?php $this->translate('chatrooms.link'); ?>
+                </a>
+                <a href="<?php echo VIEW_PATH ?>developer/installationGuide">
+                    <i class="fa fa-cogs"></i>
+                    <?php $this->translate('developers.local_installation'); ?>
+                </a>
+            </nav>
+        </div>
+        <input type="hidden" name="website-root" value="<?php echo VIEW_PATH; ?>"/>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>modernizer.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>classie.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>home.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>home_menu.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>paginator.js"></script>
+        <script type="text/javascript" src="<?php echo JS_PATH; ?>motions.js"></script>
+    </body>
+</html>

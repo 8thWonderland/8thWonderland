@@ -89,6 +89,8 @@ $array = array(
     'motion_themes.organization' => 'Organizational motion',
     'motion_themes.actions' => 'Action motion',
     // Motions
+    'motions' => 'Motions',
+    'motions.in_progress' => 'Motion in vote',
     'motions.vote' => 'Vote',
     'motions.new_title' => 'Create a motion',
     'motions.creation_date' => 'Creation date',
@@ -100,6 +102,7 @@ $array = array(
     'motions.means' => 'Application means',
     'motions.validate' => 'Create the motion',
     'motions.already_voted' => 'You already voted this motion',
+    'motions.vote.connect_to_vote' => 'Please connect with your citizen account to vote this motion',
     'motions.vote.request' => 'Do you approve this motion ?',
     'motions.vote.yes' => 'Yes',
     'motions.vote.no' => 'No',

@@ -73,8 +73,6 @@ $array = array(
     'shop' => 'Magasin',
     'what_new' => 'Dernières infos',
     'friend_groups' => 'Groupes sympathisants',
-    'motions_inprogress' => 'Motions en cours',
-    'motions_archives' => 'Motions archivées',
     'stats_country' => 'Statistiques du pays',
     'my_groups' => 'Mes groupes',
 
@@ -91,6 +89,8 @@ $array = array(
     'motion_themes.actions' => 'Motion d\'action',
     
     // Motions
+    'motions' => 'Motions',
+    'motions.in_progress' => 'Motion en cours de vote',
     'motions.vote' => 'Voter',
     'motions.new_title' => 'Déposition de motion',
     'motions.creation_date' => 'Date de début',
@@ -102,6 +102,7 @@ $array = array(
     'motions.means' => 'Moyens nécessaires à l\'application de la motion',
     'motions.validate' => 'Créer la motion',
     'motions.already_voted' => 'Vous avez déjà voté cette motion',
+    'motions.vote.connect_to_vote' => 'Pour pouvoir voter cette motion, vous devez vous connecter avec votre compte citoyen',
     'motions.vote.request' => 'Approuvez-vous cette motion ?',
     'motions.vote.yes' => 'Oui',
     'motions.vote.no' => 'Non',

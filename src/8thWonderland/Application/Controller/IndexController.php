@@ -17,50 +17,38 @@ class IndexController extends ActionController
         }
 
         return $this->render('accueil', [
-            'appli_status' => 1,
-            'msg' => '',
             'countries' => $this->application->get('country_manager')->getCountries(),
         ]);
     }
-
-    public function presentationAction()
-    {
-        return $this->render('informations/presentation');
-    }
-
-    public function subscribeAction()
-    {
-        $translate = $this->application->get('translator');
-        $langs = $translate->getList();
-        $sel_lang = '';
-        $nbLangs = count($langs);
-        for ($i = 0; $i < $nbLangs; ++$i) {
-            $sel_lang .= "<option value='{$langs[$i]}'>{$translate->translate($langs[$i])}</option>";
+    
+    public function motionsAction() {
+        $range = $this->request->getRange(15);
+        
+        $motionManager = $this->application->get('motion_manager');
+        
+        $motions = $motionManager->getMotions($range['min'], $range['max']);
+        $nbMotions = $motionManager->countMotions();
+        
+        if ($this->is_Ajax()) {
+            return new PaginatedResponse([
+                    'motions' => $motions,
+                    'total_motions' => $nbMotions,
+                ],
+                $_SERVER['HTTP_RANGE_UNIT'],
+                $_SERVER['HTTP_RANGE'],
+                $nbMotions
+            );
         }
-
-        return $this->render('members/subscribe', [
-            'langs' => $sel_lang,
+        return $this->render('motions/public_list', [
+            'motions' => $motions,
+            'motions_range' => $range['max'],
+            'total_motions' => $nbMotions
         ]);
     }
-
-    public function partnersAction()
-    {
-        return $this->render('informations/partners');
-    }
-
-    public function newsAction()
-    {
-        $facebookManager = $this->application->get('facebook_manager');
-
-        return $this->render('informations/public_news', [
-            'facebook_feed' => $facebookManager->getPageFeed(3),
-            'facebook_picture' => $facebookManager->getPagePicture(),
-            'facebook_page' => $facebookManager->getPageInformations(),
+    
+    public function motionAction() {
+        return $this->render('motions/public_show', [
+            'motion' => $this->application->get('motion_manager')->getMotion($this->request->get('motion_id', null, 'int'))
         ]);
-    }
-
-    public function contactAction()
-    {
-        return $this->render('communications/contactus');
     }
 }

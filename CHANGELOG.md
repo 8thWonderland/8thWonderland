@@ -2,6 +2,8 @@
 ### Added
 - Website installation guide
 - Chatroom messages date
+- Public motions list
+- Public motion details
 
 ### Fixed
 - Group data formatting for groups list
@@ -10,6 +12,7 @@
 - Logo size for small screens
 - Carriage returns for motions text fields
 - Motion themes translations
+- Database dump
 
 ## 0.1.3 - 2016-10-01
 ### Added

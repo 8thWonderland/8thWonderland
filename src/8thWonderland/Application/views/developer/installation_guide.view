@@ -14,7 +14,7 @@
     </head>
     <body>
         <div id="perspective" class="perspective effect-moveleft">
-            <div class="container">
+            <div class="home-container">
                 <div class="wrapper">
                     <div id="header">
                         <div id="header-left">
@@ -71,6 +71,10 @@
                 <a href="<?php echo VIEW_PATH ?>">
                     <i class="fa fa-home"></i>
                     <?php $this->translate('home'); ?>
+                </a>
+                <a href="<?php echo VIEW_PATH ?>index/motions">
+                    <i class="fa fa-university"></i>
+                    <?php $this->translate('motions'); ?>
                 </a>
                 <a href="<?php echo VIEW_PATH ?>intranet/openChatroom">
                     <i class="fa fa-comments-o"></i>

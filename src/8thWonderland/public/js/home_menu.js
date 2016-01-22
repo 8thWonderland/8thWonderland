@@ -40,7 +40,7 @@
 	function init() {
 		var showMenu = document.getElementById( 'showMenu' ),
 			perspectiveWrapper = document.getElementById( 'perspective' ),
-			container = perspectiveWrapper.querySelector( '.container' ),
+			container = perspectiveWrapper.querySelector( '.home-container' ),
 			contentWrapper = container.querySelector( '.wrapper' );
 
 		showMenu.addEventListener( clickevent, function( ev ) {
