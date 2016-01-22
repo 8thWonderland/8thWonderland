@@ -4,6 +4,9 @@
 - Chatroom messages date
 
 ### Fixed
+- Database dump
+
+### Fixed
 - Group data formatting for groups list
 - Archived motions display order
 - Default avatar displaying
