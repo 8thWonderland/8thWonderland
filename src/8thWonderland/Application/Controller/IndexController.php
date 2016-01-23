@@ -45,4 +45,10 @@ class IndexController extends ActionController
             'total_motions' => $nbMotions
         ]);
     }
+    
+    public function motionAction() {
+        return $this->render('motions/public_show', [
+            'motion' => $this->application->get('motion_manager')->getMotion($this->request->get('motion_id', null, 'int'))
+        ]);
+    }
 }

@@ -77,7 +77,7 @@
                     <?php $this->translate('motions.theme'); ?>
                 </h4>
                 <p>
-                    <?php echo $this->parameters['motion']->getTheme()->getLabel(); ?>
+                    <?php $this->translate($this->parameters['motion']->getTheme()->getLabel()); ?>
                 </p>
                 <h4>
                     <?php $this->translate('motions.title'); ?>

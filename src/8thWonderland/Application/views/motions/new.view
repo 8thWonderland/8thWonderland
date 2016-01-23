@@ -51,7 +51,7 @@
                             <option value="0"></option>
                             <?php
                                 foreach($this->parameters['themes'] as $theme) {
-                                    echo "<option x-data-duration='{$theme['duration']}' value={$theme['id']}>{$theme['label']}</option>";
+                                    echo "<option x-data-duration='{$theme['duration']}' value={$theme['id']}>{$this->getTranslation($theme['label'])}</option>";
                                 }
                             ?>
                         </select>

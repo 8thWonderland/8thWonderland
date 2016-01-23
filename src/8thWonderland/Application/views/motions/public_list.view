@@ -11,11 +11,12 @@
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>paginator.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>motions.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="<?php echo CSS_PATH; ?>bootstrap.min.css" type="text/css" media="screen" />
         <link rel="shortcut icon" type="image/png" href="<?php echo IMG_PATH; ?>icone.png" />
     </head>
     <body>
         <div id="perspective" class="perspective effect-moveleft">
-            <div class="container">
+            <div class="home-container">
                 <div class="wrapper">
                     <div id="header">
                         <div id="header-left">
@@ -48,11 +49,16 @@
                                         "<li id='motion-{$motion->getId()}' class='motion motion-$class'>",
                                         "<a href='" . VIEW_PATH . "index/motion?motion_id={$motion->getId()}'>",
                                         "<span class='motion-title'>{$motion->getTitle()}</span>",
+                                        "<span class='motion-type'>{$this->getTranslation($motion->getTheme()->getLabel())}</span>",
                                         '<span class="motion-score">',
                                         (
                                             ($motion->getIsActive())
                                             ? $this->translate('motions.in_progress')
-                                            : "<meter value='{$motion->getScore()}' min='0' max='100'>{$motion->getScore()}%</meter>"
+                                            : 
+                                                '<div class="progress"><div class="progress-bar progress-bar-' . (($motion->getIsApproved()) ? 'success' : 'danger') . '" '.
+                                                "role='progressbar' aria-valuenow='{$motion->getScore()}' aria-valuemin='0' ".
+                                                "aria-valuemax='100' style='width: {$motion->getScore()}%;'>".
+                                                "{$motion->getScore()}%</div></div>"
                                         ).'</span>',
                                         "<span class='motion-end-date'>{$motion->getEndedAt()->format($this->getTranslation('date_format'))}</span>",
                                         '</a></li>'

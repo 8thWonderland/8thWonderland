@@ -102,6 +102,7 @@ $array = array(
     'motions.means' => 'Application means',
     'motions.validate' => 'Create the motion',
     'motions.already_voted' => 'You already voted this motion',
+    'motions.vote.connect_to_vote' => 'Please connect with your citizen account to vote this motion',
     'motions.vote.request' => 'Do you approve this motion ?',
     'motions.vote.yes' => 'Yes',
     'motions.vote.no' => 'No',
