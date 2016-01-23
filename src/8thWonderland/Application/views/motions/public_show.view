@@ -6,6 +6,11 @@
         <meta http-equiv="Cache-Control" content="no-cache"/>
         <meta http-equiv="Pragma" content="no-cache"/>
         <meta http-equiv="Expires" content="0"/>
+	<meta property="og:url"           content="<?php echo VIEW_PATH . "motions/show?motion_id={$this->parameters['motion']->getId()}"?>" />
+	<meta property="og:type"          content="article" />
+	<meta property="og:title"         content="8th Wonderland - <?php echo $this->parameters['motion']->getTitle(); ?>" />
+	<meta property="og:description"   content="<?php $this->translate('motions.public_description'); ?>" />
+	<meta property="og:image"         content="<?php echo IMG_PATH;?>Logo8th-2.png" />
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>accueil.css" type="text/css" media="all" />
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>home_menu.css" type="text/css" media="all" />
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>paginator.css" type="text/css" media="screen" />
@@ -15,12 +20,26 @@
         <link rel="shortcut icon" type="image/png" href="<?php echo IMG_PATH; ?>icone.png" />
     </head>
     <body>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v2.5&appId=1067428033276955";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
         <div id="perspective" class="perspective effect-moveleft">
             <div class="home-container">
                 <div class="wrapper">
                     <div id="header">
                         <div id="header-left">
-                            
+                            <a href="<?php echo VIEW_PATH . "index/motions"; ?>" class="btn btn-danger">
+                                <?php $this->translate('motions.back_to_list'); ?>
+                            </a>
+                            <div class="fb-share-button" 
+                                data-href="<?php echo VIEW_PATH . "motions/show?motion_id={$this->parameters['motion']->getId()}"?>" 
+                                data-layout="icon_link">
+                            </div>
                         </div>
                         <div id="logo">
                             <h1>
@@ -35,7 +54,8 @@
                         <header>
                             <h1>
                                 <?php echo $this->parameters['motion']->getTitle(); ?>
-                            </h1>
+                            </h1><!-- Your share button code -->
+                            
                             <div id="vote-module">
                                 <?php
                                     if(!$this->parameters['motion']->getIsActive()) {

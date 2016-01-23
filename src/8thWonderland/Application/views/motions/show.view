@@ -3,6 +3,11 @@
     <head>
         <title>8th Wonderland - <?php echo $this->parameters['motion']->getTitle(); ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta property="og:url"           content="<?php echo VIEW_PATH . "motions/show?motion_id={$this->parameters['motion']->getId()}"?>" />
+	<meta property="og:type"          content="article" />
+	<meta property="og:title"         content="8th Wonderland - <?php echo $this->parameters['motion']->getTitle(); ?>" />
+	<meta property="og:description"   content="<?php $this->translate('motions.public_description'); ?>" />
+	<meta property="og:image"         content="<?php echo IMG_PATH;?>Logo8th-2.png" />
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>intranet.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>motions.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
@@ -10,6 +15,14 @@
         <link rel="stylesheet" href="<?php echo CSS_PATH; ?>bootstrap.min.css" type="text/css" media="screen" />
     </head>
     <body>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v2.5&appId=1067428033276955";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
         <?php
             echo $this->render('intranet/header');
         ?>
@@ -17,6 +30,10 @@
             <header>
                 <h1>
                     <?php echo $this->parameters['motion']->getTitle(); ?>
+                    <div class="fb-share-button" 
+                        data-href="<?php echo VIEW_PATH . "motions/show?motion_id={$this->parameters['motion']->getId()}"?>" 
+                        data-layout="icon_link">
+                    </div>
                 </h1>
                 <div id="vote-module">
                     <?php
