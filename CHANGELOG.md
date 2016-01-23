@@ -4,6 +4,7 @@
 - Chatroom messages date
 - Public motions list
 - Public motion details
+- Motion sharing on Facebook
 
 ### Fixed
 - Group data formatting for groups list
