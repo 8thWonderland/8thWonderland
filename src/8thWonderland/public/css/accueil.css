@@ -16,6 +16,12 @@ body {
 #header-left {
     flex-grow:1;
     width:20%;
+    padding-top:10px;
+    padding-left:10px;
+}
+
+#header-left a {
+    color: #EFEFEF;
 }
 
 #menu-handler {
