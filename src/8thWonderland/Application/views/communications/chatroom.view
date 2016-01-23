@@ -11,7 +11,7 @@
         <link rel="shortcut icon" type="image/png" href="<?php echo IMG_PATH; ?>icone.png" />
     </head>
     <body>
-        <div class="home-container">
+        <div class="container">
                 <div class="menu-wrap">
                     <nav class="menu-top">
                         <div class="profile">

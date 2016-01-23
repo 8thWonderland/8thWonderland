@@ -1,10 +1,16 @@
-## Unreleased
+## 0.1.5 - 2016-23-01
 ### Added
-- Website installation guide
-- Chatroom messages date
 - Public motions list
 - Public motion details
 - Motion sharing on Facebook
+
+### Fixed
+- Database dump
+
+## 0.1.4 - 2016-19-01
+### Added
+- Website installation guide
+- Chatroom messages date
 
 ### Fixed
 - Group data formatting for groups list
@@ -13,7 +19,6 @@
 - Logo size for small screens
 - Carriage returns for motions text fields
 - Motion themes translations
-- Database dump
 
 ## 0.1.3 - 2016-10-01
 ### Added
