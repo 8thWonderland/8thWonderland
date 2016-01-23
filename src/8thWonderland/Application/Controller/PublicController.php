@@ -4,7 +4,7 @@ namespace Wonderland\Application\Controller;
 
 use Wonderland\Library\Controller\ActionController;
 
-class IndexController extends ActionController
+class PublicController extends ActionController
 {
     /**
      * @return \Wonderland\Library\Http\Response\Response

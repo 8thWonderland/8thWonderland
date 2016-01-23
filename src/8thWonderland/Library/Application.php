@@ -154,7 +154,7 @@ class Application
             'GET',
             '/',
             function () {
-                $this->startControllerAction('Index', 'index');
+                $this->startControllerAction('Public', 'index');
             },
             'home'
         );

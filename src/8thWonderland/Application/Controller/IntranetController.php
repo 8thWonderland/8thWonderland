@@ -16,7 +16,7 @@ class IntranetController extends ActionController
     public function indexAction()
     {
         if (($member = $this->getUser()) === null) {
-            return $this->redirect('index/index');
+            return $this->redirect('public/index');
         }
 
         return $this->render('intranet', [
@@ -32,7 +32,7 @@ class IntranetController extends ActionController
     public function groupAction()
     {
         if (($member = $this->getUser()) === null) {
-            return $this->redirect('index/index');
+            return $this->redirect('public/index');
         }
         $desktop = $this->application->get('session')->get('desktop');
         $this->application->get('templating')->addParameters([

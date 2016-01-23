@@ -12,7 +12,7 @@ use Wonderland\Library\Exception\NotFoundException;
 class MessageController extends ActionController {
     public function inboxAction() {
         if(($member = $this->getUser()) === null) {
-            return $this->redirect('index/index');
+            return $this->redirect('public/index');
         }
         
         $messageManager = $this->application->get('message_manager');

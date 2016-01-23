@@ -44,7 +44,7 @@ class AuthenticateController extends ActionController
     {
         $this->application->get('session')->delete('__id__');
 
-        return $this->redirect('index/index');
+        return $this->redirect('public/index');
     }
 
     public function subscribeAction()

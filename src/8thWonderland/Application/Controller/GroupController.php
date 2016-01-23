@@ -13,7 +13,7 @@ class GroupController extends ActionController
     public function listAction()
     {
         if (($member = $this->getUser()) === null) {
-            return $this->redirect('index/index');
+            return $this->redirect('public/index');
         }
 
         $typeId = (isset($_GET['type_id'])) ? $_GET['type_id'] : null;

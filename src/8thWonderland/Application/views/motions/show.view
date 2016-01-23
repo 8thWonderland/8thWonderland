@@ -31,7 +31,7 @@
                 <h1>
                     <?php echo $this->parameters['motion']->getTitle(); ?>
                     <div class="fb-share-button" 
-                        data-href="<?php echo VIEW_PATH . "motions/show?motion_id={$this->parameters['motion']->getId()}"?>" 
+                        data-href="<?php echo VIEW_PATH . "motion/show?motion_id={$this->parameters['motion']->getId()}"?>" 
                         data-layout="icon_link">
                     </div>
                 </h1>

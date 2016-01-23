@@ -47,7 +47,7 @@
                                     $class = ($motion->getIsActive()) ? '' : ($motion->getIsApproved()) ? 'approved' : 'rejected';
                                     echo
                                         "<li id='motion-{$motion->getId()}' class='motion motion-$class'>",
-                                        "<a href='" . VIEW_PATH . "index/motion?motion_id={$motion->getId()}'>",
+                                        "<a href='" . VIEW_PATH . "public/motion?motion_id={$motion->getId()}'>",
                                         "<span class='motion-title'>{$motion->getTitle()}</span>",
                                         "<span class='motion-type'>{$this->getTranslation($motion->getTheme()->getLabel())}</span>",
                                         '<span class="motion-score">',
@@ -75,7 +75,7 @@
                     <i class="fa fa-home"></i>
                     <?php $this->translate('home'); ?>
                 </a>
-                <a href="<?php echo VIEW_PATH ?>index/motions">
+                <a href="<?php echo VIEW_PATH ?>public/motions">
                     <i class="fa fa-university"></i>
                     <?php $this->translate('motions'); ?>
                 </a>
