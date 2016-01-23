@@ -109,6 +109,8 @@ $array = array(
     'motions.archives' => 'Archived motions',
     'motions.approved' => 'This motion is approved',
     'motions.rejected' => 'This motion is rejected',
+    'motions.back_to_list' => 'Back to motions',
+    'motions.public_description' => 'Motion from 8thWonderland, voted by its citizen. Connect to vote !',
     
     'messages.inbox' => 'Inbox',
     'messages.box_list_title' => 'Messages',

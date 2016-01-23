@@ -109,6 +109,8 @@ $array = array(
     'motions.archives' => 'Motions archivées',
     'motions.approved' => 'Motion approuvée',
     'motions.rejected' => 'Motion rejetée',
+    'motions.back_to_list' => 'Revenir à la liste',
+    'motions.public_description' => 'Motion de 8thWonderland, votée par ses citoyens. Connectez-vous pour voter !',
     
     'messages.inbox' => 'Boîte de réception',
     'messages.box_list_title' => 'Messagerie',
